@@ -1,0 +1,22 @@
+<Project>
+    <PropertyGroup>
+        <Platform Condition="'$(Platform)' == ''">AnyCPU</Platform>
+        <Configuration Condition="'$(Configuration)' == ''">Debug</Configuration>
+
+        <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+
+        <RootDirectory>$(MSBuildThisFileDirectory)..\..\</RootDirectory>
+        
+        <BuildPath>Build\$(Platform)\$(Configuration)</BuildPath>
+        <OutputPath>$(BuildPath)</OutputPath>
+        <BaseIntermediateOutputPath>$(BuildPath)</BaseIntermediateOutputPath>
+        <IntermediateOutputPath>$(BuildPath)</IntermediateOutputPath>
+        <MSBuildExtensionsPath>$(BuildPath)</MSBuildExtensionsPath>
+    </PropertyGroup>
+    <PropertyGroup>
+        <DefaultItemExcludes>$(DefaultItemExcludes);Directory.*.props;Build\**\*;</DefaultItemExcludes>
+    </PropertyGroup>
+    <ItemGroup>
+        <None Include="$(RootDirectory)\icon.jpg" Visible="false" Pack="true" PackagePath="\" />
+    </ItemGroup>
+</Project>

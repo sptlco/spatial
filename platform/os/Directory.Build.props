@@ -1,0 +1,8 @@
+<Project>
+    <PropertyGroup>
+        <RootNamespace>Spatial</RootNamespace>
+    </PropertyGroup>
+    <PropertyGroup>
+        <DefaultItemExcludes>$(DefaultItemExcludes);Directory.*.props;BenchmarkDotNet.Artifacts\**\*</DefaultItemExcludes>
+    </PropertyGroup>
+</Project>

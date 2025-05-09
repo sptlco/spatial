@@ -1,0 +1,12 @@
+{
+  "name": "@spatial/web",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev:next": "next dev --turbopack --experimental-https",
+    "dev:email": "email dev --dir email/emails",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  }
+}

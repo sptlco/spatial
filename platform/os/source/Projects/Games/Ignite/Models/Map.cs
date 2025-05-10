@@ -6,6 +6,7 @@ using Ignite.Components;
 using Ignite.Contracts;
 using Ignite.Models.Objects;
 using Ignite.Systems;
+using Serilog;
 using Spatial.Networking;
 using Spatial.Simulation;
 using Spatial.Structures;
@@ -532,7 +533,7 @@ public partial class Map
     /// <param name="dispose">Whether or not to dispose of the <see cref="ProtocolBuffer"/> after broadcasting.</param>
     public void Broadcast(NETCOMMAND command, ProtocolBuffer data, bool dispose = true)
     {
-        Multicast(command, data, default, dispose);
+        Multicast(command, data, null, dispose);
     }
 
     /// <summary>
@@ -730,10 +731,10 @@ public partial class Map
     public void Multicast(NETCOMMAND command, ProtocolBuffer data, Func<Entity, bool>? filter = default, bool dispose = true)
     {
         foreach (var entity in Query(ObjectType.Player))
-        {
+        {            
             if (filter == null || filter(entity))
             {
-                Session.Find(_space.Get<Player>(entity).Session).Map.Command((ushort)command, data, false);
+                Session.Find(_space.Get<Player>(entity).Session).Map.Command((ushort) command, data, false);
             }
         }
 
@@ -787,6 +788,28 @@ public partial class Map
     private readonly ConcurrentDictionary<ObjectType, InterlockedQueue<ushort>> _handles = [];
     private readonly ConcurrentDictionary<ObjectType, ushort> _counters = [];
     private readonly Lock _lock = new();
+
+    /// <summary>
+    /// Release an <see cref="Object"/>.
+    /// </summary>
+    /// <param name="object">An <see cref="Object"/>.</param>
+    public void Release(Object @object)
+    {
+        var tag = @object.Tag;
+
+        Release(tag.Type, tag.Handle);
+    }
+
+    /// <summary>
+    /// Release an <see cref="Object"/>.
+    /// </summary>
+    /// <param name="entity">An <see cref="Entity"/>.</param>
+    public void Release(Entity entity)
+    {
+        var tag = _space.Get<Tag>(entity);
+
+        Release(tag.Type, tag.Handle);
+    }
 
     /// <summary>
     /// Release an <see cref="Entity"/> handle.

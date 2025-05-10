@@ -745,28 +745,6 @@ public class ResponsiveController : AugmentedController
     }
 
     /// <summary>
-    /// Issue <see cref="NETCOMMAND.NC_ACT_SOMEONECHAT_CMD"/>.
-    /// </summary>
-    /// <param name="data">A <see cref="ProtocolBuffer"/>.</param>
-    protected void NC_ACT_SOMEONECHAT_CMD(PROTO_NC_ACT_CHAT_REQ data)
-    {
-        _session.Object.Map.Multicast2D(
-            command: NETCOMMAND.NC_ACT_SOMEONECHAT_CMD,
-            position: _session.Object.Transform,
-            data: new PROTO_NC_ACT_SOMEONECHAT_CMD {
-                itemLinkDataCount = data.itemLinkDataCount,
-                handle = _session.Object.Tag.Handle,
-                len = data.len,
-                flag = new PROTO_NC_ACT_SOMEONECHAT_CMD.Flags {
-                    chatwin = true
-                },
-                nChatFontColorID = _session.Character.ChatColor.Font,
-                nChatBalloonColorID = _session.Character.ChatColor.Balloon,
-                content = data.content
-            });
-    }
-
-    /// <summary>
     /// Issue <see cref="NETCOMMAND.NC_ACT_NOTICE_CMD"/>.
     /// </summary>
     /// <param name="notice">A notice.</param>

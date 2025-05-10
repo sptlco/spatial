@@ -112,6 +112,7 @@ public class PlayerRef : Object
         var session = Session;
         var character = Character;
 
+        _map.Release(this);
         _map.Space.Destroy(_entity);
 
         character.Update(c => {

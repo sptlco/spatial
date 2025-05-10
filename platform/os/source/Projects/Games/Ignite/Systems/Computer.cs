@@ -31,6 +31,15 @@ public class Computer : System
 
         _collisions = [];
     }
+    
+    /// <summary>
+    /// Execute code before updating a <see cref="Map"/>.
+    /// </summary>
+    /// <param name="map">The <see cref="Map"/> to update.</param>
+    public override void BeforeUpdate(Map map)
+    {
+        map.Grid.Clear();
+    }
 
     /// <summary>
     /// Update a <see cref="Map"/>.
@@ -42,8 +51,7 @@ public class Computer : System
         // Compute moving object positions based on destination and velocity of the moving object. 
         // We leverage interpolation here to move the object towards the destination over time.
 
-        map.Dynamic(_q1, (Future future, in (Entity, Chunk) _, in Entity entity) =>
-        {
+        map.Dynamic(_q1, (Future future, in (Entity, Chunk) _, in Entity entity) => {
             ref var tag = ref map.Space.Get<Tag>(entity);
             ref var transform = ref map.Space.Get<Transform>(entity);
 
@@ -52,10 +60,10 @@ public class Computer : System
                 var destination = map.Space.Get<Destination>(entity);
                 var velocity = map.Space.Get<Velocity>(entity);
 
-                var position = transform + velocity * (float)delta.Seconds;
+                var position = transform + velocity * (float) delta.Seconds;
                 var rotation = Transform.Heading(transform, destination);
                 var distance = Point2D.Distance(transform.X, transform.Y, destination.X, destination.Y);
-                var threshold = MathF.Sqrt(velocity.X * velocity.X + velocity.Y * velocity.Y) * (float)delta.Seconds * 1.1F;
+                var threshold = MathF.Sqrt(velocity.X * velocity.X + velocity.Y * velocity.Y) * (float) delta.Seconds * 1.1F;
 
                 // If the object is close enough to its destination, snap it to the position.
                 // Also, stop moving by removing the object's velocity.
@@ -81,8 +89,7 @@ public class Computer : System
 
         var collisions = (Current: new ConcurrentHashSet<Pair>(), Existing: new ConcurrentHashSet<Pair>(_collisions));
 
-        map.Dynamic(_q2, (Future future, in (Entity Entity, Chunk Coordinates) chunk, in Entity entity) =>
-        {
+        map.Dynamic(_q2, (Future future, in (Entity Entity, Chunk Coordinates) chunk, in Entity entity) => {
             var ta = map.Space.Get<Transform>(entity);
             var ca = map.Space.Get<Collider>(entity);
 
@@ -141,14 +148,5 @@ public class Computer : System
                 }
             }
         }
-    }
-    
-    /// <summary>
-    /// Execute code after updating a <see cref="Map"/>.
-    /// </summary>
-    /// <param name="map">The <see cref="Map"/> to update.</param>
-    public override void AfterUpdate(Map map)
-    {
-        map.Grid.Clear();
     }
 }

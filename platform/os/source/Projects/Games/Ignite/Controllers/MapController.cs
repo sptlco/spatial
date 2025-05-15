@@ -6,7 +6,6 @@ using Ignite.Components;
 using Ignite.Contracts;
 using Ignite.Contracts.Maps;
 using Ignite.Models;
-using Ignite.Models.Objects;
 using Serilog;
 using Spatial.Networking;
 

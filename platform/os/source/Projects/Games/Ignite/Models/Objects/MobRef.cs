@@ -29,6 +29,6 @@ public class MobRef : Object
     /// <returns>A <see cref="string"/>.</returns>
     public override string ToString()
     {
-        return $"{MobInfo.Load(Object.Id).Client.Name} {Tag.Id}";
+        return MobInfo.Load(Object.Id).Client.Name;
     }
 }

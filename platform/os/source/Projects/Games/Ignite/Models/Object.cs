@@ -308,7 +308,7 @@ public abstract class Object
             Add(velocity);
         }
 
-        Log.Debug("{Object} moving from {Transform} to {Destination}, {Map}.", Tag, Transform, destination, _map.Name);
+        Log.Debug("{Object} moving from {Transform} to {Destination}, {Map}.", this, Transform, destination, _map.Name);
     }
 
     /// <summary>
@@ -349,7 +349,7 @@ public abstract class Object
                 },
             });
 
-        Log.Debug("{Object} stopped at {Transform}, {Map}.", Tag, Transform, _map.Name);
+        Log.Debug("{Object} stopped at {Transform}, {Map}.", this, Transform, _map.Name);
     }
 
     /// <summary>
@@ -391,7 +391,7 @@ public abstract class Object
             data: data,
             filter: entity => _map.Space.Exists<Observer>(o => o.Object == entity && o.Target == UID));
 
-        Log.Debug("{Object} targeting {Target}.", Tag, target);
+        Log.Debug("{Object} targeting {Target}.", this, target);
     }
 
     /// <summary>
@@ -401,8 +401,20 @@ public abstract class Object
     {
         UntargetImpl();
 
-        Log.Debug("{Object} no longer targeting.", Tag);
+        Log.Debug("{Object} no longer targeting.", this);
     }
+
+    /// <summary>
+    /// Focus on another <see cref="Object"/>.
+    /// </summary>
+    /// <param name="other">Another <see cref="Object"/>.</param>
+    public virtual void Focus(Object other) { }
+
+    /// <summary>
+    /// Blur another <see cref="Object"/>.
+    /// </summary>
+    /// <param name="other">Another <see cref="Object"/>.</param>
+    public virtual void Blur(Object other) { }
 
     /// <summary>
     /// Enter another <see cref="Object"/>.

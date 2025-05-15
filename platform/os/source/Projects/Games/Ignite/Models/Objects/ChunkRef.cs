@@ -26,4 +26,13 @@ public class ChunkRef : Object
     /// Whether or not the <see cref="Chunk"/> is disabled.
     /// </summary>
     public bool Disabled => Has<Disabled>();
+
+    /// <summary>
+    /// Convert the <see cref="ChunkRef"/> to a <see cref="string"/>.
+    /// </summary>
+    /// <returns>A <see cref="string"/>.</returns>
+    public override string ToString()
+    {
+        return Object.ToString();
+    }
 }

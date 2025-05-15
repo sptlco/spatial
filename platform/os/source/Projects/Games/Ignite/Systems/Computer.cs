@@ -56,9 +56,9 @@ public class Computer : System
 
             if (map.Space.Has<Destination>(entity) && map.Space.Has<Velocity>(entity))
             {
+                var mover = map.ObjectAt(entity);
                 var destination = map.Space.Get<Destination>(entity);
                 var velocity = map.Space.Get<Velocity>(entity);
-
                 var position = transform + velocity * (float) delta.Seconds;
                 var rotation = Transform.Heading(transform, destination);
 
@@ -67,12 +67,12 @@ public class Computer : System
 
                 if (Point2D.Distance(transform.X, transform.Y, destination.X, destination.Y) <= 50)
                 {
-                    map.ObjectAt(entity).Stop(position = transform with { X = destination.X, Y = destination.Y }, future);
+                    mover.Stop(position = transform with { X = destination.X, Y = destination.Y }, future);
                 }
 
                 transform = position with { R = rotation };
 
-                Log.Debug("{Object} moved to {Transform}, {Map}.", tag, transform, map.Name);
+                Log.Debug("{Object} moved to {Transform}, {Map}.", mover, transform, map.Name);
             }
 
             map.Grid.Set(entity, transform);

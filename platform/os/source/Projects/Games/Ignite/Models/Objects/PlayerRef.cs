@@ -155,6 +155,6 @@ public class PlayerRef : Object
     /// <returns>A <see cref="string"/>.</returns>
     public override string ToString()
     {
-        return $"{Character.Name} {Tag.Id}";
+        return Character.Name;
     }
 }

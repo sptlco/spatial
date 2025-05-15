@@ -2,6 +2,7 @@
 
 using Ignite.Components;
 using Ignite.Models;
+using Ignite.Models.Objects;
 using Serilog;
 using Spatial.Simulation;
 using Spatial.Structures;
@@ -59,6 +60,15 @@ public class Vision : System
                 var subject = map.ObjectAt(pair.First);
                 var player = map.ObjectAt(pair.Second);
 
+                player.Focus(subject);
+
+                if (!player.Has<Hidden>() && subject is PlayerRef)
+                {
+                    subject.Focus(player);
+
+                    Log.Debug("{Subject} visible to {Player}.", player, subject);
+                }
+
                 Log.Debug("{Subject} visible to {Player}.", subject, player);
             }
         }
@@ -73,6 +83,15 @@ public class Vision : System
                 {
                     var subject = map.ObjectAt(pair.First);
                     var player = map.ObjectAt(pair.Second);
+
+                    player.Blur(subject);
+
+                    if (subject is PlayerRef)
+                    {
+                        subject.Blur(player);
+
+                        Log.Debug("{Subject} no longer visible to {Player}.", player, subject);
+                    }
 
                     Log.Debug("{Subject} no longer visible to {Player}.", subject, player);
                 }

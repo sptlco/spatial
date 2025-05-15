@@ -10,6 +10,25 @@ namespace Spatial.Mathematics;
 public static class Strong
 {
     /// <summary>
+    /// Get a random <see cref="bool"/>.
+    /// </summary>
+    /// <returns>A <see cref="bool"/>.</returns>
+    public static bool Boolean()
+    {
+        return Boolean(0.5F);
+    }
+
+    /// <summary>
+    /// Get a random <see cref="bool"/>.
+    /// </summary>
+    /// <param name="chance">The chance of the <see cref="bool"/> being true.</param>
+    /// <returns>A <see cref="bool"/>.</returns>
+    public static bool Boolean(float chance)
+    {
+        return Float(100) < 100 * chance;
+    }
+
+    /// <summary>
     /// Generate a strong <see cref="float"/>.
     /// </summary>
     /// <returns>A <see cref="float"/>.</returns>

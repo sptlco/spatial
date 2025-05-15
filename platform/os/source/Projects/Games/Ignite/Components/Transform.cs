@@ -179,16 +179,51 @@ public record struct Transform(
     }
 
     /// <summary>
+    /// Get a random <see cref="Transform"/> within a <see cref="Region"/>.
+    /// </summary>
+    /// <param name="region">A <see cref="Region"/>.</param>
+    /// <returns>A random <see cref="Transform"/>.</returns>
+    public static Transform Random(in Region region)
+    {
+        static float random() => Strong.Float(0.0F, 1.0F);
+
+        var rotation = Strong.Float(0.0F, 360.0F);
+
+        switch (region.Shape)
+        {
+            case Shape.Rectangle:
+                var x = (random() * region.Width) - (region.Width / 2);
+                var y = (random() * region.Height) - (region.Height / 2);
+
+                return new Transform(
+                    X: region.X + (x * region.Cosine - y * region.Sine),
+                    Y: region.Y + (x * region.Sine + y * region.Cosine),
+                    R: rotation);
+
+            case Shape.Circle:
+                var angle = random() * 2 * Math.PI;
+                var radius = (float) Math.Sqrt(random()) * region.Radius;
+
+                return new Transform(
+                    X: region.X + radius * (float) Math.Cos(angle),
+                    Y: region.Y + radius * (float) Math.Sin(angle),
+                    R: rotation);
+
+            default:
+                throw new InvalidOperationException("The region type is unsupported.");
+        }
+    }
+
+    /// <summary>
     /// Get a random <see cref="Transform"/> within an <see cref="Area"/>.
     /// </summary>
-    /// <param name="origin">The transform's origin location.</param>
-    /// <param name="area">An <see cref="Area"/> around the <paramref name="origin"/>.</param>
+    /// <param name="area">An <see cref="Area"/>.</param>
     /// <returns>A random <see cref="Transform"/>.</returns>
     public static Transform Random(in Area area)
     {
         static float random() => Strong.Float(0.0F, 1.0F);
 
-        var rotation = Strong.Float(-180.0F, 180.0F);
+        var rotation = Strong.Float(0.0F, 360.0F);
 
         switch (area)
         {

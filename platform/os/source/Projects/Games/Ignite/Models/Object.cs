@@ -1,6 +1,9 @@
 // Copyright © Spatial. All rights reserved.
 
 using Ignite.Components;
+using Ignite.Contracts;
+using Ignite.Contracts.Actions;
+using Ignite.Contracts.Combat;
 using Ignite.Models.Objects;
 using Serilog;
 using Spatial.Simulation;
@@ -198,17 +201,89 @@ public abstract class Object
     }
 
     /// <summary>
+    /// Move the <see cref="Object"/> at walking speed.
+    /// </summary>
+    /// <param name="transform">A target location.</param>
+    /// <param name="future">A <see cref="Future"/>.</param>
+    public void Walk(in Transform transform, Future? future = default) => Walk(transform.X, transform.Y, future);
+
+    /// <summary>
+    /// Move the <see cref="Object"/> at walking speed.
+    /// </summary>
+    /// <param name="x">A target X-coordinate.</param>
+    /// <param name="y">A target Y-coordinate.</param>
+    /// <param name="future">A <see cref="Future"/>.</param>
+    public void Walk(in float x, in float y, Future? future = default)
+    {
+        Move(x, y, Speed.Walking, future);
+
+        _map.MulticastExclusive2D(
+            position: Transform,
+            exclude: [Tag.Handle],
+            command: NETCOMMAND.NC_ACT_SOMEONEMOVEWALK_CMD,
+            data: new PROTO_NC_ACT_SOMEONEMOVEWALK_CMD {
+                handle = Tag.Handle,
+                from = new SHINE_XY_TYPE {
+                    x = (uint) Transform.X,
+                    y = (uint) Transform.Y
+                },
+                to = new SHINE_XY_TYPE {
+                    x = (uint) x,
+                    y = (uint) y
+                },
+                speed = (ushort) Speed.Walking,
+                moveattr = new PROTO_NC_ACT_SOMEONEMOVEWALK_CMD.Attributes()
+            });
+    }
+
+    /// <summary>
+    /// Move the <see cref="Object"/> at running speed.
+    /// </summary>
+    /// <param name="transform">A target location.</param>
+    /// <param name="future">A <see cref="Future"/>.</param>
+    public void Run(in Transform transform, Future? future = default) => Run(transform.X, transform.Y, future);
+
+    /// <summary>
+    /// Move the <see cref="Object"/> at running speed.
+    /// </summary>
+    /// <param name="x">A target X-coordinate.</param>
+    /// <param name="y">A target Y-coordinate.</param>
+    /// <param name="future">A <see cref="Future"/>.</param>
+    public void Run(in float x, in float y, Future? future = default)
+    {
+        Move(x, y, Speed.Running, future);
+
+        _map.MulticastExclusive2D(
+            position: Transform,
+            exclude: [Tag.Handle],
+            command: NETCOMMAND.NC_ACT_SOMEONEMOVERUN_CMD,
+            data: new PROTO_NC_ACT_SOMEONEMOVERUN_CMD {
+                handle = Tag.Handle,
+                from = new SHINE_XY_TYPE {
+                    x = (uint) Transform.X,
+                    y = (uint) Transform.Y
+                },
+                to = new SHINE_XY_TYPE {
+                    x = (uint) x,
+                    y = (uint) y
+                },
+                speed = (ushort) Speed.Running,
+                moveattr = new PROTO_NC_ACT_SOMEONEMOVEWALK_CMD.Attributes()
+            });
+    }
+
+    /// <summary>
     /// Move the <see cref="Object"/>.
     /// </summary>
     /// <param name="transform">A target <see cref="Transform"/>.</param>
-    public void Move(in Transform transform, in float speed) => Move(transform.X, transform.Y, speed);
+    public void Move(in Transform transform, in float speed, Future? future = default) => Move(transform.X, transform.Y, speed, future);
 
     /// <summary>
     /// Move the <see cref="Object"/>.
     /// </summary>
     /// <param name="x">An X-coordinate.</param>
     /// <param name="y">A Y-coordinate.</param>
-    public void Move(in float x, in float y, in float speed)
+    public void Move(in float x, in float y, in float speed, Future? future = default)
     {
         var dx = x - Transform.X;
         var dy = y - Transform.Y;
@@ -218,23 +293,60 @@ public abstract class Object
         var vx = dx * distance * speed;
         var vy = dy * distance * speed;
 
-        Add(new Destination(X: x, Y: y));
-        Add(new Velocity(X: vx, Y: vy));
+        var destination = new Destination(X: x, Y: y);
+        var velocity = new Velocity(X: vx, Y: vy);
 
-        Log.Debug("{Object} moving from {Transform} to {Destination}, {Map}.", Tag, Transform, Get<Destination>(), _map.Name);
+        if (future is not null)
+        {
+            future.Add(UID, destination);
+            future.Add(UID, velocity);
+        }
+        else
+        {
+            Add(destination);
+            Add(velocity);
+        }
+
+        Log.Debug("{Object} moving from {Transform} to {Destination}, {Map}.", Tag, Transform, destination, _map.Name);
     }
+
+    /// <summary>
+    /// Stop the <see cref="Object"/>.
+    /// </summary>
+    /// <param name="transform">The object's location.</param>
+    public void Stop(in Transform transform, Future? future = default) => Stop(transform.X, transform.Y, future);
 
     /// <summary>
     /// Stop the <see cref="Object"/>.
     /// </summary>
     /// <param name="x">The object's X-coordinate.</param>
     /// <param name="y">The object's Y-coordinate.</param>
-    public void Stop(in float x, in float y)
+    public void Stop(in float x, in float y, Future? future = default)
     {
         Snap(x, y);
 
-        Remove<Velocity>();
-        Remove<Destination>();
+        if (future is not null)
+        {
+            future.Remove<Destination>(UID);
+            future.Remove<Velocity>(UID);
+        }
+        else
+        {
+            Remove<Destination>();
+            Remove<Velocity>();
+        }
+
+        _map.MulticastExclusive2D(
+            position: Transform,
+            exclude: [Tag.Handle],
+            command: NETCOMMAND.NC_ACT_SOMEONESTOP_CMD,
+            data: new PROTO_NC_ACT_SOMEONESTOP_CMD {
+                handle = Tag.Handle,
+                loc = new SHINE_XY_TYPE {
+                    x = (uint) Transform.X,
+                    y = (uint) Transform.Y
+                },
+            });
 
         Log.Debug("{Object} stopped at {Transform}, {Map}.", Tag, Transform, _map.Name);
     }
@@ -243,11 +355,40 @@ public abstract class Object
     /// Focus on an <see cref="Object"/>.
     /// </summary>
     /// <param name="target">The <see cref="Object"/> to target.</param>
-    public void Target(Tag target)
+    public void Target(Object target)
     {
         UntargetImpl();
 
-        _map.Space.Create(new Observer(Object: UID, Target: _map.EntityAt(target)));
+        _map.Space.Create(new Observer(Object: UID, Target: target.UID));
+
+        var data = new PROTO_NC_BAT_TARGETINFO_CMD {
+            order = 0,
+            targethandle = target.Tag.Handle,
+            targethp = (uint) target.Vitals.Health.Current,
+            targetmaxhp = (uint) target.Vitals.Health.Maximum,
+            targetsp = (uint) target.Vitals.Spirit.Current,
+            targetmaxsp = (uint) target.Vitals.Spirit.Maximum,
+            targetlp = (uint) target.Vitals.Light.Current,
+            targetmaxlp = (uint) target.Vitals.Light.Maximum,
+            targetlevel = target.Vitals.Level,
+            hpchangeorder = target.Vitals.Version
+        };
+
+        if (this is PlayerRef player)
+        {
+            World.Command(
+                connection: player.Session.Map,
+                command: NETCOMMAND.NC_BAT_TARGETINFO_CMD,
+                data: data,
+                dispose: false);
+        }
+
+        data.order = 1;
+
+        _map.Multicast(
+            command: NETCOMMAND.NC_BAT_TARGETINFO_CMD,
+            data: data,
+            filter: entity => _map.Space.Exists<Observer>(o => o.Object == entity && o.Target == UID));
 
         Log.Debug("{Object} targeting {Target}.", Tag, target);
     }

@@ -6,7 +6,6 @@ using Serilog;
 using Spatial.Mathematics;
 using Spatial.Simulation;
 using Spatial.Structures;
-using System;
 
 namespace Ignite.Systems;
 
@@ -62,18 +61,13 @@ public class Computer : System
 
                 var position = transform + velocity * (float) delta.Seconds;
                 var rotation = Transform.Heading(transform, destination);
-                var distance = Point2D.Distance(transform.X, transform.Y, destination.X, destination.Y);
-                var threshold = MathF.Sqrt(velocity.X * velocity.X + velocity.Y * velocity.Y) * (float) delta.Seconds * 1.1F;
 
                 // If the object is close enough to its destination, snap it to the position.
                 // Also, stop moving by removing the object's velocity.
 
-                if (distance <= threshold)
+                if (Point2D.Distance(transform.X, transform.Y, destination.X, destination.Y) <= 50)
                 {
-                    position = transform with { X = destination.X, Y = destination.Y };
-
-                    future.Remove<Velocity>(entity);
-                    future.Remove<Destination>(entity);
+                    map.ObjectAt(entity).Stop(position = transform with { X = destination.X, Y = destination.Y }, future);
                 }
 
                 transform = position with { R = rotation };

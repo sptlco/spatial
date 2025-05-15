@@ -127,8 +127,24 @@ public partial class Map
 
         foreach (var mobRegenGroup in Asset.View<MobRegenGroup>($"MobRegen/{field.MapIDClient}.txt/MobRegenGroup"))
         {
+            var position = new Transform(X: mobRegenGroup.Area.Position.X, Y: mobRegenGroup.Area.Position.Y);
+            var region = map.Space.Create(
+                position,
+                new Region(
+                    Shape: mobRegenGroup.Area is Circle ? Shape.Circle : Shape.Rectangle,
+                    X: position.X,
+                    Y: position.Y,
+                    Width: (mobRegenGroup.Area as Rectangle)?.Size.X ?? 0,
+                    Height: (mobRegenGroup.Area as Rectangle)?.Size.Y ?? 0,
+                    Radius: (mobRegenGroup.Area as Circle)?.Radius ?? 0,
+                    Rotation: (mobRegenGroup.Area as Rectangle)?.Rotation ?? 0));
+
             foreach (var mobRegen in Asset.View<MobRegen>($"MobRegen/{field.MapIDClient}.txt/MobRegen", mobRegen => mobRegen.RegenIndex == mobRegenGroup.GroupIndex))
             {
+                var spawner = map.Space.Create(
+                    new Spawner(),
+                    new Transform(X: position.X, Y: position.Y));
+
                 (MobInfo Client, MobInfoServer Server) data = (
                     Client: Asset.First<MobInfo>("MobInfo.shn", mob => mob.InxName == mobRegen.MobIndex),
                     Server: Asset.First<MobInfoServer>("MobInfoServer.shn", mob => mob.InxName == mobRegen.MobIndex));
@@ -144,13 +160,23 @@ public partial class Map
 
                     map.Space.Add(mob, new Mob(data.Client.ID));
                     map.Space.Add(mob, new Collider(data.Client.AbsoluteSize));
+
+                    if (data.Server.EnemyDetectType != EnemyDetect.ED_NOBRAIN)
+                    {
+                        map.Space.Add(mob, new Intelligence());
+                    }
+
+                    map.Space.Join(mob, spawner);
                 }
+
+                map.Space.Join(spawner, region);
             }
         }
 
         map.Use<Clock>();
         map.Use<Generator>();
         map.Use<Computer>();
+        map.Use<Brain>();
 
 #if DEBUG
         map.Use<Debugger>();
@@ -508,7 +534,7 @@ public partial class Map
     /// <param name="mutation">A <see cref="Mutation"/>.</param>
     public void Dynamic(Query query, Mutation mutation)
     {
-        _space.Mutate(_query, (Future future, in Entity entity) => Dynamic(entity, query, mutation));
+        _space.Mutate(_query, (Future future, in Entity entity) => Dynamic(future, entity, query, mutation));
     }
 
     /// <summary>
@@ -517,12 +543,12 @@ public partial class Map
     /// <param name="chunk">The <see cref="Chunk"/> to mutate.</param>
     /// <param name="query">A <see cref="Spatial.Simulation.Query"/> for the <see cref="Chunk"/>.</param>
     /// <param name="mutation">A <see cref="MutateFunction"/>.</param>
-    public void Dynamic(Entity chunk, Query query, Mutation mutation)
+    public void Dynamic(Future future, Entity chunk, Query query, Mutation mutation)
     {
         _space.Mutate(
-            query: query,
+            query: query.WithAll<Transform>(),
             filter: (entity) => _grid.Contains(chunk, entity),
-            function: (Future future, in Entity entity) => mutation(future, (chunk, _space.Get<Chunk>(chunk)), entity));
+            function: (Future _, in Entity entity) => mutation(future, (chunk, _space.Get<Chunk>(chunk)), entity));
     }
 
     /// <summary>
@@ -730,32 +756,36 @@ public partial class Map
     /// <param name="dispose">Whether or not to dispose of the <see cref="ProtocolBuffer"/> after multicasting.</param>
     public void Multicast(NETCOMMAND command, ProtocolBuffer data, Func<Entity, bool>? filter = default, bool dispose = true)
     {
-        foreach (var entity in Query(ObjectType.Player))
-        {            
-            if (filter == null || filter(entity))
-            {
-                Session.Find(_space.Get<Player>(entity).Session).Map.Command((ushort) command, data, false);
-            }
+        data.Serialize(true);
+        
+        foreach (var entity in Query(ObjectType.Player, filter))
+        {
+            Server.Command(
+                connection: Session.Find(_space.Get<Player>(entity).Session).Map,
+                command: (ushort) command,
+                data: data,
+                dispose: false,
+                serialize: false);
         }
 
         if (dispose)
         {
             data.Dispose();
-        }
+        }                                                                                                                       
     }
 
-    /// <summary>
-    /// Multicast a <see cref="NETCOMMAND"/> to the <see cref="Map"/>.
-    /// </summary>
-    /// <param name="command">The <see cref="NETCOMMAND"/> to multicast.</param>
-    /// <param name="data">A <see cref="ProtocolBuffer"/>.</param>
-    /// <param name="filter">An optional filter.</param>
-    /// <param name="dispose">Whether or not to dispose of the <see cref="ProtocolBuffer"/> after multicasting.</param>
-    public void Multicast2DImpl(NETCOMMAND command, ProtocolBuffer data, in float x, in float y, in float radius, Func<Entity, bool>? filter = default, bool dispose = true)
+    private void Multicast2DImpl(NETCOMMAND command, ProtocolBuffer data, in float x, in float y, in float radius, Func<Entity, bool>? filter = default, bool dispose = true)
     {
+        data.Serialize(true);
+
         foreach (var entity in _grid.Query(x, y, radius, ObjectType.Player, filter))
         {
-            Session.Find(_space.Get<Player>(entity).Session).Map.Command((ushort) command, data, false);
+            Server.Command(
+                connection: Session.Find(_space.Get<Player>(entity).Session).Map,
+                command: (ushort) command,
+                data: data,
+                dispose: false,
+                serialize: false);
         }
 
         if (dispose)

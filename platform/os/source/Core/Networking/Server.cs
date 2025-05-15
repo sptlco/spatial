@@ -334,7 +334,7 @@ public partial class Server
     {
         if (serialize)
         {
-            data.Serialize();
+            data.Serialize(true);
         }
 
         var array = data.ToArray();
@@ -383,7 +383,7 @@ public partial class Server
     /// <param name="dispose">Whether or not to dispose of the <see cref="ProtocolBuffer"/>.</param>
     public static void Multicast(ushort command, ProtocolBuffer data, Expression<Func<Connection, bool>>? filter = default, bool dispose = true)
     {
-        data.Serialize();
+        data.Serialize(true);
 
         var func = filter?.Compile();
 

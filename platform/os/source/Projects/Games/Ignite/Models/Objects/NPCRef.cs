@@ -3,7 +3,6 @@
 using Ignite.Assets;
 using Ignite.Assets.Types;
 using Ignite.Components;
-using Serilog;
 using Spatial.Simulation;
 
 namespace Ignite.Models.Objects;
@@ -44,12 +43,12 @@ public class NPCRef : Object
 
                 player.Prompt(
                     priority: 0,
-                    title: Script.String("MenuString", "LinkTitle", map.Name),
+                    title: Assets.Types.Script.String("MenuString", "LinkTitle", map.Name),
                     range: 1000F,
                     sender: this,
                     items: [
-                        new(Script.String("ETC", "Yes"), () => player.Teleport(gate.Map, gate.Id, new Transform(gate.X, gate.Y, gate.R))),
-                        new(Script.String("ETC", "No"), () => { }),
+                        new(Assets.Types.Script.String("ETC", "Yes"), () => player.Teleport(gate.Map, gate.Id, new Transform(gate.X, gate.Y, gate.R))),
+                        new(Assets.Types.Script.String("ETC", "No"), () => { }),
                     ]);
 
                 break;

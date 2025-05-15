@@ -161,6 +161,34 @@ public sealed partial class Space : IDisposable
     }
 
     /// <summary>
+    /// Get the parent <see cref="Entity"/> of an <see cref="Entity"/>.
+    /// </summary>
+    /// <param name="child">An <see cref="Entity"/>.</param>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public Entity GetParent(in Entity child)
+    {
+        return Get<Group>(child).Id;
+    }
+
+    /// <summary>
+    /// Get the parent <see cref="Entity"/> of an <see cref="Entity"/>.
+    /// </summary>
+    /// <typeparam name="T">The type of parent to get.</typeparam>
+    /// <param name="child">An <see cref="Entity"/>.</param>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public T GetParent<T>(in Entity child) where T : unmanaged, IComponent
+    {
+        var parent = GetParent(child);
+
+        while (!Has<T>(parent))
+        {
+            parent = GetParent(parent);
+        }
+
+        return Get<T>(parent);
+    }
+
+    /// <summary>
     /// Remove an <see cref="Entity"/> from a <see cref="Simulation.Group"/>.
     /// </summary>
     /// <param name="child">An <see cref="Entity"/>.</param>
@@ -295,7 +323,7 @@ public sealed partial class Space : IDisposable
                     {
                         ref var component = ref chunk.Ref<T>(n);
 
-                        if (query == default || query(component))
+                        if (query?.Invoke(component) ?? true)
                         {
                             return true;
                         }
@@ -517,7 +545,7 @@ public sealed partial class Space : IDisposable
     /// Mutate the <see cref="Space"/>.
     /// </summary>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public void Mutate(Query query, MutateFunction function)
+    public void Mutate(Query query, MutateFunction function, Func<Entity, bool>? filter = default)
     {
         void process(Archetype archetype, int m, int n)
         {
@@ -528,7 +556,10 @@ public sealed partial class Space : IDisposable
                 ref var entity = ref chunk.Entities[n];
                 ref var handle = ref _entities[entity];
 
-                function(_future, handle);
+                if (filter?.Invoke(handle) ?? true)
+                {
+                    function(_future, handle);
+                }
             }
         }
 
@@ -559,20 +590,6 @@ public sealed partial class Space : IDisposable
         }
 
         _future.Commit(this);
-    }
-
-    /// <summary>
-    /// Mutate the <see cref="Space"/>.
-    /// </summary>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public void Mutate(Query query, Func<Entity, bool> filter, MutateFunction function)
-    {
-        Mutate(query, (Future future, in Entity entity) => {
-            if (filter(entity))
-            {
-                function(future, entity);
-            }
-        });
     }
 
     /// <summary>

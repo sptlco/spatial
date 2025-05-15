@@ -99,7 +99,7 @@ public class Client : IDisposable
             return;
         }
 
-        data.Serialize();
+        data.Serialize(true);
 
         var array = data.ToArray();
         var size = array.Length + sizeof(ushort);

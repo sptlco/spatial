@@ -18,7 +18,7 @@ public class CombatController : AugmentedController
     [NETHANDLER(NETCOMMAND.NC_BAT_TARGETTING_REQ)]
     public void NC_BAT_TARGETTING_REQ(PROTO_NC_BAT_TARGET_REQ data)
     {
-        _session.Object.Target(data.target);
+        _session.Object.Target(_session.Object.Map.ObjectAt(data.target));
     }
 
     /// <summary>

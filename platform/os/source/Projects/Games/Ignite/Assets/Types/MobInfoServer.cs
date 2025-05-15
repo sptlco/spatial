@@ -1,5 +1,7 @@
 // Copyright © Spatial. All rights reserved.
 
+using Ignite.Contracts;
+
 namespace Ignite.Assets.Types;
 
 [Name("MobInfoServer.shn")]
@@ -19,7 +21,7 @@ public class MobInfoServer
 
 	public ushort MB { get; set; }
 
-	public uint EnemyDetectType { get; set; }
+	public EnemyDetect EnemyDetectType { get; set; }
 
 	public uint MobKillInx { get; set; }
 

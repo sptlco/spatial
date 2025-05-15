@@ -63,6 +63,21 @@ public abstract class ProtocolBuffer : IDisposable
     }
 
     /// <summary>
+    /// Serialize the <see cref="ProtocolBuffer"/>.
+    /// </summary>
+    /// <param name="clear">Whether or not to clear the <see cref="ProtocolBuffer"/>.</param>
+    public void Serialize(bool clear)
+    {
+        if (clear)
+        {
+            _stream.Seek(0, SeekOrigin.Begin);
+            _stream.SetLength(0);
+        }
+
+        Serialize();
+    }
+
+    /// <summary>
     /// Serialize the protocol buffer.
     /// </summary>
     /// <returns>Binary data.</returns>
@@ -382,7 +397,7 @@ public abstract class ProtocolBuffer : IDisposable
                 buffer._stream = _stream;
                 buffer._writer = _writer;
 
-                buffer.Serialize();
+                buffer.Serialize(false);
 
                 buffer._stream = stream;
                 buffer._writer = writer;

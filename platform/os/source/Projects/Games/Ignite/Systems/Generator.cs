@@ -6,8 +6,6 @@ using Serilog;
 using Spatial.Compute.Jobs;
 using Spatial.Simulation;
 using Spatial.Structures;
-using System;
-using System.Collections.Generic;
 
 namespace Ignite.Systems;
 
@@ -18,7 +16,6 @@ public class Generator : System
 {
     private readonly Query _q1;
     private readonly Query _q2;
-    private readonly Query _q3;
 
     /// <summary>
     /// Create a new <see cref="Generator"/>.
@@ -26,9 +23,8 @@ public class Generator : System
     /// <param name="map">The <see cref="Map"/> controlled by the <see cref="System"/>.</param>
     public Generator(Map map) : base(map)
     {
-        _q1 = new Query().WithAll<Chunk>();
-        _q2 = new Query().WithAll<Player>();
-        _q3 = new Query().WithAll<Chunk>().WithNone<Disabled>();
+        _q1 = new Query().WithAll<Player>();
+        _q2 = new Query().WithAll<Chunk>().WithNone<Disabled>();
     }
 
     /// <summary>
@@ -43,10 +39,7 @@ public class Generator : System
 
         var chunks = new ConcurrentHashSet<uint>();
 
-        map.Space.Mutate(_q2, (Future future, in Entity entity, ref Player player, ref Transform transform) => {
-
-            // ...
-
+        map.Space.Mutate(_q1, (Future future, in Entity entity, ref Player player, ref Transform transform) => {
             foreach (var chunk in map.Grid.View(transform))
             {
                 chunks.Add(chunk);
@@ -56,7 +49,7 @@ public class Generator : System
         // Now that we know which chunks should be active, we can unload 
         // all of those that should not be (because they are not in the hash set).
 
-        map.Space.Mutate(_q3, (Future future, in Entity entity, ref Chunk chunk) => {
+        map.Space.Mutate(_q2, (Future future, in Entity entity, ref Chunk chunk) => {
             if (!chunks.Contains(entity))
             {
                 // Unload the chunk since there are no players near it.

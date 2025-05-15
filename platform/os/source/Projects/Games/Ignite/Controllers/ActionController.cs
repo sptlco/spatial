@@ -93,7 +93,7 @@ public class ActionController : ResponsiveController
     public void NC_ACT_MOVEWALK_CMD(PROTO_NC_ACT_MOVEWALK_CMD data)
     {
         _session.Object.Snap(data.from.x, data.from.y);
-        _session.Object.Move(data.to.x, data.to.y, _session.Object.Speed.Walking);
+        _session.Object.Walk(data.to.x, data.to.y);
     }
 
     /// <summary>
@@ -104,7 +104,7 @@ public class ActionController : ResponsiveController
     public void NC_ACT_MOVERUN_CMD(PROTO_NC_ACT_MOVERUN_CMD data)
     {
         _session.Object.Snap(data.from.x, data.from.y);
-        _session.Object.Move(data.to.x, data.to.y, _session.Object.Speed.Running);
+        _session.Object.Run(data.to.x, data.to.y);
     }
 
     /// <summary>

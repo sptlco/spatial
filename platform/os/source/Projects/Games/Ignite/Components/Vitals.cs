@@ -15,4 +15,5 @@ public record struct Vitals(
     byte Level,
     Parameter Health = new(),
     Parameter Spirit = new(),
-    Parameter Light = new()) : IComponent;
+    Parameter Light = new(),
+    ushort Version = 0) : IComponent;

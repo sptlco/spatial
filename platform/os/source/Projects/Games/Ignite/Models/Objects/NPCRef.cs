@@ -54,4 +54,13 @@ public class NPCRef : Object
                 break;
         }
     }
+
+    /// <summary>
+    /// Convert the <see cref="NPCRef"/> to a <see cref="string"/>.
+    /// </summary>
+    /// <returns>A <see cref="string"/>.</returns>
+    public override string ToString()
+    {
+        return $"{MobInfo.Load(Object.Id).Client.Name} {Tag.Id}";
+    }
 }

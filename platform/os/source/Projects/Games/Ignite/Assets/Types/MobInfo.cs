@@ -1,10 +1,15 @@
 // Copyright © Spatial. All rights reserved.
 
+using System.Collections.Concurrent;
+
 namespace Ignite.Assets.Types;
 
 [Name("MobInfo.shn")]
 public class MobInfo
 {
+	private static readonly ConcurrentDictionary<string, (MobInfo, MobInfoServer)> _cache = [];
+	private static readonly ConcurrentDictionary<ushort, (MobInfo, MobInfoServer)> _cacheById = [];
+
 	public ushort ID { get; set; }
 
 	public string InxName { get; set; }
@@ -34,4 +39,24 @@ public class MobInfo
 	public byte IsPlayerSide { get; set; }
 
 	public uint AbsoluteSize { get; set; }
+
+	/// <summary>
+	/// Load <see cref="MobInfo"/>.
+	/// </summary>
+	/// <param name="mobId">The mob's identification number.</param>
+	/// <returns>The mob's data.</returns>
+	public static (MobInfo Client, MobInfoServer Server) Load(ushort mobId)
+	{
+		return _cacheById.GetOrAdd(mobId, (Asset.First<MobInfo>("MobInfo.shn", mob => mob.ID == mobId), Asset.First<MobInfoServer>("MobInfoServer.shn", mob => mob.ID == mobId)));
+	}
+
+	/// <summary>
+	/// Load <see cref="MobInfo"/>.
+	/// </summary>
+	/// <param name="mobName">The mob's name.</param>
+	/// <returns>The mob's data.</returns>
+	public static (MobInfo Client, MobInfoServer Server) Load(string mobName)
+	{
+		return _cache.GetOrAdd(mobName, (Asset.First<MobInfo>("MobInfo.shn", mob => mob.InxName == mobName), Asset.First<MobInfoServer>("MobInfoServer.shn", mob => mob.InxName == mobName)));
+	}
 }

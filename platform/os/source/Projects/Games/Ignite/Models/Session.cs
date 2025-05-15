@@ -245,7 +245,7 @@ public sealed class Session
     {
         Log.Information("User {user} logged out.", Account.Username);
 
-        Object?.Destroy();
+        Object?.Release();
         Object = null!;
 
         _pool.Add(_handle);

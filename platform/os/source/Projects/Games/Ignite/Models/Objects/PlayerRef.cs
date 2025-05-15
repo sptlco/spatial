@@ -112,8 +112,7 @@ public class PlayerRef : Object
         var session = Session;
         var character = Character;
 
-        _map.Release(this);
-        _map.Space.Destroy(_entity);
+        Release();
 
         character.Update(c => {
             c.Map = map;
@@ -148,5 +147,14 @@ public class PlayerRef : Object
         {
             Interact(npc);
         }
+    }
+
+    /// <summary>
+    /// Convert the <see cref="PlayerRef"/> to a <see cref="string"/>.
+    /// </summary>
+    /// <returns>A <see cref="string"/>.</returns>
+    public override string ToString()
+    {
+        return $"{Character.Name} {Tag.Id}";
     }
 }

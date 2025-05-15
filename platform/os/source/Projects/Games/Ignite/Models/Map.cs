@@ -176,6 +176,7 @@ public partial class Map
         map.Use<Clock>();
         map.Use<Generator>();
         map.Use<Computer>();
+        map.Use<Vision>();
         map.Use<Brain>();
 
 #if DEBUG
@@ -334,6 +335,16 @@ public partial class Map
             attributes ?? new Attributes(),
             transform ?? new Transform(_data.Info.RegenX, _data.Info.RegenY),
             speed ?? new Speed());
+    }
+
+    /// <summary>
+    /// Get an object's <see cref="ObjectType"/>.
+    /// </summary>
+    /// <param name="entity">An <see cref="Entity"/>.</param>
+    /// <returns>The object's <see cref="ObjectType"/>.</returns>
+    public ObjectType TypeAt(Entity entity)
+    {
+        return _space.Get<Tag>(entity).Type;
     }
 
     /// <summary>
@@ -827,18 +838,18 @@ public partial class Map
     {
         var tag = @object.Tag;
 
-        Release(tag.Type, tag.Handle);
+        Release(tag.Type, tag.Handle, @object.UID);
     }
 
     /// <summary>
     /// Release an <see cref="Object"/>.
     /// </summary>
     /// <param name="entity">An <see cref="Entity"/>.</param>
-    public void Release(Entity entity)
+    public void Release(in Entity entity)
     {
         var tag = _space.Get<Tag>(entity);
 
-        Release(tag.Type, tag.Handle);
+        Release(tag.Type, tag.Handle, entity);
     }
 
     /// <summary>
@@ -846,8 +857,9 @@ public partial class Map
     /// </summary>
     /// <param name="type">The <see cref="ObjectType"/> of handle to release.</param>
     /// <param name="handle">The handle to release.</param>
-    public void Release(ObjectType type, ushort handle)
+    public void Release(ObjectType type, in ushort handle, in Entity entity)
     {
+        _space.Destroy(entity);
         _handles.GetOrAdd(type, _ => new()).Enqueue(handle);
     }
 

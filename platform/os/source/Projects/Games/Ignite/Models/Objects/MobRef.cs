@@ -1,5 +1,6 @@
 // Copyright © Spatial. All rights reserved.
 
+using Ignite.Assets.Types;
 using Ignite.Components;
 using Spatial.Simulation;
 
@@ -21,4 +22,13 @@ public class MobRef : Object
     /// The referenced <see cref="Mob"/>.
     /// </summary>
     public Mob Object => Get<Mob>();
+
+    /// <summary>
+    /// Convert the <see cref="MobRef"/> to a <see cref="string"/>.
+    /// </summary>
+    /// <returns>A <see cref="string"/>.</returns>
+    public override string ToString()
+    {
+        return $"{MobInfo.Load(Object.Id).Client.Name} {Tag.Id}";
+    }
 }

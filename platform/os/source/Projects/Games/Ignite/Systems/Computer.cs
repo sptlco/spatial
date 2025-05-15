@@ -90,7 +90,7 @@ public class Computer : System
             // Query nearby entities in a grid around the current chunk.
             // This minimizes collision checks to only relevant candidate objects.
 
-            foreach (var candidate in map.Grid.Query(ta, ca.Size))
+            foreach (var candidate in map.Grid.Query(ta, map.Data.Info.Sight))
             {
                 if (candidate != entity && map.Space.Has<Collider>(candidate))
                 {

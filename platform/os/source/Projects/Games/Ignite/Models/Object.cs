@@ -157,14 +157,15 @@ public abstract class Object
     }
 
     /// <summary>
-    /// Destroy the object.
+    /// Release the <see cref="Object"/>.
     /// </summary>
-    public void Destroy()
+    public void Release()
     {
-        var tag = Tag;
+        var str = ToString();
 
-        _map.Space.Destroy(_entity);
-        _map.Release(tag.Type, tag.Handle);
+        _map.Release(this);
+
+        Log.Debug("{Object} released.", str);
     }
 
     /// <summary>

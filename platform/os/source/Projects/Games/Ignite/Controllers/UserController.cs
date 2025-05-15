@@ -84,7 +84,7 @@ public class UserController : ResponsiveController
     {
         if (_connection == _session.Map)
         {
-            _session.Object?.Destroy();
+            _session.Object?.Release();
             _session.Object = null!;
 
             _session.Character?.Save();

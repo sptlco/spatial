@@ -224,8 +224,7 @@ public abstract class Object
     {
         Move(x, y, Speed.Walking, future);
 
-        _map.MulticastExclusive2D(
-            position: Transform,
+        _map.BroadcastExclusive(
             exclude: [Tag.Handle],
             command: NETCOMMAND.NC_ACT_SOMEONEMOVEWALK_CMD,
             data: new PROTO_NC_ACT_SOMEONEMOVEWALK_CMD {
@@ -260,8 +259,7 @@ public abstract class Object
     {
         Move(x, y, Speed.Running, future);
 
-        _map.MulticastExclusive2D(
-            position: Transform,
+        _map.BroadcastExclusive(
             exclude: [Tag.Handle],
             command: NETCOMMAND.NC_ACT_SOMEONEMOVERUN_CMD,
             data: new PROTO_NC_ACT_SOMEONEMOVERUN_CMD {
@@ -343,8 +341,7 @@ public abstract class Object
             Remove<Velocity>();
         }
 
-        _map.MulticastExclusive2D(
-            position: Transform,
+        _map.BroadcastExclusive(
             exclude: [Tag.Handle],
             command: NETCOMMAND.NC_ACT_SOMEONESTOP_CMD,
             data: new PROTO_NC_ACT_SOMEONESTOP_CMD {

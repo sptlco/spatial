@@ -176,7 +176,7 @@ public sealed partial class Space : IDisposable
     /// <typeparam name="T">The type of parent to get.</typeparam>
     /// <param name="child">An <see cref="Entity"/>.</param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public T GetParent<T>(in Entity child) where T : unmanaged, IComponent
+    public Entity GetParent<T>(in Entity child) where T : unmanaged, IComponent
     {
         var parent = GetParent(child);
 
@@ -185,7 +185,7 @@ public sealed partial class Space : IDisposable
             parent = GetParent(parent);
         }
 
-        return Get<T>(parent);
+        return parent;
     }
 
     /// <summary>

@@ -32,15 +32,15 @@ public class Brain : System
     {
         map.Dynamic(_query, (Future future, in (Entity, Chunk) _, in Entity entity) => {
 
-            // Mobs with no destination have a 0.8% chance to walk to a random 
-            // position within its containing region.
+            // Mobs with no destination have a 0.5% chance to walk to a random 
+            // position in any direction.
 
-            if (Strong.Boolean(0.008F))
+            if (Strong.Boolean(0.005F))
             {
-                var region = map.Space.GetParent<Region>(entity);
-                var transform = Transform.Random(region);
+                var transform = map.Space.Get<Transform>(entity);
+                var destination = Transform.Around(transform, 60.0F);
 
-                map.ObjectAt(entity).Walk(transform, future);
+                map.ObjectAt(entity).Walk(destination, future);
             }
         });
     }

@@ -183,7 +183,7 @@ public record struct Transform(
     /// </summary>
     /// <param name="region">A <see cref="Region"/>.</param>
     /// <returns>A random <see cref="Transform"/>.</returns>
-    public static Transform Random(in Region region)
+    public static Transform Within(in Region region)
     {
         static float random() => Strong.Float(0.0F, 1.0F);
 
@@ -219,7 +219,7 @@ public record struct Transform(
     /// </summary>
     /// <param name="area">An <see cref="Area"/>.</param>
     /// <returns>A random <see cref="Transform"/>.</returns>
-    public static Transform Random(in Area area)
+    public static Transform Within(in Area area)
     {
         static float random() => Strong.Float(0.0F, 1.0F);
 
@@ -248,6 +248,22 @@ public record struct Transform(
             default:
                 throw new InvalidOperationException("The area type is unsupported.");
         }
+    }
+
+    /// <summary>
+    /// Get a random <see cref="Transform"/> around a <see cref="Transform"/>.
+    /// </summary>
+    /// <param name="position">A <see cref="Transform"/>.</param>
+    /// <param name="range">Distance from <paramref name="position"/>.</param>
+    /// <returns>A random <see cref="Transform"/>.</returns>
+    public static Transform Around(in Transform position, in float range)
+    {
+        var left = position.X - range;
+        var right = position.X + range;
+        var top = position.Y + range;
+        var bottom = position.Y - range;
+
+        return new Transform(X: Strong.Float(left, right), Y: Strong.Float(bottom, top), R: Strong.Float(0.0F, 360.0F));
     }
 
     /// <summary>

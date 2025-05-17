@@ -128,22 +128,20 @@ public partial class Map
         foreach (var mobRegenGroup in Asset.View<MobRegenGroup>($"MobRegen/{field.MapIDClient}.txt/MobRegenGroup"))
         {
             var position = new Transform(X: mobRegenGroup.Area.Position.X, Y: mobRegenGroup.Area.Position.Y);
-            var region = map.Space.Create(
-                position,
-                new Region(
-                    Shape: mobRegenGroup.Area is Circle ? Shape.Circle : Shape.Rectangle,
-                    X: position.X,
-                    Y: position.Y,
-                    Width: (mobRegenGroup.Area as Rectangle)?.Size.X ?? 0,
-                    Height: (mobRegenGroup.Area as Rectangle)?.Size.Y ?? 0,
-                    Radius: (mobRegenGroup.Area as Circle)?.Radius ?? 0,
-                    Rotation: (mobRegenGroup.Area as Rectangle)?.Rotation ?? 0));
+            var region = new Region(
+                Shape: mobRegenGroup.Area is Circle ? Shape.Circle : Shape.Rectangle,
+                X: position.X,
+                Y: position.Y,
+                Width: (mobRegenGroup.Area as Rectangle)?.Size.X ?? 0,
+                Height: (mobRegenGroup.Area as Rectangle)?.Size.Y ?? 0,
+                Radius: (mobRegenGroup.Area as Circle)?.Radius ?? 0,
+                Rotation: (mobRegenGroup.Area as Rectangle)?.Rotation ?? 0);
+
+            var group = map.Space.Create(position, region);
 
             foreach (var mobRegen in Asset.View<MobRegen>($"MobRegen/{field.MapIDClient}.txt/MobRegen", mobRegen => mobRegen.RegenIndex == mobRegenGroup.GroupIndex))
             {
-                var spawner = map.Space.Create(
-                    new Spawner(),
-                    new Transform(X: position.X, Y: position.Y));
+                var spawner = map.Space.Create(new Spawner(), position);
 
                 (MobInfo Client, MobInfoServer Server) data = (
                     Client: Asset.First<MobInfo>("MobInfo.shn", mob => mob.InxName == mobRegen.MobIndex),
@@ -155,7 +153,7 @@ public partial class Map
                         type: ObjectType.Mob,
                         vitals: new Vitals(Level: (byte) data.Client.Level, Health: new Parameter(data.Client.MaxHP), Spirit: new Parameter(data.Server.MaxSP)),
                         attributes: new Attributes(Strength: data.Server.Str, Endurance: data.Server.Con, Dexterity: data.Server.Dex, Intelligence: data.Server.Int, Spirit: data.Server.Men),
-                        transform: Transform.Random(mobRegenGroup.Area),
+                        transform: Transform.Within(region),
                         speed: new Speed(Walking: data.Client.WalkSpeed, Running: data.Client.RunSpeed));
 
                     map.Space.Add(mob, new Mob(data.Client.ID));
@@ -169,7 +167,7 @@ public partial class Map
                     map.Space.Join(mob, spawner);
                 }
 
-                map.Space.Join(spawner, region);
+                map.Space.Join(spawner, group);
             }
         }
 

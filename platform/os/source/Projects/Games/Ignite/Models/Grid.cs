@@ -121,7 +121,7 @@ public class Grid
     /// <returns>A list of entities in the space.</returns>
     public IEnumerable<Entity> Query(in Transform position, in float radius, ObjectType type, Func<Entity, bool>? filter = null)
     {
-        return Query(position.X, position.Y, radius, filter);
+        return Query(position.X, position.Y, radius, type, filter);
     }
 
     /// <summary>
@@ -172,7 +172,7 @@ public class Grid
         {
             for (byte y = top; y <= bottom; y++)
             {
-                var chunk = ChunkAt((int)((x * CELL_SIZE) / CHUNK_SIZE), (int)((y * CELL_SIZE) / CHUNK_SIZE));
+                var chunk = ChunkAt((int) (x * CELL_SIZE / CHUNK_SIZE), (int) (y * CELL_SIZE / CHUNK_SIZE));
 
                 if ((filter == default || filter(chunk)) && !chunks.Contains(chunk))
                 {

@@ -6,6 +6,7 @@ using Ignite.Contracts;
 using Ignite.Contracts.Actions;
 using Ignite.Contracts.Maps;
 using Ignite.Contracts.Menu;
+using Ignite.Contracts.Objects;
 using Spatial.Extensions;
 using Spatial.Mathematics;
 using Spatial.Simulation;
@@ -146,6 +147,42 @@ public class PlayerRef : Object
         if (other is NPCRef npc && npc.Gate is not null)
         {
             Interact(npc);
+        }
+    }
+
+    /// <summary>
+    /// Focus another <see cref="Models.Object"/>.
+    /// </summary>
+    /// <param name="other">Another <see cref="Models.Object"/>.</param>
+    public override void Focus(Object other)
+    {
+        switch (other)
+        {
+            case MobRef:
+            case NPCRef:
+                World.Command(
+                    connection: Session.Map,
+                    command: NETCOMMAND.NC_BRIEFINFO_REGENMOB_CMD,
+                    data: new PROTO_NC_BRIEFINFO_REGENMOB_CMD(other));
+                    
+                break;
+        }
+    }
+
+    /// <summary>
+    /// Blur another <see cref="Models.Object"/>.
+    /// </summary>
+    /// <param name="other">Another <see cref="Models.Object"/>.</param>
+    public override void Blur(Object other)
+    {
+        if (other is not NPCRef)
+        {
+            World.Command(
+                connection: Session.Map,
+                command: NETCOMMAND.NC_BRIEFINFO_BRIEFINFODELETE_CMD,
+                data: new PROTO_NC_BRIEFINFO_BRIEFINFODELETE_CMD {
+                    hnd = other.Tag.Handle
+                });
         }
     }
 

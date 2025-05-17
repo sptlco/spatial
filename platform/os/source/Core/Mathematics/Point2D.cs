@@ -118,7 +118,7 @@ public record struct Point2D(float X, float Y)
     /// <returns>The distance between the two points.</returns>
     public static float Distance(in float ax, in float ay, in float bx, in float by)
     {
-        return (float) ((bx - ax) * (bx - ax) + (by - ay) * (by - ay));
+        return MathF.Sqrt((bx - ax) * (bx - ax) + (by - ay) * (by - ay));
     }
 
     /// <summary>
@@ -142,6 +142,6 @@ public record struct Point2D(float X, float Y)
     /// <returns>The from the first point to the second point.</returns>
     public static float Heading(in float ax, in float ay, in float bx, in float by)
     {
-        return (float) (Math.Atan2(by - ay, bx - ax) * (180.0 / Math.PI));
+        return (float) (MathF.Atan2(by - ay, bx - ax) * (180.0F / Math.PI));
     }
 }

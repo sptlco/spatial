@@ -1,9 +1,11 @@
 // Copyright © Spatial. All rights reserved.
 
+using Ignite.Assets.Types;
 using Ignite.Components;
 using Ignite.Models;
 using Ignite.Models.Objects;
 using Serilog;
+using Spatial.Mathematics;
 using Spatial.Simulation;
 using Spatial.Structures;
 
@@ -42,12 +44,18 @@ public class Vision : System
 
             var subjects = map.Grid.Query(
                 position: transform,
-                radius: map.Data.Info.Sight, 
+                radius: map.Data.Info.Sight,
                 filter: subject => subject != player && !map.Space.Has<Hidden>(subject) && map.TypeAt(subject) != ObjectType.Chunk);
 
             foreach (var subject in subjects)
             {
-                visibility.Current.Add(new Pair(subject, player));
+                var position = map.Space.Get<Transform>(subject);
+                var distance = Point2D.Distance(transform.X, transform.Y, position.X, position.Y);
+
+                if (distance <= map.Data.Info.Sight - Constants.U)
+                {
+                    visibility.Current.Add(new Pair(subject, player));
+                }
             }
         });
 

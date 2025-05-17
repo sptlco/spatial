@@ -635,40 +635,7 @@ public class ResponsiveController : AugmentedController
 
         for (var i = 0; i < mobs.Count; i += 0x1C)
         {
-            var chunk = mobs.Skip(i).Take(0x1C).ToArray(mob => {
-                var reference = _session.Object.Map.ObjectAt(mob);
-
-                var data = new PROTO_NC_BRIEFINFO_REGENMOB_CMD {
-                    handle = reference.Tag.Handle,
-                    mobid = (reference as MobRef)?.Object.Id ?? (reference as NPCRef)!.Object.Id,
-                    coord = new SHINE_COORD_TYPE {
-                        dir = reference.Transform.D,
-                        xy = new SHINE_XY_TYPE {
-                            x = (uint) reference.Transform.X,
-                            y = (uint) reference.Transform.Y
-                        }
-                    },
-                    sAnimation = "",
-                    nKQTeamType = 0,
-                    bRegenAni = false
-                };
-
-                if (reference.Has<Gate>())
-                {
-                    var gate = reference.Get<Gate>();
-
-                    data.flagstate = 1;
-                    data.gate2where = Map.InstanceAt(gate.Map, gate.Id).Data.Field.MapIDClient;
-                }
-                else
-                {
-                    data.abstatebit = new ABNORMAL_STATE_BIT {
-                        statebit = new byte[Constants.AbnormalStateBits]
-                    };
-                }
-
-                return data;
-            });
+            var chunk = mobs.Skip(i).Take(0x1C).ToArray(mob => new PROTO_NC_BRIEFINFO_REGENMOB_CMD(_session.Object.Map.ObjectAt(mob)));
 
             World.Command(
                 connection: _connection,

@@ -574,6 +574,30 @@ public partial class Map
     }
 
     /// <summary>
+    /// Broadcast a <see cref="NETCOMMAND"/> to the <see cref="Map"/>.
+    /// </summary>
+    /// <param name="command">The <see cref="NETCOMMAND"/> to broadcast.</param>
+    /// <param name="data">A <see cref="ProtocolBuffer"/>.</param>
+    /// <param name="exclude">Excluded players.</param>
+    /// <param name="dispose">Whether or not to dispose of the <see cref="ProtocolBuffer"/> after broadcasting.</param>
+    public void BroadcastExclusive(NETCOMMAND command, ProtocolBuffer data, HashSet<ushort> exclude, bool dispose = true)
+    {
+        Multicast(command, data, entity => !exclude.Contains(_space.Get<Tag>(entity).Handle), dispose);
+    }
+
+    /// <summary>
+    /// Broadcast a <see cref="NETCOMMAND"/> to the <see cref="Map"/>.
+    /// </summary>
+    /// <param name="command">The <see cref="NETCOMMAND"/> to broadcast.</param>
+    /// <param name="data">A <see cref="ProtocolBuffer"/>.</param>
+    /// <param name="include">Included players.</param>
+    /// <param name="dispose">Whether or not to dispose of the <see cref="ProtocolBuffer"/> after broadcasting.</param>
+    public void BroadcastInclusive(NETCOMMAND command, ProtocolBuffer data, HashSet<ushort> include, bool dispose = true)
+    {
+        Multicast(command, data, entity => !include.Contains(_space.Get<Tag>(entity).Handle), dispose);
+    }
+
+    /// <summary>
     /// Multicast a <see cref="NETCOMMAND"/> to a position in the <see cref="Map"/>.
     /// </summary>
     /// <param name="command">The <see cref="NETCOMMAND"/> to broadcast.</param>
@@ -861,6 +885,16 @@ public partial class Map
     {
         _space.Destroy(entity);
         _handles.GetOrAdd(type, _ => new()).Enqueue(handle);
+    }
+
+    /// <summary>
+    /// Get whether or not an <see cref="Object"/> exists.
+    /// </summary>
+    /// <param name="handle">The object's handle.</param>
+    /// <returns>Whether or not the <see cref="Object"/> exists.</returns>
+    public bool Exists(ushort handle)
+    {
+        return _space.Exists<Tag>(tag => tag.Handle == handle);
     }
 
     private ushort Provision(ObjectType type)

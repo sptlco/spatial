@@ -59,18 +59,17 @@ public class Computer : System
                 var mover = map.ObjectAt(entity);
                 var destination = map.Space.Get<Destination>(entity);
                 var velocity = map.Space.Get<Velocity>(entity);
-                var position = transform + velocity * (float) delta.Seconds;
                 var rotation = Transform.Heading(transform, destination);
+
+                transform =  (transform + velocity * (float) delta.Seconds) with { R = rotation };
 
                 // If the object is close enough to its destination, snap it to the position.
                 // Also, stop moving by removing the object's velocity.
 
-                if (Point2D.Distance(transform.X, transform.Y, destination.X, destination.Y) <= 50)
+                if (Point2D.Distance(transform.X, transform.Y, destination.X, destination.Y) <= Constants.U * 0.20F)
                 {
-                    mover.Stop(position = transform with { X = destination.X, Y = destination.Y }, future);
+                    mover.Stop(transform, future);
                 }
-
-                transform = position with { R = rotation };
 
                 Log.Debug("{Object} moved to {Transform}, {Map}.", mover, transform, map.Name);
             }

@@ -31,19 +31,16 @@ public class Brain : System
     public override void Update(Map map, Time delta)
     {
         map.Dynamic(_query, (Future future, in (Entity, Chunk) _, in Entity entity) => {
-            if (Strong.Boolean(0.001F))
+
+            // Mobs with no destination have a 0.8% chance to walk to a random 
+            // position within its containing region.
+
+            if (Strong.Boolean(0.008F))
             {
                 var region = map.Space.GetParent<Region>(entity);
-                var destination = Transform.Random(region);
+                var transform = Transform.Random(region);
 
-                if (Strong.Boolean(0.1F))
-                {
-                    map.ObjectAt(entity).Run(destination, future);
-                }
-                else
-                {
-                    map.ObjectAt(entity).Walk(destination, future);
-                }
+                map.ObjectAt(entity).Walk(transform, future);
             }
         });
     }

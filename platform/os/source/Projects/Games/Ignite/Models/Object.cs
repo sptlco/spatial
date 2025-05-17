@@ -4,6 +4,7 @@ using Ignite.Components;
 using Ignite.Contracts;
 using Ignite.Contracts.Actions;
 using Ignite.Contracts.Combat;
+using Ignite.Contracts.Objects;
 using Ignite.Models.Objects;
 using Serilog;
 using Spatial.Simulation;
@@ -78,6 +79,11 @@ public abstract class Object
     /// <returns>An <see cref="Object"/>.</returns>
     public static Object Create(Map map, Entity entity)
     {
+        if (!map.Space.Exists(entity))
+        {
+            throw new InvalidOperationException("The object does not exist.");
+        }
+
         var tag = map.Space.Get<Tag>(entity);
 
         return tag.Type switch {

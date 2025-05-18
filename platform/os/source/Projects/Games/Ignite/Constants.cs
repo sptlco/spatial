@@ -20,12 +20,22 @@ public static class Constants
     /// <summary>
     /// Convert pixels to units.
     /// </summary>
-    public const float U = 50.0F;
+    public const float UNIT = 50.0F;
 
     /// <summary>
     /// Convert units to pixels.
     /// </summary>
-    public const float px = 1 / U;
+    public const float px = 1 / UNIT;
+
+    /// <summary>
+    /// A fixed-point constant influencing multiple game mechanics.
+    /// </summary>
+    public const float SCALE = 1 / 1000F;
+
+    /// <summary>
+    /// The minimum range of sight.
+    /// </summary>
+    public const float MIN_SIGHT = 500.0F;
 
     /// <summary>
     /// The default port the server listens on.

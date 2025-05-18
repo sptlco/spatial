@@ -41,6 +41,11 @@ public class MobInfo
 	public uint AbsoluteSize { get; set; }
 
 	/// <summary>
+	/// The size of the mob's body.
+	/// </summary>
+	public float BodySize => Constants.UNIT * AbsoluteSize * Constants.SCALE;
+
+	/// <summary>
 	/// Load <see cref="MobInfo"/>.
 	/// </summary>
 	/// <param name="mobId">The mob's identification number.</param>

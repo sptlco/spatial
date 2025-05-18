@@ -1,5 +1,6 @@
 // Copyright © Spatial. All rights reserved.
 
+using System;
 using Ignite.Assets.Types;
 using Ignite.Components;
 using Ignite.Models;
@@ -40,19 +41,20 @@ public class Vision : System
 
         map.Dynamic(_query, (Future future, in (Entity, Chunk) _, in Entity entity) => {
             var player = entity;
-            var transform = map.Space.Get<Transform>(entity);
+            var ta = map.Space.Get<Transform>(entity);
 
             var subjects = map.Grid.Query(
-                position: transform,
+                position: ta,
                 radius: map.Data.Info.Sight,
                 filter: subject => subject != player && !map.Space.Has<Hidden>(subject) && map.TypeAt(subject) != ObjectType.Chunk);
 
             foreach (var subject in subjects)
             {
-                var position = map.Space.Get<Transform>(subject);
-                var distance = Point2D.Distance(transform.X, transform.Y, position.X, position.Y);
+                var tb = map.Space.Get<Transform>(subject);
+                var distance = Point2D.Distance(ta.X, ta.Y, tb.X, tb.Y);
+                var range = map.Data.Info.Sight - (map.Space.Has<NPC>(subject) ? Constants.MIN_SIGHT : 0);
 
-                if (distance <= map.Data.Info.Sight - Constants.U)
+                if (distance <= MathF.Max(Constants.MIN_SIGHT, range))
                 {
                     visibility.Current.Add(new Pair(subject, player));
                 }

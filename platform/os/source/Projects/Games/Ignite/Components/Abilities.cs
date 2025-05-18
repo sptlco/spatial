@@ -48,7 +48,7 @@ public record struct Abilities(
     /// </summary>
     /// <param name="object">The object whose abilities to compute.</param>
     /// <returns>The object's <see cref="Abilities"/>.</returns>
-    public Abilities(Object @object) : this(
+    public Abilities(Models.Object @object) : this(
             level: @object.Vitals.Level,
             strength: @object.Attributes.Strength,
             endurance: @object.Attributes.Endurance,

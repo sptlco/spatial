@@ -121,7 +121,7 @@ public partial class Map
                 var destination = Field.Find(gate.MapServer);
 
                 map.Space.Add(npc, new Gate(Map: destination.Serial, Id: destination.Id, X: gate.CoordX, Y: gate.CoordY, R: (gate.Direct + 360) % 360));
-                map.Space.Add(npc, new Collider(data.Client.AbsoluteSize));
+                map.Space.Add(npc, new Body(data.Client.BodySize));
             }
         }
 
@@ -157,7 +157,7 @@ public partial class Map
                         speed: new Speed(Walking: data.Client.WalkSpeed, Running: data.Client.RunSpeed));
 
                     map.Space.Add(mob, new Mob(data.Client.ID));
-                    map.Space.Add(mob, new Collider(data.Client.AbsoluteSize));
+                    map.Space.Add(mob, new Body(data.Client.BodySize));
 
                     if (data.Server.EnemyDetectType != EnemyDetect.ED_NOBRAIN)
                     {

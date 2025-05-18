@@ -26,7 +26,7 @@ public class Computer : System
     public Computer(Map map) : base(map)
     {
         _q1 = new Query().WithAll<Tag, Transform>();
-        _q2 = new Query().WithAll<Tag, Transform, Collider>();
+        _q2 = new Query().WithAll<Tag, Transform, Body>();
 
         _collisions = [];
     }
@@ -66,7 +66,7 @@ public class Computer : System
                 // If the object is close enough to its destination, snap it to the position.
                 // Also, stop moving by removing the object's velocity.
 
-                if (Point2D.Distance(transform.X, transform.Y, destination.X, destination.Y) <= Constants.U * 0.20F)
+                if (Point2D.Distance(transform.X, transform.Y, destination.X, destination.Y) <= Constants.UNIT * 0.20F)
                 {
                     mover.Stop(transform, future);
                 }
@@ -84,22 +84,22 @@ public class Computer : System
 
         map.Dynamic(_q2, (Future future, in (Entity Entity, Chunk Coordinates) chunk, in Entity entity) => {
             var ta = map.Space.Get<Transform>(entity);
-            var ca = map.Space.Get<Collider>(entity);
+            var ba = map.Space.Get<Body>(entity);
 
             // Query nearby entities in a grid around the current chunk.
             // This minimizes collision checks to only relevant candidate objects.
 
             foreach (var candidate in map.Grid.Query(ta, map.Data.Info.Sight))
             {
-                if (candidate != entity && map.Space.Has<Collider>(candidate))
+                if (candidate != entity && map.Space.Has<Body>(candidate))
                 {
                     var tb = map.Space.Get<Transform>(candidate);
-                    var cb = map.Space.Get<Collider>(candidate);
+                    var bb = map.Space.Get<Body>(candidate);
 
-                    // Calculate distance between object centers and compare to combined collider size.
+                    // Calculate distance between object centers and compare to combined body size.
                     // Using simple circle collision detection for initial implementation.
 
-                    if (Point2D.Distance(ta.X, ta.Y, tb.X, tb.Y) <= ca.Size + cb.Size)
+                    if (Point2D.Distance(ta.X, ta.Y, tb.X, tb.Y) <= ba.Size + bb.Size)
                     {
                         collisions.Current.Add(new Pair(entity, candidate));
                     }

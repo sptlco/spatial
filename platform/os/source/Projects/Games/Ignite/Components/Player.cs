@@ -43,7 +43,7 @@ public record struct Player(ushort Session, uint Character) : IComponent
 
         player
             .Add(new Player(Session: session.Handle, Character: character.Id))
-            .Add(new Collider(50.0F))
+            .Add(new Body(Size: 10.0F))
             .Add(new Abilities(player))
             .Add(new Stones(
                 Health: new Parameter(Maximum: parameters.MAXSoulHP, Current: character.HPStones),

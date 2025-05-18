@@ -9,7 +9,7 @@ namespace Ignite.Models.Objects;
 /// <summary>
 /// A reference to a mob <see cref="Object"/>.
 /// </summary>
-public class MobRef : Object
+public class MobRef : ObjectRef
 {
     /// <summary>
     /// Create a new <see cref="MobRef"/>.

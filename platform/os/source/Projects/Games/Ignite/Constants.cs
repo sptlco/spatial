@@ -1,5 +1,6 @@
 // Copyright © Spatial. All rights reserved.
 
+using Ignite.Contracts;
 using Ignite.Models;
 using Spatial.Networking;
 using System;
@@ -35,7 +36,7 @@ public static class Constants
     /// <summary>
     /// The minimum range of sight.
     /// </summary>
-    public const float MIN_SIGHT = 500.0F;
+    public const float NPC_VIEW_RANGE = UNIT;
 
     /// <summary>
     /// The default port the server listens on.

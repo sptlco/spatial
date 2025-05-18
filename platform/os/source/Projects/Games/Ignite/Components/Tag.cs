@@ -1,6 +1,6 @@
 // Copyright © Spatial. All rights reserved.
 
-using Ignite.Models;
+using Ignite.Contracts;
 using Spatial.Simulation;
 
 namespace Ignite.Components;

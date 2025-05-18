@@ -1,7 +1,7 @@
 // Copyright © Spatial. All rights reserved.
 
 using Ignite.Assets.Types;
-using Ignite.Models;
+using Ignite.Models.Objects;
 using Spatial.Simulation;
 
 namespace Ignite.Components;
@@ -48,7 +48,7 @@ public record struct Abilities(
     /// </summary>
     /// <param name="object">The object whose abilities to compute.</param>
     /// <returns>The object's <see cref="Abilities"/>.</returns>
-    public Abilities(Models.Object @object) : this(
+    public Abilities(ObjectRef @object) : this(
             level: @object.Vitals.Level,
             strength: @object.Attributes.Strength,
             endurance: @object.Attributes.Endurance,

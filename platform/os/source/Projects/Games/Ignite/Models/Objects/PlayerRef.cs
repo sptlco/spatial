@@ -16,7 +16,7 @@ namespace Ignite.Models.Objects;
 /// <summary>
 /// A reference to a player <see cref="Object"/>.
 /// </summary>
-public class PlayerRef : Object
+public class PlayerRef : ObjectRef
 {
     /// <summary>
     /// Create a new <see cref="PlayerRef"/>.
@@ -67,13 +67,13 @@ public class PlayerRef : Object
     /// <param name="priority">The priority of the message.</param>
     /// <param name="title">The title of the message.</param>
     /// <param name="range">The maximum distance between the <see cref="PlayerRef"/> and <paramref name="sender"/>.</param>
-    /// <param name="sender">The <see cref="Models.Object"/> prompting the <see cref="PlayerRef"/>.</param>
+    /// <param name="sender">The <see cref="Objects.ObjectRef"/> prompting the <see cref="PlayerRef"/>.</param>
     /// <param name="items">A list of items the <see cref="PlayerRef"/> can choose from.</param>
     public void Prompt(
         byte priority,
         string title,
         float range,
-        Object? sender = null,
+        ObjectRef? sender = null,
         params Menu.Item[] items)
     {
         Session.Callbacks.Clear();
@@ -139,10 +139,10 @@ public class PlayerRef : Object
     }
 
     /// <summary>
-    /// Enter another <see cref="Models.Object"/>.
+    /// Enter another <see cref="Objects.ObjectRef"/>.
     /// </summary>
-    /// <param name="other">Another <see cref="Models.Object"/>.</param>
-    public override void Enter(Object other)
+    /// <param name="other">Another <see cref="Objects.ObjectRef"/>.</param>
+    public override void Enter(ObjectRef other)
     {
         if (other is NPCRef npc && npc.Gate is not null)
         {
@@ -151,10 +151,10 @@ public class PlayerRef : Object
     }
 
     /// <summary>
-    /// Focus another <see cref="Models.Object"/>.
+    /// Focus another <see cref="Objects.ObjectRef"/>.
     /// </summary>
-    /// <param name="other">Another <see cref="Models.Object"/>.</param>
-    public override void Focus(Object other)
+    /// <param name="other">Another <see cref="Objects.ObjectRef"/>.</param>
+    public override void Focus(ObjectRef other)
     {
         switch (other)
         {
@@ -170,10 +170,10 @@ public class PlayerRef : Object
     }
 
     /// <summary>
-    /// Blur another <see cref="Models.Object"/>.
+    /// Blur another <see cref="Objects.ObjectRef"/>.
     /// </summary>
-    /// <param name="other">Another <see cref="Models.Object"/>.</param>
-    public override void Blur(Object other)
+    /// <param name="other">Another <see cref="Objects.ObjectRef"/>.</param>
+    public override void Blur(ObjectRef other)
     {
         if (other is not NPCRef)
         {

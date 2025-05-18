@@ -1,9 +1,11 @@
 // Copyright © Spatial. All rights reserved.
 
-namespace Ignite.Models;
+using Ignite.Models.Objects;
+
+namespace Ignite.Contracts;
 
 /// <summary>
-/// Indicates the current state of an <see cref="Object"/>.
+/// Indicates the current state of an <see cref="ObjectRef"/>.
 /// </summary>
 public enum ObjectMode
 {

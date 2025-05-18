@@ -10,7 +10,7 @@ namespace Ignite.Models.Objects;
 /// <summary>
 /// A reference to an NPC <see cref="Object"/>.
 /// </summary>
-public class NPCRef : Object
+public class NPCRef : ObjectRef
 {
     /// <summary>
     /// Create a new <see cref="NPCRef"/>.

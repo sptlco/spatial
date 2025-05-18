@@ -1,11 +1,11 @@
 // Copyright © Spatial. All rights reserved.
 
-using Ignite.Models;
+using Ignite.Models.Objects;
 using Spatial.Simulation;
 
 namespace Ignite.Components;
 
 /// <summary>
-/// An <see cref="Object"/> that behaves autonomously.
+/// An <see cref="ObjectRef"/> that behaves autonomously.
 /// </summary>
 public record struct Intelligence : IComponent;

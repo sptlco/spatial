@@ -1,6 +1,7 @@
 // Copyright © Spatial. All rights reserved.
 
 using Ignite.Components;
+using Ignite.Contracts;
 using Ignite.Models.Objects;
 using Serilog;
 using Spatial.Mathematics;

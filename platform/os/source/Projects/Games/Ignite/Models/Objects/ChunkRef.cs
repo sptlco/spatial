@@ -8,7 +8,7 @@ namespace Ignite.Models.Objects;
 /// <summary>
 /// A reference to a chunk <see cref="Object"/>.
 /// </summary>
-public class ChunkRef : Object
+public class ChunkRef : ObjectRef
 {
     /// <summary>
     /// Create a new <see cref="ChunkRef"/>.

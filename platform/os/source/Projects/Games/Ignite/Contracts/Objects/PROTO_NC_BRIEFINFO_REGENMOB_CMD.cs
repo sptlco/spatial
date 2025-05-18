@@ -75,8 +75,8 @@ public class PROTO_NC_BRIEFINFO_REGENMOB_CMD : ProtocolBuffer
     /// <summary>
     /// Create a new <see cref="PROTO_NC_BRIEFINFO_REGENMOB_CMD"/>.
     /// </summary>
-    /// <param name="reference">An <see cref="Object"/> reference.</param>
-    public PROTO_NC_BRIEFINFO_REGENMOB_CMD(Object reference)
+    /// <param name="reference">An <see cref="ObjectRef"/> reference.</param>
+    public PROTO_NC_BRIEFINFO_REGENMOB_CMD(ObjectRef reference)
     {
         handle = reference.Tag.Handle;
         mobid = (reference as MobRef)?.Object.Id ?? (reference as NPCRef)!.Object.Id;

@@ -65,7 +65,7 @@ public sealed class Session
     public Character Character { get; set; }
 
     /// <summary>
-    /// The session's <see cref="Models.Object"/>.
+    /// The session's <see cref="Objects.ObjectRef"/>.
     /// </summary>
     public PlayerRef Object { get; set; }
 

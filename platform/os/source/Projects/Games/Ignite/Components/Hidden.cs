@@ -1,11 +1,11 @@
 // Copyright © Spatial. All rights reserved.
 
-using Ignite.Models;
+using Ignite.Models.Objects;
 using Spatial.Simulation;
 
 namespace Ignite.Components;
 
 /// <summary>
-/// An <see cref="Object"/> visible to a player.
+/// An <see cref="ObjectRef"/> visible to a player.
 /// </summary>
 public record struct Hidden : IComponent;

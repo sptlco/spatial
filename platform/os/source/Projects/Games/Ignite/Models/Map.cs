@@ -244,54 +244,54 @@ public partial class Map
     }
 
     /// <summary>
-    /// Create a new plain <see cref="Object"/>.
+    /// Create a new plain <see cref="ObjectRef"/>.
     /// </summary>
     /// <param name="type">The <see cref="ObjectType"/> to create.</param>
-    /// <returns>An <see cref="Object"/>.</returns>
-    public T CreatePlainObject<T>(ObjectType type) where T : Object
+    /// <returns>An <see cref="ObjectRef"/>.</returns>
+    public T CreatePlainObject<T>(ObjectType type) where T : ObjectRef
     {
         return (T) CreatePlainObject(type);
     }
 
     /// <summary>
-    /// Create a new <see cref="Object"/>.
+    /// Create a new <see cref="ObjectRef"/>.
     /// </summary>
     /// <param name="type">The <see cref="ObjectType"/> to create.</param>
     /// <param name="vitals">The object's <see cref="Vitals"/>.</param>
     /// <param name="attributes">The object's <see cref="Attributes"/>.</param>
     /// <param name="transform">The object's <see cref="Transform"/>.</param>
     /// <param name="speed">The object's <see cref="Speed"/>.</param>
-    /// <returns>An <see cref="Object"/>.</returns>
+    /// <returns>An <see cref="ObjectRef"/>.</returns>
     public T CreateObject<T>(
         ObjectType type,
         in Vitals? vitals = null,
         in Attributes? attributes = null,
         in Transform? transform = null,
-        in Speed? speed = null) where T : Object
+        in Speed? speed = null) where T : ObjectRef
     {
         return (T) CreateObject(type, vitals, attributes, transform, speed);
     }
 
     /// <summary>
-    /// Create a new plain <see cref="Object"/>.
+    /// Create a new plain <see cref="ObjectRef"/>.
     /// </summary>
     /// <param name="type">The <see cref="ObjectType"/> to create.</param>
-    /// <returns>An <see cref="Object"/>.</returns>
-    public Object CreatePlainObject(ObjectType type)
+    /// <returns>An <see cref="ObjectRef"/>.</returns>
+    public ObjectRef CreatePlainObject(ObjectType type)
     {
         return ObjectAt(CreatePlainEntity(type));
     }
 
     /// <summary>
-    /// Create a new <see cref="Object"/>.
+    /// Create a new <see cref="ObjectRef"/>.
     /// </summary>
     /// <param name="type">The <see cref="ObjectType"/> to create.</param>
     /// <param name="vitals">The object's <see cref="Vitals"/>.</param>
     /// <param name="attributes">The object's <see cref="Attributes"/>.</param>
     /// <param name="transform">The object's <see cref="Transform"/>.</param>
     /// <param name="speed">The object's <see cref="Speed"/>.</param>
-    /// <returns>An <see cref="Object"/>.</returns>
-    public Object CreateObject(
+    /// <returns>An <see cref="ObjectRef"/>.</returns>
+    public ObjectRef CreateObject(
         ObjectType type,
         in Vitals? vitals = null,
         in Attributes? attributes = null,
@@ -302,7 +302,7 @@ public partial class Map
     }
 
     /// <summary>
-    /// Create a new plain <see cref="Object"/>.
+    /// Create a new plain <see cref="ObjectRef"/>.
     /// </summary>
     /// <param name="type">The <see cref="ObjectType"/> to create.</param>
     /// <returns>An <see cref="Entity"/>.</returns>
@@ -312,7 +312,7 @@ public partial class Map
     }
 
     /// <summary>
-    /// Create a new <see cref="Object"/>.
+    /// Create a new <see cref="ObjectRef"/>.
     /// </summary>
     /// <param name="type">The <see cref="ObjectType"/> to create.</param>
     /// <param name="vitals">The object's <see cref="Vitals"/>.</param>
@@ -346,43 +346,43 @@ public partial class Map
     }
 
     /// <summary>
-    /// Reference an <see cref="Object"/>.
+    /// Reference an <see cref="ObjectRef"/>.
     /// </summary>
     /// <param name="handle">The object's handle.</param>
-    /// <returns>An <see cref="Object"/>.</returns>
-    public T ObjectAt<T>(ushort handle) where T : Object
+    /// <returns>An <see cref="ObjectRef"/>.</returns>
+    public T ObjectAt<T>(ushort handle) where T : ObjectRef
     {
         return (T) ObjectAt(handle);
     }
 
     /// <summary>
-    /// Reference an <see cref="Object"/>.
+    /// Reference an <see cref="ObjectRef"/>.
     /// </summary>
     /// <param name="entity">The <see cref="Entity"/> to reference.</param>
-    /// <returns>An <see cref="Object"/>.</returns>
-    public T ObjectAt<T>(Entity entity) where T : Object
+    /// <returns>An <see cref="ObjectRef"/>.</returns>
+    public T ObjectAt<T>(Entity entity) where T : ObjectRef
     {
         return (T) ObjectAt(entity);
     }
 
     /// <summary>
-    /// Reference an <see cref="Object"/>.
+    /// Reference an <see cref="ObjectRef"/>.
     /// </summary>
     /// <param name="handle">The object's handle.</param>
-    /// <returns>An <see cref="Object"/>.</returns>
-    public Object ObjectAt(ushort handle)
+    /// <returns>An <see cref="ObjectRef"/>.</returns>
+    public ObjectRef ObjectAt(ushort handle)
     {
         return ObjectAt(EntityAt(handle));
     }
 
     /// <summary>
-    /// Reference an <see cref="Object"/>.
+    /// Reference an <see cref="ObjectRef"/>.
     /// </summary>
     /// <param name="entity">The <see cref="Entity"/> to reference.</param>
-    /// <returns>An <see cref="Object"/>.</returns>
-    public Object ObjectAt(Entity entity)
+    /// <returns>An <see cref="ObjectRef"/>.</returns>
+    public ObjectRef ObjectAt(Entity entity)
     {
-        return Object.Create(this, entity);
+        return ObjectRef.Create(this, entity);
     }
 
     /// <summary>
@@ -853,10 +853,10 @@ public partial class Map
     private readonly Lock _lock = new();
 
     /// <summary>
-    /// Release an <see cref="Object"/>.
+    /// Release an <see cref="ObjectRef"/>.
     /// </summary>
-    /// <param name="object">An <see cref="Object"/>.</param>
-    public void Release(Object @object)
+    /// <param name="object">An <see cref="ObjectRef"/>.</param>
+    public void Release(ObjectRef @object)
     {
         var tag = @object.Tag;
 
@@ -864,7 +864,7 @@ public partial class Map
     }
 
     /// <summary>
-    /// Release an <see cref="Object"/>.
+    /// Release an <see cref="ObjectRef"/>.
     /// </summary>
     /// <param name="entity">An <see cref="Entity"/>.</param>
     public void Release(in Entity entity)
@@ -886,10 +886,10 @@ public partial class Map
     }
 
     /// <summary>
-    /// Get whether or not an <see cref="Object"/> exists.
+    /// Get whether or not an <see cref="ObjectRef"/> exists.
     /// </summary>
     /// <param name="handle">The object's handle.</param>
-    /// <returns>Whether or not the <see cref="Object"/> exists.</returns>
+    /// <returns>Whether or not the <see cref="ObjectRef"/> exists.</returns>
     public bool Exists(ushort handle)
     {
         return _space.Exists<Tag>(tag => tag.Handle == handle);

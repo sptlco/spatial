@@ -1,6 +1,7 @@
 // Copyright © Spatial. All rights reserved.
 
 using Ignite.Assets.Types;
+using Ignite.Contracts;
 using Ignite.Models;
 using Ignite.Models.Objects;
 using Spatial.Simulation;

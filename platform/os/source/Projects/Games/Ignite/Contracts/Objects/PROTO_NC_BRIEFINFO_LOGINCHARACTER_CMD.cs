@@ -1,6 +1,5 @@
 // Copyright © Spatial. All rights reserved.
 
-using Ignite.Models;
 using Spatial.Networking;
 
 namespace Ignite.Contracts.Objects;

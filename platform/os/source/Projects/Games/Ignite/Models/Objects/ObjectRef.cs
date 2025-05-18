@@ -4,24 +4,21 @@ using Ignite.Components;
 using Ignite.Contracts;
 using Ignite.Contracts.Actions;
 using Ignite.Contracts.Combat;
-using Ignite.Contracts.Objects;
-using Ignite.Models.Objects;
 using Serilog;
 using Spatial.Simulation;
 using System;
 
-
-namespace Ignite.Models;
+namespace Ignite.Models.Objects;
 
 /// <summary>
 /// A reference to an object in the <see cref="World"/>.
 /// </summary>
-public abstract class Object
+public abstract class ObjectRef
 {
     protected Map _map;
     protected Entity _entity;
 
-    protected Object(Map map, Entity entity)
+    protected ObjectRef(Map map, Entity entity)
     {
         _map = map;
         _entity = entity;
@@ -73,11 +70,11 @@ public abstract class Object
     public ref Stones Stones => ref Get<Stones>();
 
     /// <summary>
-    /// Reference an <see cref="Object"/>.
+    /// Reference an <see cref="ObjectRef"/>.
     /// </summary>
     /// <param name="entity">The <see cref="Entity"/> to reference.</param>
-    /// <returns>An <see cref="Object"/>.</returns>
-    public static Object Create(Map map, Entity entity)
+    /// <returns>An <see cref="ObjectRef"/>.</returns>
+    public static ObjectRef Create(Map map, Entity entity)
     {
         if (!map.Space.Exists(entity))
         {
@@ -120,7 +117,7 @@ public abstract class Object
     /// </summary>
     /// <typeparam name="T">The type of component to add.</typeparam>
     /// <param name="component">The component to add.</param>
-    public Object Add<T>(in T component = default) where T : unmanaged, IComponent
+    public ObjectRef Add<T>(in T component = default) where T : unmanaged, IComponent
     {
         _map.Space.Add(_entity, component);
 
@@ -132,7 +129,7 @@ public abstract class Object
     /// </summary>
     /// <typeparam name="T">The type of component to set.</typeparam>
     /// <param name="component">The value of the component.</param>
-    public Object Set<T>(in T component) where T : unmanaged, IComponent
+    public ObjectRef Set<T>(in T component) where T : unmanaged, IComponent
     {
         _map.Space.Set(_entity, component);
 
@@ -144,7 +141,7 @@ public abstract class Object
     /// </summary>
     /// <typeparam name="T">The type of component to modify.</typeparam>
     /// <param name="modification">A modification.</param>
-    public Object Modify<T>(Modification<T> modification) where T : unmanaged, IComponent
+    public ObjectRef Modify<T>(Modification<T> modification) where T : unmanaged, IComponent
     {
         _map.Space.Modify(_entity, modification);
 
@@ -155,7 +152,7 @@ public abstract class Object
     /// Remove a component from the object.
     /// </summary>
     /// <typeparam name="T">The type of component to remove.</typeparam>
-    public Object Remove<T>() where T : unmanaged, IComponent
+    public ObjectRef Remove<T>() where T : unmanaged, IComponent
     {
         _map.Space.Remove<T>(_entity);
 
@@ -163,7 +160,7 @@ public abstract class Object
     }
 
     /// <summary>
-    /// Release the <see cref="Object"/>.
+    /// Release the <see cref="ObjectRef"/>.
     /// </summary>
     public void Release()
     {
@@ -175,11 +172,11 @@ public abstract class Object
     }
 
     /// <summary>
-    /// Add the <see cref="Object"/> to a <see cref="Spatial.Simulation.Group"/>.
+    /// Add the <see cref="ObjectRef"/> to a <see cref="Spatial.Simulation.Group"/>.
     /// </summary>
-    /// <param name="group">The <see cref="Spatial.Simulation.Group"/> to add the <see cref="Object"/> to.</param>
-    /// <returns>The <see cref="Object"/> for method chaining.</returns>
-    public Object Group(uint group)
+    /// <param name="group">The <see cref="Spatial.Simulation.Group"/> to add the <see cref="ObjectRef"/> to.</param>
+    /// <returns>The <see cref="ObjectRef"/> for method chaining.</returns>
+    public ObjectRef Group(uint group)
     {
         _map.Space.Join(_entity, group);
 
@@ -187,10 +184,10 @@ public abstract class Object
     }
 
     /// <summary>
-    /// Ungroup the <see cref="Object"/>.
+    /// Ungroup the <see cref="ObjectRef"/>.
     /// </summary>
-    /// <returns>The <see cref="Object"/> for method chaining.</returns>
-    public Object Ungroup()
+    /// <returns>The <see cref="ObjectRef"/> for method chaining.</returns>
+    public ObjectRef Ungroup()
     {
         _map.Space.Exile(_entity);
 
@@ -198,7 +195,7 @@ public abstract class Object
     }
 
     /// <summary>
-    /// Snap the <see cref="Object"/> to a location.
+    /// Snap the <see cref="ObjectRef"/> to a location.
     /// </summary>
     /// <param name="x">An X-coordinate.</param>
     /// <param name="y">A Y-coordinate.</param>
@@ -208,14 +205,14 @@ public abstract class Object
     }
 
     /// <summary>
-    /// Move the <see cref="Object"/> at walking speed.
+    /// Move the <see cref="ObjectRef"/> at walking speed.
     /// </summary>
     /// <param name="transform">A target location.</param>
     /// <param name="future">A <see cref="Future"/>.</param>
     public void Walk(in Transform transform, Future? future = default) => Walk(transform.X, transform.Y, future);
 
     /// <summary>
-    /// Move the <see cref="Object"/> at walking speed.
+    /// Move the <see cref="ObjectRef"/> at walking speed.
     /// </summary>
     /// <param name="x">A target X-coordinate.</param>
     /// <param name="y">A target Y-coordinate.</param>
@@ -243,14 +240,14 @@ public abstract class Object
     }
 
     /// <summary>
-    /// Move the <see cref="Object"/> at running speed.
+    /// Move the <see cref="ObjectRef"/> at running speed.
     /// </summary>
     /// <param name="transform">A target location.</param>
     /// <param name="future">A <see cref="Future"/>.</param>
     public void Run(in Transform transform, Future? future = default) => Run(transform.X, transform.Y, future);
 
     /// <summary>
-    /// Move the <see cref="Object"/> at running speed.
+    /// Move the <see cref="ObjectRef"/> at running speed.
     /// </summary>
     /// <param name="x">A target X-coordinate.</param>
     /// <param name="y">A target Y-coordinate.</param>
@@ -278,13 +275,13 @@ public abstract class Object
     }
 
     /// <summary>
-    /// Move the <see cref="Object"/>.
+    /// Move the <see cref="ObjectRef"/>.
     /// </summary>
     /// <param name="transform">A target <see cref="Transform"/>.</param>
     public void Move(in Transform transform, in float speed, Future? future = default) => Move(transform.X, transform.Y, speed, future);
 
     /// <summary>
-    /// Move the <see cref="Object"/>.
+    /// Move the <see cref="ObjectRef"/>.
     /// </summary>
     /// <param name="x">An X-coordinate.</param>
     /// <param name="y">A Y-coordinate.</param>
@@ -316,13 +313,13 @@ public abstract class Object
     }
 
     /// <summary>
-    /// Stop the <see cref="Object"/>.
+    /// Stop the <see cref="ObjectRef"/>.
     /// </summary>
     /// <param name="transform">The object's location.</param>
     public void Stop(in Transform transform, Future? future = default) => Stop(transform.X, transform.Y, future);
 
     /// <summary>
-    /// Stop the <see cref="Object"/>.
+    /// Stop the <see cref="ObjectRef"/>.
     /// </summary>
     /// <param name="x">The object's X-coordinate.</param>
     /// <param name="y">The object's Y-coordinate.</param>
@@ -356,10 +353,10 @@ public abstract class Object
     }
 
     /// <summary>
-    /// Focus on an <see cref="Object"/>.
+    /// Focus on an <see cref="ObjectRef"/>.
     /// </summary>
-    /// <param name="target">The <see cref="Object"/> to target.</param>
-    public void Target(Object target)
+    /// <param name="target">The <see cref="ObjectRef"/> to target.</param>
+    public void Target(ObjectRef target)
     {
         UntargetImpl();
 
@@ -398,7 +395,7 @@ public abstract class Object
     }
 
     /// <summary>
-    /// Stop focusing on an <see cref="Object"/>.
+    /// Stop focusing on an <see cref="ObjectRef"/>.
     /// </summary>
     public void Untarget()
     {
@@ -408,33 +405,33 @@ public abstract class Object
     }
 
     /// <summary>
-    /// Focus on another <see cref="Object"/>.
+    /// Focus on another <see cref="ObjectRef"/>.
     /// </summary>
-    /// <param name="other">Another <see cref="Object"/>.</param>
-    public virtual void Focus(Object other) { }
+    /// <param name="other">Another <see cref="ObjectRef"/>.</param>
+    public virtual void Focus(ObjectRef other) { }
 
     /// <summary>
-    /// Blur another <see cref="Object"/>.
+    /// Blur another <see cref="ObjectRef"/>.
     /// </summary>
-    /// <param name="other">Another <see cref="Object"/>.</param>
-    public virtual void Blur(Object other) { }
+    /// <param name="other">Another <see cref="ObjectRef"/>.</param>
+    public virtual void Blur(ObjectRef other) { }
 
     /// <summary>
-    /// Enter another <see cref="Object"/>.
+    /// Enter another <see cref="ObjectRef"/>.
     /// </summary>
-    /// <param name="other">Another <see cref="Object"/>.</param>
-    public virtual void Enter(Object other) { }
+    /// <param name="other">Another <see cref="ObjectRef"/>.</param>
+    public virtual void Enter(ObjectRef other) { }
 
     /// <summary>
-    /// Exit another <see cref="Object"/>.
+    /// Exit another <see cref="ObjectRef"/>.
     /// </summary>
-    /// <param name="other">Another <see cref="Object"/>.</param>
-    public virtual void Exit(Object other) { }
+    /// <param name="other">Another <see cref="ObjectRef"/>.</param>
+    public virtual void Exit(ObjectRef other) { }
 
     /// <summary>
-    /// Convert the <see cref="Object"/> to a string.
+    /// Convert the <see cref="ObjectRef"/> to a string.
     /// </summary>
-    /// <returns>A string representation of the <see cref="Object"/>.</returns>
+    /// <returns>A string representation of the <see cref="ObjectRef"/>.</returns>
     public override string ToString()
     {
         return Tag.ToString();

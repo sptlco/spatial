@@ -1,19 +1,19 @@
 // Copyright © Spatial. All rights reserved.
 
-using System;
-using Ignite.Assets.Types;
 using Ignite.Components;
+using Ignite.Contracts;
 using Ignite.Models;
 using Ignite.Models.Objects;
 using Serilog;
 using Spatial.Mathematics;
 using Spatial.Simulation;
 using Spatial.Structures;
+using System;
 
 namespace Ignite.Systems;
 
 /// <summary>
-/// A <see cref="System"/> that governs <see cref="Object"/> visibility.
+/// A <see cref="System"/> that governs <see cref="ObjectRef"/> visibility.
 /// </summary>
 public class Vision : System
 {
@@ -43,20 +43,20 @@ public class Vision : System
             var player = entity;
             var ta = map.Space.Get<Transform>(entity);
 
-            var subjects = map.Grid.Query(
+            var others = map.Grid.Query(
                 position: ta,
                 radius: map.Data.Info.Sight,
                 filter: subject => subject != player && !map.Space.Has<Hidden>(subject) && map.TypeAt(subject) != ObjectType.Chunk);
 
-            foreach (var subject in subjects)
+            foreach (var other in others)
             {
-                var tb = map.Space.Get<Transform>(subject);
+                var tb = map.Space.Get<Transform>(other);
                 var distance = Point2D.Distance(ta.X, ta.Y, tb.X, tb.Y);
-                var range = map.Data.Info.Sight - (map.Space.Has<NPC>(subject) ? Constants.MIN_SIGHT : 0);
+                var range = map.Data.Info.Sight - (map.Space.Has<NPC>(other) ? Constants.NPC_VIEW_RANGE : 0);
 
-                if (distance <= MathF.Max(Constants.MIN_SIGHT, range))
+                if (distance <= range)
                 {
-                    visibility.Current.Add(new Pair(subject, player));
+                    visibility.Current.Add(new Pair(other, player));
                 }
             }
         });
@@ -67,19 +67,19 @@ public class Vision : System
             {
                 _visibility.Add(pair);
 
-                var subject = map.ObjectAt(pair.First);
+                var other = map.ObjectAt(pair.First);
                 var player = map.ObjectAt(pair.Second);
 
-                player.Focus(subject);
+                player.Focus(other);
 
-                if (!player.Has<Hidden>() && subject is PlayerRef)
+                if (!player.Has<Hidden>() && other is PlayerRef)
                 {
-                    subject.Focus(player);
+                    other.Focus(player);
 
-                    Log.Debug("{Subject} visible to {Player}.", player, subject);
+                    Log.Debug("{Other} visible to {Player}.", player, other);
                 }
 
-                Log.Debug("{Subject} visible to {Player}.", subject, player);
+                Log.Debug("{Other} visible to {Player}.", other, player);
             }
         }
 
@@ -91,19 +91,19 @@ public class Vision : System
 
                 if (map.Space.Exists(pair.First) && map.Space.Exists(pair.Second))
                 {
-                    var subject = map.ObjectAt(pair.First);
+                    var other = map.ObjectAt(pair.First);
                     var player = map.ObjectAt(pair.Second);
 
-                    player.Blur(subject);
+                    player.Blur(other);
 
-                    if (subject is PlayerRef)
+                    if (other is PlayerRef)
                     {
-                        subject.Blur(player);
+                        other.Blur(player);
 
-                        Log.Debug("{Subject} no longer visible to {Player}.", player, subject);
+                        Log.Debug("{Other} no longer visible to {Player}.", player, other);
                     }
 
-                    Log.Debug("{Subject} no longer visible to {Player}.", subject, player);
+                    Log.Debug("{Other} no longer visible to {Player}.", other, player);
                 }
             }
         }

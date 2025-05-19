@@ -1,5 +1,7 @@
 // Copyright © Spatial. All rights reserved.
 
+using Ignite.Models;
+using Serilog;
 using Spatial.Networking;
 
 namespace Ignite.Contracts.Characters;
@@ -28,6 +30,22 @@ public class PROTO_NC_CHAR_CLIENT_ITEM_CMD : ProtocolBuffer
     /// Inventory items.
     /// </summary>
     public PROTO_ITEMPACKET_INFORM[] ItemArray;
+
+    /// <summary>
+    /// Create a new <see cref="PROTO_NC_CHAR_CLIENT_ITEM_CMD"/>.
+    /// </summary>
+    public PROTO_NC_CHAR_CLIENT_ITEM_CMD() { }
+
+    /// <summary>
+    /// Create a new <see cref="PROTO_NC_CHAR_CLIENT_ITEM_CMD"/>.
+    /// </summary>
+    /// <param name="inventory">An <see cref="Inventory"/>.</param>
+    public PROTO_NC_CHAR_CLIENT_ITEM_CMD(Inventory inventory)
+    {
+        numofitem = (byte) inventory.Count;
+        box = (byte) inventory.Type;
+        ItemArray = inventory.ToArray(item => new PROTO_ITEMPACKET_INFORM(item));
+    }
 
     /// <summary>
     /// Deserialize the <see cref="ProtocolBuffer"/>.

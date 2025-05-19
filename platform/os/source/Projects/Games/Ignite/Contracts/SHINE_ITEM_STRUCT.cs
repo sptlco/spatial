@@ -33,7 +33,8 @@ public class SHINE_ITEM_STRUCT : ProtocolBuffer
     /// <param name="item">An item identification number.</param>
     public SHINE_ITEM_STRUCT(Item item)
     {
-        itemattr = ItemInfo.Read(itemid = item.ItemId).Client.Class switch {
+        itemid = item.ItemId;
+        itemattr = ItemInfo.Read(itemid).Client.Class switch {
             ItemClassEnum.ITEMCLASS_BYTELOT => new ShineItemAttr_ByteLot {
                 lot = (byte) item.Lot
             },
@@ -59,13 +60,10 @@ public class SHINE_ITEM_STRUCT : ProtocolBuffer
                             optionnum = (byte) item.Options.Count
                         }
                     },
-                    optionlist = item.UpgradeOptions.ToPaddedArray(
-                        size: 8,
-                        value: ItemOptionStorage.Element.Null,
-                        selector: kvp => new ItemOptionStorage.Element {
-                            itemoption_type = (byte) kvp.Key,
-                            itemoption_value = (ushort) kvp.Value
-                        })
+                    optionlist = item.UpgradeOptions.ToArray(kvp => new ItemOptionStorage.Element {
+                        itemoption_type = (byte) kvp.Key,
+                        itemoption_value = (ushort) kvp.Value
+                    })
                 },
                 randomOptionChangedCount = item.Reconfigurations,
                 option = new ItemOptionStorage {
@@ -75,13 +73,10 @@ public class SHINE_ITEM_STRUCT : ProtocolBuffer
                             optionnum = (byte) item.Options.Count
                         }
                     },
-                    optionlist = item.Options.ToPaddedArray(
-                        size: 8,
-                        value: ItemOptionStorage.Element.Null,
-                        selector: kvp => new ItemOptionStorage.Element {
-                            itemoption_type = (byte) kvp.Key,
-                            itemoption_value = (ushort) kvp.Value
-                        })
+                    optionlist = item.Options.ToArray(kvp => new ItemOptionStorage.Element {
+                        itemoption_type = (byte) kvp.Key,
+                        itemoption_value = (ushort) kvp.Value
+                    })
                 }
             },
             ItemClassEnum.ITEMCLASS_WEAPON => new ShineItemAttr_Weapon {
@@ -116,13 +111,10 @@ public class SHINE_ITEM_STRUCT : ProtocolBuffer
                             optionnum = (byte) item.Options.Count
                         }
                     },
-                    optionlist = item.Options.ToPaddedArray(
-                        size: 8,
-                        value: ItemOptionStorage.Element.Null,
-                        selector: kvp => new ItemOptionStorage.Element {
-                            itemoption_type = (byte) kvp.Key,
-                            itemoption_value = (ushort) kvp.Value
-                        })
+                    optionlist = item.Options.ToArray(kvp => new ItemOptionStorage.Element {
+                        itemoption_type = (byte) kvp.Key,
+                        itemoption_value = (ushort) kvp.Value
+                    })
                 }
             },
             ItemClassEnum.ITEMCLASS_ARMOR => new ShineItemAttr_Armor {
@@ -139,13 +131,10 @@ public class SHINE_ITEM_STRUCT : ProtocolBuffer
                             optionnum = (byte) item.Options.Count
                         }
                     },
-                    optionlist = item.Options.ToPaddedArray(
-                        size: 8,
-                        value: ItemOptionStorage.Element.Null,
-                        selector: kvp => new ItemOptionStorage.Element {
-                            itemoption_type = (byte) kvp.Key,
-                            itemoption_value = (ushort) kvp.Value
-                        })
+                    optionlist = item.Options.ToArray(kvp => new ItemOptionStorage.Element {
+                        itemoption_type = (byte) kvp.Key,
+                        itemoption_value = (ushort) kvp.Value
+                    })
                 }
             },
             ItemClassEnum.ITEMCLASS_SHIELD => new ShineItemAttr_Shield {
@@ -162,13 +151,10 @@ public class SHINE_ITEM_STRUCT : ProtocolBuffer
                             optionnum = (byte) item.Options.Count
                         }
                     },
-                    optionlist = item.Options.ToPaddedArray(
-                        size: 8,
-                        value: ItemOptionStorage.Element.Null,
-                        selector: kvp => new ItemOptionStorage.Element {
-                            itemoption_type = (byte) kvp.Key,
-                            itemoption_value = (ushort) kvp.Value
-                        })
+                    optionlist = item.Options.ToArray(kvp => new ItemOptionStorage.Element {
+                        itemoption_type = (byte) kvp.Key,
+                        itemoption_value = (ushort) kvp.Value
+                    })
                 }
             },
             ItemClassEnum.ITEMCLASS_BOOT => new ShineItemAttr_Boot {
@@ -185,13 +171,10 @@ public class SHINE_ITEM_STRUCT : ProtocolBuffer
                             optionnum = (byte) item.Options.Count
                         }
                     },
-                    optionlist = item.Options.ToPaddedArray(
-                        size: 8,
-                        value: ItemOptionStorage.Element.Null,
-                        selector: kvp => new ItemOptionStorage.Element {
-                            itemoption_type = (byte) kvp.Key,
-                            itemoption_value = (ushort) kvp.Value
-                        })
+                    optionlist = item.Options.ToArray(kvp => new ItemOptionStorage.Element {
+                        itemoption_type = (byte) kvp.Key,
+                        itemoption_value = (ushort) kvp.Value
+                    })
                 }
             },
             ItemClassEnum.ITEMCLASS_FURNITURE => new ShineItemAttr_Furniture {
@@ -327,13 +310,10 @@ public class SHINE_ITEM_STRUCT : ProtocolBuffer
                             optionnum = (byte) item.Options.Count
                         }
                     },
-                    optionlist = item.Options.ToPaddedArray(
-                        size: 8,
-                        value: ItemOptionStorage.Element.Null,
-                        selector: kvp => new ItemOptionStorage.Element {
-                            itemoption_type = (byte) kvp.Key,
-                            itemoption_value = (ushort) kvp.Value
-                        })
+                    optionlist = item.Options.ToArray(kvp => new ItemOptionStorage.Element {
+                        itemoption_type = (byte) kvp.Key,
+                        itemoption_value = (ushort) kvp.Value
+                    })
                 }
             },
             _ => throw new System.NotImplementedException(),

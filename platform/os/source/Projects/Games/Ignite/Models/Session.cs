@@ -92,7 +92,7 @@ public sealed class Session
 
         var session = new Session(handle, account);
 
-        Log.Information("User {user} logged in.", session.Account.Username);
+        Log.Information("{User} logged in.", session.Account.Username);
 
         Interlocked.Increment(ref _count);
 
@@ -243,7 +243,7 @@ public sealed class Session
 
     private void Destroy()
     {
-        Log.Information("User {user} logged out.", Account.Username);
+        Log.Information("{User} logged out.", Account.Username);
 
         Ref?.Release();
         Ref = null!;

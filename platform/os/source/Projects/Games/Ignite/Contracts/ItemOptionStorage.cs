@@ -25,7 +25,7 @@ public class ItemOptionStorage : ProtocolBuffer
     public override void Deserialize()
     {
         optioninfo = Read<FixedInfo>();
-        optionlist = Read<Element>(8);
+        optionlist = Read<Element>(optioninfo.optionnumber.optionnum);
     }
 
     /// <summary>

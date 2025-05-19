@@ -55,6 +55,11 @@ public class Character : Document
     public Class Class { get; set; }
 
     /// <summary>
+    /// The character's base <see cref="Models.Class"/>.
+    /// </summary>
+    public Class BaseClass => GetBaseClass();
+
+    /// <summary>
     /// The character's <see cref="Models.Gender"/>.
     /// </summary>
     public Gender Gender { get; set; }
@@ -197,10 +202,7 @@ public class Character : Document
         byte hairColor,
         byte face)
     {
-        var defaults = Asset.First<CHARACTER>(
-            name: "DefaultCharacterData.txt/CHARACTER",
-            filter: c => c.Class == (int) @class
-        );
+        var defaults = Asset.First<CHARACTER>("DefaultCharacterData.txt/CHARACTER", c => c.Class == (int) @class);
 
         var character = new Character {
             Owner = account,
@@ -264,5 +266,17 @@ public class Character : Document
     public void Delete()
     {
         this.Remove();
+    }
+
+    private Class GetBaseClass()
+    {
+        return Class switch {
+            >= Class.Crusader => Class.Crusader,
+            >= Class.Trickster => Class.Trickster,
+            >= Class.Mage => Class.Mage,
+            >= Class.Archer => Class.Archer,
+            >= Class.Cleric => Class.Cleric,
+            _ => Class.Fighter
+        };
     }
 }

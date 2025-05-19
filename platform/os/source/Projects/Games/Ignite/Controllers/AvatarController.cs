@@ -23,9 +23,9 @@ public class AvatarController : ResponsiveController
             account: _session.Account.Id,
             slot: data.slotnum,
             name: data.name,
-            race: (Race) data.char_shape.race,
-            @class: (Class) data.char_shape.chrclass,
-            gender: (Gender) data.char_shape.gender,
+            race: data.char_shape.race,
+            @class: data.char_shape.chrclass,
+            gender: data.char_shape.gender,
             hairStyle: data.char_shape.hairtype,
             hairColor: data.char_shape.haircolor,
             face: data.char_shape.faceshape));

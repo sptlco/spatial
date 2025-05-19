@@ -2,6 +2,7 @@
 
 using Ignite.Components;
 using Ignite.Models;
+using Ignite.Models.Objects;
 using Serilog;
 using Spatial.Mathematics;
 using Spatial.Simulation;
@@ -69,6 +70,16 @@ public class Computer : System
                 if (Point2D.Distance(transform.X, transform.Y, destination.X, destination.Y) <= Constants.UNIT * 0.20F)
                 {
                     mover.Stop(transform, future);
+                }
+                else
+                {
+                    if (mover is PlayerRef player)
+                    {
+                        player.Character.Position = transform;
+                        player.Character.Rotation = transform.R;
+                    }
+
+                    future.Add<Dirty>(entity);
                 }
 
                 Log.Debug("{Object} moved to {Transform}, {Map}.", mover, transform, map.Name);

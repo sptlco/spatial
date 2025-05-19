@@ -5,11 +5,8 @@ using Ignite.Assets.Types;
 using Ignite.Models;
 using Spatial.Compute.Jobs;
 using Spatial.Extensions;
-using Spatial.Persistence;
 using Spatial.Structures;
-using System;
 using System.IO;
-using System.Reflection.Metadata;
 
 namespace Ignite;
 
@@ -35,22 +32,22 @@ public static class Starter
                 progress.Spin($"Loading {Path.GetRelativePath(path, file)}");
                 Asset.Load(path, file);
             });
-
-            Job.ParallelFor(Field.List(), field =>
-            {
-                progress.Spin($"Creating {field.MapIDClient}");
-
-                var maps = World.Maps[field.Serial] = new SparseArray<Map>(field.To - field.From + 1);
-
-                if (field.Type == FIELD_MAP_TYPE.FMT_NORMAL)
-                {
-                    for (var id = 0; id < maps.Capacity; id++)
-                    {
-                        Map.Load(field, id);
-                    }
-                }
-            });
         }
+
+        Job.ParallelFor(Field.List(), field =>
+        {
+            progress.Spin($"Creating {field.MapIDClient}");
+
+            var maps = World.Maps[field.Serial] = new SparseArray<Map>(field.To - field.From + 1);
+
+            if (field.Type == FIELD_MAP_TYPE.FMT_NORMAL)
+            {
+                for (var id = 0; id < maps.Capacity; id++)
+                {
+                    Map.Load(field, id);
+                }
+            }
+        });
 
         progress.Dispose();
     }

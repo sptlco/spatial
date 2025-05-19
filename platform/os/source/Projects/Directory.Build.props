@@ -14,7 +14,7 @@
         <MSBuildExtensionsPath>$(BuildPath)</MSBuildExtensionsPath>
     </PropertyGroup>
     <PropertyGroup>
-        <DefaultItemExcludes>$(DefaultItemExcludes);Directory.*.props;Build\**\*;</DefaultItemExcludes>
+        <DefaultItemExcludes>$(DefaultItemExcludes);Directory.*.props;**\Build\**\*;</DefaultItemExcludes>
     </PropertyGroup>
     <ItemGroup>
         <None Include="$(RootDirectory)\icon.jpg" Visible="false" Pack="true" PackagePath="\" />

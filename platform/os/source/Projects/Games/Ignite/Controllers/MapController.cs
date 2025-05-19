@@ -37,10 +37,8 @@ public class MapController : ResponsiveController
             }
         }
 
-        _session.Reference();
-
-        _session.Map = _connection;
-        _session.Object = Player.Create(_session, _session.Character, Map.InstanceAt(_session.Character.Map));
+        _session.Reference().Map = _connection;
+        _session.Object = Player.Create(_session, Map.InstanceAt(_session.Character.Map));
 
         NC_CHAR_CLIENT_BASE_CMD();
         NC_CHAR_CLIENT_SHAPE_CMD();

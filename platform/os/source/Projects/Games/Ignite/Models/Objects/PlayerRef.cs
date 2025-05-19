@@ -122,7 +122,7 @@ public class PlayerRef : ObjectRef
         });
 
         _map = destination;
-        _entity = Player.Create(session, character, _map).UID;
+        _entity = Player.Create(session, _map).UID;
 
         Session.Object = this;
 

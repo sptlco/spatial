@@ -176,6 +176,7 @@ public partial class Map
         map.Use<Computer>();
         map.Use<Vision>();
         map.Use<Brain>();
+        map.Use<Janitor>();
 
 #if DEBUG
         map.Use<Debugger>();
@@ -308,7 +309,9 @@ public partial class Map
     /// <returns>An <see cref="Entity"/>.</returns>
     public Entity CreatePlainEntity(ObjectType type)
     {
-        return _space.Create(new Tag(Provision(type)));
+        return _space.Create(
+            new Components.Object(),
+            new Tag(Provision(type)));
     }
 
     /// <summary>
@@ -328,6 +331,7 @@ public partial class Map
         in Speed? speed = null)
     {
         return _space.Create(
+            new Components.Object(),
             new Tag(Provision(type)),
             vitals ?? new Vitals(),
             attributes ?? new Attributes(),

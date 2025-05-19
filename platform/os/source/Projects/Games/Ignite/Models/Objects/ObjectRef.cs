@@ -5,6 +5,7 @@ using Ignite.Contracts;
 using Ignite.Contracts.Actions;
 using Ignite.Contracts.Combat;
 using Serilog;
+using Spatial.Mathematics;
 using Spatial.Simulation;
 using System;
 
@@ -201,7 +202,15 @@ public abstract class ObjectRef
     /// <param name="y">A Y-coordinate.</param>
     public void Snap(in float x, in float y)
     {
-        Transform = Transform with { X = x, Y = y };
+        var transform = Transform with { X = x, Y = y };
+
+        Transform = transform;
+
+        if (this is PlayerRef player)
+        {
+            player.Character.Position = transform;
+            player.Character.Rotation = transform.R;
+        }
     }
 
     /// <summary>
@@ -331,11 +340,15 @@ public abstract class ObjectRef
         {
             future.Remove<Destination>(UID);
             future.Remove<Velocity>(UID);
+
+            future.Add<Dirty>(UID);
         }
         else
         {
             Remove<Destination>();
             Remove<Velocity>();
+
+            Add<Dirty>();
         }
 
         _map.BroadcastExclusive(

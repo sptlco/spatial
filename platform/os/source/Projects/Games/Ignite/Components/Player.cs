@@ -12,8 +12,11 @@ namespace Ignite.Components;
 /// A player-controller object.
 /// </summary>
 /// <param name="Session">The player's session identification number.</param>
-/// <param name="Character">The player's character identification number.</param>
-public record struct Player(ushort Session, uint Character) : IComponent
+/// <param name="Saved">The last time the player was saved.</param>
+public record struct Player(
+    ushort Session,
+    double Saved = 0
+    ) : IComponent
 {
     /// <summary>
     /// Create a new <see cref="Player"/>.
@@ -22,33 +25,33 @@ public record struct Player(ushort Session, uint Character) : IComponent
     /// <param name="character">The player's <see cref="Models.Character"/>.</param>
     /// <param name="map">The <see cref="Map"/> to create the <see cref="Player"/> in.</param>
     /// <returns>A <see cref="Player"/>.</returns>
-    public static PlayerRef Create(Session session, Character character, Map map)
+    public static PlayerRef Create(Session session, Map map)
     {
-        var parameters = Param.Stats(character.Class, character.Level);
+        var parameters = Param.Stats(session.Character.Class, session.Character.Level);
 
         var player = map.CreateObject<PlayerRef>(
             type: ObjectType.Player,
             attributes: new Attributes(Strength: parameters.Strength, Endurance: parameters.Constitution, Dexterity: parameters.Dexterity, Intelligence: parameters.Intelligence, Wisdom: parameters.Wizdom, Spirit: parameters.MentalPower),
-            vitals: new Vitals(Level: character.Level, Health: new Parameter(Maximum: parameters.MaxHP, Current: character.HP)),
-            transform: new Transform(X: character.Position.X, Y: character.Position.Y, R: character.Rotation),
+            vitals: new Vitals(Level: session.Character.Level, Health: new Parameter(Maximum: parameters.MaxHP, Current: session.Character.HP)),
+            transform: new Transform(X: session.Character.Position.X, Y: session.Character.Position.Y, R: session.Character.Rotation),
             speed: new Speed(Walking: Common.WalkSpeed, Running: Common.RunSpeed, Attacking: Common.AttackSpeed));
 
-        if (character.Class >= Class.Crusader)
+        if (session.Character.Class >= Class.Crusader)
         {
-            player.Vitals.Light = new Parameter(Maximum: SingleData.MaxLP, Current: character.LP);
+            player.Vitals.Light = new Parameter(Maximum: SingleData.MaxLP, Current: session.Character.LP);
         }
         else
         {
-            player.Vitals.Spirit = new Parameter(Maximum: parameters.MaxSP, Current: character.SP);
+            player.Vitals.Spirit = new Parameter(Maximum: parameters.MaxSP, Current: session.Character.SP);
         }
 
         player
-            .Add(new Player(Session: session.Handle, Character: character.Id))
+            .Add(new Player(Session: session.Handle, Saved: World.Time))
             .Add(new Body(Size: 10.0F))
             .Add(new Abilities(player))
             .Add(new Stones(
-                Health: new Parameter(Maximum: parameters.MAXSoulHP, Current: character.HPStones),
-                Spirit: new Parameter(Maximum: parameters.MAXSoulSP, Current: character.SPStones)));
+                Health: new Parameter(Maximum: parameters.MAXSoulHP, Current: session.Character.HPStones),
+                Spirit: new Parameter(Maximum: parameters.MAXSoulSP, Current: session.Character.SPStones)));
 
         return player;
     }

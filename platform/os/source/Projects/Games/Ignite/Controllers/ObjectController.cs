@@ -18,9 +18,9 @@ public class ObjectController : AugmentedController
     [NETHANDLER(NETCOMMAND.NC_BRIEFINFO_INFORM_CMD)]
     public void NC_BRIEFINFO_INFORM_CMD(PROTO_NC_BRIEFINFO_INFORM_CMD data)
     {
-        if (_session.Object.Map.Exists(data.nMyHnd))
+        if (_session.Ref.Map.Exists(data.nMyHnd))
         {
-            _session.Object.Focus(_session.Object.Map.ObjectAt(data.hnd));
+            _session.Ref.Focus(_session.Ref.Map.ObjectAt(data.hnd));
         }
     }
 }

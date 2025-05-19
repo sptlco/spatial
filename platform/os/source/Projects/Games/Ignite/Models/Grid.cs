@@ -3,7 +3,6 @@
 using Ignite.Components;
 using Ignite.Contracts;
 using Ignite.Models.Objects;
-using Serilog;
 using Spatial.Mathematics;
 using Spatial.Simulation;
 using Spatial.Structures;

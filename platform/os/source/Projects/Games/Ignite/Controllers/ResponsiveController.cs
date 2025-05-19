@@ -14,8 +14,6 @@ using Ignite.Contracts.Prison;
 using Ignite.Contracts.Sessions;
 using Ignite.Contracts.Users;
 using Ignite.Models;
-using Ignite.Models.Objects;
-using Serilog;
 using Spatial.Extensions;
 using Spatial.Networking;
 using System.Linq;
@@ -510,10 +508,10 @@ public class ResponsiveController : AugmentedController
                 logininfo = new PROTO_NC_CHAR_BASE_CMD.LoginLocation {
                     currentmap = Field.Find(_session.Character.Map).MapIDClient,
                     currentcoord = new SHINE_COORD_TYPE {
-                        dir = _session.Object.Transform.D,
+                        dir = _session.Ref.Transform.D,
                         xy = new SHINE_XY_TYPE {
-                            x = (uint) _session.Object.Transform.X,
-                            y = (uint) _session.Object.Transform.Y
+                            x = (uint) _session.Ref.Transform.X,
+                            y = (uint) _session.Ref.Transform.Y
                         }
                     }
                 },
@@ -580,37 +578,37 @@ public class ResponsiveController : AugmentedController
             connection: _connection,
             command: NETCOMMAND.NC_MAP_LOGIN_ACK,
             data: new PROTO_NC_CHAR_MAPLOGIN_ACK {
-                charhandle = _session.Object.Tag.Handle,
+                charhandle = _session.Ref.Tag.Handle,
                 param = new CHAR_PARAMETER_DATA {
-                    PrevExp = StatTable.XP(_session.Object.Vitals.Level),
-                    NextExp = StatTable.XP((byte) (_session.Object.Vitals.Level + 1)),
-                    Strength = new SHINE_CHAR_STATVAR { Base = (uint) parameters.Strength, Change = (uint) _session.Object.Attributes.Strength },
-                    Constitute = new SHINE_CHAR_STATVAR { Base = (uint) parameters.Constitution, Change = (uint) _session.Object.Attributes.Endurance },
-                    Dexterity = new SHINE_CHAR_STATVAR { Base = (uint) parameters.Dexterity, Change = (uint) _session.Object.Attributes.Dexterity },
-                    Intelligence = new SHINE_CHAR_STATVAR { Base = (uint) parameters.Intelligence, Change = (uint) _session.Object.Attributes.Intelligence },
-                    Wizdom = new SHINE_CHAR_STATVAR { Base = (uint) parameters.Wizdom, Change = (uint) _session.Object.Attributes.Wisdom },
-                    MentalPower = new SHINE_CHAR_STATVAR { Base = (uint) parameters.MentalPower, Change = (uint) _session.Object.Attributes.Spirit },
-                    WClow = new SHINE_CHAR_STATVAR { Base = (uint) @base.Damage.Minimum, Change = (uint) _session.Object.Abilities.Damage.Minimum },
-                    WChigh = new SHINE_CHAR_STATVAR { Base = (uint) @base.Damage.Maximum, Change = (uint) _session.Object.Abilities.Damage.Maximum },
-                    AC = new SHINE_CHAR_STATVAR { Base = (uint) @base.Defense, Change = (uint) _session.Object.Abilities.Defense },
-                    TH = new SHINE_CHAR_STATVAR { Base = (uint) @base.Aim, Change = (uint) _session.Object.Abilities.Aim },
-                    TB = new SHINE_CHAR_STATVAR { Base = (uint) @base.Evasion, Change = (uint) _session.Object.Abilities.Evasion },
-                    MAlow = new SHINE_CHAR_STATVAR { Base = (uint) @base.MagicDamage.Minimum, Change = (uint) _session.Object.Abilities.MagicDamage.Minimum },
-                    MAhigh = new SHINE_CHAR_STATVAR { Base = (uint) @base.MagicDamage.Maximum, Change = (uint) _session.Object.Abilities.MagicDamage.Maximum },
-                    MR = new SHINE_CHAR_STATVAR { Base = (uint) @base.MagicDefense, Change = (uint) _session.Object.Abilities.MagicDefense },
-                    MaxHp = (uint) _session.Object.Vitals.Health.Maximum,
-                    MaxSp = (uint) _session.Object.Vitals.Spirit.Maximum,
-                    MaxLp = (uint) _session.Object.Vitals.Light.Maximum,
-                    MaxHPStone = (uint) _session.Object.Stones.Health.Maximum,
-                    MaxSPStone = (uint) _session.Object.Stones.Spirit.Maximum,
+                    PrevExp = StatTable.XP(_session.Ref.Vitals.Level),
+                    NextExp = StatTable.XP((byte) (_session.Ref.Vitals.Level + 1)),
+                    Strength = new SHINE_CHAR_STATVAR { Base = (uint) parameters.Strength, Change = (uint) _session.Ref.Attributes.Strength },
+                    Constitute = new SHINE_CHAR_STATVAR { Base = (uint) parameters.Constitution, Change = (uint) _session.Ref.Attributes.Endurance },
+                    Dexterity = new SHINE_CHAR_STATVAR { Base = (uint) parameters.Dexterity, Change = (uint) _session.Ref.Attributes.Dexterity },
+                    Intelligence = new SHINE_CHAR_STATVAR { Base = (uint) parameters.Intelligence, Change = (uint) _session.Ref.Attributes.Intelligence },
+                    Wizdom = new SHINE_CHAR_STATVAR { Base = (uint) parameters.Wizdom, Change = (uint) _session.Ref.Attributes.Wisdom },
+                    MentalPower = new SHINE_CHAR_STATVAR { Base = (uint) parameters.MentalPower, Change = (uint) _session.Ref.Attributes.Spirit },
+                    WClow = new SHINE_CHAR_STATVAR { Base = (uint) @base.Damage.Minimum, Change = (uint) _session.Ref.Abilities.Damage.Minimum },
+                    WChigh = new SHINE_CHAR_STATVAR { Base = (uint) @base.Damage.Maximum, Change = (uint) _session.Ref.Abilities.Damage.Maximum },
+                    AC = new SHINE_CHAR_STATVAR { Base = (uint) @base.Defense, Change = (uint) _session.Ref.Abilities.Defense },
+                    TH = new SHINE_CHAR_STATVAR { Base = (uint) @base.Aim, Change = (uint) _session.Ref.Abilities.Aim },
+                    TB = new SHINE_CHAR_STATVAR { Base = (uint) @base.Evasion, Change = (uint) _session.Ref.Abilities.Evasion },
+                    MAlow = new SHINE_CHAR_STATVAR { Base = (uint) @base.MagicDamage.Minimum, Change = (uint) _session.Ref.Abilities.MagicDamage.Minimum },
+                    MAhigh = new SHINE_CHAR_STATVAR { Base = (uint) @base.MagicDamage.Maximum, Change = (uint) _session.Ref.Abilities.MagicDamage.Maximum },
+                    MR = new SHINE_CHAR_STATVAR { Base = (uint) @base.MagicDefense, Change = (uint) _session.Ref.Abilities.MagicDefense },
+                    MaxHp = (uint) _session.Ref.Vitals.Health.Maximum,
+                    MaxSp = (uint) _session.Ref.Vitals.Spirit.Maximum,
+                    MaxLp = (uint) _session.Ref.Vitals.Light.Maximum,
+                    MaxHPStone = (uint) _session.Ref.Stones.Health.Maximum,
+                    MaxSPStone = (uint) _session.Ref.Stones.Spirit.Maximum,
                     PainRes = new SHINE_CHAR_STATVAR(),
                     RestraintRes = new SHINE_CHAR_STATVAR(),
                     CurseRes = new SHINE_CHAR_STATVAR(),
                     ShockRes = new SHINE_CHAR_STATVAR()
                 },
                 logincoord = new SHINE_XY_TYPE {
-                    x = (uint) _session.Object.Transform.X,
-                    y = (uint) _session.Object.Transform.Y
+                    x = (uint) _session.Ref.Transform.X,
+                    y = (uint) _session.Ref.Transform.Y
                 }
             });
     }
@@ -631,11 +629,11 @@ public class ResponsiveController : AugmentedController
     /// </summary>
     protected void NC_BRIEFINFO_MOB_CMD()
     {
-        var mobs = _session.Object.Map.Query(ObjectType.Mob, ObjectType.NPC).ToList();
+        var mobs = _session.Ref.Map.Query(ObjectType.Mob, ObjectType.NPC).ToList();
 
         for (var i = 0; i < mobs.Count; i += 0x1C)
         {
-            var chunk = mobs.Skip(i).Take(0x1C).ToArray(mob => new PROTO_NC_BRIEFINFO_REGENMOB_CMD(_session.Object.Map.ObjectAt(mob)));
+            var chunk = mobs.Skip(i).Take(0x1C).ToArray(mob => new PROTO_NC_BRIEFINFO_REGENMOB_CMD(_session.Ref.Map.ObjectAt(mob)));
 
             World.Command(
                 connection: _connection,
@@ -669,7 +667,7 @@ public class ResponsiveController : AugmentedController
             connection: _connection,
             command: NETCOMMAND.NC_BAT_HPCHANGE_CMD,
             data: new PROTO_NC_BAT_HPCHANGE_CMD {
-                hp = (uint) _session.Object.Vitals.Health.Current,
+                hp = (uint) _session.Ref.Vitals.Health.Current,
                 hpchangeorder = 0
             });
     }
@@ -683,7 +681,7 @@ public class ResponsiveController : AugmentedController
             connection: _connection,
             command: NETCOMMAND.NC_BAT_SPCHANGE_CMD,
             data: new PROTO_NC_BAT_SPCHANGE_CMD {
-                sp = (uint) _session.Object.Vitals.Spirit.Current
+                sp = (uint) _session.Ref.Vitals.Spirit.Current
             });
     }
 
@@ -696,7 +694,7 @@ public class ResponsiveController : AugmentedController
             connection: _connection,
             command: NETCOMMAND.NC_BAT_LPCHANGE_CMD,
             data: new PROTO_NC_BAT_LPCHANGE_CMD {
-                nLP = (uint) _session.Object.Vitals.Light.Current
+                nLP = (uint) _session.Ref.Vitals.Light.Current
             });
     }
 

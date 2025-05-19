@@ -65,9 +65,9 @@ public sealed class Session
     public Character Character { get; set; }
 
     /// <summary>
-    /// The session's <see cref="Objects.ObjectRef"/>.
+    /// The session's <see cref="PlayerRef"/>.
     /// </summary>
-    public PlayerRef Object { get; set; }
+    public PlayerRef Ref { get; set; }
 
     /// <summary>
     /// The session's callback functions.
@@ -245,8 +245,8 @@ public sealed class Session
     {
         Log.Information("User {user} logged out.", Account.Username);
 
-        Object?.Release();
-        Object = null!;
+        Ref?.Release();
+        Ref = null!;
 
         _pool.Add(_handle);
         _sessions.Remove(_handle);

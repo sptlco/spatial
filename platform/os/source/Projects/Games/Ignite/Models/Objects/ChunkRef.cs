@@ -13,17 +13,17 @@ public class ChunkRef : ObjectRef
     /// <summary>
     /// Create a new <see cref="ChunkRef"/>.
     /// </summary>
-    /// <param name="map">The <see cref="Map"/> the <see cref="Chunk"/> is in.</param>
+    /// <param name="map">The <see cref="Map"/> the <see cref="Components.Chunk"/> is in.</param>
     /// <param name="entity">The <see cref="Entity"/> to reference.</param>
     public ChunkRef(Map map, Entity entity) : base(map, entity) { }
 
     /// <summary>
-    /// The referenced <see cref="Chunk"/>.
+    /// The referenced <see cref="Components.Chunk"/>.
     /// </summary>
-    public Chunk Object => Get<Chunk>();
+    public Chunk Chunk => Get<Chunk>();
 
     /// <summary>
-    /// Whether or not the <see cref="Chunk"/> is disabled.
+    /// Whether or not the <see cref="Components.Chunk"/> is disabled.
     /// </summary>
     public bool Disabled => Has<Disabled>();
 

@@ -37,8 +37,10 @@ public class MapController : ResponsiveController
             }
         }
 
-        _session.Reference().Map = _connection;
-        _session.Object = Player.Create(_session, Map.InstanceAt(_session.Character.Map));
+        _session.Reference();
+
+        _session.Map = _connection;
+        _session.Ref = Player.Ref(_session, Map.InstanceAt(_session.Character.Map));
 
         NC_CHAR_CLIENT_BASE_CMD();
         NC_CHAR_CLIENT_SHAPE_CMD();
@@ -74,6 +76,6 @@ public class MapController : ResponsiveController
 
         NC_MISC_SERVER_TIME_NOTIFY_CMD();
 
-        Log.Information("{Character} logged into {Map} as {Object}.", _session.Character.Name, _session.Object.Map.Name, _session.Object);
+        Log.Information("{Character} logged into {Map} as {Object}.", _session.Character.Name, _session.Ref.Map.Name, _session.Ref);
     }
 }

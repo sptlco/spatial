@@ -5,7 +5,6 @@ using Ignite.Contracts;
 using Ignite.Contracts.Actions;
 using Ignite.Contracts.Combat;
 using Serilog;
-using Spatial.Mathematics;
 using Spatial.Simulation;
 using System;
 
@@ -39,6 +38,11 @@ public abstract class ObjectRef
     /// The object's <see cref="Components.Tag"/>.
     /// </summary>
     public Tag Tag => Get<Tag>();
+
+    /// <summary>
+    /// The referenced <see cref="Components.Object"/>.
+    /// </summary>
+    public ref Components.Object Object => ref Get<Components.Object>();
 
     /// <summary>
     /// The object's <see cref="Components.Transform"/>.

@@ -8,32 +8,31 @@ using Ignite.Contracts.Maps;
 using Ignite.Contracts.Menu;
 using Ignite.Contracts.Objects;
 using Spatial.Extensions;
-using Spatial.Mathematics;
 using Spatial.Simulation;
 
 namespace Ignite.Models.Objects;
 
 /// <summary>
-/// A reference to a player <see cref="Object"/>.
+/// A reference to a player <see cref="Player"/>.
 /// </summary>
 public class PlayerRef : ObjectRef
 {
     /// <summary>
     /// Create a new <see cref="PlayerRef"/>.
     /// </summary>
-    /// <param name="map">The <see cref="Map"/> the <see cref="Object"/> is in.</param>
+    /// <param name="map">The <see cref="Map"/> the <see cref="Player"/> is in.</param>
     /// <param name="entity">The <see cref="Entity"/> to reference.</param>
     public PlayerRef(Map map, Entity entity) : base(map, entity) { }
 
     /// <summary>
-    /// The referenced <see cref="Player"/>.
+    /// The referenced <see cref="Components.Player"/>.
     /// </summary>
-    public Player Object => Get<Player>();
+    public Player Player => Get<Player>();
 
     /// <summary>
     /// The player's <see cref="Models.Session"/>.
     /// </summary>
-    public Session Session => Session.Find(Object.Session);
+    public Session Session => Session.Find(Player.Session);
 
     /// <summary>
     /// The player's <see cref="Models.Character"/>.
@@ -46,13 +45,13 @@ public class PlayerRef : ObjectRef
     /// <param name="npc">An <see cref="NPCRef"/>.</param>
     public void Interact(NPCRef npc)
     {
-        if (npc.Object.Menu)
+        if (npc.NPC.Menu)
         {
             World.Command(
                 connection: Session.Map,
                 command: NETCOMMAND.NC_ACT_NPCMENUOPEN_REQ,
                 data: new PROTO_NC_ACT_NPCMENUOPEN_REQ {
-                    mobid = npc.Object.Id
+                    mobid = npc.NPC.Id
                 });
 
             return;
@@ -133,9 +132,9 @@ public class PlayerRef : ObjectRef
         });
 
         _map = destination;
-        _entity = Player.Create(session, _map).UID;
+        _entity = Player.Ref(session, _map).UID;
 
-        Session.Object = this;
+        Session.Ref = this;
 
         World.Command(
             connection: Session.Map,

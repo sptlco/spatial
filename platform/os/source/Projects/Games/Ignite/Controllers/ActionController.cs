@@ -45,12 +45,12 @@ public class ActionController : ResponsiveController
             }
         }
 
-        _session.Object.Map.Multicast2D(
+        _session.Ref.Map.Multicast2D(
             command: NETCOMMAND.NC_ACT_SOMEONECHAT_CMD,
-            position: _session.Object.Transform,
+            position: _session.Ref.Transform,
             data: new PROTO_NC_ACT_SOMEONECHAT_CMD {
                 itemLinkDataCount = data.itemLinkDataCount,
-                handle = _session.Object.Tag.Handle,
+                handle = _session.Ref.Tag.Handle,
                 len = data.len,
                 flag = new PROTO_NC_ACT_SOMEONECHAT_CMD.Flags {
                     chatwin = true
@@ -70,7 +70,7 @@ public class ActionController : ResponsiveController
     [NETHANDLER(NETCOMMAND.NC_ACT_SHOUT_CMD)]
     public void NC_ACT_SHOUT_CMD(PROTO_NC_ACT_SHOUT_CMD data)
     {
-        _session.Object.Map.Broadcast(
+        _session.Ref.Map.Broadcast(
             command: NETCOMMAND.NC_ACT_SOMEONESHOUT_CMD,
             data: new PROTO_NC_ACT_SOMEONESHOUT_CMD {
                 itemLinkDataCount = data.itemLinkDataCount,
@@ -92,8 +92,8 @@ public class ActionController : ResponsiveController
     [NETHANDLER(NETCOMMAND.NC_ACT_MOVEWALK_CMD)]
     public void NC_ACT_MOVEWALK_CMD(PROTO_NC_ACT_MOVEWALK_CMD data)
     {
-        _session.Object.Snap(data.from.x, data.from.y);
-        _session.Object.Walk(data.to.x, data.to.y);
+        _session.Ref.Snap(data.from.x, data.from.y);
+        _session.Ref.Walk(data.to.x, data.to.y);
     }
 
     /// <summary>
@@ -103,8 +103,8 @@ public class ActionController : ResponsiveController
     [NETHANDLER(NETCOMMAND.NC_ACT_MOVERUN_CMD)]
     public void NC_ACT_MOVERUN_CMD(PROTO_NC_ACT_MOVERUN_CMD data)
     {
-        _session.Object.Snap(data.from.x, data.from.y);
-        _session.Object.Run(data.to.x, data.to.y);
+        _session.Ref.Snap(data.from.x, data.from.y);
+        _session.Ref.Run(data.to.x, data.to.y);
     }
 
     /// <summary>
@@ -114,7 +114,7 @@ public class ActionController : ResponsiveController
     [NETHANDLER(NETCOMMAND.NC_ACT_STOP_REQ)]
     public void NC_ACT_STOP_REQ(PROTO_NC_ACT_STOP_REQ data)
     {
-        _session.Object.Stop(data.loc.x, data.loc.y);
+        _session.Ref.Stop(data.loc.x, data.loc.y);
     }
 
     /// <summary>
@@ -124,7 +124,7 @@ public class ActionController : ResponsiveController
     [NETHANDLER(NETCOMMAND.NC_ACT_NPCCLICK_CMD)]
     public void NC_ACT_NPCCLICK_CMD(PROTO_NC_ACT_NPCCLICK_CMD data)
     {
-        _session.Object.Interact(_session.Object.Map.ObjectAt<NPCRef>(data.npchandle));
+        _session.Ref.Interact(_session.Ref.Map.ObjectAt<NPCRef>(data.npchandle));
     }
 
     private void ExecuteCommand(string command, string[] args)
@@ -135,7 +135,7 @@ public class ActionController : ResponsiveController
                 NC_ACT_NOTICE_CMD($"Admin level is {_session.Character.Power}.");
                 break;
             case "coord":
-                NC_ACT_NOTICE_CMD($"Location[{_session.Object.Tag.Handle}] : {_session.Object.Map.Name}/{_session.Object.Transform.X}/{_session.Object.Transform.Y}/{_session.Object.Transform.R}");
+                NC_ACT_NOTICE_CMD($"Location[{_session.Ref.Tag.Handle}] : {_session.Ref.Map.Name}/{_session.Ref.Transform.X}/{_session.Ref.Transform.Y}/{_session.Ref.Transform.R}");
                 break;
             case "linkto":
                 var instance = Map.InstanceAtOrDefault(args[1]);
@@ -146,7 +146,7 @@ public class ActionController : ResponsiveController
                     return;
                 }
 
-                _session.Object.Teleport(
+                _session.Ref.Teleport(
                     map: instance.Serial,
                     id: instance.Id,
                     transform: (float.TryParse(args.ElementAtOrDefault(2), out var x) && float.TryParse(args.ElementAtOrDefault(3), out var y)) ? new Transform(x, y) : null);

@@ -1,11 +1,9 @@
 // Copyright © Spatial. All rights reserved.
 
-using System.Linq;
 using Ignite.Assets.Types;
 using Ignite.Models;
 using Spatial.Extensions;
 using Spatial.Networking;
-using Spatial.Structures;
 
 namespace Ignite.Contracts;
 

@@ -8,7 +8,6 @@ using Serilog;
 using Spatial.Mathematics;
 using Spatial.Simulation;
 using Spatial.Structures;
-using System;
 
 namespace Ignite.Systems;
 

@@ -4,6 +4,7 @@ using Ignite.Assets.Types;
 using Spatial.Extensions;
 using Spatial.Structures;
 using System;
+using System.Collections.Generic;
 
 namespace Ignite.Models;
 
@@ -77,7 +78,7 @@ public class Inventory
                 }
             }
         }
-        
+
         if (item.Lot > 0)
         {
             item.Inventory = _type;
@@ -105,5 +106,20 @@ public class Inventory
     public T[] ToArray<T>(Func<Item, T> selector)
     {
         return _items.ToDenseArray(selector);
+    }
+
+    /// <summary>
+    /// Get the inventory's <see cref="IEnumerator{Item}"/>.
+    /// </summary>
+    /// <returns>An <see cref="IEnumerator{Item}"/>.</returns>
+    public IEnumerator<Item> GetEnumerator()
+    {
+        foreach (var item in _items.ToArray())
+        {
+            if (item is not null)
+            {
+                yield return item;
+            }
+        }
     }
 }

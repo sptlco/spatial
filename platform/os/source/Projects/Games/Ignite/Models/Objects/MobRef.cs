@@ -14,14 +14,14 @@ public class MobRef : ObjectRef
     /// <summary>
     /// Create a new <see cref="MobRef"/>.
     /// </summary>
-    /// <param name="map">The <see cref="Map"/> the mob is in.</param>
+    /// <param name="map">The <see cref="Map"/> the <see cref="Components.Mob"/> is in.</param>
     /// <param name="entity">The <see cref="Entity"/> to reference.</param>
     public MobRef(Map map, Entity entity) : base(map, entity) { }
 
     /// <summary>
-    /// The referenced <see cref="Mob"/>.
+    /// The referenced <see cref="Components.Mob"/>.
     /// </summary>
-    public Mob Object => Get<Mob>();
+    public Mob Mob => Get<Mob>();
 
     /// <summary>
     /// Convert the <see cref="MobRef"/> to a <see cref="string"/>.
@@ -29,6 +29,6 @@ public class MobRef : ObjectRef
     /// <returns>A <see cref="string"/>.</returns>
     public override string ToString()
     {
-        return MobInfo.Load(Object.Id).Client.Name;
+        return MobInfo.Load(Mob.Id).Client.Name;
     }
 }

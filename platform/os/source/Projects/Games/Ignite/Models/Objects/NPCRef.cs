@@ -8,7 +8,7 @@ using Spatial.Simulation;
 namespace Ignite.Models.Objects;
 
 /// <summary>
-/// A reference to an NPC <see cref="Object"/>.
+/// A reference to an NPC <see cref="NPC"/>.
 /// </summary>
 public class NPCRef : ObjectRef
 {
@@ -20,9 +20,9 @@ public class NPCRef : ObjectRef
     public NPCRef(Map map, Entity entity) : base(map, entity) { }
 
     /// <summary>
-    /// The referenced <see cref="NPC"/>.
+    /// The referenced <see cref="Components.NPC"/>.
     /// </summary>
-    public NPC Object => Get<NPC>();
+    public NPC NPC => Get<NPC>();
 
     /// <summary>
     /// The NPC's <see cref="Components.Gate"/>.
@@ -35,7 +35,7 @@ public class NPCRef : ObjectRef
     /// <param name="player">The <see cref="PlayerRef"/> interacting with the <see cref="NPCRef"/>.</param>
     public void Play(PlayerRef player)
     {
-        switch (Object.Role)
+        switch (NPC.Role)
         {
             case NPCRole.Gate when Gate is Gate gate:
                 var field = Field.Find(gate.Map);
@@ -61,6 +61,6 @@ public class NPCRef : ObjectRef
     /// <returns>A <see cref="string"/>.</returns>
     public override string ToString()
     {
-        return MobInfo.Load(Object.Id).Client.Name;
+        return MobInfo.Load(NPC.Id).Client.Name;
     }
 }

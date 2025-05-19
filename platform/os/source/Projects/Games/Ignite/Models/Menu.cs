@@ -1,7 +1,5 @@
 // Copyright © Spatial. All rights reserved.
 
-using Ignite.Components;
-
 namespace Ignite.Models;
 
 /// <summary>

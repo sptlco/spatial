@@ -209,7 +209,6 @@ public abstract class ObjectRef
         if (this is PlayerRef player)
         {
             player.Character.Position = transform;
-            player.Character.Rotation = transform.R;
         }
     }
 

@@ -21,7 +21,7 @@ public record struct Transform(
     /// <summary>
     /// The transform's direction.
     /// </summary>
-    public readonly byte D => (byte) (R / 2.0F - (R < 0 ? 76.0F : 0));
+    public readonly byte D => GetDirection();
 
     /// <summary>
     /// Add two vectors.
@@ -273,5 +273,17 @@ public record struct Transform(
     public override readonly string ToString()
     {
         return $"({X}, {Y})";
+    }
+
+    private readonly byte GetDirection()
+    {
+        var direction = (int) (R / 2);
+
+        if (direction < 0)
+        {
+            direction |= (direction - 76) & 0xFF;
+        }
+
+        return (byte) direction;
     }
 }

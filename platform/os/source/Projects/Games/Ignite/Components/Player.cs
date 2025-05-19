@@ -33,7 +33,7 @@ public record struct Player(
             type: ObjectType.Player,
             attributes: new Attributes(Strength: parameters.Strength, Endurance: parameters.Constitution, Dexterity: parameters.Dexterity, Intelligence: parameters.Intelligence, Wisdom: parameters.Wizdom, Spirit: parameters.MentalPower),
             vitals: new Vitals(Level: session.Character.Level, Health: new Parameter(Maximum: parameters.MaxHP, Current: session.Character.HP)),
-            transform: new Transform(X: session.Character.Position.X, Y: session.Character.Position.Y, R: session.Character.Rotation),
+            transform: new Transform(X: session.Character.Position.X, Y: session.Character.Position.Y),
             speed: new Speed(Walking: Common.WalkSpeed, Running: Common.RunSpeed, Attacking: Common.AttackSpeed));
 
         if (session.Character.Class >= Class.Crusader)

@@ -103,8 +103,20 @@ public class PlayerRef : ObjectRef
     /// </summary>
     /// <param name="map">The <see cref="Map"/> to teleport the <see cref="PlayerRef"/> to.</param>
     /// <param name="id">The map's identification number.</param>
+    /// <param name="x">An X-coordinate.</param>
+    /// <param name="y">A Y-coordinate.</param>
+    public void Teleport(in byte map, in int id, in float x, in float y)
+    {
+        Teleport(map, id, new Transform(x, y));
+    }
+
+    /// <summary>
+    /// Teleport the <see cref="PlayerRef"/> to a location.
+    /// </summary>
+    /// <param name="map">The <see cref="Map"/> to teleport the <see cref="PlayerRef"/> to.</param>
+    /// <param name="id">The map's identification number.</param>
     /// <param name="transform">The <see cref="Transform"/> to teleport the <see cref="PlayerRef"/> to.</param>
-    public void Teleport(byte map, int id, Transform? transform = null)
+    public void Teleport(byte map, in int id, Transform? transform = null)
     {
         var destination = Map.InstanceAtOrDefault(map, id) ?? Map.Load(Field.Find(map), id);
 
@@ -117,8 +129,7 @@ public class PlayerRef : ObjectRef
 
         character.Update(c => {
             c.Map = map;
-            c.Position = new Point2D(X: transform.Value.X, Y: transform.Value.Y);
-            c.Rotation = transform.Value.R;
+            c.Position = transform.Value;
         });
 
         _map = destination;

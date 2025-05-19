@@ -3,7 +3,6 @@
 using Ignite.Components;
 using Ignite.Models;
 using Ignite.Models.Objects;
-using Spatial.Compute.Jobs;
 using Spatial.Extensions;
 using Spatial.Simulation;
 
@@ -35,7 +34,7 @@ public class Janitor : System
         map.Dynamic(_query, (Future future, in (Entity, Chunk) _, in Entity entity) => {
             ref var player = ref map.Space.Get<Player>(entity);
 
-            if (World.Time - player.Saved >= Time.FromSeconds(2))
+            if (World.Time - player.Saved >= Time.FromSeconds(6))
             {
                 player.Saved = World.Time;
 

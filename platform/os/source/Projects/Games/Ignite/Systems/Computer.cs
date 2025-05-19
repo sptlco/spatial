@@ -64,6 +64,11 @@ public class Computer : System
 
                 transform =  (transform + velocity * (float) delta.Seconds) with { R = rotation };
 
+                if (mover is PlayerRef player)
+                {
+                    player.Character.Position = transform;
+                }
+
                 // If the object is close enough to its destination, snap it to the position.
                 // Also, stop moving by removing the object's velocity.
 
@@ -73,12 +78,6 @@ public class Computer : System
                 }
                 else
                 {
-                    if (mover is PlayerRef player)
-                    {
-                        player.Character.Position = transform;
-                        player.Character.Rotation = transform.R;
-                    }
-
                     future.Add<Dirty>(entity);
                 }
 

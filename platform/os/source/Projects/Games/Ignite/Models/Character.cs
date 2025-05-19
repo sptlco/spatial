@@ -85,11 +85,6 @@ public class Character : Document
     public Point2D Position { get; set; }
 
     /// <summary>
-    /// The direction in which the <see cref="Character"/> is facing.
-    /// </summary>
-    public float Rotation { get; set; }
-
-    /// <summary>
     /// The character's current health points.
     /// /// </summary>
     public uint HP { get; set; }

@@ -22,10 +22,10 @@ public record struct Player(
     /// Create a new <see cref="Player"/>.
     /// </summary>
     /// <param name="session">The player's <see cref="Models.Session"/>.</param>
-    /// <param name="character">The player's <see cref="Models.Character"/>.</param>
+    /// <param name="character">The player's <see cref="Character"/>.</param>
     /// <param name="map">The <see cref="Map"/> to create the <see cref="Player"/> in.</param>
     /// <returns>A <see cref="Player"/>.</returns>
-    public static PlayerRef Ref(Session session, Map map)
+    public static PlayerRef Reference(Session session, Map map)
     {
         var parameters = Param.Stats(session.Character.Class, session.Character.Level);
 

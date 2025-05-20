@@ -309,7 +309,7 @@ public partial class Map
     public Entity CreatePlainEntity(ObjectType type)
     {
         return _space.Create(
-            new Components.Object(),
+            new Behavior(),
             new Tag(Provision(type)));
     }
 
@@ -330,7 +330,7 @@ public partial class Map
         in Speed? speed = null)
     {
         return _space.Create(
-            new Components.Object(),
+            new Behavior(),
             new Tag(Provision(type)),
             vitals ?? new Vitals(),
             attributes ?? new Attributes(),

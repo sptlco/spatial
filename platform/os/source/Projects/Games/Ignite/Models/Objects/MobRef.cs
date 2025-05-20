@@ -7,7 +7,7 @@ using Spatial.Simulation;
 namespace Ignite.Models.Objects;
 
 /// <summary>
-/// A reference to a mob <see cref="Object"/>.
+/// A reference to a mob <see cref="Behavior"/>.
 /// </summary>
 public class MobRef : ObjectRef
 {
@@ -21,7 +21,7 @@ public class MobRef : ObjectRef
     /// <summary>
     /// The referenced <see cref="Components.Mob"/>.
     /// </summary>
-    public Mob Mob => Get<Mob>();
+    public Mob Value => Get<Mob>();
 
     /// <summary>
     /// Convert the <see cref="MobRef"/> to a <see cref="string"/>.
@@ -29,6 +29,6 @@ public class MobRef : ObjectRef
     /// <returns>A <see cref="string"/>.</returns>
     public override string ToString()
     {
-        return MobInfo.Load(Mob.Id).Client.Name;
+        return MobInfo.Load(Value.Id).Client.Name;
     }
 }

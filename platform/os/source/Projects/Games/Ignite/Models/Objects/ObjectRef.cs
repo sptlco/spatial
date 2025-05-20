@@ -40,9 +40,9 @@ public abstract class ObjectRef
     public Tag Tag => Get<Tag>();
 
     /// <summary>
-    /// The referenced <see cref="Components.Object"/>.
+    /// The object's <see cref="Components.Behavior"/>.
     /// </summary>
-    public ref Components.Object Object => ref Get<Components.Object>();
+    public ref Behavior Behavior => ref Get<Behavior>();
 
     /// <summary>
     /// The object's <see cref="Components.Transform"/>.

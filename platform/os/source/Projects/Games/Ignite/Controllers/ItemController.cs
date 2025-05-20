@@ -18,6 +18,6 @@ public class ItemController : AugmentedController
     [NETHANDLER(NETCOMMAND.NC_ITEM_EQUIP_REQ)]
     public void NC_ITEM_EQUIP_REQ(PROTO_NC_ITEM_EQUIP_REQ data)
     {
-        // ...
+        _player.Equip(_character.Inventory.ItemAt(data.slot));
     }
 }

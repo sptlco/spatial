@@ -6,7 +6,7 @@ using Spatial.Simulation;
 namespace Ignite.Models.Objects;
 
 /// <summary>
-/// A reference to a chunk <see cref="Object"/>.
+/// A reference to a chunk <see cref="Behavior"/>.
 /// </summary>
 public class ChunkRef : ObjectRef
 {
@@ -20,7 +20,7 @@ public class ChunkRef : ObjectRef
     /// <summary>
     /// The referenced <see cref="Components.Chunk"/>.
     /// </summary>
-    public Chunk Chunk => Get<Chunk>();
+    public Chunk Value => Get<Chunk>();
 
     /// <summary>
     /// Whether or not the <see cref="Components.Chunk"/> is disabled.
@@ -33,6 +33,6 @@ public class ChunkRef : ObjectRef
     /// <returns>A <see cref="string"/>.</returns>
     public override string ToString()
     {
-        return Object.ToString();
+        return Behavior.ToString();
     }
 }

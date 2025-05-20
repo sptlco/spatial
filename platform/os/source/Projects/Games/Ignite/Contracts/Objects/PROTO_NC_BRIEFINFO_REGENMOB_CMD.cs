@@ -79,7 +79,7 @@ public class PROTO_NC_BRIEFINFO_REGENMOB_CMD : ProtocolBuffer
     public PROTO_NC_BRIEFINFO_REGENMOB_CMD(ObjectRef reference)
     {
         handle = reference.Tag.Handle;
-        mobid = (reference as MobRef)?.Mob.Id ?? (reference as NPCRef)!.NPC.Id;
+        mobid = (reference as MobRef)?.Value.Id ?? (reference as NPCRef)!.Value.Id;
         coord = new SHINE_COORD_TYPE {
             dir = reference.Transform.D,
             xy = new SHINE_XY_TYPE {

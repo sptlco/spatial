@@ -2,6 +2,7 @@
 
 using Ignite.Assets.Types;
 using Ignite.Contracts;
+using Ignite.Models.Objects;
 using Spatial.Persistence;
 using Spatial.Simulation;
 using System.Collections.Concurrent;
@@ -226,6 +227,33 @@ public class Item : Document
     /// The item's upgraded options.
     /// </summary>
     public Dictionary<Option, float> UpgradeOptions { get; set; } = [];
+
+    /// <summary>
+    /// Equip the <see cref="Item"/>.
+    /// </summary>
+    /// <param name="player">The <see cref="PlayerRef"/> equipping the <see cref="Item"/>.</param>
+    public void Equip(PlayerRef player)
+    {
+        // ...
+    }
+
+    /// <summary>
+    /// Unequip the <see cref="Item"/>.
+    /// </summary>
+    /// <param name="player">The <see cref="PlayerRef"/> unequipping the <see cref="Item"/>.</param>
+    public void Unequip(PlayerRef player)
+    {
+        // ...
+    }
+
+    /// <summary>
+    /// Use the <see cref="Item"/>.
+    /// </summary>
+    /// <param name="player">The <see cref="PlayerRef"/> using the <see cref="Item"/>.</param>
+    public void Use(PlayerRef player)
+    {
+        // ...
+    }
 
     /// <summary>
     /// The position of a piece of furniture.

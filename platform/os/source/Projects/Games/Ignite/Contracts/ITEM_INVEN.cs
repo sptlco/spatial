@@ -6,7 +6,7 @@ using Spatial.Networking;
 namespace Ignite.Contracts;
 
 /// <summary>
-/// A <see cref="ProtocolBuffer"/> containing inventory data for an <see cref="Models.Item"/>.
+/// A <see cref="ProtocolBuffer"/> containing inventory data for an <see cref="Item"/>.
 /// </summary>
 public class ITEM_INVEN : ProtocolBuffer
 {

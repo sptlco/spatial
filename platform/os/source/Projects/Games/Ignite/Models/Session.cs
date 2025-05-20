@@ -1,5 +1,6 @@
 // Copyright © Spatial. All rights reserved.
 
+using Ignite.Contracts;
 using Ignite.Models.Objects;
 using Serilog;
 using Spatial.Mathematics;
@@ -67,7 +68,7 @@ public sealed class Session
     /// <summary>
     /// The session's <see cref="PlayerRef"/>.
     /// </summary>
-    public PlayerRef Ref { get; set; }
+    public PlayerRef Player { get; set; }
 
     /// <summary>
     /// The session's callback functions.
@@ -195,6 +196,28 @@ public sealed class Session
     public static Session?[] List() => _sessions.ToArray();
 
     /// <summary>
+    /// Issue a command to the session's world connection.
+    /// </summary>
+    /// <param name="command">The <see cref="NETCOMMAND"/> to issue.</param>
+    /// <param name="data">A <see cref="ProtocolBuffer"/>.</param>
+    /// <param name="dispose">Whether or not to dispose of the <see cref="ProtocolBuffer"/> after issuing.</param>
+    public void ToWorld(NETCOMMAND command, ProtocolBuffer data, bool dispose = true)
+    {
+        Models.World.Command(World, command, data, dispose);
+    }
+
+    /// <summary>
+    /// Issue a command to the session's map connection.
+    /// </summary>
+    /// <param name="command">The <see cref="NETCOMMAND"/> to issue.</param>
+    /// <param name="data">A <see cref="ProtocolBuffer"/>.</param>
+    /// <param name="dispose">Whether or not to dispose of the <see cref="ProtocolBuffer"/> after issuing.</param>
+    public void ToMap(NETCOMMAND command, ProtocolBuffer data, bool dispose = true)
+    {
+        Models.World.Command(Map, command, data, dispose);
+    }
+
+    /// <summary>
     /// Reference the <see cref="Session"/>.
     /// </summary>
     public Session Reference()
@@ -245,8 +268,8 @@ public sealed class Session
     {
         Log.Information("{User} logged out.", Account.Username);
 
-        Ref?.Release();
-        Ref = null!;
+        Player?.Release();
+        Player = null!;
 
         _pool.Add(_handle);
         _sessions.Remove(_handle);

@@ -484,23 +484,6 @@ public class ResponsiveController : AugmentedController
             });
     }
 
-    /// <summary>
-    /// Issue <see cref="NETCOMMAND.NC_ACT_NOTICE_CMD"/>.
-    /// </summary>
-    /// <param name="notice">A notice.</param>
-    protected void NC_ACT_NOTICE_CMD(string notice)
-    {
-        var bytes = Encoding.ASCII.GetBytes(notice);
-
-        World.Command(
-            connection: _session.Map,
-            command: NETCOMMAND.NC_ACT_NOTICE_CMD,
-            data: new PROTO_NC_ACT_NOTICE_CND {
-                len = (byte) bytes.Length,
-                content = bytes
-            });
-    }
-
     private static PROTO_NC_USER_LOGIN_ACK.WorldInfo[] GetWorlds()
     {
         return [new PROTO_NC_USER_LOGIN_ACK.WorldInfo {

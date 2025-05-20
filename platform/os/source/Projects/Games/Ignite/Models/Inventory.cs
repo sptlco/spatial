@@ -1,6 +1,5 @@
 // Copyright © Spatial. All rights reserved.
 
-using Ignite.Assets.Types;
 using Spatial.Extensions;
 using Spatial.Structures;
 using System;
@@ -107,15 +106,13 @@ public class Inventory
                 item.Slot = (byte) _items.Add(item);
 
                 item.Store();
-
-                // ...
+                item.Touch();
             }
 
             foreach (var (stack, _) in updates)
             {
                 stack.Save();
-
-                // ...
+                stack.Touch();
             }
         }
         catch (InvalidOperationException)

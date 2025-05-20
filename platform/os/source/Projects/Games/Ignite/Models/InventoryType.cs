@@ -8,6 +8,11 @@ namespace Ignite.Models;
 public enum InventoryType
 {
     /// <summary>
+    /// An inventory for guild academy rewards.
+    /// </summary>
+    Academy = 0,
+
+    /// <summary>
     /// An inventory containing rewarded items.
     /// </summary>
     Rewards = 2,

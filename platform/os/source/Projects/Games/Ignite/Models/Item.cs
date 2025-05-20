@@ -229,30 +229,21 @@ public class Item : Document
     public Dictionary<Option, float> UpgradeOptions { get; set; } = [];
 
     /// <summary>
-    /// Equip the <see cref="Item"/>.
+    /// Touch the <see cref="Item"/>, broadcasting an update.
     /// </summary>
-    /// <param name="player">The <see cref="PlayerRef"/> equipping the <see cref="Item"/>.</param>
-    public void Equip(PlayerRef player)
+    public void Touch()
     {
-        // ...
-    }
-
-    /// <summary>
-    /// Unequip the <see cref="Item"/>.
-    /// </summary>
-    /// <param name="player">The <see cref="PlayerRef"/> unequipping the <see cref="Item"/>.</param>
-    public void Unequip(PlayerRef player)
-    {
-        // ...
-    }
-
-    /// <summary>
-    /// Use the <see cref="Item"/>.
-    /// </summary>
-    /// <param name="player">The <see cref="PlayerRef"/> using the <see cref="Item"/>.</param>
-    public void Use(PlayerRef player)
-    {
-        // ...
+        switch (Inventory)
+        {
+            case InventoryType.Rewards:
+            case InventoryType.Furniture:
+            case InventoryType.Equipment:
+            case InventoryType.Character:
+            case InventoryType.House:
+            case InventoryType.Actions:
+                // ...
+                break;
+        }
     }
 
     /// <summary>

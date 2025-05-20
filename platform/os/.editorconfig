@@ -26,3 +26,6 @@ dotnet_diagnostic.CS8981.severity = none;
 
 # IDE0290: Use primary constructor
 dotnet_diagnostic.IDE0290.severity = none
+
+# IDE0042: Deconstruct variable declaration
+dotnet_diagnostic.IDE0042.severity = none

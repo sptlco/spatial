@@ -1,5 +1,6 @@
 // Copyright © Spatial. All rights reserved.
 
+using Ignite.Assets.Types;
 using Ignite.Contracts;
 using Spatial.Persistence;
 using Spatial.Simulation;
@@ -14,6 +15,8 @@ namespace Ignite.Models;
 [DocumentCollection(Collection.Items)]
 public class Item : Document
 {
+    private (ItemInfo Client, ItemInfoServer Server)? _data;
+
     /// <summary>
     /// The entity that owns the <see cref="Item"/>.
     /// </summary>
@@ -30,6 +33,11 @@ public class Item : Document
     public ushort ItemId { get; set; }
 
     /// <summary>
+    /// The item's data.
+    /// </summary>
+    public (ItemInfo Client, ItemInfoServer Server) Data => _data ??= ItemInfo.Read(ItemId);
+
+    /// <summary>
     /// The <see cref="InventoryType"/> the <see cref="Item"/> is stored in.
     /// </summary>
     public InventoryType Inventory { get; set; }
@@ -42,7 +50,7 @@ public class Item : Document
     /// <summary>
     /// The item's name.
     /// </summary>
-    public string Name { get; set; } = "";
+    public string Name { get; set; } = string.Empty;
 
     /// <summary>
     /// The posessed amount of the <see cref="Item"/>.

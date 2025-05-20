@@ -8,7 +8,7 @@ namespace Ignite.Assets.Types;
 [Name("ItemInfo.shn")]
 public class ItemInfo
 {
-	private static readonly (ConcurrentDictionary<ushort, ItemInfo> Client, ConcurrentDictionary<ushort, ItemInfoServer> Server) _cache = ([], []);
+	private static readonly ConcurrentDictionary<ushort, (ItemInfo Client, ItemInfoServer Server)> _cacheById = [];
 
 	public ushort ID { get; set; }
 
@@ -131,9 +131,8 @@ public class ItemInfo
 	/// <returns>An item's <see cref="ItemInfo"/>.</returns>
 	public static (ItemInfo Client, ItemInfoServer Server) Read(ushort item)
 	{
-		var client = _cache.Client.GetOrAdd(item, Asset.First<ItemInfo>("ItemInfo.shn", i => i.ID == item));
-		var server = _cache.Server.GetOrAdd(item, Asset.First<ItemInfoServer>("ItemInfoServer.shn", i => i.ID == item));
-
-		return (client, server);
+		return _cacheById.GetOrAdd(item, (
+			Client: Asset.First<ItemInfo>("ItemInfo.shn", i => i.ID == item),
+			Server: Asset.First<ItemInfoServer>("ItemInfoServer.shn", i => i.ID == item)));
 	}
 }

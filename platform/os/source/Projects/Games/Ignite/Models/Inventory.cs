@@ -54,37 +54,79 @@ public class Inventory
     public int Capacity => _items.Capacity;
 
     /// <summary>
+    /// Get the <see cref="Item"/> in a particular <see cref="Inventory"/> slot.
+    /// </summary>
+    /// <param name="slot">An <see cref="Inventory"/> slot.</param>
+    /// <returns>An <see cref="Item"/>.</returns>
+    public Item ItemAt(byte slot)
+    {
+        return _items.ElementAt(slot);
+    }
+
+    /// <summary>
+    /// Get the <see cref="Item"/> in a particular <see cref="Inventory"/> slot.
+    /// </summary>
+    /// <param name="slot">An <see cref="Inventory"/> slot.</param>
+    /// <returns>The <see cref="Item"/> if it exists, otherwise null.</returns>
+    public Item? ItemAtOrDefault(byte slot)
+    {
+        return _items.ElementAtOrDefault(slot);
+    }
+
+    /// <summary>
     /// Store an <see cref="Item"/> in the <see cref="Inventory"/>.
     /// </summary>
     /// <param name="item">The <see cref="Item"/> to store.</param>
     public void Store(Item item)
     {
-        var (client, _) = ItemInfo.Read(item.ItemId);
+        var updates = new Dictionary<Item, ulong>();
 
-        if (client.MaxLot > 1)
+        try
         {
-            for (var i = 0; item.Lot > 0 && i < _items.Capacity; i++)
+            if (item.Data.Client.MaxLot > 1)
             {
-                var stack = _items[i];
-
-                if (stack is not null && stack.ItemId == item.ItemId && stack.Lot < client.MaxLot)
+                for (var i = 0; item.Lot > 0 && i < _items.Capacity; i++)
                 {
-                    var lot = Math.Min(item.Lot, client.MaxLot - stack.Lot);
+                    var stack = _items[i];
 
-                    item.Lot -= lot;
-                    stack.Lot += lot;
+                    if (stack is not null && stack.ItemId == item.ItemId && stack.Lot < item.Data.Client.MaxLot)
+                    {
+                        var lot = Math.Min(item.Lot, item.Data.Client.MaxLot - stack.Lot);
 
-                    stack.Save();
+                        item.Lot -= lot;
+                        stack.Lot += lot;
+
+                        updates[stack] = lot;
+                    }
                 }
             }
+
+            if (item.Lot > 0)
+            {
+                item.Inventory = _type;
+                item.Slot = (byte) _items.Add(item);
+
+                item.Store();
+
+                // ...
+            }
+
+            foreach (var (stack, _) in updates)
+            {
+                stack.Save();
+
+                // ...
+            }
         }
-
-        if (item.Lot > 0)
+        catch (InvalidOperationException)
         {
-            item.Inventory = _type;
-            item.Slot = (byte) _items.Add(item);
+            foreach (var (stack, lot) in updates)
+            {
+                stack.Lot -= lot;
+                item.Lot += lot;
+            }
 
-            item.Store();
+            throw;
         }
     }
 

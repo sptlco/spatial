@@ -93,16 +93,6 @@ public sealed class PROTO_AVATARINFORMATION : ProtocolBuffer
     /// <param name="character">A <see cref="Character"/>.</param>
     public PROTO_AVATARINFORMATION(Character character)
     {
-        var items = new Item?[(int) ItemEquipEnum.MAX_ITEMEQUIPENUM];
-
-        foreach (var item in Document<Item>.List(i => i.Owner == character.Id && i.Inventory == InventoryType.Equipment))
-        {
-            items[item.Slot] = item;
-        }
-
-        ushort GetItemId(ItemEquipEnum equipment) => items[(byte) equipment]?.ItemId ?? ushort.MaxValue;
-        byte GetLevel(ItemEquipEnum equipment) => items[(byte) equipment]?.Upgrades ?? 0;
-
         chrregnum = character.Id;
         name = character.Name;
         level = character.Level;
@@ -117,35 +107,7 @@ public sealed class PROTO_AVATARINFORMATION : ProtocolBuffer
             haircolor = character.Appearance.Hair.Color,
             faceshape = character.Appearance.Face
         };
-        equip = new PROTO_EQUIPMENT {
-            Equ_Head = GetItemId(ItemEquipEnum.ITEMEQUIP_HAT),
-            Equ_Mouth = GetItemId(ItemEquipEnum.ITEMEQUIP_MOUTH),
-            Equ_RightHand = GetItemId(ItemEquipEnum.ITEMEQUIP_RIGHTHAND),
-            Equ_Body = GetItemId(ItemEquipEnum.ITEMEQUIP_BODY),
-            Equ_LeftHand = GetItemId(ItemEquipEnum.ITEMEQUIP_LEFTHAND),
-            Equ_Pant = GetItemId(ItemEquipEnum.ITEMEQUIP_LEG),
-            Equ_Boot = GetItemId(ItemEquipEnum.ITEMEQUIP_SHOES),
-            Equ_AccBoot = GetItemId(ItemEquipEnum.ITEMEQUIP_SHOESACC),
-            Equ_AccPant = GetItemId(ItemEquipEnum.ITEMEQUIP_LEGACC),
-            Equ_AccBody = GetItemId(ItemEquipEnum.ITEMEQUIP_BODYACC),
-            Equ_AccHeadA = GetItemId(ItemEquipEnum.ITEMEQUIP_HATACC),
-            Equ_MiniMon_R = GetItemId(ItemEquipEnum.ITEMEQUIP_MINIMON_R),
-            Equ_Eye = GetItemId(ItemEquipEnum.ITEMEQUIP_EYE),
-            Equ_AccLeftHand = GetItemId(ItemEquipEnum.ITEMEQUIP_LEFTHANDACC),
-            Equ_AccRightHand = GetItemId(ItemEquipEnum.ITEMEQUIP_RIGHTHANDACC),
-            Equ_AccBack = GetItemId(ItemEquipEnum.ITEMEQUIP_BACK),
-            Equ_CosEff = GetItemId(ItemEquipEnum.ITEMEQUIP_COSEFF),
-            Equ_AccHip = GetItemId(ItemEquipEnum.ITEMEQUIP_TAIL),
-            Equ_Minimon = GetItemId(ItemEquipEnum.ITEMEQUIP_MINIMON),
-            Equ_AccShield = GetItemId(ItemEquipEnum.ITEMEQUIP_SHIELDACC),
-            upgrade = new PROTO_EQUIPMENT.PROTO_UPGRADES {
-                lefthand = GetLevel(ItemEquipEnum.ITEMEQUIP_LEFTHAND),
-                righthand = GetLevel(ItemEquipEnum.ITEMEQUIP_RIGHTHAND),
-                body = GetLevel(ItemEquipEnum.ITEMEQUIP_BODY),
-                leg = GetLevel(ItemEquipEnum.ITEMEQUIP_LEG),
-                shoes = GetLevel(ItemEquipEnum.ITEMEQUIP_SHOES),
-            },
-        };
+        equip = new PROTO_EQUIPMENT(character);
         nKQHandle = character.KQ?.Handle ?? 0;
         sKQMapName = character.KQ?.Map ?? string.Empty;
         nKQCoord = new SHINE_XY_TYPE {

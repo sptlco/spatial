@@ -25,7 +25,7 @@ public record struct Player(
     /// <param name="character">The player's <see cref="Character"/>.</param>
     /// <param name="map">The <see cref="Map"/> to create the <see cref="Player"/> in.</param>
     /// <returns>A <see cref="Player"/>.</returns>
-    public static PlayerRef Reference(Session session, Map map)
+    public static PlayerRef CreateRef(Session session, Map map)
     {
         var parameters = Param.Stats(session.Character.Class, session.Character.Level);
 
@@ -33,7 +33,7 @@ public record struct Player(
             type: ObjectType.Player,
             attributes: new Attributes(Strength: parameters.Strength, Endurance: parameters.Constitution, Dexterity: parameters.Dexterity, Intelligence: parameters.Intelligence, Wisdom: parameters.Wizdom, Spirit: parameters.MentalPower),
             vitals: new Vitals(Level: session.Character.Level, Health: new Parameter(Maximum: parameters.MaxHP, Current: session.Character.HP)),
-            transform: new Transform(X: session.Character.Position.X, Y: session.Character.Position.Y),
+            transform: new Transform(X: session.Character.Position.X, Y: session.Character.Position.Y, R: 180F),
             speed: new Speed(Walking: Common.WalkSpeed, Running: Common.RunSpeed, Attacking: Common.AttackSpeed));
 
         if (session.Character.Class >= Class.Crusader)

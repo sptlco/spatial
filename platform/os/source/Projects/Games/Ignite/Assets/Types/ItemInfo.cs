@@ -22,7 +22,7 @@ public class ItemInfo
 
 	public uint MaxLot { get; set; }
 
-	public uint Equip { get; set; }
+	public ItemEquipEnum Equip { get; set; }
 
 	public uint ItemAuctionGroup { get; set; }
 

@@ -247,6 +247,16 @@ public class Item : Document
     }
 
     /// <summary>
+    /// Move the <see cref="Item"/> to an <see cref="Models.Inventory"/>.
+    /// </summary>
+    /// <param name="inventory">The <see cref="Models.Inventory"/> to move the <see cref="Item"/> to.</param>
+    /// <param name="slot">The <see cref="Models.Inventory"/> slot to move the <see cref="Item"/> to.</param>
+    public void Move(Inventory inventory, byte slot)
+    {
+        // ...
+    }
+
+    /// <summary>
     /// The position of a piece of furniture.
     /// </summary>
     public class Placement

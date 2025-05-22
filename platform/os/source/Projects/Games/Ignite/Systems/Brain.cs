@@ -40,7 +40,7 @@ public class Brain : System
                 var transform = map.Space.Get<Transform>(entity);
                 var destination = Transform.Around(transform, 100.0F);
 
-                map.ObjectAt(entity).Walk(destination, future);
+                map.Ref(entity).Walk(destination, future);
             }
         });
     }

@@ -7,6 +7,8 @@ using Serilog;
 using Spatial.Mathematics;
 using Spatial.Simulation;
 using Spatial.Structures;
+using System;
+using System.Drawing;
 
 namespace Ignite.Systems;
 
@@ -57,24 +59,26 @@ public class Computer : System
 
             if (map.Space.Has<Destination>(entity) && map.Space.Has<Velocity>(entity))
             {
-                var mover = map.ObjectAt(entity);
+                var mover = map.Ref(entity);
                 var destination = map.Space.Get<Destination>(entity);
                 var velocity = map.Space.Get<Velocity>(entity);
                 var rotation = Transform.Heading(transform, destination);
 
-                transform =  (transform + velocity * (float) delta.Seconds) with { R = rotation };
+                var distance = Point2D.Distance(transform.X, transform.Y, destination.X, destination.Y);
+                var speed = MathF.Sqrt(velocity.X * velocity.X + velocity.Y * velocity.Y);
+                var length = speed * (float) delta.Seconds;
+                var stop = Math.Max(distance - length, 0) <= Constants.E;
+
+                transform = stop ? new Transform(destination.X, destination.Y, rotation) : transform + (velocity * (float) delta.Seconds) with { R = rotation };
 
                 if (mover is PlayerRef player)
                 {
                     player.Character.Position = transform;
                 }
 
-                // If the object is close enough to its destination, snap it to the position.
-                // Also, stop moving by removing the object's velocity.
-
-                if (Point2D.Distance(transform.X, transform.Y, destination.X, destination.Y) <= Constants.UNIT * 0.20F)
+                if (stop)
                 {
-                    mover.Stop(transform, future);
+                    mover.Stop(future);
                 }
                 else
                 {
@@ -123,8 +127,8 @@ public class Computer : System
             {
                 _collisions.Add(pair);
 
-                var first = map.ObjectAt(pair.First);
-                var second = map.ObjectAt(pair.Second);
+                var first = map.Ref(pair.First);
+                var second = map.Ref(pair.Second);
 
                 first.Enter(second);
                 second.Enter(first);
@@ -141,8 +145,8 @@ public class Computer : System
 
                 if (map.Space.Exists(pair.First) && map.Space.Exists(pair.Second))
                 {
-                    var first = map.ObjectAt(pair.First);
-                    var second = map.ObjectAt(pair.Second);
+                    var first = map.Ref(pair.First);
+                    var second = map.Ref(pair.Second);
 
                     first.Exit(second);
                     second.Exit(first);

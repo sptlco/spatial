@@ -105,11 +105,32 @@ public class Grid
     /// Query the <see cref="Grid"/>.
     /// </summary>
     /// <param name="position">The position to query.</param>
+    /// <returns>A list of entities in the space.</returns>
+    public IEnumerable<Entity> Query(in Transform position)
+    {
+        return Query(position, _map.Data.Info.Sight);
+    }
+
+    /// <summary>
+    /// Query the <see cref="Grid"/>.
+    /// </summary>
+    /// <param name="position">The position to query.</param>
     /// <param name="radius">The radius to query.</param>
     /// <returns>A list of entities in the space.</returns>
     public IEnumerable<Entity> Query(in Transform position, in float radius)
     {
         return Query(position, radius, null);
+    }
+
+    /// <summary>
+    /// Query the <see cref="Grid"/>.
+    /// </summary>
+    /// <param name="position">The position to query.</param>
+    /// <param name="type">The <see cref="ObjectType"/> to query.</param>
+    /// <returns>A list of entities in the space.</returns>
+    public IEnumerable<Entity> Query(in Transform position, ObjectType type, Func<Entity, bool>? filter = null)
+    {
+        return Query(position, _map.Data.Info.Sight, type, filter);
     }
 
     /// <summary>
@@ -129,6 +150,18 @@ public class Grid
     /// </summary>
     /// <param name="x">An X-coordinate.</param>
     /// <param name="y">A Y-coordinate.</param>
+    /// <param name="type">The <see cref="ObjectType"/> to query.</param>
+    /// <returns>A list of entities in the space.</returns>
+    public IEnumerable<Entity> Query(in float x, in float y, ObjectType type, Func<Entity, bool>? filter = null)
+    {
+        return Query(x, y, _map.Data.Info.Sight, type, filter);
+    }
+
+    /// <summary>
+    /// Query the <see cref="Grid"/>.
+    /// </summary>
+    /// <param name="x">An X-coordinate.</param>
+    /// <param name="y">A Y-coordinate.</param>
     /// <param name="radius">The radius to query.</param>
     /// <param name="type">The <see cref="ObjectType"/> to query.</param>
     /// <returns>A list of entities in the space.</returns>
@@ -141,8 +174,18 @@ public class Grid
     /// Query the <see cref="Grid"/>.
     /// </summary>
     /// <param name="position">The position to query.</param>
+    /// <param name="type">The <see cref="ObjectType"/> to query.</param>
+    /// <returns>A list of entities in the space.</returns>
+    public IEnumerable<Entity> Query(in Transform position, Func<Entity, bool>? filter = null)
+    {
+        return Query(position, _map.Data.Info.Sight, filter);
+    }
+
+    /// <summary>
+    /// Query the <see cref="Grid"/>.
+    /// </summary>
+    /// <param name="position">The position to query.</param>
     /// <param name="radius">The radius to query.</param>
-    /// <param name="bias">A value added to the normalized position.</param>
     /// <param name="type">The <see cref="ObjectType"/> to query.</param>
     /// <returns>A list of entities in the space.</returns>
     public IEnumerable<Entity> Query(in Transform position, in float radius, Func<Entity, bool>? filter = null)
@@ -156,7 +199,6 @@ public class Grid
     /// <param name="px">The X-coordinate to query.</param>
     /// <param name="px">The Y-coordinate to query.</param>
     /// <param name="radius">The radius to query.</param>
-    /// <param name="bias">A value added to the normalized position.</param>
     /// <param name="type">The <see cref="ObjectType"/> to query.</param>
     /// <returns>A list of entities in the space.</returns>
     public IEnumerable<Entity> Query(float px, float py, float radius, Func<Entity, bool>? filter = null)

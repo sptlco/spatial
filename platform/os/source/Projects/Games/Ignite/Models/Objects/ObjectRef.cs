@@ -40,6 +40,11 @@ public abstract class ObjectRef
     public Tag Tag => Get<Tag>();
 
     /// <summary>
+    /// The object's name.
+    /// </summary>
+    public string Name => Tag.ToString();
+
+    /// <summary>
     /// The object's <see cref="Components.Behavior"/>.
     /// </summary>
     public ref Behavior Behavior => ref Get<Behavior>();
@@ -287,58 +292,10 @@ public abstract class ObjectRef
     }
 
     /// <summary>
-    /// Move the <see cref="ObjectRef"/>.
-    /// </summary>
-    /// <param name="transform">A target <see cref="Transform"/>.</param>
-    public void Move(in Transform transform, in float speed, Future? future = default) => Move(transform.X, transform.Y, speed, future);
-
-    /// <summary>
-    /// Move the <see cref="ObjectRef"/>.
-    /// </summary>
-    /// <param name="x">An X-coordinate.</param>
-    /// <param name="y">A Y-coordinate.</param>
-    public void Move(in float x, in float y, in float speed, Future? future = default)
-    {
-        var dx = x - Transform.X;
-        var dy = y - Transform.Y;
-
-        var distance = 1.0F / MathF.Sqrt(dx * dx + dy * dy + 1e-8F);
-
-        var vx = dx * distance * speed;
-        var vy = dy * distance * speed;
-
-        var destination = new Destination(X: x, Y: y);
-        var velocity = new Velocity(X: vx, Y: vy);
-
-        if (future is not null)
-        {
-            future.Add(UID, destination);
-            future.Add(UID, velocity);
-        }
-        else
-        {
-            Add(destination);
-            Add(velocity);
-        }
-
-        Log.Debug("{Object} moving from {Transform} to {Destination}, {Map}.", this, Transform, destination, _map.Name);
-    }
-
-    /// <summary>
     /// Stop the <see cref="ObjectRef"/>.
     /// </summary>
-    /// <param name="transform">The object's location.</param>
-    public void Stop(in Transform transform, Future? future = default) => Stop(transform.X, transform.Y, future);
-
-    /// <summary>
-    /// Stop the <see cref="ObjectRef"/>.
-    /// </summary>
-    /// <param name="x">The object's X-coordinate.</param>
-    /// <param name="y">The object's Y-coordinate.</param>
-    public void Stop(in float x, in float y, Future? future = default)
+    public void Stop(Future? future = default)
     {
-        Snap(x, y);
-
         if (future is not null)
         {
             future.Remove<Destination>(UID);
@@ -421,6 +378,15 @@ public abstract class ObjectRef
     }
 
     /// <summary>
+    /// Drop an <see cref="Item"/>.
+    /// </summary>
+    /// <param name="item">The <see cref="Item"/> to drop.</param>
+    public void Drop(Item item)
+    {
+        // ...
+    }
+
+    /// <summary>
     /// Focus on another <see cref="ObjectRef"/>.
     /// </summary>
     /// <param name="other">Another <see cref="ObjectRef"/>.</param>
@@ -450,7 +416,34 @@ public abstract class ObjectRef
     /// <returns>A string representation of the <see cref="ObjectRef"/>.</returns>
     public override string ToString()
     {
-        return Tag.ToString();
+        return Name;
+    }
+
+    private void Move(in float x, in float y, in float speed, Future? future = default)
+    {
+        var dx = x - Transform.X;
+        var dy = y - Transform.Y;
+
+        var distance = 1.0F / MathF.Sqrt(dx * dx + dy * dy + 1e-8F);
+
+        var vx = dx * distance * speed;
+        var vy = dy * distance * speed;
+
+        var destination = new Destination(X: x, Y: y);
+        var velocity = new Velocity(X: vx, Y: vy);
+
+        if (future is not null)
+        {
+            future.Add(UID, destination);
+            future.Add(UID, velocity);
+        }
+        else
+        {
+            Add(destination);
+            Add(velocity);
+        }
+
+        Log.Debug("{Object} moving from {Transform} to {Destination}, {Map}.", this, Transform, destination, _map.Name);
     }
 
     private void UntargetImpl()

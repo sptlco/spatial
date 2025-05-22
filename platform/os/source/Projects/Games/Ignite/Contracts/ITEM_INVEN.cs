@@ -28,6 +28,17 @@ public class ITEM_INVEN : ProtocolBuffer
     /// <summary>
     /// Create a new <see cref="ITEM_INVEN"/>.
     /// </summary>
+    /// <param name="slot">An <see cref="Inventory"/> slot.</param>
+    /// <param name="inventory">The inventory's <see cref="InventoryType"/>.</param>
+    public ITEM_INVEN(byte slot, InventoryType inventory)
+    {
+        Pos = slot;
+        Type = (byte) inventory;
+    }
+
+    /// <summary>
+    /// Create a new <see cref="ITEM_INVEN"/>.
+    /// </summary>
     /// <param name="item">An <see cref="Item"/>.</param>
     public ITEM_INVEN(Item item)
     {

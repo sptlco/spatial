@@ -66,8 +66,8 @@ public class Vision : System
             {
                 _visibility.Add(pair);
 
-                var other = map.ObjectAt(pair.First);
-                var player = map.ObjectAt(pair.Second);
+                var other = map.Ref(pair.First);
+                var player = map.Ref(pair.Second);
 
                 player.Focus(other);
 
@@ -90,8 +90,8 @@ public class Vision : System
 
                 if (map.Space.Exists(pair.First) && map.Space.Exists(pair.Second))
                 {
-                    var other = map.ObjectAt(pair.First);
-                    var player = map.ObjectAt(pair.Second);
+                    var other = map.Ref(pair.First);
+                    var player = map.Ref(pair.Second);
 
                     player.Blur(other);
 

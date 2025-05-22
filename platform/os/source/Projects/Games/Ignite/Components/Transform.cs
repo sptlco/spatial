@@ -173,9 +173,9 @@ public record struct Transform(
     /// <param name="a">The starting position.</param>
     /// <param name="b">The target position.</param>
     /// <returns>The direction from point <paramref name="a"/> to destination <paramref name="b"/>.</returns>
-    public static float Heading(Transform a, Destination b)
+    public static float Heading(in Transform a, in Destination b)
     {
-        return (270 - Point2D.Heading(a.X, a.Y, b.X, b.Y) + 360) % 360;
+        return (90 - Point2D.Heading(a.X, a.Y, b.X, b.Y) + 360) % 360;
     }
 
     /// <summary>

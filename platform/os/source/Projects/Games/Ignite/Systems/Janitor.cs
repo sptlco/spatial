@@ -39,7 +39,7 @@ public class Janitor : System
                 player.Saved = World.Time;
 
                 future.Remove<Dirty>(entity);
-                map.ObjectAt<PlayerRef>(entity).Character.Save();
+                map.Ref<PlayerRef>(entity).Character.Save();
             }
         });
     }

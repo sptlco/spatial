@@ -5,11 +5,14 @@ using Ignite.Assets.Types;
 using Ignite.Components;
 using Ignite.Contracts;
 using Ignite.Contracts.Actions;
+using Ignite.Contracts.Items;
 using Ignite.Contracts.Maps;
 using Ignite.Contracts.Menu;
 using Ignite.Contracts.Objects;
 using Spatial.Extensions;
 using Spatial.Simulation;
+using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace Ignite.Models.Objects;
@@ -40,6 +43,11 @@ public class PlayerRef : ObjectRef
     /// The player's <see cref="Models.Character"/>.
     /// </summary>
     public Character Character => Session.Character;
+
+    /// <summary>
+    /// The player's name.
+    /// </summary>
+    public new string Name => Character.Name;
 
     /// <summary>
     /// Interact with an <see cref="NPCRef"/>.
@@ -159,7 +167,7 @@ public class PlayerRef : ObjectRef
         });
 
         _map = destination;
-        _entity = Player.Reference(session, _map).UID;
+        _entity = Player.CreateRef(session, _map).UID;
 
         Session.Player = this;
 
@@ -178,34 +186,116 @@ public class PlayerRef : ObjectRef
     /// <param name="item">The <see cref="Item"/> to equip.</param>
     public void Equip(Item item)
     {
-        // ...
-    }
+        var from = item.Slot;
+        var to = (byte) item.Data.Client.Equip;
 
-    /// <summary>
-    /// Unequip an <see cref="Item"/>.
-    /// </summary>
-    /// <param name="item">The <see cref="Item"/> to unequip.</param>
-    public void Unequip(Item item)
-    {
-        // ...
-    }
+        // Get the item that is currently equipped in the target slot.
+        // If the item exists, we should swap it with the item being equipped.
 
-    /// <summary>
-    /// Use an <see cref="Item"/>.
-    /// </summary>
-    /// <param name="item">The <see cref="Item"/> to use.</param>
-    public void Use(Item item)
-    {
-        // ...
-    }
+        var piece = Character.Equipment.ItemAtOrDefault(to);
 
-    /// <summary>
-    /// Drop an <see cref="Item"/>.
-    /// </summary>
-    /// <param name="item">The <see cref="Item"/> to drop.</param>
-    public void Drop(Item item)
-    {
-        // ...
+        if (piece is not null)
+        {
+            // As mentioned above, we swap the existing piece with the new piece.
+
+            piece.Inventory = item.Inventory;
+            piece.Slot = from;
+        }
+
+        item.Inventory = InventoryType.Equipment;
+        item.Slot = to;
+
+        // Whether there was an existing piece or not, the original inventory 
+        // slot will be updated accordingly (to either null or the old piece).
+
+        Character.Inventory[from] = piece;
+        Character.Equipment[item.Slot] = item;
+
+        // Save both items, and ensure the client's inventory state is 
+        // properly updated after equipment.
+
+        item.Save();
+        piece?.Save();
+
+        Session.ToMap(
+            command: NETCOMMAND.NC_ITEM_EQUIPCHANGE_CMD,
+            data: new PROTO_NC_ITEM_EQUIPCHANGE_CMD {
+                exchange = new ITEM_INVEN(from, Character.Inventory.Type),
+                location = item.Slot,
+                item = new SHINE_ITEM_STRUCT(item)
+            });
+
+        Session.ToMap(
+            command: NETCOMMAND.NC_ITEM_CELLCHANGE_CMD,
+            data: new PROTO_NC_ITEM_CELLCHANGE_CMD {
+                exchange = new ITEM_INVEN(to, Character.Equipment.Type),
+                location = new ITEM_INVEN(from, Character.Inventory.Type),
+                item = new SHINE_ITEM_STRUCT(piece)
+            });
+
+        Session.ToMap(
+            command: NETCOMMAND.NC_ITEM_EQUIP_ACK,
+            data: new PROTO_NC_ITEM_EQUIP_ACK {
+                // ...
+            });
+
+        // Broadcast the equipment change to surrounding objects.
+        // Determine which type of message to broadcast based on the item's type.
+
+        switch (item.Data.Client.Class)
+        {
+            case ItemClassEnum.ITEMCLASS_WEAPON:
+                var title = Asset
+                    .View<WeaponTitleData>("WeaponTitleData.shn", t => t.MobID == item.TitleMobId && item.Kills.GetValueOrDefault(t.MobID) >= t.MobKillCount)
+                    .OrderBy(t => t.MobKillCount)
+                    .LastOrDefault();
+
+                Map.MulticastExclusive2D(
+                    command: NETCOMMAND.NC_BRIEFINFO_CHANGEWEAPON_CMD,
+                    position: Transform,
+                    exclude: [Tag.Handle],
+                    data: new PROTO_NC_BRIEFINFO_CHANGEWEAPON_CMD {
+                        upgradeinfo = new PROTO_NC_BRIEFINFO_CHANGEUPGRADE_CMD {
+                            handle = Tag.Handle,
+                            item = item.ItemId,
+                            upgrade = item.Upgrades,
+                            nSlotNum = item.Slot
+                        },
+                        currentmobid = title?.MobID ?? ushort.MaxValue,
+                        currentkilllevel = title?.Level ?? 0
+                    });
+
+                break;
+            case ItemClassEnum.ITEMCLASS_SHIELD:
+            case ItemClassEnum.ITEMCLASS_ARMOR:
+            case ItemClassEnum.ITEMCLASS_BOOT:
+            case ItemClassEnum.ITEMCLASS_AMULET:
+            case ItemClassEnum.ITEMCLASS_BRACELET:
+                Map.MulticastExclusive2D(
+                    command: NETCOMMAND.NC_BRIEFINFO_CHANGEUPGRADE_CMD,
+                    position: Transform,
+                    exclude: [Tag.Handle],
+                    data: new PROTO_NC_BRIEFINFO_CHANGEUPGRADE_CMD {
+                        handle = Tag.Handle,
+                        item = item.ItemId,
+                        upgrade = item.Upgrades,
+                        nSlotNum = item.Slot
+                    });
+
+                break;
+            default:
+                Map.MulticastExclusive2D(
+                    command: NETCOMMAND.NC_BRIEFINFO_CHANGEDECORATE_CMD,
+                    position: Transform,
+                    exclude: [Tag.Handle],
+                    data: new PROTO_NC_BRIEFINFO_CHANGEDECORATE_CMD {
+                        handle = Tag.Handle,
+                        item = item.ItemId,
+                        nSlotNum = item.Slot
+                    });
+
+                break;
+        }
     }
 
     /// <summary>
@@ -232,6 +322,9 @@ public class PlayerRef : ObjectRef
             case NPCRef:
                 Session.ToMap(NETCOMMAND.NC_BRIEFINFO_REGENMOB_CMD, new PROTO_NC_BRIEFINFO_REGENMOB_CMD(other));
                 break;
+            case PlayerRef player:
+                Session.ToMap(NETCOMMAND.NC_BRIEFINFO_LOGINCHARACTER_CMD, new PROTO_NC_BRIEFINFO_LOGINCHARACTER_CMD(player));
+                break;
         }
     }
 
@@ -255,6 +348,6 @@ public class PlayerRef : ObjectRef
     /// <returns>A <see cref="string"/>.</returns>
     public override string ToString()
     {
-        return Character.Name;
+        return Name;
     }
 }

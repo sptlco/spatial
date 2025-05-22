@@ -1,5 +1,6 @@
 // Copyright © Spatial. All rights reserved.
 
+using Ignite.Models;
 using Spatial.Networking;
 
 namespace Ignite.Contracts;
@@ -113,6 +114,49 @@ public sealed class PROTO_EQUIPMENT : ProtocolBuffer
     /// Equipped item upgrades.
     /// </summary>
     public PROTO_UPGRADES upgrade;
+
+    /// <summary>
+    /// Create a new <see cref="PROTO_EQUIPMENT"/>.
+    /// </summary>
+    public PROTO_EQUIPMENT() { }
+
+    /// <summary>
+    /// Create a new <see cref="PROTO_EQUIPMENT"/>.
+    /// </summary>
+    /// <param name="character">A <see cref="Character"/> to serialize.</param>
+    public PROTO_EQUIPMENT(Character character)
+    {
+        ushort GetItemId(ItemEquipEnum equipment) => character.Equipment[(byte) equipment]?.ItemId ?? ushort.MaxValue;
+        byte GetLevel(ItemEquipEnum equipment) => character.Equipment[(byte) equipment]?.Upgrades ?? 0;
+
+        Equ_Head = GetItemId(ItemEquipEnum.ITEMEQUIP_HAT);
+        Equ_Mouth = GetItemId(ItemEquipEnum.ITEMEQUIP_MOUTH);
+        Equ_RightHand = GetItemId(ItemEquipEnum.ITEMEQUIP_RIGHTHAND);
+        Equ_Body = GetItemId(ItemEquipEnum.ITEMEQUIP_BODY);
+        Equ_LeftHand = GetItemId(ItemEquipEnum.ITEMEQUIP_LEFTHAND);
+        Equ_Pant = GetItemId(ItemEquipEnum.ITEMEQUIP_LEG);
+        Equ_Boot = GetItemId(ItemEquipEnum.ITEMEQUIP_SHOES);
+        Equ_AccBoot = GetItemId(ItemEquipEnum.ITEMEQUIP_SHOESACC);
+        Equ_AccPant = GetItemId(ItemEquipEnum.ITEMEQUIP_LEGACC);
+        Equ_AccBody = GetItemId(ItemEquipEnum.ITEMEQUIP_BODYACC);
+        Equ_AccHeadA = GetItemId(ItemEquipEnum.ITEMEQUIP_HATACC);
+        Equ_MiniMon_R = GetItemId(ItemEquipEnum.ITEMEQUIP_MINIMON_R);
+        Equ_Eye = GetItemId(ItemEquipEnum.ITEMEQUIP_EYE);
+        Equ_AccLeftHand = GetItemId(ItemEquipEnum.ITEMEQUIP_LEFTHANDACC);
+        Equ_AccRightHand = GetItemId(ItemEquipEnum.ITEMEQUIP_RIGHTHANDACC);
+        Equ_AccBack = GetItemId(ItemEquipEnum.ITEMEQUIP_BACK);
+        Equ_CosEff = GetItemId(ItemEquipEnum.ITEMEQUIP_COSEFF);
+        Equ_AccHip = GetItemId(ItemEquipEnum.ITEMEQUIP_TAIL);
+        Equ_Minimon = GetItemId(ItemEquipEnum.ITEMEQUIP_MINIMON);
+        Equ_AccShield = GetItemId(ItemEquipEnum.ITEMEQUIP_SHIELDACC);
+        upgrade = new PROTO_UPGRADES {
+            lefthand = GetLevel(ItemEquipEnum.ITEMEQUIP_LEFTHAND),
+            righthand = GetLevel(ItemEquipEnum.ITEMEQUIP_RIGHTHAND),
+            body = GetLevel(ItemEquipEnum.ITEMEQUIP_BODY),
+            leg = GetLevel(ItemEquipEnum.ITEMEQUIP_LEG),
+            shoes = GetLevel(ItemEquipEnum.ITEMEQUIP_SHOES)
+        };
+    }
 
     /// <summary>
     /// Deserialize the <see cref="ProtocolBuffer"/>.

@@ -92,7 +92,6 @@ public class ActionController : AugmentedController
     [NETHANDLER(NETCOMMAND.NC_ACT_MOVEWALK_CMD)]
     public void NC_ACT_MOVEWALK_CMD(PROTO_NC_ACT_MOVEWALK_CMD data)
     {
-        _player.Snap(data.from.x, data.from.y);
         _player.Walk(data.to.x, data.to.y);
     }
 
@@ -103,7 +102,6 @@ public class ActionController : AugmentedController
     [NETHANDLER(NETCOMMAND.NC_ACT_MOVERUN_CMD)]
     public void NC_ACT_MOVERUN_CMD(PROTO_NC_ACT_MOVERUN_CMD data)
     {
-        _player.Snap(data.from.x, data.from.y);
         _player.Run(data.to.x, data.to.y);
     }
 
@@ -114,7 +112,7 @@ public class ActionController : AugmentedController
     [NETHANDLER(NETCOMMAND.NC_ACT_STOP_REQ)]
     public void NC_ACT_STOP_REQ(PROTO_NC_ACT_STOP_REQ data)
     {
-        _player.Stop(data.loc.x, data.loc.y);
+        _player.Stop();
     }
 
     /// <summary>
@@ -124,7 +122,7 @@ public class ActionController : AugmentedController
     [NETHANDLER(NETCOMMAND.NC_ACT_NPCCLICK_CMD)]
     public void NC_ACT_NPCCLICK_CMD(PROTO_NC_ACT_NPCCLICK_CMD data)
     {
-        _player.Interact(_map.ObjectAt<NPCRef>(data.npchandle));
+        _player.Interact(_map.Ref<NPCRef>(data.npchandle));
     }
 
     private void ExecuteCommand(string command, string[] args)

@@ -1,5 +1,6 @@
 // Copyright © Spatial. All rights reserved.
 
+using Ignite.Contracts;
 using Spatial.Extensions;
 using Spatial.Structures;
 using System;

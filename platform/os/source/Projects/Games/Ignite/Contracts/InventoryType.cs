@@ -1,9 +1,11 @@
 // Copyright © Spatial. All rights reserved.
 
-namespace Ignite.Models;
+using Ignite.Models;
+
+namespace Ignite.Contracts;
 
 /// <summary>
-/// The type of inventory an <see cref="Item"/> is stored in.
+/// The type of <see cref="Inventory"/> an <see cref="Item"/> is stored in.
 /// </summary>
 public enum InventoryType
 {

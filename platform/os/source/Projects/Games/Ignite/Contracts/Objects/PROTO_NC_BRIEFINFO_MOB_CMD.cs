@@ -2,6 +2,8 @@
 
 using Spatial.Networking;
 
+namespace Ignite.Contracts.Objects;
+
 /// <summary>
 /// A <see cref="ProtocolBuffer"/> for <see cref="NETCOMMAND.NC_BRIEFINFO_MOB_CMD"/>.
 /// </summary>
@@ -44,7 +46,7 @@ public class PROTO_NC_BRIEFINFO_MOB_CMD : ProtocolBuffer
         {
             mob.Dispose();
         }
-        
+
         base.Dispose();
     }
 }

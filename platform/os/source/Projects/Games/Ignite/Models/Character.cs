@@ -2,6 +2,7 @@
 
 using Ignite.Assets;
 using Ignite.Assets.Types;
+using Ignite.Contracts;
 using Spatial.Extensions;
 using Spatial.Mathematics;
 using Spatial.Persistence;

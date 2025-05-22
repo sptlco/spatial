@@ -8,7 +8,9 @@ using Ignite.Contracts.Characters;
 using Ignite.Contracts.Combat;
 using Ignite.Contracts.Maps;
 using Ignite.Contracts.Miscellaneous;
+using Ignite.Contracts.Objects;
 using Ignite.Models;
+using Ignite.Models.Objects;
 using Serilog;
 using Spatial.Extensions;
 using Spatial.Networking;
@@ -52,7 +54,7 @@ public class MapController : ResponsiveController
         _session.Reference();
 
         _session.Map = _connection;
-        _session.Player = Player.Reference(_session, Map.InstanceAt(_session.Character.Map));
+        _session.Player = Player.CreateRef(_session, Map.InstanceAt(_session.Character.Map));
 
         World.Command(
             connection: _connection,
@@ -172,11 +174,12 @@ public class MapController : ResponsiveController
     [NETHANDLER(NETCOMMAND.NC_MAP_LOGINCOMPLETE_CMD)]
     public void NC_MAP_LOGINCOMPLETE_CMD(PROTO_NC_MAP_LOGINCOMPLETE_CMD _)
     {
-        var mobs = _session.Player.Map.Query(ObjectType.Mob, ObjectType.NPC).ToList();
+        var mobs = _map.Query(ObjectType.Mob, ObjectType.NPC).ToList();
+        var characters = _map.Grid.Query(_player.Transform, ObjectType.Player, p => p != _player.UID);
 
         for (var i = 0; i < mobs.Count; i += 0x1C)
         {
-            var part = mobs.Skip(i).Take(0x1C).ToArray(mob => new PROTO_NC_BRIEFINFO_REGENMOB_CMD(_session.Player.Map.ObjectAt(mob)));
+            var part = mobs.Skip(i).Take(0x1C).ToArray(mob => new PROTO_NC_BRIEFINFO_REGENMOB_CMD(_map.Ref(mob)));
 
             World.Command(
                 connection: _connection,
@@ -184,6 +187,19 @@ public class MapController : ResponsiveController
                 data: new PROTO_NC_BRIEFINFO_MOB_CMD {
                     mobnum = (byte) part.Length,
                     mobs = part
+                });
+        }
+
+        for (var i = 0; i < characters.Count(); i += 0x1C)
+        {
+            var part = characters.Skip(i).Take(0x1C).ToArray(character => new PROTO_NC_BRIEFINFO_LOGINCHARACTER_CMD(_map.Ref<PlayerRef>(character)));
+
+            World.Command(
+                connection: _connection,
+                command: NETCOMMAND.NC_BRIEFINFO_CHARACTER_CMD,
+                data: new PROTO_NC_BRIEFINFO_CHARACTER_CMD {
+                    charnum = (byte) part.Length,
+                    chars = part
                 });
         }
 
@@ -228,6 +244,12 @@ public class MapController : ResponsiveController
             connection: _session.World,
             command: NETCOMMAND.NC_MISC_SERVER_TIME_NOTIFY_CMD,
             data: new PROTO_NC_MISC_SERVER_TIME_NOTIFY_CMD());
+
+        _map.MulticastExclusive2D(
+            command: NETCOMMAND.NC_BRIEFINFO_LOGINCHARACTER_CMD,
+            data: new PROTO_NC_BRIEFINFO_LOGINCHARACTER_CMD(_player),
+            position: _player.Transform,
+            exclude: [_player.Tag.Handle]);
 
         Log.Information("{Player} logged into {Map}.", _session.Player, _session.Player.Map.Name);
     }

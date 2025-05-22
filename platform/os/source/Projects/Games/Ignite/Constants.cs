@@ -39,6 +39,11 @@ public static class Constants
     public const float NPC_VIEW_RANGE = UNIT;
 
     /// <summary>
+    /// A small epsilon used to detect distance-to-destination for moving entities.
+    /// </summary>
+    public const float E = 0.001F;
+
+    /// <summary>
     /// The default port the server listens on.
     /// </summary>
     public const int DefaultServerPort = 9010;

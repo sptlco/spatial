@@ -279,7 +279,7 @@ public partial class Map
     /// <returns>An <see cref="ObjectRef"/>.</returns>
     public ObjectRef CreatePlainObject(ObjectType type)
     {
-        return ObjectAt(CreatePlainEntity(type));
+        return Ref(CreatePlainEntity(type));
     }
 
     /// <summary>
@@ -298,7 +298,7 @@ public partial class Map
         in Transform? transform = null,
         in Speed? speed = null)
     {
-        return ObjectAt(CreateEntity(type, vitals, attributes, transform, speed));
+        return Ref(CreateEntity(type, vitals, attributes, transform, speed));
     }
 
     /// <summary>
@@ -353,9 +353,9 @@ public partial class Map
     /// </summary>
     /// <param name="handle">The object's handle.</param>
     /// <returns>An <see cref="ObjectRef"/>.</returns>
-    public T ObjectAt<T>(ushort handle) where T : ObjectRef
+    public T Ref<T>(ushort handle) where T : ObjectRef
     {
-        return (T) ObjectAt(handle);
+        return (T) Ref(handle);
     }
 
     /// <summary>
@@ -363,9 +363,9 @@ public partial class Map
     /// </summary>
     /// <param name="entity">The <see cref="Entity"/> to reference.</param>
     /// <returns>An <see cref="ObjectRef"/>.</returns>
-    public T ObjectAt<T>(Entity entity) where T : ObjectRef
+    public T Ref<T>(Entity entity) where T : ObjectRef
     {
-        return (T) ObjectAt(entity);
+        return (T) Ref(entity);
     }
 
     /// <summary>
@@ -373,9 +373,9 @@ public partial class Map
     /// </summary>
     /// <param name="handle">The object's handle.</param>
     /// <returns>An <see cref="ObjectRef"/>.</returns>
-    public ObjectRef ObjectAt(ushort handle)
+    public ObjectRef Ref(ushort handle)
     {
-        return ObjectAt(EntityAt(handle));
+        return Ref(EntityAt(handle));
     }
 
     /// <summary>
@@ -383,7 +383,7 @@ public partial class Map
     /// </summary>
     /// <param name="entity">The <see cref="Entity"/> to reference.</param>
     /// <returns>An <see cref="ObjectRef"/>.</returns>
-    public ObjectRef ObjectAt(Entity entity)
+    public ObjectRef Ref(Entity entity)
     {
         return ObjectRef.Create(this, entity);
     }

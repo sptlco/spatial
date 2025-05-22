@@ -20,7 +20,7 @@ public class ObjectController : AugmentedController
     {
         if (_session.Player.Map.Exists(data.nMyHnd))
         {
-            _session.Player.Focus(_session.Player.Map.ObjectAt(data.hnd));
+            _session.Player.Focus(_session.Player.Map.Ref(data.hnd));
         }
     }
 }

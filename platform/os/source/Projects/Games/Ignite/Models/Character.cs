@@ -46,29 +46,29 @@ public class Character : Document
     public string Name { get; set; }
 
     /// <summary>
-    /// The character's <see cref="Models.Race"/>.
+    /// The character's <see cref="Contracts.CharacterRace"/>.
     /// </summary>
-    public Race Race { get; set; }
+    public CharacterRace Race { get; set; }
 
     /// <summary>
-    /// The character's <see cref="Models.Class"/>.
+    /// The character's <see cref="Contracts.CharacterClass"/>.
     /// </summary>
-    public Class Class { get; set; }
+    public CharacterClass Class { get; set; }
 
     /// <summary>
-    /// The character's base <see cref="Models.Class"/>.
+    /// The character's base <see cref="Contracts.CharacterClass"/>.
     /// </summary>
-    public Class BaseClass => GetBaseClass();
+    public CharacterClass BaseClass => GetBaseClass();
 
     /// <summary>
-    /// The character's <see cref="Models.Gender"/>.
+    /// The character's <see cref="Contracts.Gender"/>.
     /// </summary>
     public Gender Gender { get; set; }
 
     /// <summary>
     /// The character's <see cref="Models.Appearance"/>.
     /// </summary>
-    public Appearance Appearance { get; set; } = new();
+    public Appearance Shape { get; set; } = new();
 
     /// <summary>
     /// The character's level.
@@ -108,7 +108,7 @@ public class Character : Document
     /// <summary>
     /// The character's statistical <see cref="Models.Archetype"/>.
     /// </summary>
-    public Archetype Archetype { get; set; } = new();
+    public Archetype Build { get; set; } = new();
 
     /// <summary>
     /// The character's current HP stone count.
@@ -172,7 +172,7 @@ public class Character : Document
     /// <summary>
     /// Configurable options for the <see cref="Character"/>.
     /// </summary>
-    public Options Options { get; set; } = new();
+    public GameOptions Options { get; set; } = new();
 
     /// <summary>
     /// The character's chat color.
@@ -196,8 +196,8 @@ public class Character : Document
         uint account,
         byte slot,
         string name,
-        Race race,
-        Class @class,
+        CharacterRace race,
+        CharacterClass @class,
         Gender gender,
         byte hairStyle,
         byte hairColor,
@@ -218,12 +218,12 @@ public class Character : Document
             XP = (ulong) long.Parse(defaults.InitEXP),
             HP = (uint) defaults.HP,
             SP = (uint) defaults.SP,
-            LP = (uint) (@class == Class.Crusader ? SingleData.MaxLP : 0),
+            LP = (uint) (@class == CharacterClass.Crusader ? SingleData.MaxLP : 0),
             HPStones = (ushort) defaults.HPSoul,
             SPStones = (ushort) defaults.SPSoul,
             Money = (ulong) defaults.Money,
             Power = 100,
-            Appearance = new Appearance {
+            Shape = new Appearance {
                 Hair = (hairStyle, hairColor),
                 Face = face
             }
@@ -269,15 +269,139 @@ public class Character : Document
         this.Remove();
     }
 
-    private Class GetBaseClass()
+    private CharacterClass GetBaseClass()
     {
         return Class switch {
-            >= Class.Crusader => Class.Crusader,
-            >= Class.Trickster => Class.Trickster,
-            >= Class.Mage => Class.Mage,
-            >= Class.Archer => Class.Archer,
-            >= Class.Cleric => Class.Cleric,
-            _ => Class.Fighter
+            >= CharacterClass.Crusader => CharacterClass.Crusader,
+            >= CharacterClass.Trickster => CharacterClass.Trickster,
+            >= CharacterClass.Mage => CharacterClass.Mage,
+            >= CharacterClass.Archer => CharacterClass.Archer,
+            >= CharacterClass.Cleric => CharacterClass.Cleric,
+            _ => CharacterClass.Fighter
         };
+    }
+
+    /// <summary>
+    /// The physical appearance of a <see cref="Character"/>.
+    /// </summary>
+    public class Appearance
+    {
+        /// <summary>
+        /// The avatar's hair.
+        /// </summary>
+        public (byte Style, byte Color) Hair { get; set; }
+
+        /// <summary>
+        /// The avatar's face.
+        /// </summary>
+        public byte Face { get; set; }
+    }
+
+    /// <summary>
+    /// A character's core stat distribution.
+    /// </summary>
+    public class Archetype
+    {
+        /// <summary>
+        /// The character's strength points.
+        /// </summary>
+        public byte Strength { get; set; }
+
+        /// <summary>
+        /// The character's constitute points.
+        /// </summary>
+        public byte Endurance { get; set; }
+
+        /// <summary>
+        /// The character's dexterity points.
+        /// </summary>
+        public byte Dexterity { get; set; }
+
+        /// <summary>
+        /// The character's intelligence points.
+        /// </summary>
+        public byte Intelligence { get; set; }
+
+        /// <summary>
+        /// The character's wisdom points.
+        /// </summary>
+        public byte Wisdom { get; set; }
+
+        /// <summary>
+        /// The character's spirit points.
+        /// </summary>
+        public byte Spirit { get; set; }
+
+        /// <summary>
+        /// The character's stat point count.
+        /// </summary>
+        public byte Points { get; set; }
+    }
+
+    /// <summary>
+    /// An character's active kingdom quest.
+    /// </summary>
+    public class KingdomQuest
+    {
+        /// <summary>
+        /// The kingdom quest's handle.
+        /// </summary>
+        public uint Handle { get; set; }
+
+        /// <summary>
+        /// The map the <see cref="KingdomQuest"/> is taking place in.
+        /// </summary>
+        public string Map { get; set; }
+
+        /// <summary>
+        /// The character's position within the <see cref="KingdomQuest"/>.
+        /// </summary>
+        public Point2D Position { get; set; }
+
+        /// <summary>
+        /// The time the <see cref="KingdomQuest"/> began.
+        /// </summary>
+        public DateTime Time { get; set; }
+    }
+
+    /// <summary>
+    /// Configurable options for a <see cref="Character"/>.
+    /// </summary>
+    public class GameOptions
+    {
+        /// <summary>
+        /// The character's shortcut options.
+        /// </summary>
+        public byte[] Shortcuts { get; set; } = [];
+
+        /// <summary>
+        /// The character's shortcut size options.
+        /// </summary>
+        public byte[] ShortcutSize { get; set; } = [];
+
+        /// <summary>
+        /// The character's sound options.
+        /// </summary>
+        public byte[] Sound { get; set; } = [];
+
+        /// <summary>
+        /// The character's video options.
+        /// </summary>
+        public byte[] Video { get; set; } = [];
+
+        /// <summary>
+        /// The character's game options.
+        /// </summary>
+        public byte[] Game { get; set; } = [];
+
+        /// <summary>
+        /// The character's window options.
+        /// </summary>
+        public byte[] Windows { get; set; } = [];
+
+        /// <summary>
+        /// The character's key mappings.
+        /// </summary>
+        public byte[] Keys { get; set; } = [];
     }
 }

@@ -156,9 +156,9 @@ public class PROTO_NC_BRIEFINFO_LOGINCHARACTER_CMD : ProtocolBuffer
             race = player.Character.Race,
             chrclass = player.Character.Class,
             gender = player.Character.Gender,
-            hairtype = player.Character.Appearance.Hair.Style,
-            haircolor = player.Character.Appearance.Hair.Color,
-            faceshape = player.Character.Appearance.Face
+            hairtype = player.Character.Shape.Hair.Style,
+            haircolor = player.Character.Shape.Hair.Color,
+            faceshape = player.Character.Shape.Face
         };
 
         switch (player.Behavior.Mode)

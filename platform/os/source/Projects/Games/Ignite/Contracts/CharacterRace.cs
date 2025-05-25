@@ -1,10 +1,12 @@
 // Copyright © Spatial. All rights reserved.
 
-namespace Ignite.Models;
+using Ignite.Models;
+
+namespace Ignite.Contracts;
 
 /// <summary>
 /// Classifies the race of an <see cref="Character"/>.
 /// </summary>
-public enum Race
+public enum CharacterRace
 {
 }

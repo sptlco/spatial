@@ -1,5 +1,6 @@
 // Copyright © Spatial. All rights reserved.
 
+using Serilog;
 using Spatial.Compute.Jobs.Commands;
 using System.Collections.Concurrent;
 
@@ -36,15 +37,17 @@ internal sealed class ParallelForJob : ParallelJob
     /// <returns>A <see cref="ParallelForJob"/>.</returns>
     public static ParallelForJob Create(int iterations, int batchSize, Action<int> function, BatchStrategy batchStrategy = BatchStrategy.Auto)
     {
-        if (_jobs.TryTake(out var job))
-        {
-            job._iterations = iterations;
-            job._completed = 0;
-            job._batchSize = CalculateBatchSize(iterations, batchSize, batchStrategy);
-            job._function = function;
+        // if (_jobs.TryTake(out var job))
+        // {
+        //     job.Reset();
 
-            return job;
-        }
+        //     job._iterations = iterations;
+        //     job._completed = 0;
+        //     job._batchSize = CalculateBatchSize(iterations, batchSize, batchStrategy);
+        //     job._function = function;
+
+        //     return job;
+        // }
 
         return new(iterations, batchSize, function, batchStrategy);
     }
@@ -81,10 +84,10 @@ internal sealed class ParallelForJob : ParallelJob
     /// </summary>
     public override void Dispose()
     {
-        if (_jobs.Count < Constants.MaxPoolSize)
-        {
-            _jobs.Add(this);
-        }
+        // if (_jobs.Count < Constants.MaxPoolSize)
+        // {
+        //     _jobs.Add(this);
+        // }
     }
 }
 
@@ -127,6 +130,8 @@ internal sealed class BatchJob : CommandJob
     {
         if (_jobs.TryTake(out var job))
         {
+            job.Reset();
+
             job._parent = parent;
             job._start = start;
             job._end = end;
@@ -144,7 +149,15 @@ internal sealed class BatchJob : CommandJob
     {
         for (var i = _start; i < _end; i++)
         {
-            _parent.Execute(i);
+            try
+            {
+                _parent.Execute(i);
+            }
+            catch (Exception exception)
+            {
+                Log.Error(exception, "Iteration {Iteration}/{Iterations} failed.", i + 1, _parent.Iterations);
+                throw;
+            }
         }
     }
 

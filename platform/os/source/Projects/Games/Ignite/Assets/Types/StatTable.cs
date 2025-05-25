@@ -1,7 +1,7 @@
 // Copyright © Spatial. All rights reserved.
 
 using System.Text.Json.Serialization;
-using Ignite.Models;
+using Ignite.Contracts;
 
 namespace Ignite.Assets.Types;
 
@@ -117,42 +117,42 @@ public class StatTable
     /// <summary>
     /// Get a character's stat points.
     /// </summary>
-    /// <param name="character">The character's <see cref="Class"/>.</param>
+    /// <param name="character">The character's <see cref="CharacterClass"/>.</param>
     /// <param name="level">The character's level.</param>
     /// <returns>The character's stat points.</returns>
-    public static byte Points(Class character, byte level)
+    public static byte Points(CharacterClass character, byte level)
     {
         var stats = Asset.First<StatTable>("World/ChrCommon.txt/StatTable", c => c.Level == level);
 
         return character switch
         {
-            Class.Fighter => (byte) stats.Fig,
-            Class.CleverFighter => (byte) stats.Cfig,
-            Class.Warrior => (byte) stats.War,
-            Class.Gladiator => (byte) stats.Gla,
-            Class.Knight => (byte) stats.Kni,
-            Class.Cleric => (byte) stats.Cle,
-            Class.HighCleric => (byte) stats.Hcle,
-            Class.Paladin => (byte) stats.Pal,
-            Class.HolyKnight => (byte) stats.Hol,
-            Class.Guardian => (byte) stats.Gua,
-            Class.Archer => (byte) stats.Arc,
-            Class.HawkArcher => (byte) stats.Harc,
-            Class.Scout => (byte) stats.Sco,
-            Class.SharpShooter => (byte) stats.Sha,
-            Class.Ranger => (byte) stats.Ran,
-            Class.Mage => (byte) stats.Mag,
-            Class.WizMage => (byte) stats.Wmag,
-            Class.Enchanter => (byte) stats.Enc,
-            Class.Warlock => (byte) stats.Warl,
-            Class.Wizard => (byte) stats.Wiz,
-            Class.Trickster => (byte) stats.Jok,
-            Class.Gambit => (byte) stats.Chs,
-            Class.Renegade => (byte) stats.Cru,
-            Class.Spectre => (byte) stats.Cls,
-            Class.Reaper => (byte) stats.Ass,
-            Class.Crusader => (byte) stats.Sen,
-            Class.Templar => (byte) stats.Sav,
+            CharacterClass.Fighter => (byte) stats.Fig,
+            CharacterClass.CleverFighter => (byte) stats.Cfig,
+            CharacterClass.Warrior => (byte) stats.War,
+            CharacterClass.Gladiator => (byte) stats.Gla,
+            CharacterClass.Knight => (byte) stats.Kni,
+            CharacterClass.Cleric => (byte) stats.Cle,
+            CharacterClass.HighCleric => (byte) stats.Hcle,
+            CharacterClass.Paladin => (byte) stats.Pal,
+            CharacterClass.HolyKnight => (byte) stats.Hol,
+            CharacterClass.Guardian => (byte) stats.Gua,
+            CharacterClass.Archer => (byte) stats.Arc,
+            CharacterClass.HawkArcher => (byte) stats.Harc,
+            CharacterClass.Scout => (byte) stats.Sco,
+            CharacterClass.SharpShooter => (byte) stats.Sha,
+            CharacterClass.Ranger => (byte) stats.Ran,
+            CharacterClass.Mage => (byte) stats.Mag,
+            CharacterClass.WizMage => (byte) stats.Wmag,
+            CharacterClass.Enchanter => (byte) stats.Enc,
+            CharacterClass.Warlock => (byte) stats.Warl,
+            CharacterClass.Wizard => (byte) stats.Wiz,
+            CharacterClass.Trickster => (byte) stats.Jok,
+            CharacterClass.Gambit => (byte) stats.Chs,
+            CharacterClass.Renegade => (byte) stats.Cru,
+            CharacterClass.Spectre => (byte) stats.Cls,
+            CharacterClass.Reaper => (byte) stats.Ass,
+            CharacterClass.Crusader => (byte) stats.Sen,
+            CharacterClass.Templar => (byte) stats.Sav,
             _ => 0,
         };
     }

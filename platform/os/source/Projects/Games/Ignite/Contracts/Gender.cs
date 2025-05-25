@@ -1,6 +1,8 @@
 // Copyright © Spatial. All rights reserved.
 
-namespace Ignite.Models;
+using Ignite.Models;
+
+namespace Ignite.Contracts;
 
 /// <summary>
 /// Classifies the gender of a <see cref="Character"/>.

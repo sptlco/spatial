@@ -103,9 +103,9 @@ public sealed class PROTO_AVATARINFORMATION : ProtocolBuffer
             race = character.Race,
             chrclass = character.Class,
             gender = character.Gender,
-            hairtype = character.Appearance.Hair.Style,
-            haircolor = character.Appearance.Hair.Color,
-            faceshape = character.Appearance.Face
+            hairtype = character.Shape.Hair.Style,
+            haircolor = character.Shape.Hair.Color,
+            faceshape = character.Shape.Face
         };
         equip = new PROTO_EQUIPMENT(character);
         nKQHandle = character.KQ?.Handle ?? 0;

@@ -15,7 +15,7 @@ namespace Spatial.Compute;
 internal static class Processor
 {
     private static Agent[] _agents;
-    private static ConcurrentDictionary<long, Job> _jobs;
+    private static ConcurrentDictionary<string, Job> _jobs;
     private static ConcurrentDictionary<Job, StrongBox<int>> _dependencies;
     private static int _running;
     private static uint _next;
@@ -105,7 +105,7 @@ internal static class Processor
     /// Finalize a <see cref="Job"/> that was executed.
     /// </summary>
     /// <param name="jobId">The <see cref="Job"/> to finalize.</param>
-    public static void Finalize(long jobId)
+    public static void Finalize(string jobId)
     {
         if (_jobs.TryRemove(jobId, out var job))
         {

@@ -1,11 +1,13 @@
 // Copyright © Spatial. All rights reserved.
 
-namespace Ignite.Models;
+using Ignite.Models;
+
+namespace Ignite.Contracts;
 
 /// <summary>
 /// Specifies the role of an <see cref="Character"/>.
 /// </summary>
-public enum Class
+public enum CharacterClass
 {
     Fighter = 1,
     CleverFighter = 2,

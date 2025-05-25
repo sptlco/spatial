@@ -1,6 +1,7 @@
 // Copyright © Spatial. All rights reserved.
 
 using System.Runtime.CompilerServices;
+using Spatial.Compute.Jobs;
 
 namespace Spatial.Simulation;
 
@@ -59,16 +60,13 @@ public sealed class Universe : IDisposable
     /// <param name="delta"><see cref="Time"/> passed since the last update.</param>
     public void Update(Time delta)
     {
-        _systems.ForEach(s => s.BeforeUpdate(this));
-        _systems.ForEach(s => s.Update(this, delta));
-        _systems.ForEach(s => s.AfterUpdate(this));
+        _systems.ForEach(system => system.BeforeUpdate(this));
+        _systems.ForEach(system => system.Update(this, delta));
+        _systems.ForEach(system => system.AfterUpdate(this));
 
         lock (_lock)
         {
-            foreach (var space in _spaces)
-            {
-                space.Update(delta);
-            }
+            Job.ParallelFor(_spaces, space => space.Update(delta));
         }
     }
 

@@ -32,7 +32,6 @@ public class MapController : ResponsiveController
     {
         Monitor().Authenticate(data.chardata.wldmanhandle);
 
-
         for (var i = SHN_DATA_FILE_INDEX.SHN_Abstate; i < SHN_DATA_FILE_INDEX.SHN_MaxCnt; i++)
         {
             var asset = Asset.Get<Asset>($"{i.ToString().Replace("SHN_", "")}.shn");
@@ -83,12 +82,12 @@ public class MapController : ResponsiveController
                     }
                 },
                 statdistribute = new CHARSTATDISTSTR {
-                    Strength = _session.Character.Archetype.Strength,
-                    Constitute = _session.Character.Archetype.Endurance,
-                    Dexterity = _session.Character.Archetype.Dexterity,
-                    Intelligence = _session.Character.Archetype.Intelligence,
-                    MentalPower = _session.Character.Archetype.Spirit,
-                    RedistributePoint = _session.Character.Archetype.Points
+                    Strength = _session.Character.Build.Strength,
+                    Constitute = _session.Character.Build.Endurance,
+                    Dexterity = _session.Character.Build.Dexterity,
+                    Intelligence = _session.Character.Build.Intelligence,
+                    MentalPower = _session.Character.Build.Spirit,
+                    RedistributePoint = _session.Character.Build.Points
                 },
                 pkyellowtime = (byte) _session.Character.KillCooldown.TotalMinutes,
                 pkcount = _session.Character.Kills,
@@ -104,19 +103,17 @@ public class MapController : ResponsiveController
                 race = _session.Character.Race,
                 chrclass = _session.Character.Class,
                 gender = _session.Character.Gender,
-                hairtype = _session.Character.Appearance.Hair.Style,
-                haircolor = _session.Character.Appearance.Hair.Color,
-                faceshape = _session.Character.Appearance.Face
+                hairtype = _session.Character.Shape.Hair.Style,
+                haircolor = _session.Character.Shape.Hair.Color,
+                faceshape = _session.Character.Shape.Face
             });
-
-        var test = new PROTO_NC_CHAR_CLIENT_ITEM_CMD(_session.Character.Inventory) {
-            invenclear = true
-        };
 
         World.Command(
             connection: _connection,
             command: NETCOMMAND.NC_CHAR_CLIENT_ITEM_CMD,
-            data: test);
+            data: new PROTO_NC_CHAR_CLIENT_ITEM_CMD(_session.Character.Inventory) {
+                invenclear = true
+            });
 
         World.Command(
             connection: _connection,
@@ -221,7 +218,7 @@ public class MapController : ResponsiveController
                 hpchangeorder = _session.Player.Vitals.Version
             });
 
-        if (_session.Character.Class >= Class.Crusader)
+        if (_session.Character.Class >= CharacterClass.Crusader)
         {
             World.Command(
                 connection: _connection,

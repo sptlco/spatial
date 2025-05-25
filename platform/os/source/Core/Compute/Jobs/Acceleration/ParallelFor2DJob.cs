@@ -1,5 +1,6 @@
 // Copyright © Spatial. All rights reserved.
 
+using Serilog;
 using Spatial.Compute.Jobs.Commands;
 using System.Collections.Concurrent;
 
@@ -63,18 +64,20 @@ internal sealed class ParallelFor2DJob : ParallelJob
     /// <returns>A <see cref="ParallelFor2DJob"/>.</returns>
     public static ParallelFor2DJob Create(int width, int height, int batchSizeX, int batchSizeY, Action<int, int> function, BatchStrategy batchStrategy = BatchStrategy.Auto)
     {
-        if (_jobs.TryTake(out var job))
-        {
-            job._iterations = width * height;
-            job._completed = 0;
-            job._width = width;
-            job._height = height;
-            job._batchSizeX = ParallelForJob.CalculateBatchSize(job._width, batchSizeX, batchStrategy);
-            job._batchSizeY = ParallelForJob.CalculateBatchSize(job._height, batchSizeY, batchStrategy);
-            job._function = function;
+        // if (_jobs.TryTake(out var job))
+        // {
+        //     job.Reset();
 
-            return job;
-        }
+        //     job._iterations = width * height;
+        //     job._completed = 0;
+        //     job._width = width;
+        //     job._height = height;
+        //     job._batchSizeX = ParallelForJob.CalculateBatchSize(job._width, batchSizeX, batchStrategy);
+        //     job._batchSizeY = ParallelForJob.CalculateBatchSize(job._height, batchSizeY, batchStrategy);
+        //     job._function = function;
+
+        //     return job;
+        // }
 
         return new(width, height, batchSizeX, batchSizeY, function, batchStrategy);
     }
@@ -93,10 +96,10 @@ internal sealed class ParallelFor2DJob : ParallelJob
     /// </summary>
     public override void Dispose()
     {
-        if (_jobs.Count < Constants.MaxPoolSize)
-        {
-            _jobs.Add(this);
-        }
+        // if (_jobs.Count < Constants.MaxPoolSize)
+        // {
+        //     _jobs.Add(this);
+        // }
     }
 }
 
@@ -143,6 +146,8 @@ internal sealed class Batch2DJob : CommandJob
     {
         if (_jobs.TryTake(out var job))
         {
+            job.Reset();
+            
             job._parent = parent;
             job._startX = startX;
             job._endX = endX;
@@ -164,7 +169,15 @@ internal sealed class Batch2DJob : CommandJob
         {
             for (var y = _startY; y < _endY; y++)
             {
-                _parent.Execute(y * _parent.Width + x);
+                try
+                {
+                    _parent.Execute(y * _parent.Width + x);
+                }
+                catch (Exception exception)
+                {
+                    Log.Error(exception, "Iteration ({IterationX}, {IterationY})/({IterationsX}, {IterationsY}) failed.", x + 1, y + 1, _parent.Width, _parent.Height);
+                    throw;
+                }
             }
         }
     }

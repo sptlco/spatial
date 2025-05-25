@@ -36,7 +36,7 @@ public record struct Player(
             transform: new Transform(X: session.Character.Position.X, Y: session.Character.Position.Y, R: 180F),
             speed: new Speed(Walking: Common.WalkSpeed, Running: Common.RunSpeed, Attacking: Common.AttackSpeed));
 
-        if (session.Character.Class >= Class.Crusader)
+        if (session.Character.Class >= CharacterClass.Crusader)
         {
             player.Vitals.Light = new Parameter(Maximum: SingleData.MaxLP, Current: session.Character.LP);
         }

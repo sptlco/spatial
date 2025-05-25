@@ -1,6 +1,5 @@
 // Copyright © Spatial. All rights reserved.
 
-using Ignite.Models;
 using Spatial.Networking;
 
 namespace Ignite.Contracts;
@@ -11,14 +10,14 @@ namespace Ignite.Contracts;
 public class PROTO_AVATAR_SHAPE_INFO : ProtocolBuffer
 {
     /// <summary>
-    /// The avatar's <see cref="Race"/>.
+    /// The avatar's <see cref="CharacterRace"/>.
     /// </summary>
-    public Race race;
+    public CharacterRace race;
 
     /// <summary>
-    /// The avatar's <see cref="Class"/>.
+    /// The avatar's <see cref="CharacterClass"/>.
     /// </summary>
-    public Class chrclass;
+    public CharacterClass chrclass;
 
     /// <summary>
     /// The avatar's <see cref="Gender"/>.
@@ -47,8 +46,8 @@ public class PROTO_AVATAR_SHAPE_INFO : ProtocolBuffer
     {
         var packed = ReadByte();
 
-        race = (Race) (byte) (packed & 0x03);
-        chrclass = (Class) (byte) ((packed >> 2) & 0x1F);
+        race = (CharacterRace) (byte) (packed & 0x03);
+        chrclass = (CharacterClass) (byte) ((packed >> 2) & 0x1F);
         gender = (Gender) (byte) ((packed >> 7) & 0x01);
 
         hairtype = ReadByte();

@@ -16,12 +16,11 @@ namespace Spatial.Compute.Jobs;
 public abstract partial class Job : IDisposable
 {
     private static readonly Context Context = Context.CreateDefault();
-    private static long _counter;
 
     /// <summary>
     /// The job's identification number.
     /// </summary>
-    public long Id { get; } = Interlocked.Increment(ref _counter);
+    public string Id { get; internal set; } = GenerateId();
 
     /// <summary>
     /// The <see cref="Jobs.Graph"/> the <see cref="Job"/> belongs to.
@@ -41,8 +40,7 @@ public abstract partial class Job : IDisposable
     /// <returns>An <see cref="Accelerator"/>.</returns>
     public static Accelerator Accelerator(JobAccelerator accelerator = JobAccelerator.Auto, int index = 0)
     {
-        return accelerator switch
-        {
+        return accelerator switch {
             JobAccelerator.Auto => Context.GetPreferredDevice(false).CreateAccelerator(Context),
             JobAccelerator.Cuda => Context.CreateCudaAccelerator(index),
             JobAccelerator.OpenCl => Context.CreateCLAccelerator(index),
@@ -171,10 +169,24 @@ public abstract partial class Job : IDisposable
         handle.Wait();
     }
 
+    private static string GenerateId()
+    {
+        return Guid.NewGuid().ToString("N");
+    }
+
+    /// <summary>
+    /// Reset the <see cref="Job"/>.
+    /// </summary>
+    protected void Reset()
+    {
+        Id = GenerateId();
+        Status = JobStatus.Submitted;
+    }
+
     /// <summary>
     /// Dispose of the <see cref="Job"/>.
     /// </summary>
-    public virtual void Dispose() {}
+    public virtual void Dispose() { }
 }
 
 /// <summary>

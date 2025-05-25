@@ -1,7 +1,7 @@
 // Copyright © Spatial. All rights reserved.
 
 using System.Text.Json.Serialization;
-using Ignite.Models;
+using Ignite.Contracts;
 
 namespace Ignite.Assets.Types;
 
@@ -113,10 +113,10 @@ public class Param
     /// <summary>
     /// Get a character's parameters.
     /// </summary>
-    /// <param name="character">The character's <see cref="Class"/>.</param>
+    /// <param name="character">The character's <see cref="CharacterClass"/>.</param>
     /// <param name="level">The character's level.</param>
     /// <returns>The character's parameters.</returns>
-    public static Param Stats(Class character, byte level)
+    public static Param Stats(CharacterClass character, byte level)
     {
         return Asset.First<Param>($"World/Param{character}Server.txt/Param", p => p.Level == level);
     }

@@ -558,7 +558,7 @@ public partial class Map
     public void Dynamic(Future future, Entity chunk, Query query, Mutation mutation)
     {
         _space.Mutate(
-            query: query.WithAll<Transform>(),
+            query: query.WithAll<Transform>().WithNone<Disabled>(),
             filter: (entity) => _grid.Contains(chunk, entity),
             function: (Future _, in Entity entity) => mutation(future, (chunk, _space.Get<Chunk>(chunk)), entity));
     }

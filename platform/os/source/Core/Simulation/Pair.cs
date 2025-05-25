@@ -1,14 +1,10 @@
 // Copyright © Spatial. All rights reserved.
 
-using System;
-
-namespace Ignite.Models;
+namespace Spatial.Simulation;
 
 /// <summary>
 /// A pair of objects.
 /// </summary>
-/// <param name="First">The first object's identification number.</param>
-/// <param name="Second">The second object's identification number.</param>
 public readonly record struct Pair
 {
     private readonly uint _first;
@@ -45,7 +41,7 @@ public readonly record struct Pair
     /// </summary>
     /// <param name="other">Another <see cref="Pair"/>.</param>
     /// <returns>Whether or not the two pairs are equal.</returns>
-    public readonly bool Equals(Pair other) => (First == other.First && Second == other.Second) || (First == other.Second && Second == other.First);
+    public readonly bool Equals(Pair other) => First == other.First && Second == other.Second || First == other.Second && Second == other.First;
 
     /// <summary>
     /// Get the hash code of the <see cref="Pair"/>.

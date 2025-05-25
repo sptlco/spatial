@@ -42,10 +42,10 @@ internal class Graph : IDisposable
     /// <returns>A <see cref="Graph"/>.</returns>
     internal static Graph Create()
     {
-        if (_pool.TryTake(out var graph))
-        {
-            return graph;
-        }
+        // if (_pool.TryTake(out var graph))
+        // {
+        //     return graph;
+        // }
 
         return new();
     }
@@ -127,6 +127,6 @@ internal class Graph : IDisposable
         Dependencies.Clear();
         Dependants.Clear();
 
-        _pool.Add(this);
+        // _pool.Add(this);
     }
 }

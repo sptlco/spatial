@@ -2,7 +2,6 @@
 
 using Ignite.Assets.Types;
 using Ignite.Contracts;
-using Ignite.Models.Objects;
 using Spatial.Persistence;
 using Spatial.Simulation;
 using System.Collections.Concurrent;

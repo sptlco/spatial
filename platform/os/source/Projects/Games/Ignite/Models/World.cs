@@ -15,7 +15,7 @@ namespace Ignite.Models;
 /// </summary>
 public static class World
 {
-    private static readonly Universe _universe;
+    private static readonly Space _space;
     private static readonly ConcurrentDictionary<byte, SparseArray<Map>> _maps;
     private static readonly ConcurrentDictionary<string, Time> _intervals;
     private static Time _time;
@@ -26,7 +26,7 @@ public static class World
     /// </summary>
     static World()
     {
-        _universe = Universe.Create();
+        _space = Space.Empty();
         _maps = [];
         _intervals = [];
 
@@ -34,9 +34,9 @@ public static class World
     }
 
     /// <summary>
-    /// The world's underlying <see cref="Spatial.Simulation.Universe"/>.
+    /// The world's underlying <see cref="Spatial.Simulation.Space"/>.
     /// </summary>
-    public static Universe Universe => _universe;
+    public static Space Space => _space;
 
     /// <summary>
     /// The world's maps.
@@ -73,7 +73,7 @@ public static class World
     /// <param name="map">A <see cref="Map"/>.</param>
     public static void Add(Map map)
     {
-        _universe.Add((_maps[map.Serial][map.Id] = map).Space);
+        _maps[map.Serial][map.Id] = map;
     }
 
     /// <summary>
@@ -83,12 +83,7 @@ public static class World
     /// <param name="id">A <see cref="Map"/> identification number.</param>
     public static void Remove(byte map, int id)
     {
-        var instance = _maps[map].Remove(id);
-
-        if (instance is not null)
-        {
-            _universe.Remove(instance.Space);
-        }
+        _maps[map].Remove(id);
     }
 
     /// <summary>
@@ -97,7 +92,7 @@ public static class World
     /// <param name="delta"><see cref="Time"/> passed since the last update.</param>
     public static void Update(Time delta)
     {
-        _universe.Update(delta);
+        _space.Update(delta);
 
         _time += delta;
         _ticks += 1;

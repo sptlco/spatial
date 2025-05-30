@@ -1,11 +1,9 @@
 // Copyright © Spatial. All rights reserved.
 
-using Ignite.Models.Objects;
-
 namespace Ignite.Contracts;
 
 /// <summary>
-/// Specifies the type of an <see cref="ObjectRef"/>.
+/// Specifies the type of an object.
 /// </summary>
 public enum ObjectType
 {

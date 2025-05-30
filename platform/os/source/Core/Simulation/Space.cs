@@ -600,7 +600,7 @@ public sealed partial class Space : IDisposable
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool Exists(in Entity entity)
     {
-        return _entities[entity] != Entity.Null;
+        return entity != Entity.Null && _entities[entity] != Entity.Null;
     }
 
     /// <summary>

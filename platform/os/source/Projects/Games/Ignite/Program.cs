@@ -35,7 +35,7 @@ var ticks = 0;
 
 Ticker.Run(
     cancellationToken: Spatial.Environment.CancellationToken,
-    // rate: Constants.Delta,
+    //                          rate: Constants.Delta,
     function: (delta) => {
         ticks++;
 

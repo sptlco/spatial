@@ -1,23 +1,15 @@
 // Copyright © Spatial. All rights reserved.
 
-using Ignite.Assets.Types;
-using Ignite.Components;
 using Ignite.Contracts;
-using Ignite.Contracts.Actions;
 using Ignite.Contracts.Avatars;
 using Ignite.Contracts.Characters;
-using Ignite.Contracts.Combat;
-using Ignite.Contracts.Maps;
 using Ignite.Contracts.Miscellaneous;
 using Ignite.Contracts.Options;
 using Ignite.Contracts.Prison;
 using Ignite.Contracts.Sessions;
 using Ignite.Contracts.Users;
 using Ignite.Models;
-using Spatial.Extensions;
 using Spatial.Networking;
-using System.Linq;
-using System.Text;
 
 namespace Ignite.Controllers;
 

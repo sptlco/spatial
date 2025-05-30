@@ -1,8 +1,6 @@
 // Copyright © Spatial. All rights reserved.
 
 using Ignite.Components;
-using Ignite.Contracts;
-using Ignite.Models.Objects;
 using Spatial.Mathematics;
 using Spatial.Simulation;
 using Spatial.Structures;
@@ -72,8 +70,6 @@ public class Grid
 
         _chunks = new Entity[CHUNK_DIMENSION * CHUNK_DIMENSION];
         _cells = [];
-
-        CreateChunks();
     }
 
     /// <summary>
@@ -83,114 +79,7 @@ public class Grid
     /// <param name="position">The entity's position.</param>
     public void Set(in Entity entity, in Transform position)
     {
-        var normal = Normalize(position);
-
-        _cells.GetOrAdd(((byte) (normal.X / CELL_SIZE), (byte) (normal.Y / CELL_SIZE)), []).Add(entity);
-    }
-
-    /// <summary>
-    /// Compute a <see cref="Grid"/> view, enumerating chunks within sight range of a <see cref="Transform"/>.
-    /// </summary>
-    /// <param name="position">A <see cref="Transform"/>.</param>
-    /// <returns>A list of chunks.</returns>
-    public IEnumerable<Entity> View(in Transform position)
-    {
-        return Query(
-            position: position,
-            radius: _map.Data.Info.Sight + (DenormalizeX(_bounds.Right) - DenormalizeX(_bounds.Left)) / CHUNK_DIMENSION / 2.0F,
-            type: ObjectType.Chunk);
-    }
-
-    /// <summary>
-    /// Query the <see cref="Grid"/>.
-    /// </summary>
-    /// <param name="position">The position to query.</param>
-    /// <returns>A list of entities in the space.</returns>
-    public IEnumerable<Entity> Query(in Transform position)
-    {
-        return Query(position, _map.Data.Info.Sight);
-    }
-
-    /// <summary>
-    /// Query the <see cref="Grid"/>.
-    /// </summary>
-    /// <param name="position">The position to query.</param>
-    /// <param name="radius">The radius to query.</param>
-    /// <returns>A list of entities in the space.</returns>
-    public IEnumerable<Entity> Query(in Transform position, in float radius)
-    {
-        return Query(position, radius, null);
-    }
-
-    /// <summary>
-    /// Query the <see cref="Grid"/>.
-    /// </summary>
-    /// <param name="position">The position to query.</param>
-    /// <param name="type">The <see cref="ObjectType"/> to query.</param>
-    /// <returns>A list of entities in the space.</returns>
-    public IEnumerable<Entity> Query(in Transform position, ObjectType type, Func<Entity, bool>? filter = null)
-    {
-        return Query(position, _map.Data.Info.Sight, type, filter);
-    }
-
-    /// <summary>
-    /// Query the <see cref="Grid"/>.
-    /// </summary>
-    /// <param name="position">The position to query.</param>
-    /// <param name="radius">The radius to query.</param>
-    /// <param name="type">The <see cref="ObjectType"/> to query.</param>
-    /// <returns>A list of entities in the space.</returns>
-    public IEnumerable<Entity> Query(in Transform position, in float radius, ObjectType type, Func<Entity, bool>? filter = null)
-    {
-        return Query(position.X, position.Y, radius, type, filter);
-    }
-
-    /// <summary>
-    /// Query the <see cref="Grid"/>.
-    /// </summary>
-    /// <param name="x">An X-coordinate.</param>
-    /// <param name="y">A Y-coordinate.</param>
-    /// <param name="type">The <see cref="ObjectType"/> to query.</param>
-    /// <returns>A list of entities in the space.</returns>
-    public IEnumerable<Entity> Query(in float x, in float y, ObjectType type, Func<Entity, bool>? filter = null)
-    {
-        return Query(x, y, _map.Data.Info.Sight, type, filter);
-    }
-
-    /// <summary>
-    /// Query the <see cref="Grid"/>.
-    /// </summary>
-    /// <param name="x">An X-coordinate.</param>
-    /// <param name="y">A Y-coordinate.</param>
-    /// <param name="radius">The radius to query.</param>
-    /// <param name="type">The <see cref="ObjectType"/> to query.</param>
-    /// <returns>A list of entities in the space.</returns>
-    public IEnumerable<Entity> Query(in float x, in float y, in float radius, ObjectType type, Func<Entity, bool>? filter = null)
-    {
-        return Query(x, y, radius, entity => _map.Space.Has<Tag>(entity) && _map.Space.Get<Tag>(entity).Type == type && (filter?.Invoke(entity) ?? true));
-    }
-
-    /// <summary>
-    /// Query the <see cref="Grid"/>.
-    /// </summary>
-    /// <param name="position">The position to query.</param>
-    /// <param name="type">The <see cref="ObjectType"/> to query.</param>
-    /// <returns>A list of entities in the space.</returns>
-    public IEnumerable<Entity> Query(in Transform position, Func<Entity, bool>? filter = null)
-    {
-        return Query(position, _map.Data.Info.Sight, filter);
-    }
-
-    /// <summary>
-    /// Query the <see cref="Grid"/>.
-    /// </summary>
-    /// <param name="position">The position to query.</param>
-    /// <param name="radius">The radius to query.</param>
-    /// <param name="type">The <see cref="ObjectType"/> to query.</param>
-    /// <returns>A list of entities in the space.</returns>
-    public IEnumerable<Entity> Query(in Transform position, in float radius, Func<Entity, bool>? filter = null)
-    {
-        return Query(position.X, position.Y, radius, filter);
+        _cells.GetOrAdd(((byte) (NormalizeX(position.X) / CELL_SIZE), (byte) (NormalizeY(position.Y) / CELL_SIZE)), []).Add(entity);
     }
 
     /// <summary>
@@ -199,12 +88,9 @@ public class Grid
     /// <param name="px">The X-coordinate to query.</param>
     /// <param name="px">The Y-coordinate to query.</param>
     /// <param name="radius">The radius to query.</param>
-    /// <param name="type">The <see cref="ObjectType"/> to query.</param>
     /// <returns>A list of entities in the space.</returns>
-    public IEnumerable<Entity> Query(float px, float py, float radius, Func<Entity, bool>? filter = null)
+    public IEnumerable<Entity> Query(float px, float py, float radius)
     {
-        var chunks = new HashSet<uint>();
-
         var left = (byte) (Math.Clamp(NormalizeX(px - radius), 0, SIZE - 1) / CELL_SIZE);
         var top = (byte) (Math.Clamp(NormalizeY(py + radius), 0, SIZE - 1) / CELL_SIZE);
         var right = (byte) (Math.Clamp(NormalizeX(px + radius), 0, SIZE - 1) / CELL_SIZE);
@@ -214,22 +100,11 @@ public class Grid
         {
             for (byte y = top; y <= bottom; y++)
             {
-                var chunk = ChunkAt((int) (x * CELL_SIZE / CHUNK_SIZE), (int) (y * CELL_SIZE / CHUNK_SIZE));
-
-                if ((filter == default || filter(chunk)) && !chunks.Contains(chunk))
-                {
-                    chunks.Add(chunk);
-                    yield return chunk;
-                }
-
                 if (_cells.TryGetValue((x, y), out var cell))
                 {
                     foreach (var entity in cell)
                     {
-                        if (filter == default || filter(entity))
-                        {
-                            yield return entity;
-                        }
+                        yield return entity;
                     }
                 }
             }
@@ -242,96 +117,6 @@ public class Grid
     public void Clear()
     {
         _cells.Clear();
-    }
-
-    /// <summary>
-    /// Get whether or not a <see cref="Chunk"/> contains an <see cref="Entity"/>.
-    /// </summary>
-    /// <param name="chunk">A <see cref="Chunk"/>.</param>
-    /// <param name="entity">An <see cref="Entity"/>.</param>
-    /// <returns>Whether or not the <see cref="Chunk"/> contains the <see cref="Entity"/>.</returns>
-    public bool Contains(Entity chunk, Entity entity)
-    {
-        return ChunkAt(entity) == chunk;
-    }
-
-    /// <summary>
-    /// Get the <see cref="Chunk"/> at an entity's location.
-    /// </summary>
-    /// <param name="entity">An <see cref="Entity"/>.</param>
-    /// <returns>A <see cref="Chunk"/>.</returns>
-    public Entity ChunkAt(Entity entity)
-    {
-        return ChunkAt(_map.Space.Get<Transform>(entity));
-    }
-
-    /// <summary>
-    /// Get the <see cref="Chunk"/> at a location.
-    /// </summary>
-    /// <param name="transform">A <see cref="Transform"/>.</param>
-    /// <returns>A <see cref="Chunk"/>.</returns>
-    public Entity ChunkAt(in Transform transform)
-    {
-        return ChunkAt(transform.X, transform.Y);
-    }
-
-    /// <summary>
-    /// Get the <see cref="Chunk"/> at a location.
-    /// </summary>
-    /// <param name="x">An X-coordinate.</param>
-    /// <param name="y">A Y-coordinate.</param>
-    /// <returns>A <see cref="Chunk"/>.</returns>
-    public Entity ChunkAt(in float x, in float y)
-    {
-        var normal = Normalize(x, y);
-
-        return ChunkAt((int) (normal.X / CHUNK_SIZE), (int) (normal.Y / CHUNK_SIZE));
-    }
-
-    /// <summary>
-    /// Get the <see cref="Chunk"/> at a location.
-    /// </summary>
-    /// <param name="x">The chunk's X-coordinate.</param>
-    /// <param name="y">The chunk's Y-coordinate.</param>
-    /// <returns>A <see cref="Chunk"/>.</returns>
-    public Entity ChunkAt(in int x, in int y)
-    {
-        if (x < 0 || x >= CHUNK_DIMENSION || y < 0 || y >= CHUNK_DIMENSION)
-        {
-            return Entity.Null;
-        }
-
-        return _chunks[(y * CHUNK_DIMENSION) + x];
-    }
-
-    private void CreateChunks()
-    {
-        for (var x = 0; x < CHUNK_DIMENSION; x++)
-        {
-            for (var y = 0; y < CHUNK_DIMENSION; y++)
-            {
-                var chunk = _map.CreatePlainObject<ChunkRef>(ObjectType.Chunk);
-
-                var cx = CHUNK_HALF_SIZE + (x * CHUNK_SIZE);
-                var cy = CHUNK_HALF_SIZE + (y * CHUNK_SIZE);
-
-                chunk.Add(new Chunk(x, y));
-                chunk.Add(new Transform(DenormalizeX(cx), DenormalizeY(cy)));
-                chunk.Add(new Disabled());
-
-                _chunks[(y * CHUNK_DIMENSION) + x] = chunk.UID;
-            }
-        }
-    }
-
-    private Transform Normalize(in Transform transform)
-    {
-        return (Transform) Normalize(transform.X, transform.Y) with { R = transform.R };
-    }
-
-    private Point2D Normalize(in float x, in float y)
-    {
-        return new Point2D(NormalizeX(x), NormalizeY(y));
     }
 
     private float NormalizeX(float x)

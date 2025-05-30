@@ -6,7 +6,6 @@ using Ignite.Components;
 using Ignite.Contracts;
 using Ignite.Contracts.Actions;
 using Ignite.Models;
-using Ignite.Models.Objects;
 using Serilog;
 using Spatial.Networking;
 using System.Linq;
@@ -36,7 +35,7 @@ public class ActionController : AugmentedController
 
             if (settings != null)
             {
-                if (_character.Power >= settings.ALS_Lv)
+                if (_session.Character.Power >= settings.ALS_Lv)
                 {
                     ExecuteCommand(command, args);
                 }
@@ -45,22 +44,9 @@ public class ActionController : AugmentedController
             }
         }
 
-        _map.Multicast2D(
-            command: NETCOMMAND.NC_ACT_SOMEONECHAT_CMD,
-            position: _player.Transform,
-            data: new PROTO_NC_ACT_SOMEONECHAT_CMD {
-                itemLinkDataCount = data.itemLinkDataCount,
-                handle = _player.Tag.Handle,
-                len = data.len,
-                flag = new PROTO_NC_ACT_SOMEONECHAT_CMD.Flags {
-                    chatwin = true
-                },
-                nChatFontColorID = _character.ChatColor.Font,
-                nChatBalloonColorID = _character.ChatColor.Balloon,
-                content = data.content
-            });
+        // ...
 
-        Log.Information("{Player}: {Message}", _player, message);
+        Log.Information("{Player}: {Message}", _session.Character.Name, message);
     }
 
     /// <summary>
@@ -70,19 +56,9 @@ public class ActionController : AugmentedController
     [NETHANDLER(NETCOMMAND.NC_ACT_SHOUT_CMD)]
     public void NC_ACT_SHOUT_CMD(PROTO_NC_ACT_SHOUT_CMD data)
     {
-        _map.Broadcast(
-            command: NETCOMMAND.NC_ACT_SOMEONESHOUT_CMD,
-            data: new PROTO_NC_ACT_SOMEONESHOUT_CMD {
-                itemLinkDataCount = data.itemLinkDataCount,
-                speaker = new PROTO_NC_ACT_SOMEONESHOUT_CMD.Speaker {
-                    charID = _character.Name
-                },
-                flag = new PROTO_NC_ACT_SOMEONESHOUT_CMD.Flags(),
-                len = data.len,
-                content = data.content
-            });
+        // ...
 
-        Log.Information("{Player}: {Message}", _player, Encoding.ASCII.GetString(data.content, data.itemLinkDataCount, data.len - data.itemLinkDataCount));
+        Log.Information("{Player}: {Message}", _session.Character.Name, Encoding.ASCII.GetString(data.content, data.itemLinkDataCount, data.len - data.itemLinkDataCount));
     }
 
     /// <summary>
@@ -92,7 +68,7 @@ public class ActionController : AugmentedController
     [NETHANDLER(NETCOMMAND.NC_ACT_MOVEWALK_CMD)]
     public void NC_ACT_MOVEWALK_CMD(PROTO_NC_ACT_MOVEWALK_CMD data)
     {
-        _player.Walk(data.to.x, data.to.y);
+        // ...
     }
 
     /// <summary>
@@ -102,7 +78,7 @@ public class ActionController : AugmentedController
     [NETHANDLER(NETCOMMAND.NC_ACT_MOVERUN_CMD)]
     public void NC_ACT_MOVERUN_CMD(PROTO_NC_ACT_MOVERUN_CMD data)
     {
-        _player.Run(data.to.x, data.to.y);
+        // ...
     }
 
     /// <summary>
@@ -112,7 +88,7 @@ public class ActionController : AugmentedController
     [NETHANDLER(NETCOMMAND.NC_ACT_STOP_REQ)]
     public void NC_ACT_STOP_REQ(PROTO_NC_ACT_STOP_REQ data)
     {
-        _player.Stop();
+        // ...
     }
 
     /// <summary>
@@ -122,34 +98,10 @@ public class ActionController : AugmentedController
     [NETHANDLER(NETCOMMAND.NC_ACT_NPCCLICK_CMD)]
     public void NC_ACT_NPCCLICK_CMD(PROTO_NC_ACT_NPCCLICK_CMD data)
     {
-        _player.Interact(_map.Ref<NPCRef>(data.npchandle));
     }
 
     private void ExecuteCommand(string command, string[] args)
     {
-        switch (command)
-        {
-            case "adminlevel":
-                _player.Notify($"Admin level is {_character.Power}.");
-                break;
-            case "coord":
-                _player.Notify($"Location[{_player.Tag.Handle}] : {_map.Name}/{_player.Transform.X}/{_player.Transform.Y}/{_player.Transform.R}");
-                break;
-            case "linkto":
-                var instance = Map.InstanceAtOrDefault(args[1]);
-
-                if (instance is null)
-                {
-                    _player.Notify($"The map does not exist.");
-                    return;
-                }
-
-                _player.Teleport(
-                    map: instance.Serial,
-                    id: instance.Id,
-                    transform: (float.TryParse(args.ElementAtOrDefault(2), out var x) && float.TryParse(args.ElementAtOrDefault(3), out var y)) ? new Transform(x, y) : null);
-
-                break;
-        }
+        // ...
     }
 }

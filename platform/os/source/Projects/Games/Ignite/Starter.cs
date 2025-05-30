@@ -5,7 +5,6 @@ using Ignite.Assets.Types;
 using Ignite.Models;
 using Spatial.Compute.Jobs;
 using Spatial.Extensions;
-using Spatial.Persistence;
 using Spatial.Structures;
 using System.IO;
 
@@ -21,8 +20,6 @@ public static class Starter
     /// </summary>
     public static void Invoke(string[] args)
     {
-        Document<Character>.RemoveMany();
-        
         OverrideArguments(args);
 
         var progress = new Spinner();
@@ -43,12 +40,9 @@ public static class Starter
 
             var maps = World.Maps[field.Serial] = new SparseArray<Map>(field.To - field.From + 1);
 
-            if (field.Type == FIELD_MAP_TYPE.FMT_NORMAL)
+            for (var id = 0; id < maps.Capacity; id++)
             {
-                for (var id = 0; id < maps.Capacity; id++)
-                {
-                    Map.Load(field, id);
-                }
+                Map.Load(field, id);
             }
         });
 

@@ -1,10 +1,8 @@
 // Copyright © Spatial. All rights reserved.
 
 using Ignite;
-using Ignite.Components;
 using Ignite.Contracts;
 using Ignite.Models;
-using Ignite.Models.Objects;
 using Spatial.Networking;
 
 /// <summary>
@@ -66,45 +64,6 @@ public class PROTO_NC_BRIEFINFO_REGENMOB_CMD : ProtocolBuffer
     /// Whether or not the mob is regenerating.
     /// </summary>
     public bool bRegenAni;
-
-    /// <summary>
-    /// Create a new <see cref="PROTO_NC_BRIEFINFO_REGENMOB_CMD"/>.
-    /// </summary>
-    public PROTO_NC_BRIEFINFO_REGENMOB_CMD() { }
-
-    /// <summary>
-    /// Create a new <see cref="PROTO_NC_BRIEFINFO_REGENMOB_CMD"/>.
-    /// </summary>
-    /// <param name="reference">An <see cref="ObjectRef"/> reference.</param>
-    public PROTO_NC_BRIEFINFO_REGENMOB_CMD(ObjectRef reference)
-    {
-        handle = reference.Tag.Handle;
-        mobid = (reference as MobRef)?.Value.Id ?? (reference as NPCRef)!.Value.Id;
-        coord = new SHINE_COORD_TYPE {
-            dir = reference.Transform.D,
-            xy = new SHINE_XY_TYPE {
-                x = (uint) reference.Transform.X,
-                y = (uint) reference.Transform.Y
-            }
-        };
-        sAnimation = "";
-        nKQTeamType = (byte) KQ_TEAM_TYPE.KQTT_MAX;
-        bRegenAni = false;
-
-        if (reference.Has<Gate>())
-        {
-            var gate = reference.Get<Gate>();
-
-            flagstate = 1;
-            gate2where = Map.InstanceAt(gate.Map, gate.Id).Data.Field.MapIDClient;
-        }
-        else
-        {
-            abstatebit = new ABNORMAL_STATE_BIT {
-                statebit = new byte[Constants.AbnormalStateBits]
-            };
-        }
-    }
 
     /// <summary>
     /// Deserialize the <see cref="ProtocolBuffer"/>.

@@ -1,6 +1,5 @@
 // Copyright © Spatial. All rights reserved.
 
-using Ignite.Models.Objects;
 using Spatial.Networking;
 
 namespace Ignite.Contracts.Objects;
@@ -129,90 +128,6 @@ public class PROTO_NC_BRIEFINFO_LOGINCHARACTER_CMD : ProtocolBuffer
     /// Whether or not the character is using an item minipet.
     /// </summary>
     public bool IsUseItemMinimon;
-
-    /// <summary>
-    /// Create a new <see cref="PROTO_NC_BRIEFINFO_LOGINCHARACTER_CMD"/>.
-    /// </summary>
-    public PROTO_NC_BRIEFINFO_LOGINCHARACTER_CMD() { }
-
-    /// <summary>
-    /// Create a new <see cref="PROTO_NC_BRIEFINFO_LOGINCHARACTER_CMD"/>.
-    /// </summary>
-    /// <param name="player">A <see cref="PlayerRef"/>.</param>
-    public PROTO_NC_BRIEFINFO_LOGINCHARACTER_CMD(PlayerRef player)
-    {
-        handle = player.Tag.Handle;
-        charid = player.Name;
-        coord = new SHINE_COORD_TYPE {
-            xy = new SHINE_XY_TYPE {
-                x = (uint) player.Transform.X,
-                y = (uint) player.Transform.Y
-            },
-            dir = player.Transform.D
-        };
-        mode = (byte) player.Behavior.Mode;
-        chrclass = (byte) player.Character.Class;
-        shape = new PROTO_AVATAR_SHAPE_INFO {
-            race = player.Character.Race,
-            chrclass = player.Character.Class,
-            gender = player.Character.Gender,
-            hairtype = player.Character.Shape.Hair.Style,
-            haircolor = player.Character.Shape.Hair.Color,
-            faceshape = player.Character.Shape.Face
-        };
-
-        switch (player.Behavior.Mode)
-        {
-            case ObjectMode.Riding:
-                ride = new CHARBRIEFINFO_RIDE {
-                    // ...
-                };
-
-                break;
-            case ObjectMode.Resting:
-                camp = new CHARBRIEFINFO_CAMP {
-                    // ...
-                };
-
-                break;
-            case ObjectMode.Vending:
-                booth = new CHARBRIEFINFO_BOOTH {
-                    // ...
-                };
-
-                break;
-            default:
-                notcamp = new CHARBRIEFINFO_NOTCAMP {
-                    equipment = new PROTO_EQUIPMENT(player.Character)
-                };
-
-                break;
-        }
-
-        polymorph = ushort.MaxValue;
-        emoticon = new STOPEMOTICON_DESCRIPT {
-            emoticonid = byte.MaxValue,
-            emoticonframe = ushort.MaxValue
-        };
-        chartitle = new CHARTITLE_BRIEFINFO {
-            Type = byte.MaxValue,
-            ElementNo = byte.MaxValue,
-            MobID = ushort.MaxValue
-        };
-        abstatebit = new ABNORMAL_STATE_BIT {
-            statebit = new byte[Constants.AbnormalStateBits]
-        };
-        myguild = 0;
-        type = (byte) player.Tag.Type;
-        isGuildAcademyMember = false;
-        IsAutoPick = false;
-        Level = player.Character.Level;
-        sAnimation = "";
-        nMoverHnd = ushort.MaxValue;
-        nMoverSlot = byte.MaxValue;
-        nKQTeamType = (byte) KQ_TEAM_TYPE.KQTT_MAX;
-        IsUseItemMinimon = false;
-    }
 
     /// <summary>
     /// Deserialize the <see cref="ProtocolBuffer"/>.

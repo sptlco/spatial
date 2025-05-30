@@ -84,8 +84,10 @@ public class UserController : ResponsiveController
     {
         if (_connection == _session.Map)
         {
-            _session.Player?.Release();
-            _session.Player = null!;
+            if (World.Space.Exists(_session.Player))
+            {
+                World.Space.Destroy(_session.Player);
+            }
 
             _session.Character?.Save();
             _session.Character = null!;

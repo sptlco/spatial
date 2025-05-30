@@ -1,10 +1,10 @@
 // Copyright © Spatial. All rights reserved.
 
 using Ignite.Contracts;
-using Ignite.Models.Objects;
 using Serilog;
 using Spatial.Mathematics;
 using Spatial.Networking;
+using Spatial.Simulation;
 using Spatial.Structures;
 using System;
 using System.Collections.Concurrent;
@@ -66,9 +66,9 @@ public sealed class Session
     public Character Character { get; set; }
 
     /// <summary>
-    /// The session's <see cref="PlayerRef"/>.
+    /// The session's player <see cref="Entity"/>.
     /// </summary>
-    public PlayerRef Player { get; set; }
+    public Entity Player { get; set; } = Entity.Null;
 
     /// <summary>
     /// The session's callback functions.
@@ -268,8 +268,10 @@ public sealed class Session
     {
         Log.Information("{User} logged out.", Account.Username);
 
-        Player?.Release();
-        Player = null!;
+        if (Models.World.Space.Exists(Player))
+        {
+            Models.World.Space.Destroy(Player);
+        }
 
         _pool.Add(_handle);
         _sessions.Remove(_handle);

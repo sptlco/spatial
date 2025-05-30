@@ -2,7 +2,6 @@
 
 using Ignite.Contracts;
 using Ignite.Models;
-using Ignite.Models.Objects;
 using Serilog;
 using Spatial.Networking;
 using System;
@@ -15,10 +14,6 @@ namespace Ignite.Controllers;
 public class AugmentedController : Controller
 {
     protected Session _session;
-    
-    protected Map _map => _player.Map;
-    protected Character _character => _session.Character;
-    protected PlayerRef _player => _session.Player;
 
     /// <summary>
     /// Initialize the <see cref="Controller"/>.

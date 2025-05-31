@@ -1,48 +1,33 @@
 // Copyright © Spatial. All rights reserved.
 
+using Ignite.Components;
 using Ignite.Contracts;
-using Spatial.Simulation;
 
-namespace Ignite.Components;
+namespace Ignite.Models;
 
 /// <summary>
-/// Identifiable metadata for an <see cref="Entity"/> at runtime.
+/// Identifiable metadata for a physical <see cref="Body"/>.
 /// </summary>
-/// <param name="Handle">The object's unique handle.</param>
-public record struct Tag(ushort Handle) : IComponent
+/// <param name="Handle">The body's unique identification number.</param>
+public record struct Tag(ushort Handle)
 {
     /// <summary>
-    /// The entity's <see cref="ObjectType"/>.
+    /// Create a new <see cref="Tag"/>.
     /// </summary>
-    public readonly ObjectType Type => Decode().Type;
+    /// <param name="handle">An identification number.</param>
+    public static implicit operator Tag(ushort handle) => new(handle);
 
     /// <summary>
-    /// The object's identification number.
-    /// </summary>
-    public readonly ushort Id => Decode().Id;
-
-    /// <summary>
-    /// Cast a <see cref="Tag"/> to a <see cref="ushort"/>.
+    /// Create a new <see cref="ushort"/>.
     /// </summary>
     /// <param name="tag">A <see cref="Tag"/>.</param>
     public static implicit operator ushort(Tag tag) => tag.Handle;
 
     /// <summary>
-    /// Cast a <see cref="ushort"/> to a <see cref="Tag"/>.
+    /// Decode a <see cref="Tag"/>.
     /// </summary>
-    /// <param name="handle">A <see cref="ushort"/>.</param>
-    public static implicit operator Tag(ushort handle) => new(handle);
-
-    /// <summary>
-    /// Convert the <see cref="Tag"/> to a <see cref="string"/>.
-    /// </summary>
-    /// <returns>A <see cref="string"/>.</returns>
-    public override readonly string ToString()
-    {
-        return $"{Type} {Id}";
-    }
-
-    private readonly (ObjectType Type, ushort Id) Decode()
+    /// <returns>Information about a <see cref="Body"/>.</returns>
+    public readonly (BodyType Type, ushort Id) Decode()
     {
         if (Handle >= 8000)
         {
@@ -70,71 +55,71 @@ public record struct Tag(ushort Handle) : IComponent
                                                     {
                                                         if (Handle < 23638 || Handle >= 25138)
                                                         {
-                                                            return ((ObjectType) (-1), ushort.MaxValue);
+                                                            return ((BodyType) (-1), ushort.MaxValue);
                                                         }
                                                         else
                                                         {
-                                                            return (ObjectType.Pet, (ushort) (Handle - 23638));
+                                                            return (BodyType.Pet, (ushort) (Handle - 23638));
                                                         }
                                                     }
                                                     else
                                                     {
-                                                        return (ObjectType.Mount, (ushort) (Handle - 22138));
+                                                        return (BodyType.Mount, (ushort) (Handle - 22138));
                                                     }
                                                 }
                                                 else
                                                 {
-                                                    return (ObjectType.Servant, (ushort) (Handle - 21638));
+                                                    return (BodyType.Servant, (ushort) (Handle - 21638));
                                                 }
                                             }
                                             else
                                             {
-                                                return (ObjectType.Door, (ushort) (Handle - 20638));
+                                                return (BodyType.Door, (ushort) (Handle - 20638));
                                             }
                                         }
                                         else
                                         {
-                                            return (ObjectType.MagicField, (ushort) (Handle - 20388));
+                                            return (BodyType.MagicField, (ushort) (Handle - 20388));
                                         }
                                     }
                                     else
                                     {
-                                        return (ObjectType.Effect, (ushort) (Handle - 19388));
+                                        return (BodyType.Effect, (ushort) (Handle - 19388));
                                     }
                                 }
                                 else
                                 {
-                                    return (ObjectType.Bandit, (ushort) (Handle - 17340));
+                                    return (BodyType.Bandit, (ushort) (Handle - 17340));
                                 }
                             }
                             else
                             {
-                                return (ObjectType.NPC, (ushort) (Handle - 17084));
+                                return (BodyType.NPC, (ushort) (Handle - 17084));
                             }
                         }
                         else
                         {
-                            return (ObjectType.Chunk, (ushort) (Handle - 13500));
+                            return (BodyType.Chunk, (ushort) (Handle - 13500));
                         }
                     }
                     else
                     {
-                        return (ObjectType.Drop, (ushort) (Handle - 10500));
+                        return (BodyType.Drop, (ushort) (Handle - 10500));
                     }
                 }
                 else
                 {
-                    return (ObjectType.House, (ushort) (Handle - 9500));
+                    return (BodyType.House, (ushort) (Handle - 9500));
                 }
             }
             else
             {
-                return (ObjectType.Player, (ushort) (Handle - 8000));
+                return (BodyType.Player, (ushort) (Handle - 8000));
             }
         }
         else
         {
-            return (ObjectType.Mob, Handle);
+            return (BodyType.Mob, Handle);
         }
     }
 }

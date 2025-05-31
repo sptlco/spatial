@@ -1,5 +1,6 @@
 // Copyright © Spatial. All rights reserved.
 
+using Ignite.Assets.Types;
 using Ignite.Contracts;
 using Spatial.Networking;
 using Spatial.Simulation;
@@ -79,11 +80,57 @@ public static class World
     /// <summary>
     /// Remove a <see cref="Map"/> from the <see cref="World"/>.
     /// </summary>
-    /// <param name="map">A< <see cref="Map"/> serial number.</param>
-    /// <param name="id">A <see cref="Map"/> identification number.</param>
-    public static void Remove(byte map, int id)
+    /// <param name="field">A <see cref="Field"/> identification number.</param>
+    /// <param name="map">A <see cref="Map"/> identification number.</param>
+    public static void Remove(byte field, int map)
     {
-        _maps[map].Remove(id);
+        _maps[field].Remove(map);
+    }
+
+    /// <summary>
+    /// Find a <see cref="Map"/>.
+    /// </summary>
+    /// <param name="name">The name of the <see cref="Map"/>.</param>
+    /// <returns>A <see cref="Map"/>.</returns>
+    public static Map MapAt(string name)
+    {
+        var map = Field.Find(name);
+
+        return MapAt(map.Serial, map.Id);
+    }
+
+    /// <summary>
+    /// Find a <see cref="Map"/>.
+    /// </summary>
+    /// <param name="field">A <see cref="Field"/> identification number.</param>
+    /// <param name="map">The map's identification number.</param>
+    /// <returns>A <see cref="Map"/>.</returns>
+    public static Map MapAt(byte field, int map = 0)
+    {
+        return MapAtOrDefault(field, map) ?? throw new InvalidOperationException("The map does not exist.");
+    }
+
+    /// <summary>
+    /// Find a <see cref="Map"/>.
+    /// </summary>
+    /// <param name="name">The name of the <see cref="Map"/>.</param>
+    /// <returns>A <see cref="Map"/>.</returns>
+    public static Map? MapAtOrDefault(string name)
+    {
+        var field = Field.Find(name);
+
+        return MapAtOrDefault(field.Serial, field.Id);
+    }
+
+    /// <summary>
+    /// Find a <see cref="Map"/>.
+    /// </summary>
+    /// <param name="field">A <see cref="Field"/> identification number.</param>
+    /// <param name="map">The map's identification number.</param>
+    /// <returns>A <see cref="Map"/>.</returns>
+    public static Map? MapAtOrDefault(byte field, int map = 0)
+    {
+        return _maps[field].ElementAtOrDefault(map);
     }
 
     /// <summary>

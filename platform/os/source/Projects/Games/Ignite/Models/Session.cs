@@ -4,7 +4,6 @@ using Ignite.Contracts;
 using Serilog;
 using Spatial.Mathematics;
 using Spatial.Networking;
-using Spatial.Simulation;
 using Spatial.Structures;
 using System;
 using System.Collections.Concurrent;
@@ -24,6 +23,7 @@ public sealed class Session
 
     private readonly ushort _handle;
     private readonly Account _account;
+    private readonly Multiplexer _connection;
     private readonly SparseArray<MenuFunction> _callbacks;
     private int _refs;
 
@@ -32,6 +32,7 @@ public sealed class Session
     {
         _handle = handle;
         _account = account;
+        _connection = new Multiplexer();
         _callbacks = new SparseArray<MenuFunction>(10);
     }
 
@@ -51,14 +52,9 @@ public sealed class Session
     public Password? Password { get; set; }
 
     /// <summary>
-    /// The session's <see cref="Models.World"/> <see cref="Connection"/>.
+    /// The session's connection to the <see cref="Server"/>.
     /// </summary>
-    public Connection World { get; set; }
-
-    /// <summary>
-    /// The session's <see cref="Models.Map"/> <see cref="Connection"/>.
-    /// </summary>
-    public Connection Map { get; set; }
+    public Multiplexer Connection => _connection;
 
     /// <summary>
     /// The session's <see cref="Models.Character"/>.
@@ -66,9 +62,14 @@ public sealed class Session
     public Character Character { get; set; }
 
     /// <summary>
-    /// The session's player <see cref="Entity"/>.
+    /// The <see cref="Models.Map"/> the <see cref="Session"/> is in.
     /// </summary>
-    public Entity Player { get; set; } = Entity.Null;
+    public Map Map => World.MapAt(Character.Map);
+
+    /// <summary>
+    /// The session's <see cref="Tag"/>.
+    /// </summary>
+    public Tag? Player { get; set; }
 
     /// <summary>
     /// The session's callback functions.
@@ -110,8 +111,8 @@ public sealed class Session
             return;
         }
         
-        Prune(session.World);
-        Prune(session.Map);
+        Prune(session.Connection.World);
+        Prune(session.Connection.Map);
     }
 
     /// <summary>
@@ -203,7 +204,7 @@ public sealed class Session
     /// <param name="dispose">Whether or not to dispose of the <see cref="ProtocolBuffer"/> after issuing.</param>
     public void ToWorld(NETCOMMAND command, ProtocolBuffer data, bool dispose = true)
     {
-        Models.World.Command(World, command, data, dispose);
+        Models.World.Command(Connection.World, command, data, dispose);
     }
 
     /// <summary>
@@ -214,7 +215,7 @@ public sealed class Session
     /// <param name="dispose">Whether or not to dispose of the <see cref="ProtocolBuffer"/> after issuing.</param>
     public void ToMap(NETCOMMAND command, ProtocolBuffer data, bool dispose = true)
     {
-        Models.World.Command(Map, command, data, dispose);
+        Models.World.Command(Connection.Map, command, data, dispose);
     }
 
     /// <summary>
@@ -268,9 +269,9 @@ public sealed class Session
     {
         Log.Information("{User} logged out.", Account.Username);
 
-        if (Models.World.Space.Exists(Player))
+        if (Player.HasValue)
         {
-            Models.World.Space.Destroy(Player);
+            Map.Destroy(Player.Value);
         }
 
         _pool.Add(_handle);
@@ -311,4 +312,20 @@ public class Password
     /// </summary>
     /// <param name="password">A <see cref="Password"/>.</param>
     public static implicit operator string(Password password) => password.GUID;
+}
+
+/// <summary>
+/// A two-channel connection to the <see cref="Server"/>.
+/// </summary>
+public class Multiplexer
+{
+    /// <summary>
+    /// The session's <see cref="Models.World"/> connection.
+    /// </summary>
+    public Connection World { get; set; }
+
+    /// <summary>
+    /// The session's <see cref="Models.Map"/> connection.
+    /// </summary>
+    public Connection Map { get; set; }
 }

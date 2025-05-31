@@ -101,22 +101,22 @@ public static class Constants
     public const int AbnormalStateBits = 99;
 
     /// <summary>
-    /// The maximum number of handles available for each <see cref="ObjectType"/>.
+    /// The maximum number of handles available for each <see cref="BodyType"/>.
     /// </summary>
-    public static readonly Dictionary<ObjectType, ushort> MaxObjects = new Dictionary<ObjectType, ushort> {
-        [ObjectType.Mob] = 8000,
-        [ObjectType.Player] = 1500,
-        [ObjectType.House] = 1000,
-        [ObjectType.Drop] = 3000,
-        [ObjectType.Chunk] = 3584,
-        [ObjectType.NPC] = 256,
-        [ObjectType.Bandit] = 2048,
-        [ObjectType.Effect] = 1000,
-        [ObjectType.MagicField] = 250,
-        [ObjectType.Door] = 1000,
-        [ObjectType.Servant] = 500,
-        [ObjectType.Mount] = 1000,
-        [ObjectType.Pet] = 1500
+    public static readonly Dictionary<BodyType, ushort> MaxObjects = new Dictionary<BodyType, ushort> {
+        [BodyType.Mob] = 8000,
+        [BodyType.Player] = 1500,
+        [BodyType.House] = 1000,
+        [BodyType.Drop] = 3000,
+        [BodyType.Chunk] = 3584,
+        [BodyType.NPC] = 256,
+        [BodyType.Bandit] = 2048,
+        [BodyType.Effect] = 1000,
+        [BodyType.MagicField] = 250,
+        [BodyType.Door] = 1000,
+        [BodyType.Servant] = 500,
+        [BodyType.Mount] = 1000,
+        [BodyType.Pet] = 1500
     };
 
     /// <summary>

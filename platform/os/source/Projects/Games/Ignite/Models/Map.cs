@@ -2,11 +2,13 @@
 
 using Ignite.Assets;
 using Ignite.Assets.Types;
+using Ignite.Components;
 using Ignite.Contracts;
 using Spatial.Simulation;
 using Spatial.Structures;
 using System;
 using System.Collections.Concurrent;
+using System.Runtime.CompilerServices;
 using System.Threading;
 
 namespace Ignite.Models;
@@ -77,6 +79,9 @@ public partial class Map
 
         foreach (var shineNpc in Asset.View<ShineNPC>("World/NPC.txt/ShineNPC", shineNpc => shineNpc.Map == field.MapIDClient))
         {
+            var npc = map.Create(BodyType.NPC);
+
+            map.Add(npc, new Template());
         }
 
         foreach (var mobRegenGroup in Asset.View<MobRegenGroup>($"MobRegen/{field.MapIDClient}.txt/MobRegenGroup"))
@@ -85,7 +90,9 @@ public partial class Map
             {
                 for (var i = 0; i < mobRegen.MobNum; i++)
                 {
-                    
+                    var mob = map.Create(BodyType.Mob);
+
+                    map.Add(mob, new Template());
                 }
             }
         }
@@ -111,43 +118,92 @@ public partial class Map
 #region Handle Allocation
 public partial class Map
 {
-    private readonly ConcurrentDictionary<ObjectType, InterlockedQueue<ushort>> _handles = [];
-    private readonly ConcurrentDictionary<ObjectType, ushort> _counters = [];
-    private readonly Lock _lock = new();
+    private readonly uint[] _entities = new uint[GetOffset(BodyType.Pet) + Constants.MaxObjects[BodyType.Pet]];
+    private readonly ConcurrentDictionary<BodyType, InterlockedQueue<ushort>> _handles = [];
+    private readonly ConcurrentDictionary<BodyType, StrongBox<uint>> _counters = [];
 
-    private ushort Provision(ObjectType type)
+    /// <summary>
+    /// Create a new <see cref="Entity"/>.
+    /// </summary>
+    /// <param name="type">The entity's <see cref="BodyType"/>.</param>
+    /// <returns>An <see cref="Entity"/>.</returns>
+    public Tag Create(BodyType type)
+    {
+        var tag = Provision(type);
+        var entity = World.Space.Create(
+            new Body(Type: type, Field: _data.Field.Serial, Map: _id),
+            new Transform());
+
+        _entities[tag] = entity;
+
+        return tag;
+    }
+
+    /// <summary>
+    /// Add a <see cref="IComponent"/> to a <see cref="Body"/>.
+    /// </summary>
+    /// <typeparam name="T">The type of <see cref="IComponent"/> to add.</typeparam>
+    /// <param name="tag">The body's <see cref="Tag"/>.</param>
+    public void Add<T>(in Tag tag) where T : unmanaged, IComponent
+    {
+        World.Space.Add<T>(_entities[tag]);
+    }
+
+    /// <summary>
+    /// Add a <see cref="IComponent"/> to a <see cref="Body"/>.
+    /// </summary>
+    /// <typeparam name="T">The type of <see cref="IComponent"/> to add.</typeparam>
+    /// <param name="tag">The body's <see cref="Tag"/>.</param>
+    /// <param name="component">A <see cref="IComponent"/>.</param>
+    public void Add<T>(in Tag tag, in T component) where T : unmanaged, IComponent
+    {
+        World.Space.Add(_entities[tag], component);
+    }
+
+    /// <summary>
+    /// Destroy a <see cref="Body"/>.
+    /// </summary>
+    /// <param name="tag">The body's <see cref="Tag"/>.</param>
+    public void Destroy(in Tag tag)
+    {
+        World.Space.Destroy(_entities[tag]);
+
+        _handles[tag.Decode().Type].Enqueue(tag);
+    }
+
+    private ushort Provision(BodyType type)
     {
         if (!_handles.GetOrAdd(type, _ => new()).TryDequeue(out var handle))
         {
-            lock (_lock)
+            if (_counters.GetOrAdd(type, _ => new(0)).Value >= Constants.MaxObjects[type])
             {
-                if (_counters.GetOrAdd(type, _ => 0) >= Constants.MaxObjects[type])
-                {
-                    throw new InvalidOperationException($"The capacity for type {type} has been reached.");
-                }
-
-                handle = _counters[type]++;
-
-                handle += type switch {
-                    ObjectType.Mob => 0,
-                    ObjectType.Player => 8000,
-                    ObjectType.House => 9500,
-                    ObjectType.Drop => 10500,
-                    ObjectType.Chunk => 13500,
-                    ObjectType.NPC => 17084,
-                    ObjectType.Bandit => 17340,
-                    ObjectType.Effect => 19388,
-                    ObjectType.MagicField => 20388,
-                    ObjectType.Door => 20638,
-                    ObjectType.Servant => 21638,
-                    ObjectType.Mount => 22138,
-                    ObjectType.Pet => 23638,
-                    _ => throw new InvalidOperationException("The object type is unsupported.")
-                };
+                throw new InvalidOperationException($"The capacity for type {type} has been reached.");
             }
+
+            handle = (ushort) (Interlocked.Increment(ref _counters[type].Value) - 1 + GetOffset(type));
         }
 
         return handle;
+    }
+
+    private static ushort GetOffset(BodyType type)
+    {
+        return type switch {
+            BodyType.Mob => 0,
+            BodyType.Player => 8000,
+            BodyType.House => 9500,
+            BodyType.Drop => 10500,
+            BodyType.Chunk => 13500,
+            BodyType.NPC => 17084,
+            BodyType.Bandit => 17340,
+            BodyType.Effect => 19388,
+            BodyType.MagicField => 20388,
+            BodyType.Door => 20638,
+            BodyType.Servant => 21638,
+            BodyType.Mount => 22138,
+            BodyType.Pet => 23638,
+            _ => throw new InvalidOperationException("The object type is unsupported.")
+        };
     }
 }
 #endregion

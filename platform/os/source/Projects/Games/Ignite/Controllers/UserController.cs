@@ -82,11 +82,11 @@ public class UserController : ResponsiveController
     [NETHANDLER(NETCOMMAND.NC_USER_NORMALLOGOUT_CMD)]
     public void NC_USER_NORMALLOGOUT_CMD(PROTO_NC_USER_NORMALLOGOUT_CMD _) 
     {
-        if (_connection == _session.Map)
+        if (_connection == _session.Connection.Map)
         {
-            if (World.Space.Exists(_session.Player))
+            if (_session.Player.HasValue)
             {
-                World.Space.Destroy(_session.Player);
+                _session.Map.Destroy(_session.Player.Value);
             }
 
             _session.Character?.Save();
@@ -119,7 +119,7 @@ public class UserController : ResponsiveController
     {
         Monitor().Authenticate(Session.Decode(data.validate_new));
 
-        _session.World = _connection;
+        _session.Connection.World = _connection;
 
         NC_USER_LOGINWORLD_ACK();
     }

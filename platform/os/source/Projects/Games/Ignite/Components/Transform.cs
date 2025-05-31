@@ -5,12 +5,12 @@ using Spatial.Simulation;
 namespace Ignite.Components;
 
 /// <summary>
-/// A <see cref="IComponent"/> containing spatial metadata for an <see cref="Entity"/>.
+/// A <see cref="IComponent"/> containing spatial metadata for a <see cref="Body"/>.
 /// </summary>
-/// <param name="X">The entity's X-coordinate.</param>
-/// <param name="Y">The entity's Y-coordinate.</param>
-/// <param name="Rotation">The entity's degree of rotation.</param>
-/// <param name="Size">The size of the <see cref="Entity"/>.</param>
+/// <param name="X">The body's X-coordinate.</param>
+/// <param name="Y">The body's Y-coordinate.</param>
+/// <param name="Rotation">The body's degree of rotation.</param>
+/// <param name="Size">The size of the <see cref="Body"/>.</param>
 public record struct Transform(
     float X = 0F,
     float Y = 0F,

@@ -1,11 +1,13 @@
 // Copyright © Spatial. All rights reserved.
 
+using Ignite.Components;
+
 namespace Ignite.Contracts;
 
 /// <summary>
-/// Specifies the type of an object.
+/// Specifies the type of a <see cref="Body"/>.
 /// </summary>
-public enum ObjectType
+public enum BodyType
 {
     Chunk = 0,
     Drop = 1,

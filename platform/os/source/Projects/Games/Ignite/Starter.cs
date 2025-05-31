@@ -34,17 +34,17 @@ public static class Starter
             });
         }
 
-        Job.ParallelFor(Field.List(), field =>
+        foreach (var field in Field.List())
         {
-            progress.Spin($"Creating {field.MapIDClient}");
-
             var maps = World.Maps[field.Serial] = new SparseArray<Map>(field.To - field.From + 1);
 
             for (var id = 0; id < maps.Capacity; id++)
             {
+                progress.Spin($"Creating {field.MapIDClient}{(maps.Capacity > 1 ? $" ({id + 1}/{maps.Capacity})" : "")}");
+
                 Map.Load(field, id);
             }
-        });
+        }
 
         progress.Dispose();
     }

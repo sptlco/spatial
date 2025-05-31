@@ -49,10 +49,18 @@ public class MapController : ResponsiveController
             }
         }
 
+        var map = World.MapAtOrDefault(_session.Character.Map, 0);
+
+        if (map is null)
+        {
+            // ...
+            return;
+        }
+
         _session.Reference();
 
-        _session.Map = _connection;
-        _session.Player = Entity.Null;
+        _session.Connection.Map = _connection;
+        _session.Player = map.Create(BodyType.Player);
 
         // ...
     }

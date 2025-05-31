@@ -141,10 +141,9 @@ internal class Agent : IDisposable
 
     private Thread CreateThread()
     {
-        return new Thread(Work)
-        {
+        return new Thread(Work) {
             Name = Constants.AgentThreadName,
-            IsBackground = true
+            Priority = ThreadPriority.Highest,
         };
     }
 }

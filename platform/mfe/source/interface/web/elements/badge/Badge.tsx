@@ -1,4 +1,4 @@
-// Copyright © Spatial. All rights reserved.
+// Copyright © Spatial Corporation. All rights reserved.
 
 import { cva } from "class-variance-authority";
 import { clsx } from "clsx";

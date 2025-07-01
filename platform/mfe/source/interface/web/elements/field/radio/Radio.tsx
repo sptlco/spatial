@@ -1,4 +1,4 @@
-// Copyright © Spatial. All rights reserved.
+// Copyright © Spatial Corporation. All rights reserved.
 
 import * as Primitive from "@radix-ui/react-radio-group";
 import { Element, Field, Node, RadioProps } from "../..";

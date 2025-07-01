@@ -1,4 +1,4 @@
-// Copyright © Spatial. All rights reserved.
+// Copyright © Spatial Corporation. All rights reserved.
 
 using Spatial.Networking.Contracts.Miscellaneous;
 using System.Net.Sockets;

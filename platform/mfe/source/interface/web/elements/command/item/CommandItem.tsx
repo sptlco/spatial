@@ -1,4 +1,4 @@
-// Copyright © Spatial. All rights reserved.
+// Copyright © Spatial Corporation. All rights reserved.
 
 import { Command as Primitive } from "cmdk";
 import * as Dialog from "@radix-ui/react-dialog";

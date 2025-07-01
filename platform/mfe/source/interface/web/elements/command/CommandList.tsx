@@ -1,4 +1,4 @@
-// Copyright © Spatial. All rights reserved.
+// Copyright © Spatial Corporation. All rights reserved.
 
 import { Command as Primitive, useCommandState } from "cmdk";
 import { Element, ElementProps, Node } from "..";

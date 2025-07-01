@@ -1,4 +1,4 @@
-// Copyright © Spatial. All rights reserved.
+// Copyright © Spatial Corporation. All rights reserved.
 
 import clsx from "clsx";
 import { Button, SheetClose, Div, Element, ElementProps, Icon, Node } from "..";

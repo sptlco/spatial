@@ -1,4 +1,4 @@
-// Copyright © Spatial. All rights reserved.
+// Copyright © Spatial Corporation. All rights reserved.
 
 using Spatial.Hardware;
 using System.Runtime.CompilerServices;

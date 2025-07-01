@@ -1,4 +1,4 @@
-// Copyright © Spatial. All rights reserved.
+// Copyright © Spatial Corporation. All rights reserved.
 
 import { Matcher, OnSelectHandler } from "react-day-picker";
 import { CalendarMode, DateRange, ElementProps } from "..";

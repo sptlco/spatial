@@ -1,4 +1,4 @@
-// Copyright © Spatial. All rights reserved.
+// Copyright © Spatial Corporation. All rights reserved.
 
 using Spatial.Simulation.Components;
 using Spatial.Simulation.Systems;

@@ -1,4 +1,4 @@
-// Copyright © Spatial. All rights reserved.
+// Copyright © Spatial Corporation. All rights reserved.
 
 import { ComboboxInput as Primitive } from "@headlessui/react";
 import { ComboboxSearchProps, Div, Element, Icon, Node } from "../../../..";

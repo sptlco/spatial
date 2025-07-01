@@ -1,4 +1,4 @@
-// Copyright © Spatial. All rights reserved.
+// Copyright © Spatial Corporation. All rights reserved.
 
 import { Button as Primitive } from "@react-email/components";
 import clsx from "clsx";

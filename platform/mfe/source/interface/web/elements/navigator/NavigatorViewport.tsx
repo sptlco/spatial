@@ -1,4 +1,4 @@
-// Copyright © Spatial. All rights reserved.
+// Copyright © Spatial Corporation. All rights reserved.
 
 import * as Primitive from "@radix-ui/react-navigation-menu";
 import { Div, Element, ElementProps, Node } from "..";

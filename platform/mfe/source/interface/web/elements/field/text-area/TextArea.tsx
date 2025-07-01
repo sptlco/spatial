@@ -1,4 +1,4 @@
-// Copyright © Spatial. All rights reserved.
+// Copyright © Spatial Corporation. All rights reserved.
 
 import { Textarea as Primitive } from "@headlessui/react";
 import { Element, Field, Node, TextAreaProps } from "../..";

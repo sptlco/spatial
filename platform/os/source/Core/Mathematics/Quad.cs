@@ -1,4 +1,4 @@
-// Copyright © Spatial. All rights reserved.
+// Copyright © Spatial Corporation. All rights reserved.
 
 namespace Spatial.Mathematics;
 
@@ -13,20 +13,4 @@ public record struct Quad(
     float Left = 0F,
     float Top = 0F,
     float Right = 0F,
-    float Bottom = 0F)
-{
-    /// <summary>
-    /// Get whether or not the <see cref="Quad"/> intersects with a circle.
-    /// </summary>
-    /// <param name="x">The circle's X-coordinate.</param>
-    /// <param name="y">The circle's Y-coordinate.</param>
-    /// <param name="radius">The circle's radius.</param>
-    /// <returns>Whether or not the two objects intersect.</returns>
-    public readonly bool Intersects(in float x, in float y, in float radius)
-    {
-        var bx = Math.Clamp(x, Left, Right);
-        var by = Math.Clamp(y, Bottom, Top);
-
-        return Point2D.Distance(x, y, bx, by) <= radius;
-    }  
-}
+    float Bottom = 0F);

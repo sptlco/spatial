@@ -1,4 +1,4 @@
-// Copyright © Spatial. All rights reserved.
+// Copyright © Spatial Corporation. All rights reserved.
 
 import * as Primitive from "@radix-ui/react-dropdown-menu";
 import { DropdownItemProps, Element, Icon, Node, Span } from "../..";

@@ -1,4 +1,4 @@
-// Copyright © Spatial. All rights reserved.
+// Copyright © Spatial Corporation. All rights reserved.
 
 import { Field as Primitive } from "@headlessui/react";
 import { Description, Element, FieldProps, Label, Node } from "..";

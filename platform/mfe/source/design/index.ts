@@ -1,4 +1,4 @@
-// Copyright © Spatial. All rights reserved.
+// Copyright © Spatial Corporation. All rights reserved.
 
 import "@fontsource/oxygen/300.css";
 import "@fontsource/oxygen/400.css";

@@ -1,4 +1,4 @@
-// Copyright © Spatial. All rights reserved.
+// Copyright © Spatial Corporation. All rights reserved.
 
 import { Label as Primitive } from "@headlessui/react";
 import { Element, ElementProps, Node, Span } from "../..";

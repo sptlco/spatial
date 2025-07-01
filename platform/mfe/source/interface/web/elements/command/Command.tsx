@@ -1,4 +1,4 @@
-// Copyright © Spatial. All rights reserved.
+// Copyright © Spatial Corporation. All rights reserved.
 
 import * as VisuallyHidden from "@radix-ui/react-visually-hidden";
 import { Command as Primitive } from "cmdk";

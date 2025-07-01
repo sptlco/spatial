@@ -1,4 +1,4 @@
-// Copyright © Spatial. All rights reserved.
+// Copyright © Spatial Corporation. All rights reserved.
 
 using Spatial.Compute;
 using Spatial.Networking;
@@ -25,7 +25,7 @@ internal class Constants
     /// <summary>
     /// The maximum number of components that can be registered.
     /// </summary>
-    public const int MaxComponents = 128; 
+    public const int MaxComponents = 128;
 
     /// <summary>
     /// The size of a <see cref="Chunk"/> in bytes.
@@ -111,6 +111,11 @@ internal class Constants
         0xFD, 0xD9, 0x5A, 0x76, 0x23, 0xF1, 0x0B, 0xB5, 0xB8, 0x59, 0xF9, 0x9F, 0x7A, 0xE6, 0x06, 0xE9, 0xA5, 0x3A,
         0xB4, 0x50, 0xBF, 0x16, 0x58, 0x98, 0xB3, 0x9A, 0x6E, 0x36, 0xEE, 0x8D, 0xEB
     };
+
+    /// <summary>
+    /// The path to the system's configuration file.
+    /// </summary>
+    public const string ConfigurationPath = "config.json";
 }
 
 /// <summary>

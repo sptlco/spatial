@@ -1,11 +1,11 @@
-// Copyright © Spatial. All rights reserved.
+// Copyright © Spatial Corporation. All rights reserved.
 
 namespace Spatial.Networking;
 
 /// <summary>
 /// A device through which a client communicates with the <see cref="Server"/>.
 /// </summary>
-public abstract class Controller
+public abstract class Controller : Microsoft.AspNetCore.Mvc.Controller
 {
     /// <summary>
     /// The active <see cref="Connection"/>.

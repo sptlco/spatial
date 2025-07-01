@@ -1,4 +1,4 @@
-// Copyright © Spatial. All rights reserved.
+// Copyright © Spatial Corporation. All rights reserved.
 
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Text;
@@ -29,7 +29,7 @@ namespace Spatial.Simulation
         public void Execute(GeneratorExecutionContext context)
         {
             var source = 
-            $@"// Copyright © Spatial. All rights reserved.
+            $@"// Copyright © Spatial Corporation. All rights reserved.
             // This is a generated source file and should not be modified directly.
 
             using Spatial.Compute.Jobs;

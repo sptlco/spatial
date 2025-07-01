@@ -1,4 +1,4 @@
-// Copyright © Spatial. All rights reserved.
+// Copyright © Spatial Corporation. All rights reserved.
 
 import { Font } from "@react-email/components";
 import { Tailwind, TailwindConfig } from "@react-email/tailwind";

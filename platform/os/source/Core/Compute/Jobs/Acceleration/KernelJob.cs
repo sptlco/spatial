@@ -1,4 +1,4 @@
-// Copyright © Spatial. All rights reserved.
+// Copyright © Spatial Corporation. All rights reserved.
 
 using ILGPU.Runtime;
 using Spatial.Compute.Jobs.Commands;

@@ -18,6 +18,6 @@ public class SystemController : Controller
     [Endpoint("version")]
     public string GetVersion()
     {
-        return "1.0";
+        return Configuration.Current.Version;
     }
 }

@@ -1,5 +1,8 @@
 // Copyright © Spatial Corporation. All rights reserved.
 
+using Spatial.Models;
+using Spatial.Simulation;
+
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
@@ -12,10 +15,11 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
-app
-    .UseHttpsRedirection()
-    .UseStaticFiles()
-    .UseAuthorization();
+app.UseHttpsRedirection();
+app.UseStaticFiles();
+app.UseAuthorization();
 
 app.MapControllers();
-app.Run();
+app.Start();
+
+Ticker.Run(World.Update);

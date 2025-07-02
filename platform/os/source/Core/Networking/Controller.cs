@@ -8,15 +8,12 @@ namespace Spatial.Networking;
 public abstract class Controller : Microsoft.AspNetCore.Mvc.Controller
 {
     /// <summary>
-    /// The active <see cref="Connection"/>.
+    /// The active <see cref="Networking.Connection"/>.
     /// </summary>
-    public Connection _connection { get; internal set; }
+    public Connection Connection { get; internal set; }
 
     /// <summary>
-    /// Initialize the <see cref="Controller"/>.
+    /// A <see cref="Networking.Message"/> sent to the <see cref="Server"/>.
     /// </summary>
-    public virtual void Initialize(ushort command)
-    {
-        // Initialization logic can be added here if needed.
-    }
+    public Message Message { get; internal set; }
 }

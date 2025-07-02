@@ -284,12 +284,10 @@ public static partial class Server
 
                         try
                         {
-                            using var data = ProtocolBuffer.FromSpan(
-                                type: command.Prototype,
-                                data: message.Data.AsSpan(2, message.Size - 2));
+                            using var data = ProtocolBuffer.FromSpan(command.Prototype, message.Data.AsSpan(2, message.Size - 2));
 
-                            command.Controller._connection = connection;
-                            command.Controller.Initialize(message.Command);
+                            command.Controller.Connection = connection;
+                            command.Controller.Message = message;
 
                             command.Handler(data);
                         }

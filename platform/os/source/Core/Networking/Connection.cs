@@ -326,7 +326,7 @@ internal enum NetworkEventCode
 /// <summary>
 /// A <see cref="Message"/> sent to or from the <see cref="Server"/>.
 /// </summary>
-internal class Message : IDisposable
+public class Message : IDisposable
 {
     private static readonly ConcurrentBag<Message> _pool = [];
 
@@ -346,7 +346,7 @@ internal class Message : IDisposable
     /// <summary>
     /// The <see cref="Networking.Connection"/> associated with the <see cref="Message"/>.
     /// </summary>
-    public Connection Connection => _connection;
+    internal Connection Connection => _connection;
 
     /// <summary>
     /// The message's command.
@@ -356,7 +356,7 @@ internal class Message : IDisposable
     /// <summary>
     /// The message's data.
     /// </summary>
-    public byte[] Data => _data;
+    internal byte[] Data => _data;
 
     /// <summary>
     /// The size of the <see cref="Message"/>.

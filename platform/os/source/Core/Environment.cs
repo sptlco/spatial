@@ -13,6 +13,16 @@ public static class Environment
     private static readonly CancellationTokenSource _cts;
 
     /// <summary>
+    /// The system's private key.
+    /// </summary>
+    public static readonly string? PrivateKey = System.Environment.GetEnvironmentVariable("SPATIAL_PRIVATE_KEY");
+
+    /// <summary>
+    /// The system's RPC endpoint.
+    /// </summary>
+    public static readonly string? RPCUrl = System.Environment.GetEnvironmentVariable("SPATIAL_INFURA_URL");
+
+    /// <summary>
     /// Create a new <see cref="Environment"/>.
     /// </summary>
     static Environment()

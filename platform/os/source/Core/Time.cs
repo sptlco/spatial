@@ -1,6 +1,6 @@
 // Copyright © Spatial Corporation. All rights reserved.
 
-namespace Spatial.Simulation;
+namespace Spatial;
 
 /// <summary>
 /// Represents a precise duration or timestamp, stored internally in milliseconds.

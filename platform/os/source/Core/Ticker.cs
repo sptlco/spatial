@@ -1,10 +1,9 @@
 // Copyright © Spatial Corporation. All rights reserved.
 
-namespace Spatial.Simulation;
+namespace Spatial;
 
 /// <summary>
-/// A <see cref="Time"/> device that performs routine functions 
-/// at a fixed interval.
+/// A temporal device that executes a function periodically.
 /// </summary>
 public class Ticker
 {

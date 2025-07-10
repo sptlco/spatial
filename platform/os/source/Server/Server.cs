@@ -1,13 +1,21 @@
 // Copyright © Spatial Corporation. All rights reserved.
 
-using Serilog;
-
 namespace Spatial;
 
 public class Server : Application
 {
+    public override void Start(params string[] args)
+    {
+        INFO("Welcome to Spatial!");
+    }
+    
     public override void Update(Time delta)
     {
-        Log.Information("Hello, world!");
+        INFO("Hello, world!");
+    }
+
+    public override void Shutdown()
+    {
+        INFO("Have a good day!");
     }
 }

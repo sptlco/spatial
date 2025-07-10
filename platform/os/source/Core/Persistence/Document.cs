@@ -141,7 +141,7 @@ public static class Document<T> where T : Document
 
     private static IMongoDatabase GetDatabase()
     {
-        return _client.GetDatabase(System.Environment.GetEnvironmentVariable(Constants.DatabaseNameVariableName) ?? Constants.DefaultDatabaseName);
+        return _client.GetDatabase(Environment.DatabaseName);
     }
 
     private static IMongoCollection<T> GetCollection()
@@ -151,11 +151,11 @@ public static class Document<T> where T : Document
 
     private static string GetCollectionName()
     {
-        var collection = typeof(T).GetCustomAttribute<DocumentCollection>()?.Collection;
+        var collection = typeof(T).GetCustomAttribute<CollectionAttribute>()?.Name;
 
         if (string.IsNullOrEmpty(collection))
         {
-            throw new InvalidOperationException("Specify a collection for this document using the DocumentCollection attribute.");
+            throw new InvalidOperationException("Specify a collection for this document using the Collection attribute.");
         }
 
         return collection;
@@ -163,7 +163,7 @@ public static class Document<T> where T : Document
 
     private static MongoClient CreateClient()
     {
-        return new MongoClient(System.Environment.GetEnvironmentVariable(Constants.DatabaseUrlVariableName) ?? Constants.DefaultDatabaseUrl);
+        return new MongoClient(Environment.DatabaseConnectionString);
     }
 }
 

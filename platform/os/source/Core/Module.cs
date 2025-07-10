@@ -1,7 +1,5 @@
 // Copyright © Spatial Corporation. All rights reserved.
 
-using Serilog;
-using Serilog.Events;
 using Spatial.Compute;
 using System.Runtime.CompilerServices;
 
@@ -19,23 +17,6 @@ internal class Module
     [ModuleInitializer]
     public static void Initialize()
     {
-        AppDomain.CurrentDomain.ProcessExit += (s, e) => Log.CloseAndFlush();
-        Console.CancelKeyPress += (s, e) => Log.CloseAndFlush();
-
-        var config = new LoggerConfiguration()
-            .Enrich.FromLogContext()
-            .WriteTo.Console()
-            .WriteTo.File(
-                path: Constants.LogFilePath,
-                rollingInterval: RollingInterval.Infinite,
-                rollOnFileSizeLimit: true);
-
-#if DEBUG
-        config.MinimumLevel.Is(LogEventLevel.Debug);
-#endif
-
-        Log.Logger = config.CreateLogger();
-
         Processor.Run();
     }
 }

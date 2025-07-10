@@ -6,6 +6,19 @@
         <Nullable>enable</Nullable>
         <GenerateDocumentationFile>true</GenerateDocumentationFile>
         <PackageIcon>icon.jpg</PackageIcon>
+
+        <Platform Condition="'$(Platform)' == ''">AnyCPU</Platform>
+        <Configuration Condition="'$(Configuration)' == ''">Debug</Configuration>
+
+        <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+
+        <RootDirectory>$(MSBuildThisFileDirectory)..\..\</RootDirectory>
+        <BuildPath>$(RootDirectory)build\$(Platform)\$(Configuration)</BuildPath>
+        
+        <OutputPath>$(BuildPath)</OutputPath>
+        <BaseIntermediateOutputPath>$(BuildPath)</BaseIntermediateOutputPath>
+        <IntermediateOutputPath>$(BuildPath)</IntermediateOutputPath>
+        <MSBuildExtensionsPath>$(BuildPath)</MSBuildExtensionsPath>
     </PropertyGroup>
     <ItemGroup>
         <ProjectReference Include="..\Generators\Spatial.Generators.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
@@ -20,7 +33,9 @@
       <PackageReference Include="MongoDB.Driver" Version="3.2.1" />
       <PackageReference Include="Nethereum.Web3" Version="5.0.0" />
       <PackageReference Include="Serilog" Version="4.2.0" />
+      <PackageReference Include="Serilog.AspNetCore" Version="9.0.0" />
       <PackageReference Include="Serilog.Sinks.Console" Version="6.0.0" />
       <PackageReference Include="Serilog.Sinks.File" Version="6.0.0" />
+      <PackageReference Include="Serilog.Sinks.MongoDB" Version="7.0.0" />
     </ItemGroup>
 </Project>

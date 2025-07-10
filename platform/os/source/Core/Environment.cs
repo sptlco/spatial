@@ -13,6 +13,21 @@ public static class Environment
     private static readonly CancellationTokenSource _cts;
 
     /// <summary>
+    /// A MongoDB database connection string.
+    /// </summary>
+    public static string DatabaseConnectionString => string.Join('/', DatabaseUrl, DatabaseName);
+
+    /// <summary>
+    /// A URL that points to a MongoDB database.
+    /// </summary>
+    public static readonly string DatabaseUrl = System.Environment.GetEnvironmentVariable(Constants.DatabaseUrlVariableName) ?? Constants.DefaultDatabaseUrl;
+
+    /// <summary>
+    /// The name of a MongoDB database.
+    /// </summary>
+    public static readonly string DatabaseName = System.Environment.GetEnvironmentVariable(Constants.DatabaseNameVariableName) ?? Constants.DefaultDatabaseName;
+
+    /// <summary>
     /// The system's private key.
     /// </summary>
     public static readonly string? PrivateKey = System.Environment.GetEnvironmentVariable("SPATIAL_PRIVATE_KEY");

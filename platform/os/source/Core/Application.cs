@@ -3,6 +3,8 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Serilog;
+using Serilog.Events;
 using Spatial.Networking;
 
 namespace Spatial;
@@ -76,7 +78,13 @@ public class Application
         CancellationToken cancellationToken = default,
         params string[] args) where T : Application, new()
     {
+        // Configure the Telemetry pipeline.
+        // Spatial uses Serilog under the hood for logging purposes.
+
+        ConfigureTelemetry();
+
         var application = new T {
+
             // Spatial applications are configured with a web API.
             // Here, we create the web API and assign it to our application.
 
@@ -85,13 +93,13 @@ public class Application
 
         application._api.Start();
 
-        // Support both capped and uncapped tick rates.
-        // If the tick rate parameter is passed, use that.
-
         if (cancellationToken == default)
         {
             cancellationToken = Environment.CancellationToken;
         }
+
+        // Support both capped and uncapped tick rates.
+        // If the tick rate parameter is passed, use that.
 
         if (tickRate > Time.Zero)
         {
@@ -122,10 +130,32 @@ public class Application
     /// </summary>
     public virtual void Shutdown() { }
 
+    private static void ConfigureTelemetry()
+    {
+        var config = new LoggerConfiguration()
+            .Enrich.FromLogContext()
+            .MinimumLevel.Override("Microsoft", LogEventLevel.Fatal)
+            .WriteTo.Console()
+            .WriteTo.MongoDBCapped(
+                databaseUrl: Environment.DatabaseConnectionString,
+                collectionName: Constants.LogCollectionName)
+            .WriteTo.File(
+                path: Constants.LogFilePath,
+                rollingInterval: RollingInterval.Infinite,
+                rollOnFileSizeLimit: true);
+
+#if DEBUG
+        config.MinimumLevel.Is(LogEventLevel.Debug);
+#endif
+
+        Log.Logger = config.CreateLogger();
+    }
+
     private static WebApplication CreateWebApplication(string[] args)
     {
         var builder = WebApplication.CreateBuilder(args);
 
+        builder.Services.AddSerilog();
         builder.Services.AddControllers();
 
         var application = builder.Build();

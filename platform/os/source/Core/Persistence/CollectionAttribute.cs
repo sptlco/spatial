@@ -6,19 +6,19 @@ namespace Spatial.Persistence;
 /// Specifies the collection of a <see cref="Document"/>.
 /// </summary>
 [AttributeUsage(AttributeTargets.Class)]
-public class DocumentCollection : Attribute
+public class CollectionAttribute : Attribute
 {
     /// <summary>
-    /// Create a new <see cref="DocumentCollection"/>.
+    /// Create a new <see cref="CollectionAttribute"/>.
     /// </summary>
-    /// <param name="collection">The name of the collection.</param>
-    public DocumentCollection(string collection)
+    /// <param name="name">The name of the collection.</param>
+    public CollectionAttribute(string name)
     {
-        Collection = collection;
+        Name = name;
     }
 
     /// <summary>
     /// The name of the collection.
     /// </summary>
-    public string Collection { get; set; }
+    public string Name { get; set; }
 }

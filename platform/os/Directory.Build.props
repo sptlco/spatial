@@ -5,4 +5,7 @@
     <PropertyGroup>
         <DefaultItemExcludes>$(DefaultItemExcludes);Directory.*.props;BenchmarkDotNet.Artifacts\**\*</DefaultItemExcludes>
     </PropertyGroup>
+    <ItemGroup>
+        <Using Include="Spatial.Telemetry.Logger" Static="true" />
+    </ItemGroup>
 </Project>

@@ -116,6 +116,11 @@ internal class Constants
     /// The path to the system's configuration file.
     /// </summary>
     public const string ConfigurationPath = "config.json";
+
+    /// <summary>
+    /// The name of the log database collection.
+    /// </summary>
+    public const string LogCollectionName = "Logs";
 }
 
 /// <summary>

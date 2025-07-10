@@ -3,3 +3,5 @@
 using Spatial;
 
 Application.Run<Server>(args);
+
+WARN("Bye bye now!");

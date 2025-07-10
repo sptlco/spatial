@@ -2,7 +2,7 @@
 
 namespace Spatial;
 
-public class Server : Application
+public class Platform : Application
 {
     public override void Start(params string[] args)
     {

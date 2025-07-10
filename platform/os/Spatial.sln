@@ -21,7 +21,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Spatial.Generators", "sourc
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Server", "Server", "{8A6226FF-F409-717C-6A3C-7403D85B097D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Spatial.Server", "source\Server\Spatial.Server.csproj", "{E573D90F-7A1B-423D-9077-A1545709CD10}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Spatial.Cloud", "source\Server\Spatial.Cloud.csproj", "{E573D90F-7A1B-423D-9077-A1545709CD10}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

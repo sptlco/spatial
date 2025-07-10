@@ -6,19 +6,6 @@
         <Nullable>enable</Nullable>
         <GenerateDocumentationFile>true</GenerateDocumentationFile>
         <PackageIcon>icon.jpg</PackageIcon>
-
-        <Platform Condition="'$(Platform)' == ''">AnyCPU</Platform>
-        <Configuration Condition="'$(Configuration)' == ''">Debug</Configuration>
-
-        <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
-
-        <RootDirectory>$(MSBuildThisFileDirectory)..\..\</RootDirectory>
-        <BuildPath>$(RootDirectory)build\$(Platform)\$(Configuration)</BuildPath>
-        
-        <OutputPath>$(BuildPath)</OutputPath>
-        <BaseIntermediateOutputPath>$(BuildPath)</BaseIntermediateOutputPath>
-        <IntermediateOutputPath>$(BuildPath)</IntermediateOutputPath>
-        <MSBuildExtensionsPath>$(BuildPath)</MSBuildExtensionsPath>
     </PropertyGroup>
     <ItemGroup>
         <ProjectReference Include="..\Generators\Spatial.Generators.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />

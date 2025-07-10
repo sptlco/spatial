@@ -157,12 +157,12 @@ public class Application
 
         builder.Services.AddSerilog();
         builder.Services.AddControllers();
+        builder.Services.AddExceptionHandler<FaultHandler>();
 
         var application = builder.Build();
 
         if (!application.Environment.IsDevelopment())
         {
-            application.UseExceptionHandler("/error");
             application.UseHsts();
         }
 

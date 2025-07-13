@@ -2,6 +2,4 @@
 
 using Spatial;
 
-Application.Run<Platform>(args);
-
-WARN("Bye bye now!");
+Application.Run<Server>(args);

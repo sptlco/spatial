@@ -1,6 +1,8 @@
 // Copyright © Spatial Corporation. All rights reserved.
 
+using System.Net;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Serilog;
@@ -156,19 +158,30 @@ public class Application
         var builder = WebApplication.CreateBuilder(args);
 
         builder.Services.AddSerilog();
+        builder.Services.AddExceptionHandler<FaultHandler>();
+        builder.Services.AddProblemDetails();
+
         builder.Services.AddControllers();
 
         var application = builder.Build();
 
-        if (!application.Environment.IsDevelopment())
-        {
-            application.UseExceptionHandler("/error");
-            application.UseHsts();
-        }
-
+        application.UseExceptionHandler();
         application.UseHttpsRedirection();
         application.UseStaticFiles();
         application.UseAuthorization();
+        application.UseHsts();
+
+        application.UseStatusCodePages(async status => {
+            if (status.HttpContext.Response.StatusCode == (int) HttpStatusCode.NotFound)
+            {
+                var context = status.HttpContext;
+                var fault = new NotFound().ToFault();
+
+                ERROR("Resource {Path} not found for request {Request}.", context.Request.Path, context.TraceIdentifier);
+
+                await context.Response.WriteAsJsonAsync(fault.ToResponse(context.TraceIdentifier));
+            }
+        });
 
         application.MapControllers();
 

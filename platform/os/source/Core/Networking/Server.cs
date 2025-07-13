@@ -16,7 +16,7 @@ namespace Spatial.Networking;
 /// <summary>
 /// A high-performance asynchronous TCP network.
 /// </summary>
-public static partial class Server
+internal static partial class Server
 {
     private static readonly Socket _socket;
     private static readonly Dictionary<Type, Controller> _controllers;
@@ -318,7 +318,7 @@ public static partial class Server
     }
 }
 
-public partial class Server
+internal partial class Server
 {
     /// <summary>
     /// Issue a <see cref="NETCOMMAND"/> on behalf of the <see cref="Server"/>.

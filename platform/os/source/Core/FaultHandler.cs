@@ -17,17 +17,19 @@ public class FaultHandler : IExceptionHandler
     /// <param name="exception">The <see cref="Exception"/> that occurred.</param>
     /// <param name="cancellationToken">A <see cref="CancellationToken"/> for the request.</param>
     /// <returns>False to continue with the default behavior; true if the exception was handled.</returns>
-    public ValueTask<bool> TryHandleAsync(HttpContext context, Exception exception, CancellationToken cancellationToken)
+    public async ValueTask<bool> TryHandleAsync(HttpContext context, Exception exception, CancellationToken cancellationToken)
     {
         if (exception is not Fault fault)
         {
-            return ValueTask.FromResult(false);
+            return false;
         }
 
-        ERROR(fault, "A fault occurred.");
+        ERROR(fault, "Encountered {Error} while handling request {Request}.", fault.Error.Code, context.TraceIdentifier);
 
-        // ...
+        context.Response.StatusCode = fault.Error.Status;
 
-        return ValueTask.FromResult(true);
+        await context.Response.WriteAsJsonAsync(fault.ToResponse(context.TraceIdentifier), cancellationToken);
+
+        return true;
     }
 }

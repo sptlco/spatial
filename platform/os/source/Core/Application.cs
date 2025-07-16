@@ -86,6 +86,8 @@ public class Application
 
         ConfigureTelemetry();
 
+        INFO("Application starting...");
+
         var application = new T {
 
             // Spatial applications are configured with a web API.
@@ -101,6 +103,8 @@ public class Application
             cancellationToken = Environment.CancellationToken;
         }
 
+        INFO("Application running.");
+
         // Support both capped and uncapped tick rates.
         // If the tick rate parameter is passed, use that.
 
@@ -113,7 +117,11 @@ public class Application
             Ticker.Run(application.Tick, cancellationToken);
         }
 
+        INFO("Application shutting down...");
+
         application.Shutdown();
+
+        INFO("Application exited gracefully.");
     }
 
     /// <summary>
@@ -152,6 +160,8 @@ public class Application
 #endif
 
         Log.Logger = config.CreateLogger();
+
+        INFO("Application telemetry is currently enabled.");
     }
 
     private static WebApplication CreateWebApplication(string[] args)

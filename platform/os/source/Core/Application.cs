@@ -8,7 +8,6 @@ using Microsoft.Extensions.Hosting;
 using Serilog;
 using Serilog.Events;
 using Spatial.Networking;
-using System.Diagnostics;
 using System.Net;
 
 namespace Spatial;

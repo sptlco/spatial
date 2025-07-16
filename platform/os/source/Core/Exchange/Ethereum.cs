@@ -75,7 +75,7 @@ public class Ethereum
     {
         if (Uri.TryCreate(source, UriKind.Absolute, out var uri) && (uri.Scheme == Uri.UriSchemeHttp || uri.Scheme == Uri.UriSchemeHttps))
         {
-            return _http.CreateClient().GetStringAsync(source).GetAwaiter().GetResult();
+            return _http.CreateClient().GetStringAsync(uri).GetAwaiter().GetResult();
         }
 
         return File.Exists(source) ? File.ReadAllText(source) : source;

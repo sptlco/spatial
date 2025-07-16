@@ -1,13 +1,15 @@
 // Copyright © Spatial Corporation. All rights reserved.
 
-using System.Net;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Serilog;
 using Serilog.Events;
 using Spatial.Networking;
+using System.Diagnostics;
+using System.Net;
 
 namespace Spatial;
 
@@ -157,31 +159,21 @@ public class Application
     {
         var builder = WebApplication.CreateBuilder(args);
 
-        builder.Services.AddSerilog();
-        builder.Services.AddExceptionHandler<FaultHandler>();
-        builder.Services.AddProblemDetails();
-
-        builder.Services.AddControllers();
+        builder.Services
+            .AddSerilog()
+            .AddExceptionHandler<FaultHandler>()
+            .AddProblemDetails()
+            .AddControllers();
 
         var application = builder.Build();
 
-        application.UseExceptionHandler();
-        application.UseHttpsRedirection();
-        application.UseStaticFiles();
-        application.UseAuthorization();
-        application.UseHsts();
-
-        application.UseStatusCodePages(async status => {
-            if (status.HttpContext.Response.StatusCode == (int) HttpStatusCode.NotFound)
-            {
-                var context = status.HttpContext;
-                var fault = new NotFound().ToFault();
-
-                ERROR("Resource {Path} not found for request {Request}.", context.Request.Path, context.TraceIdentifier);
-
-                await context.Response.WriteAsJsonAsync(fault.ToResponse(context.TraceIdentifier));
-            }
-        });
+        application
+            .UseExceptionHandler()
+            .UseStatusCodePages(ReportStatusCode)
+            .UseHttpsRedirection()
+            .UseStaticFiles()
+            .UseAuthorization()
+            .UseHsts();
 
         application.MapControllers();
 
@@ -197,5 +189,19 @@ public class Application
         Server.Send();
 
         _time += delta;
+    }
+
+    private static async Task ReportStatusCode(StatusCodeContext status)
+    {
+        var context = status.HttpContext;
+        var traceId = context.TraceIdentifier;
+
+        switch ((HttpStatusCode) status.HttpContext.Response.StatusCode)
+        {
+            case HttpStatusCode.NotFound:
+                ERROR("Resource {Path} not found for request {Request}.", context.Request.Path, traceId);
+                await context.Response.WriteAsJsonAsync(new NotFound().ToFault().ToResponse(traceId));
+                break;
+        }
     }
 }

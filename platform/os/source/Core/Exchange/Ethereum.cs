@@ -2,6 +2,7 @@
 
 using Nethereum.Web3;
 using Nethereum.Web3.Accounts;
+using Spatial.Networking;
 
 namespace Spatial.Exchange;
 
@@ -12,6 +13,7 @@ public class Ethereum
 {
     private readonly Account _account;
     private readonly Web3 _web3;
+    private readonly Http _http;
 
     /// <summary>
     /// Create a new <see cref="Ethereum"/>.
@@ -20,7 +22,62 @@ public class Ethereum
     {
         _account = new Account(Environment.PrivateKey);
         _web3 = new Web3(_account, Environment.RPCUrl);
+        _http = new Http();
     }
 
-    // ...
+    /// <summary>
+    /// Call a smart contract's function.
+    /// </summary>
+    /// <typeparam name="TResult">The function's output type.</typeparam>
+    /// <param name="from">The caller's address.</param>
+    /// <param name="abi">The contract's ABI; a URL, file path, or source code.</param>
+    /// <param name="contract">The contract's address.</param>
+    /// <param name="function">The name of the function to call.</param>
+    /// <param name="input">The call's input parameters.</param>
+    /// <returns>The result of the function call.</returns>
+    public async Task<TResult> CallAsync<TResult>(
+        string from,
+        string abi,
+        string contract,
+        string function,
+        params object[] input)
+    {
+        var target = _web3.Eth.GetContract(DownloadAbi(abi), contract).GetFunction(function);
+        var gas = await target.EstimateGasAsync(input);
+
+        return await target.CallAsync<TResult>(from, gas, null, input);
+    }
+
+    /// <summary>
+    /// Send a transaction to a smart contract.
+    /// </summary>
+    /// <param name="from">The sender's address.</param>
+    /// <param name="abi">The contract's ABI; a URL, file path, or source code.</param>
+    /// <param name="contract">The contract's address.</param>
+    /// <param name="function">The name of the function to send the transaction to.</param>
+    /// <param name="input">The transaction's input parameters.</param>
+    /// <returns>Receipt of the transaction.</returns>
+    public async Task<Receipt> SendTransactionAsync(
+        string from,
+        string abi,
+        string contract,
+        string function,
+        params object[] input)
+    {
+        var target = _web3.Eth.GetContract(DownloadAbi(abi), contract).GetFunction(function);
+        var gas = await target.EstimateGasAsync(input);
+        var receipt = await target.SendTransactionAndWaitForReceiptAsync(from, gas, null, null, input);
+
+        return new Receipt(receipt.TransactionHash);
+    }
+
+    private string DownloadAbi(string source)
+    {
+        if (Uri.TryCreate(source, UriKind.Absolute, out var uri) && (uri.Scheme == Uri.UriSchemeHttp || uri.Scheme == Uri.UriSchemeHttps))
+        {
+            return _http.CreateClient().GetStringAsync(source).GetAwaiter().GetResult();
+        }
+
+        return File.Exists(source) ? File.ReadAllText(source) : source;
+    }
 }

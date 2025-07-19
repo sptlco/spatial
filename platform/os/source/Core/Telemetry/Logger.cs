@@ -40,6 +40,17 @@ public static class Logger
     }
 
     /// <summary>
+    /// Log a trace message.
+    /// </summary>
+    /// <param name="error">An <see cref="Error"/> that occurred.</param>
+    /// <param name="template">The message's template.</param>
+    /// <param name="properties">Contextual properties for the log message.</param>
+    public static void TRACE(Error? error, string template, params object[] properties)
+    {
+        Log.Verbose(error?.ToFault(), template, properties);
+    }
+
+    /// <summary>
     /// Log a debug message.
     /// </summary>
     /// <param name="template">The message's template.</param>
@@ -67,6 +78,17 @@ public static class Logger
     public static void DEBUG(Exception? exception, string template, params object[] properties)
     {
         Log.Debug(exception, template, properties);
+    }
+
+    /// <summary>
+    /// Log a debug message.
+    /// </summary>
+    /// <param name="error">An <see cref="Error"/> that occurred.</param>
+    /// <param name="template">The message's template.</param>
+    /// <param name="properties">Contextual properties for the log message.</param>
+    public static void DEBUG(Error? error, string template, params object[] properties)
+    {
+        Log.Debug(error?.ToFault(), template, properties);
     }
 
     /// <summary>
@@ -100,6 +122,17 @@ public static class Logger
     }
 
     /// <summary>
+    /// Log an information message.
+    /// </summary>
+    /// <param name="error">An <see cref="Error"/> that occurred.</param>
+    /// <param name="template">The message's template.</param>
+    /// <param name="properties">Contextual properties for the log message.</param>
+    public static void INFO(Error? error, string template, params object[] properties)
+    {
+        Log.Information(error?.ToFault(), template, properties);
+    }
+
+    /// <summary>
     /// Log a warning message.
     /// </summary>
     /// <param name="template">The message's template.</param>
@@ -127,6 +160,17 @@ public static class Logger
     public static void WARN(Exception? exception, string template, params object[] properties)
     {
         Log.Warning(exception, template, properties);
+    }
+
+    /// <summary>
+    /// Log a warning message.
+    /// </summary>
+    /// <param name="error">An <see cref="Error"/> that occurred.</param>
+    /// <param name="template">The message's template.</param>
+    /// <param name="properties">Contextual properties for the log message.</param>
+    public static void WARN(Error? error, string template, params object[] properties)
+    {
+        Log.Warning(error?.ToFault(), template, properties);
     }
 
     /// <summary>
@@ -160,6 +204,17 @@ public static class Logger
     }
 
     /// <summary>
+    /// Log an error message.
+    /// </summary>
+    /// <param name="error">An <see cref="Error"/> that occurred.</param>
+    /// <param name="template">The message's template.</param>
+    /// <param name="properties">Contextual properties for the log message.</param>
+    public static void ERROR(Error? error, string template, params object[] properties)
+    {
+        Log.Error(error?.ToFault(), template, properties);
+    }
+
+    /// <summary>
     /// Log a fatal message.
     /// </summary>
     /// <param name="template">The message's template.</param>
@@ -187,5 +242,16 @@ public static class Logger
     public static void FATAL(Exception? exception, string template, params object[] properties)
     {
         Log.Fatal(exception, template, properties);
+    }
+
+    /// <summary>
+    /// Log a fatal message.
+    /// </summary>
+    /// <param name="error">An <see cref="Error"/> that occurred.</param>
+    /// <param name="template">The message's template.</param>
+    /// <param name="properties">Contextual properties for the log message.</param>
+    public static void FATAL(Error? error, string template, params object[] properties)
+    {
+        Log.Fatal(error?.ToFault(), template, properties);
     }
 }

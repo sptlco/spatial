@@ -96,6 +96,7 @@ public class Application
             _api = CreateWebApplication(args)
         };
 
+        application.Start();
         application._api.Start();
 
         if (cancellationToken == default)

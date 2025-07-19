@@ -18,6 +18,35 @@ public class SystemError : Error
 }
 
 /// <summary>
+/// A <see cref="SystemError"/> indicating that an object reference is not set 
+/// to an instance of an object.
+/// </summary>
+public class NullReference : SystemError
+{
+    /// <summary>
+    /// Create a new <see cref="NullReference"/>.
+    /// </summary>
+    public NullReference() : base("The object reference is not set to an instance of an object.") { }
+}
+
+/// <summary>
+/// A <see cref="SystemError"/> that indicates a method was called with invalid parameters.
+/// </summary>
+public class InvalidParameters : SystemError
+{
+    /// <summary>
+    /// Create a new <see cref="InvalidParameters"/>.
+    /// </summary>
+    public InvalidParameters() : base("Invalid values provided for one or more parameters.") { }
+
+    /// <summary>
+    /// Create a new <see cref="InvalidParameters"/>.
+    /// </summary>
+    /// <param name="parameters">The names of the invalid parameters.</param>
+    public InvalidParameters(params string[] parameters) : base($"Invalid values provided for parameters '{string.Join(", ", parameters)}'.") { }
+}
+
+/// <summary>
 /// An <see cref="Error"/> on behalf of the user.
 /// </summary>
 public class UserError : Error

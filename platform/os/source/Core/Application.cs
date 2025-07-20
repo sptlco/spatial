@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Options;
 using Serilog;
 using Serilog.Events;
 using Spatial.Compute;
@@ -45,7 +46,7 @@ public class Application
     /// <summary>
     /// The application's <see cref="Spatial.Configuration"/>;
     /// </summary>
-    public Configuration Configuration => _wapp.Services.GetRequiredService<Configuration>();
+    public Configuration Configuration => _wapp.Services.GetRequiredService<IOptionsMonitor<Configuration>>().CurrentValue;
 
     /// <summary>
     /// The application's <see cref="Compute.Processor"/>.
@@ -108,9 +109,6 @@ public class Application
     {
         var application = new T();
 
-        // Configure the Telemetry pipeline.
-        // Spatial uses Serilog under the hood for logging purposes.
-
         ConfigureTelemetry();
 
         INFO("Application starting...");
@@ -126,9 +124,6 @@ public class Application
         }
 
         INFO("Application running.");
-
-        // Support both capped and uncapped tick rates.
-        // If the tick rate parameter is passed, use that.
 
         if (tickRate > Time.Zero)
         {
@@ -196,7 +191,12 @@ public class Application
         var builder = WebApplication.CreateBuilder();
 
         builder.Services
-            .Configure<Configuration>(builder.Configuration)
+            .AddOptions<Configuration>()
+            .Bind(builder.Configuration)
+            .ValidateDataAnnotations()
+            .ValidateOnStart();
+
+        builder.Services
             .AddSerilog()
             .AddExceptionHandler<FaultHandler>()
             .AddProblemDetails()

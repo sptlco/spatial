@@ -11,9 +11,14 @@ namespace Spatial;
 public class Configuration
 {
     /// <summary>
+    /// Get the current <see cref="Configuration"/>.
+    /// </summary>
+    public static Configuration Current => Application.Current.Configuration;
+
+    /// <summary>
     /// The system's version.
     /// </summary>
-    public string Version { get; set; }
+    public string Version { get; set; } = "";
 
     /// <summary>
     /// Configurable options for the system's database.

@@ -12,36 +12,46 @@ namespace Spatial.Compute;
 /// A low-level abstraction that provides access to the system's 
 /// central processing unit (CPU) and graphics processing unit (GPU).
 /// </summary>
-internal static class Processor
+public class Processor
 {
-    private static Agent[] _agents;
+    private static Processor _instance;
+
+    private Agent[] _agents;
     private static ConcurrentDictionary<string, Job> _jobs;
     private static ConcurrentDictionary<Job, StrongBox<int>> _dependencies;
     private static int _running;
     private static uint _next;
 
     /// <summary>
+    /// Create a new <see cref="Processor"/>.
+    /// </summary>
+    public Processor()
+    {
+        _instance = this;
+        _agents = new Agent[System.Environment.ProcessorCount];
+    }
+
+    /// <summary>
     /// The agents of the <see cref="Processor"/>.
     /// </summary>
-    public static Agent[] Agents => _agents;
+    internal Agent[] Agents => _agents;
 
     /// <summary>
     /// Run the <see cref="Processor"/>.
     /// </summary>
-    public static void Run()
+    public void Run()
     {
         if (Interlocked.Exchange(ref _running, 1) != 0)
         {
             return;
         }
 
-        _agents = new Agent[System.Environment.ProcessorCount];
         _jobs = [];
         _dependencies = [];
 
         for (var i = 0; i < _agents.Length; i++)
         {
-            _agents[i] = new(i);
+            _agents[i] = new(this, i);
         }
 
         for (var i = 0; i < _agents.Length; i++)
@@ -53,7 +63,7 @@ internal static class Processor
     /// <summary>
     /// Shutdown the <see cref="Processor"/>.
     /// </summary>
-    internal static void Shutdown()
+    public void Shutdown()
     {
         if (Interlocked.Exchange(ref _running, 0) != 1)
         {
@@ -69,11 +79,11 @@ internal static class Processor
     }
 
     /// <summary>
-    /// Submit a <see cref="Graph"/> to the <see cref="Processor"/>.
+    /// Dispatch a <see cref="Graph"/> to the <see cref="Processor"/>.
     /// </summary>
     /// <param name="graph">A <see cref="Job"/> execution <see cref="Graph"/>.</param>
-    /// <returns>A <see cref="JobHandle"/>.</returns>
-    public static JobHandle Dispatch(Graph graph)
+    /// <returns>A <see cref="Handle"/>.</returns>
+    internal static Handle Dispatch(Graph graph)
     {
         // First, topologically sort the graph using Khan's algorithm
         // under the hood, ensuring there are no circular dependencies.
@@ -95,8 +105,8 @@ internal static class Processor
         // Note, they won't actually be scheduled yet unless their 
         // dependencies have all been met.
 
-        graph.Handle = JobHandle.Create(graph.Jobs.Count);
-        graph.Jobs.ForEach(Submit);
+        graph.Handle = Handle.Create(graph.Jobs.Count);
+        graph.Jobs.ForEach(_instance.Submit);
 
         return graph.Handle;
     }
@@ -105,7 +115,7 @@ internal static class Processor
     /// Finalize a <see cref="Job"/> that was executed.
     /// </summary>
     /// <param name="jobId">The <see cref="Job"/> to finalize.</param>
-    public static void Finalize(string jobId)
+    public void Finalize(string jobId)
     {
         if (_jobs.TryRemove(jobId, out var job))
         {
@@ -148,8 +158,10 @@ internal static class Processor
         }
     }
 
-    private static void Submit(Job job)
+    private void Submit(Job job)
     {
+        job.Status = JobStatus.Submitted;
+        
         _jobs[job.Id] = job;
 
         if (job is not BatchJob and not Batch2DJob)
@@ -166,7 +178,7 @@ internal static class Processor
         Process(job);
     }
 
-    private static void Process(Job job)
+    private void Process(Job job)
     {
         switch (job)
         {
@@ -206,7 +218,7 @@ internal static class Processor
         }
     }
 
-    private static void Execute(CommandJob job)
+    private void Execute(CommandJob job)
     {
         job.Status = JobStatus.Scheduled;
 

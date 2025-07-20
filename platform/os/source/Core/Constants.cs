@@ -48,9 +48,9 @@ internal class Constants
     public const int MaxPoolSize = ushort.MaxValue;
 
     /// <summary>
-    /// The default port number the <see cref="Server"/> listens on.
+    /// The network's default endpoint.
     /// </summary>
-    public const int DefaultServerPort = 5000;
+    public const string DefaultNetworkEndpoint = "127.0.0.1:9010";
 
     /// <summary>
     /// The size of a <see cref="Connection"/>, in bytes.
@@ -78,7 +78,7 @@ internal class Constants
     public const string DefaultDatabaseName = "spatial";
 
     /// <summary>
-    /// The values used by the <see cref="Server"/> to decode messages.
+    /// The values used by the <see cref="Network"/> to decode messages.
     /// </summary>
     public static readonly byte[] ServerBits =
     {
@@ -111,11 +111,6 @@ internal class Constants
         0xFD, 0xD9, 0x5A, 0x76, 0x23, 0xF1, 0x0B, 0xB5, 0xB8, 0x59, 0xF9, 0x9F, 0x7A, 0xE6, 0x06, 0xE9, 0xA5, 0x3A,
         0xB4, 0x50, 0xBF, 0x16, 0x58, 0x98, 0xB3, 0x9A, 0x6E, 0x36, 0xEE, 0x8D, 0xEB
     };
-
-    /// <summary>
-    /// The path to the system's configuration file.
-    /// </summary>
-    public const string ConfigurationPath = "config.json";
 
     /// <summary>
     /// The name of the log database collection.

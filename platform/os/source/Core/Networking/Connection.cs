@@ -1,7 +1,6 @@
 // Copyright © Spatial Corporation. All rights reserved.
 
 using Serilog;
-using Spatial.Mathematics;
 using System.Buffers;
 using System.Collections.Concurrent;
 using System.Net.Sockets;
@@ -9,13 +8,14 @@ using System.Net.Sockets;
 namespace Spatial.Networking;
 
 /// <summary>
-/// An active connection to the <see cref="Server"/>.
+/// An active connection to the <see cref="Network"/>.
 /// </summary>
 public sealed class Connection : IDisposable
 {
     private static readonly ConcurrentBag<Connection> _pool = [];
     private static long _counter;
 
+    private Network _server;
     private Socket _socket;
     private int _connected;
     private byte[] _buffer;
@@ -25,8 +25,9 @@ public sealed class Connection : IDisposable
     /// <summary>
     /// Create a new <see cref="Connection"/>.
     /// </summary>
-    public Connection()
+    public Connection(Network server)
     {
+        _server = server;
         _metadata = [];
     }
 
@@ -37,7 +38,7 @@ public sealed class Connection : IDisposable
     
     /// <summary>
     /// Whether or not the <see cref="Connection"/> is connected 
-    /// to the <see cref="Server"/>.
+    /// to the <see cref="Network"/>.
     /// </summary>
     public bool Connected => Interlocked.CompareExchange(ref _connected, 1, 1) == 1;
 
@@ -59,15 +60,17 @@ public sealed class Connection : IDisposable
     /// <summary>
     /// Allocate a <see cref="Connection"/>.
     /// </summary>
-    /// <param name="socket">A <see cref="Socket"/>.</param>
+    /// <param name="server">The <see cref="Network"/> that accepted the <see cref="Connection"/>.</param>
+    /// <param name="socket">A <see cref="System.Net.Sockets.Socket"/>.</param>
     /// <returns>A <see cref="Connection"/>.</returns>
-    internal static Connection Allocate(Socket socket)
+    internal static Connection Allocate(Network server, Socket socket)
     {
         if (!_pool.TryTake(out var connection))
         {
-            connection = new();
+            connection = new(server);
         }
 
+        connection._server = server;
         connection._socket = socket;
         connection._buffer = ArrayPool<byte>.Shared.Rent(Constants.ConnectionSize);
 
@@ -75,14 +78,14 @@ public sealed class Connection : IDisposable
     }
 
     /// <summary>
-    /// Connect the <see cref="Connection"/> to a <see cref="Server"/>.
+    /// Connect the <see cref="Connection"/> to a <see cref="Network"/>.
     /// </summary>
     internal void Connect()
     {
         _seed = Strong.UInt16((ushort) Constants.ServerBits.Length);
         _connected = 1;
 
-        Server.Queue.Enqueue(NetworkEvent.Create(this, NetworkEventCode.EVENT_CONNECT, null));
+        _server.Queue.Enqueue(NetworkEvent.Create(this, NetworkEventCode.EVENT_CONNECT, null));
 
         BeginReceive();
     }
@@ -94,7 +97,7 @@ public sealed class Connection : IDisposable
     {
         if (Interlocked.CompareExchange(ref _connected, 0, 1) == 1)
         {
-            Server.Queue.Enqueue(NetworkEvent.Create(this, NetworkEventCode.EVENT_DISCONNECT));
+            _server.Queue.Enqueue(NetworkEvent.Create(this, NetworkEventCode.EVENT_DISCONNECT));
         }
     }
 
@@ -151,7 +154,7 @@ public sealed class Connection : IDisposable
             return;
         }
         
-        Server.Command(this, command, data, dispose);
+        _server.Command(this, command, data, dispose);
     }
 
     /// <summary>
@@ -219,7 +222,7 @@ public sealed class Connection : IDisposable
                     _seed = (ushort) ((_seed + 1) % Constants.ServerBits.Length);
                 }
 
-                Server.Queue.Enqueue(NetworkEvent.Create(
+                _server.Queue.Enqueue(NetworkEvent.Create(
                     connection: this, 
                     code: NetworkEventCode.EVENT_MESSAGE,
                     message: Message.Create(this, BitConverter.ToUInt16(buffer), buffer, size)));
@@ -313,7 +316,7 @@ internal enum NetworkEventCode
     EVENT_CONNECT,
 
     /// <summary>
-    /// The <see cref="Connection"/> sent a message to the <see cref="Server"/>.
+    /// The <see cref="Connection"/> sent a message to the <see cref="Network"/>.
     /// </summary>
     EVENT_MESSAGE,
 
@@ -324,7 +327,7 @@ internal enum NetworkEventCode
 }
 
 /// <summary>
-/// A <see cref="Message"/> sent to or from the <see cref="Server"/>.
+/// A <see cref="Message"/> sent to or from the <see cref="Network"/>.
 /// </summary>
 public class Message : IDisposable
 {

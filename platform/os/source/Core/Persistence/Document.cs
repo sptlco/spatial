@@ -141,7 +141,7 @@ public static class Document<T> where T : Document
 
     private static IMongoDatabase GetDatabase()
     {
-        return _client.GetDatabase(Environment.DatabaseName);
+        return _client.GetDatabase(Application.Current.Configuration.Database.Name);
     }
 
     private static IMongoCollection<T> GetCollection()
@@ -163,7 +163,7 @@ public static class Document<T> where T : Document
 
     private static MongoClient CreateClient()
     {
-        return new MongoClient(Environment.DatabaseConnectionString);
+        return new MongoClient(Application.Current.Configuration.Database.ConnectionString);
     }
 }
 

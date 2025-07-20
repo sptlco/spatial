@@ -3,44 +3,44 @@
 namespace Spatial.Networking;
 
 /// <summary>
-/// Unit tests for <see cref="Server"/>.
+/// Unit tests for <see cref="Network"/>.
 /// </summary>
 public class ServerTests
 {   
     /// <summary>
-    /// Test <see cref="Server.Open"/>.
+    /// Test <see cref="Network.Open"/>.
     /// </summary>
     [Fact]
     public void TestOpen()
     {
-        Server.Open(5000);
+        Network.Open(5000);
 
-        Assert.Equal("127.0.0.1", Server.Endpoint.Address.ToString());
-        Assert.Equal(5000, Server.Endpoint.Port);
+        Assert.Equal("127.0.0.1", Network.Endpoint.Address.ToString());
+        Assert.Equal(5000, Network.Endpoint.Port);
     }
 
     /// <summary>
-    /// Test <see cref="Server.Receive"/>.
+    /// Test <see cref="Network.Receive"/>.
     /// </summary>
     [Fact]
     public void TestReceive()
     {
-        Server.Open();
+        Network.Open();
 
-        Server.Queue.Enqueue(NetworkEvent.Create(new Connection(), NetworkEventCode.EVENT_CONNECT));
-        Server.Receive();
+        Network.Queue.Enqueue(NetworkEvent.Create(new Connection(), NetworkEventCode.EVENT_CONNECT));
+        Network.Receive();
 
-        Assert.True(Server.Queue.Empty);
+        Assert.True(Network.Queue.Empty);
     }
 
     /// <summary>
-    /// Test <see cref="Server.Send"/>.
+    /// Test <see cref="Network.Send"/>.
     /// </summary>
     [Fact]
     public void TestSend()
     {
-        Server.Open();
+        Network.Open();
 
-        Server.Send();
+        Network.Send();
     }
 }

@@ -1,6 +1,7 @@
 // Copyright © Spatial Corporation. All rights reserved.
 
-using Newtonsoft.Json;
+using Spatial.Networking;
+using Spatial.Persistence;
 
 namespace Spatial;
 
@@ -9,23 +10,18 @@ namespace Spatial;
 /// </summary>
 public class Configuration
 {
-    private static Configuration? _instance;
-
     /// <summary>
-    /// Get the system's current <see cref="Configuration"/>.
-    /// </summary>
-    public static Configuration Current => GetOrBind();
-
-    /// <summary>
-    /// The system's current version.
+    /// The system's version.
     /// </summary>
     public string Version { get; set; }
 
-    private static Configuration GetOrBind()
-    {
-        var path = Path.Join(AppDomain.CurrentDomain.BaseDirectory, Constants.ConfigurationPath);
-        var json = File.ReadAllText(path);
- 
-        return _instance ??= JsonConvert.DeserializeObject<Configuration>(json)!;
-    }
+    /// <summary>
+    /// Configurable options for the system's database.
+    /// </summary>
+    public DatabaseConfiguration Database { get; set; } = new DatabaseConfiguration();
+
+    /// <summary>
+    /// Configurable options for the system's private network.
+    /// </summary>
+    public NetworkConfiguration Network { get; set; } = new NetworkConfiguration();
 }

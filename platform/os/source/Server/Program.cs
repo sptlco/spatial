@@ -2,4 +2,4 @@
 
 using Spatial;
 
-Application.Run<Server>(args);
+Application.Run<Server>();

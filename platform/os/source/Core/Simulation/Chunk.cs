@@ -1,6 +1,5 @@
 // Copyright © Spatial Corporation. All rights reserved.
 
-using Spatial.Hardware;
 using System.Runtime.CompilerServices;
 
 namespace Spatial.Simulation;

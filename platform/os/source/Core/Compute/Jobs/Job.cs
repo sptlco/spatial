@@ -221,54 +221,6 @@ public enum JobStatus
 }
 
 /// <summary>
-/// A thread-safe handle to a <see cref="Job"/>.
-/// </summary>
-public sealed class JobHandle : IDisposable
-{
-    private CountdownEvent _counter;
-
-    private JobHandle(int dependencies)
-    {
-        _counter = new(dependencies);
-    }
-
-    /// <summary>
-    /// Create a new <see cref="JobHandle"/>.
-    /// </summary>
-    /// <param name="dependencies">The job's dependency count.</param>
-    /// <returns>A <see cref="JobHandle"/>.</returns>
-    internal static JobHandle Create(int dependencies)
-    {
-        return new(dependencies);
-    }
-
-    /// <summary>
-    /// Block the calling thread until all <see cref="Job"/> dependencies have been executed.
-    /// </summary>
-    public void Wait()
-    {
-        _counter.Wait();
-    }
-
-    /// <summary>
-    /// Signal the execution of a <see cref="Job"/> dependency.
-    /// </summary>
-    internal void Signal()
-    {
-        _counter.Signal();
-    }
-
-    /// <summary>
-    /// Dispose of the <see cref="JobHandle"/>.
-    /// </summary>
-    public void Dispose()
-    {
-        _counter.Dispose();
-        _counter = null!;
-    }
-}
-
-/// <summary>
 /// Specifies the device chosen by the system for execution 
 /// of a <see cref="KernelJob"/>.
 /// </summary>

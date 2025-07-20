@@ -41,7 +41,7 @@ public readonly struct Time
     /// <summary>
     /// The current tick count.
     /// </summary>
-    public double Ticks => Milliseconds * TimeSpan.TicksPerMillisecond;
+    public long Ticks => (long) (Milliseconds * TimeSpan.TicksPerMillisecond);
 
     /// <summary>
     /// Convert a <see cref="Time"/> to milliseconds.

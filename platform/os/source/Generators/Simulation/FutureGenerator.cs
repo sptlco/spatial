@@ -32,7 +32,6 @@ namespace Spatial.Simulation
             $@"// Copyright © Spatial Corporation. All rights reserved.
             // This is a generated source file and should not be modified directly.
 
-            using Spatial.Hardware;
             using System.Runtime.CompilerServices;
 
             namespace Spatial.Simulation;

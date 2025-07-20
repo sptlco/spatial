@@ -7,6 +7,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Serilog;
 using Serilog.Events;
+using Spatial.Compute;
 using Spatial.Networking;
 using System.Net;
 
@@ -17,30 +18,62 @@ namespace Spatial;
 /// </summary>
 public class Application
 {
-    private WebApplication _api;
+    private static Application _instance;
+
+    private readonly Processor _processor;
+    private readonly Network _network;
+    private readonly WebApplication _wapp;
     private Time _time;
+    private long _ticks;
 
     /// <summary>
     /// Create a new <see cref="Application"/>.
     /// </summary>
     public Application()
     {
-        _time = Time.Now;
+        _instance = this;
+        _processor = new Processor();
+        _network = new Network((_wapp = CreateWebApplication()).Services);
+        _ticks = (_time = Time.Now).Ticks;
     }
+
+    /// <summary>
+    /// The currently running <see cref="Application"/>.
+    /// </summary>
+    public static Application Current => _instance;
+
+    /// <summary>
+    /// The application's <see cref="Spatial.Configuration"/>;
+    /// </summary>
+    public Configuration Configuration => _wapp.Services.GetRequiredService<Configuration>();
+
+    /// <summary>
+    /// The application's <see cref="Compute.Processor"/>.
+    /// </summary>
+    public Processor Processor => _processor;
+
+    /// <summary>
+    /// The application's <see cref="Networking.Network"/>.
+    /// </summary>
+    public Network Network => _network;
 
     /// <summary>
     /// The application's local time.
     /// </summary>
-    protected Time Time => _time;
+    public Time Time => _time;
+
+    /// <summary>
+    /// The application's tick count.
+    /// </summary>
+    public long Ticks => _ticks;
 
     /// <summary>
     /// Run an <see cref="Application"/>.
     /// </summary>
     /// <typeparam name="T">The type of <see cref="Application"/> to run.</typeparam>
-    /// <param name="args">Optional command-line arguments.</param>
-    public static void Run<T>(params string[] args) where T : Application, new()
+    public static void Run<T>() where T : Application, new()
     {
-        Run<T>(default, default, args);
+        Run<T>(default, default);
     }
 
     /// <summary>
@@ -48,12 +81,9 @@ public class Application
     /// </summary>
     /// <typeparam name="T">The type of <see cref="Application"/> to run.</typeparam>
     /// <param name="cancellationToken">An optional <see cref="CancellationToken"/>.</param>
-    /// <param name="args">Optional command-line arguments.</param>
-    public static void Run<T>(
-        CancellationToken cancellationToken = default,
-        params string[] args) where T : Application, new()
+    public static void Run<T>(CancellationToken cancellationToken) where T : Application, new()
     {
-        Run<T>(default, cancellationToken, args);
+        Run<T>(default, cancellationToken);
     }
 
     /// <summary>
@@ -61,12 +91,9 @@ public class Application
     /// </summary>
     /// <typeparam name="T">The type of <see cref="Application"/> to run.</typeparam>
     /// <param name="tickRate">The application's tick rate.</param>
-    /// <param name="args">Optional command-line arguments.</param>
-    public static void Run<T>(
-        Time tickRate,
-        params string[] args) where T : Application, new()
+    public static void Run<T>(Time tickRate) where T : Application, new()
     {
-        Run<T>(tickRate, default, args);
+        Run<T>(tickRate, default);
     }
 
     /// <summary>
@@ -75,12 +102,12 @@ public class Application
     /// <typeparam name="T">The type of <see cref="Application"/> to run.</typeparam>
     /// <param name="tickRate">The application's tick rate.</param>
     /// <param name="cancellationToken">An optional <see cref="CancellationToken"/>.</param>
-    /// <param name="args">Optional command-line arguments.</param>
-    public static void Run<T>(
+    public static async void Run<T>(
         Time tickRate = default,
-        CancellationToken cancellationToken = default,
-        params string[] args) where T : Application, new()
+        CancellationToken cancellationToken = default) where T : Application, new()
     {
+        var application = new T();
+
         // Configure the Telemetry pipeline.
         // Spatial uses Serilog under the hood for logging purposes.
 
@@ -88,20 +115,14 @@ public class Application
 
         INFO("Application starting...");
 
-        var application = new T {
-
-            // Spatial applications are configured with a web API.
-            // Here, we create the web API and assign it to our application.
-
-            _api = CreateWebApplication(args)
-        };
-
         application.Start();
-        application._api.Start();
+        application._wapp.Start();
+        application._processor.Run();
+        application._network.Open(application.Configuration.Network.Endpoint);
 
         if (cancellationToken == default)
         {
-            cancellationToken = Environment.CancellationToken;
+            cancellationToken = CreateCancellationToken();
         }
 
         INFO("Application running.");
@@ -121,8 +142,13 @@ public class Application
         INFO("Application shutting down...");
 
         application.Shutdown();
+        await application._wapp.StopAsync(CancellationToken.None);
+        application._processor.Shutdown();
+        application._network.Close();
 
         INFO("Application exited gracefully.");
+
+        Log.CloseAndFlush();
     }
 
     /// <summary>
@@ -149,7 +175,7 @@ public class Application
             .MinimumLevel.Override("Microsoft", LogEventLevel.Fatal)
             .WriteTo.Console()
             .WriteTo.MongoDBCapped(
-                databaseUrl: Environment.DatabaseConnectionString,
+                databaseUrl: Current.Configuration.Database.ConnectionString,
                 collectionName: Constants.LogCollectionName)
             .WriteTo.File(
                 path: Constants.LogFilePath,
@@ -165,11 +191,12 @@ public class Application
         INFO("Application telemetry is currently enabled.");
     }
 
-    private static WebApplication CreateWebApplication(string[] args)
+    private WebApplication CreateWebApplication()
     {
-        var builder = WebApplication.CreateBuilder(args);
+        var builder = WebApplication.CreateBuilder();
 
         builder.Services
+            .Configure<Configuration>(builder.Configuration)
             .AddSerilog()
             .AddExceptionHandler<FaultHandler>()
             .AddProblemDetails()
@@ -190,18 +217,17 @@ public class Application
         return application;
     }
 
-    private void Tick(Time delta)
+    private static CancellationToken CreateCancellationToken()
     {
-        Server.Receive();
+        var source = new CancellationTokenSource();
 
-        Update(delta);
+        AppDomain.CurrentDomain.ProcessExit += (s, e) => source.Cancel();
+        Console.CancelKeyPress += (s, e) => source.Cancel();
 
-        Server.Send();
-
-        _time += delta;
+        return source.Token;
     }
 
-    private static async Task ReportStatusCode(StatusCodeContext status)
+    private async Task ReportStatusCode(StatusCodeContext status)
     {
         var context = status.HttpContext;
         var traceId = context.TraceIdentifier;
@@ -213,5 +239,17 @@ public class Application
                 await context.Response.WriteAsJsonAsync(new NotFound().ToFault().ToResponse(traceId));
                 break;
         }
+    }
+
+    private void Tick(Time delta)
+    {
+        _network.Receive();
+
+        Update(delta);
+
+        _network.Send();
+
+        _time += delta;
+        _ticks++;
     }
 }

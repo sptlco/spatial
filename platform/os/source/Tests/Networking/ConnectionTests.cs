@@ -25,7 +25,7 @@ public class ConnectionTests
     [Fact]
     public void TestConnect()
     {
-        Server.Open();
+        Network.Open();
 
         try
         {
@@ -42,7 +42,7 @@ public class ConnectionTests
     [Fact]
     public void TestDisconnect()
     {
-        Server.Open();
+        Network.Open();
         
         var connection = CreateConnection();
 

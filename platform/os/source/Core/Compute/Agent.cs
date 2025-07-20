@@ -14,6 +14,7 @@ namespace Spatial.Compute;
 /// </summary>
 internal class Agent : IDisposable
 {
+    private readonly Processor _processor;
     private readonly int _id;
     private readonly Thread _thread;
     private readonly CancellationTokenSource _cts;
@@ -23,9 +24,11 @@ internal class Agent : IDisposable
     /// <summary>
     /// Create a new <see cref="Agent"/>.
     /// </summary>
+    /// <param name="processor">The agent's <see cref="Processor"/>.</param>
     /// <param name="id">The agent's identification number.</param>
-    public Agent(int id)
+    public Agent(Processor processor, int id)
     {
+        _processor = processor;
         _id = id;
         _thread = CreateThread();
         _cts = new();
@@ -87,7 +90,7 @@ internal class Agent : IDisposable
     {
         job = default;
 
-        if (Processor.Agents.Length <= 1)
+        if (_processor.Agents.Length <= 1)
         {
             return false;
         }
@@ -97,14 +100,14 @@ internal class Agent : IDisposable
 
         while (true)
         {
-            var agent = _next++ % (uint) Processor.Agents.Length;
+            var agent = _next++ % (uint) _processor.Agents.Length;
 
-            if (agent != _id && Processor.Agents[agent].Queue.TryDequeue(out job))
+            if (agent != _id && _processor.Agents[agent].Queue.TryDequeue(out job))
             {
                 return true;
             }
 
-            if (++failures >= 2 * (Processor.Agents.Length - 1))
+            if (++failures >= 2 * (_processor.Agents.Length - 1))
             {
                 Thread.Yield();
 
@@ -118,7 +121,7 @@ internal class Agent : IDisposable
         return false;
     }
 
-    private static void Execute(CommandJob job)
+    private void Execute(CommandJob job)
     {
         job.Status = JobStatus.Running;
 
@@ -135,7 +138,7 @@ internal class Agent : IDisposable
         }
         finally
         {
-            Processor.Finalize(job.Id);
+            _processor.Finalize(job.Id);
         }
     }
 

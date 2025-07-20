@@ -2,7 +2,7 @@
 
 using System.Runtime.CompilerServices;
 
-namespace Spatial.Hardware;
+namespace Spatial;
 
 /// <summary>
 /// A pointer to a block of unmanaged memory.

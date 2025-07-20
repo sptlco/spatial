@@ -3,7 +3,6 @@
 using BenchmarkDotNet.Attributes;
 using ILGPU;
 using ILGPU.Runtime;
-using Spatial.Mathematics;
 
 namespace Spatial.Compute.Jobs.Acceleration;
 

@@ -1,7 +1,6 @@
 // Copyright © Spatial Corporation. All rights reserved.
 
 using BenchmarkDotNet.Attributes;
-using Spatial.Mathematics;
 
 namespace Spatial.Compute.Jobs.Acceleration;
 

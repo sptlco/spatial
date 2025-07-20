@@ -3,25 +3,25 @@
 namespace Spatial.Compute.Jobs;
 
 /// <summary>
-/// Unit tests for <see cref="JobHandle"/>.
+/// Unit tests for <see cref="Handle"/>.
 /// </summary>
 public class JobHandleTests
 {
     /// <summary>
-    /// Test <see cref="JobHandle.Wait"/>.
+    /// Test <see cref="Handle.Wait"/>.
     /// </summary>
     [Fact]
     public void TestWait()
     {
-        JobHandle.Create(0).Wait();
+        Handle.Create(0).Wait();
     }
 
     /// <summary>
-    /// Test <see cref="JobHandle.Dispose"/>.
+    /// Test <see cref="Handle.Dispose"/>.
     /// </summary>
     [Fact]
     public void TestDispose()
     {
-        JobHandle.Create(0).Dispose();
+        Handle.Create(0).Dispose();
     }
 }

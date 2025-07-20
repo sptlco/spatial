@@ -19,7 +19,7 @@ internal class Graph : IDisposable
     /// <summary>
     /// The graph's handle.
     /// </summary>
-    public JobHandle Handle { get; set; } = null!;
+    public Handle Handle { get; set; } = null!;
 
     /// <summary>
     /// The jobs to execute.

@@ -2,7 +2,7 @@
 
 using System.Runtime.InteropServices;
 
-namespace Spatial.Hardware;
+namespace Spatial;
 
 /// <summary>
 /// A contiguous block of unmanaged memory.

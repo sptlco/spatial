@@ -20,8 +20,8 @@ public class Ethereum
     /// </summary>
     public Ethereum()
     {
-        _account = new Account(Environment.PrivateKey);
-        _web3 = new Web3(_account, Environment.RPCUrl);
+        _account = new Account("");
+        _web3 = new Web3(_account, "");
         _http = new Http();
     }
 

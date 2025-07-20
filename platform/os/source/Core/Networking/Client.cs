@@ -8,7 +8,7 @@ using System.Net.Sockets;
 namespace Spatial.Networking;
 
 /// <summary>
-/// A device that communicates with the <see cref="Server"/>.
+/// A device that communicates with the <see cref="Network"/>.
 /// </summary>
 public class Client : IDisposable
 {
@@ -64,19 +64,19 @@ public class Client : IDisposable
     /// <summary>
     /// Connect the <see cref="Client"/>.
     /// </summary>
-    /// <param name="endpoint">A <see cref="Server"/> endpoint.</param>
+    /// <param name="endpoint">A <see cref="Network"/> endpoint.</param>
     public void Connect(string endpoint) => Connect(IPEndPoint.Parse(endpoint));
 
     /// <summary>
     /// Connect the <see cref="Client"/>.
     /// </summary>
-    /// <param name="port">A <see cref="Server"/> port.</param>
+    /// <param name="port">A <see cref="Network"/> port.</param>
     public void Connect(int port) => Connect(new IPEndPoint(IPAddress.Loopback, port));
 
     /// <summary>
     /// Connect the <see cref="Client"/>.
     /// </summary>
-    /// <param name="endpoint">A <see cref="Server"/> endpoint.</param>
+    /// <param name="endpoint">A <see cref="Network"/> endpoint.</param>
     public void Connect(IPEndPoint endpoint)
     {
         _socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);

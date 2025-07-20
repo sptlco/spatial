@@ -13,12 +13,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="..\..\..\..\config.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
-
-  <ItemGroup>
     <Folder Include="Components\" />
     <Folder Include="Contracts\" />
     <Folder Include="Systems\" />

@@ -2,7 +2,7 @@
 
 using System.Security.Cryptography;
 
-namespace Spatial.Mathematics;
+namespace Spatial;
 
 /// <summary>
 /// A cryptographically strong value generator.

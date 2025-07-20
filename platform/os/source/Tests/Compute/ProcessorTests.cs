@@ -43,7 +43,7 @@ public class ProcessorTests
         var job = CommandJob.Create(() => { });
 
         graph.Add(job);
-        graph.Handle = JobHandle.Create(1);
+        graph.Handle = Handle.Create(1);
 
         Processor.Finalize(job);
     }

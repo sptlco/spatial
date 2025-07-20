@@ -1,5 +1,6 @@
 // Copyright © Spatial Corporation. All rights reserved.
 
+using Microsoft.Extensions.DependencyInjection;
 using Serilog;
 using Spatial.Compute.Jobs;
 using Spatial.Networking.Contracts.Miscellaneous;
@@ -14,34 +15,34 @@ using System.Reflection;
 namespace Spatial.Networking;
 
 /// <summary>
-/// A high-performance asynchronous TCP network.
+/// A high-performance asynchronous private network.
 /// </summary>
-internal static partial class Server
+public partial class Network
 {
-    private static readonly Socket _socket;
-    private static readonly Dictionary<Type, Controller> _controllers;
-    private static readonly Dictionary<ushort, (Controller Controller, Command Handler, Type Prototype)> _handlers;
-    private static int _open;
+    private readonly IServiceProvider _services;
+    private readonly Socket _socket;
+    private readonly Dictionary<Type, Controller> _controllers;
+    private readonly Dictionary<ushort, (Controller Controller, Command Handler, Type Prototype)> _handlers;
+    private int _open;
 
-    private static readonly ConcurrentDictionary<long, Connection> _connections;
-    private static readonly InterlockedQueue<NetworkEvent> _events;
-    private static readonly InterlockedQueue<Message> _updates;
-    private static readonly List<Action<Connection, ushort>> _unhandledMiddleware;
-    private static readonly List<Action<Connection>> _disconnectMiddleware;
+    private readonly ConcurrentDictionary<long, Connection> _connections;
+    private readonly InterlockedQueue<NetworkEvent> _events;
+    private readonly InterlockedQueue<Message> _updates;
 
     /// <summary>
-    /// Create a new <see cref="Server"/>.
+    /// Create a new <see cref="Network"/>.
     /// </summary>
-    static Server()
+    public Network(IServiceProvider services)
     {
+        _services = services;
         _socket = new(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
         _controllers = [];
         _handlers = AppDomain.CurrentDomain
             .GetAssemblies()
             .SelectMany(asm => asm.GetTypes().Where(type => type.IsAssignableTo(typeof(Controller))))
-            .SelectMany(type => type.GetMethods().Where(method => method.GetCustomAttribute<HandlerAttribute>() != null))
+            .SelectMany(type => type.GetMethods().Where(method => method.GetCustomAttribute<HandlerAttribute>(true) != null))
             .ToDictionary(
-                keySelector: method => method.GetCustomAttribute<HandlerAttribute>()!.Command,
+                keySelector: method => method.GetCustomAttribute<HandlerAttribute>(true)!.Command,
                 elementSelector: method => 
                 {
                     var controller = GetOrCreateController(method.DeclaringType!);
@@ -56,60 +57,28 @@ internal static partial class Server
         _connections = [];
         _events = new();
         _updates = new();
-
-        _unhandledMiddleware = [];
-        _disconnectMiddleware = [];
     }
 
     /// <summary>
-    /// The server's public endpoint.
+    /// The network's endpoint.
     /// </summary>
-    public static IPEndPoint Endpoint => _socket.LocalEndPoint as IPEndPoint ?? throw new InvalidOperationException("The server has not been opened.");
+    public IPEndPoint Endpoint => _socket.LocalEndPoint as IPEndPoint ?? throw new InvalidOperationException("The server has not been opened.");
 
     /// <summary>
-    /// Active connections to the <see cref="Server"/>.
+    /// Active connections to the <see cref="Network"/>.
     /// </summary>
-    public static ConcurrentDictionary<long, Connection> Connections => _connections;
+    public ConcurrentDictionary<long, Connection> Connections => _connections;
 
     /// <summary>
-    /// The server's event queue.
+    /// The network's event queue.
     /// </summary>
-    internal static InterlockedQueue<NetworkEvent> Queue => _events;
-    
-    /// <summary>
-    /// Use an unhandled command handler.
-    /// </summary>
-    /// <param name="middleware">A middleware function.</param>
-    public static void UseUnhandled(Action<Connection, ushort> middleware)
-    {
-        _unhandledMiddleware.Add(middleware);
-    }
+    internal InterlockedQueue<NetworkEvent> Queue => _events;
 
     /// <summary>
-    /// Use a disconnect handler.
-    /// </summary>
-    /// <param name="middleware">A middleware function.</param>
-    public static void UseDisconnect(Action<Connection> middleware) {
-        _disconnectMiddleware.Add(middleware);
-    }
-
-    /// <summary>
-    /// Open the <see cref="Server"/>.
-    /// </summary>
-    /// <param name="port">The server's port.</param>
-    public static void Open(int port = Constants.DefaultServerPort) => Open(new IPEndPoint(IPAddress.Loopback, port));
-
-    /// <summary>
-    /// Open the <see cref="Server"/>.
-    /// </summary>
-    /// <param name="endpoint">The server's endpoint.</param>
-    public static void Open(string endpoint) => Open(IPEndPoint.Parse(endpoint));
-
-    /// <summary>
-    /// Open the <see cref="Server"/>.
+    /// Open the <see cref="Network"/>.
     /// </summary>
     /// <param name="endpoint">The server's <see cref="IPEndPoint"/>.</param>
-    public static void Open(IPEndPoint endpoint)
+    public void Open(IPEndPoint endpoint)
     {
         if (Interlocked.Exchange(ref _open, 1) != 0)
         {
@@ -125,9 +94,9 @@ internal static partial class Server
     }
 
     /// <summary>
-    /// Close the <see cref="Server"/>.
+    /// Close the <see cref="Network"/>.
     /// </summary>
-    public static void Close()
+    public void Close()
     {
         if (Interlocked.Exchange(ref _open, 0) != 1)
         {
@@ -142,9 +111,9 @@ internal static partial class Server
     }
 
     /// <summary>
-    /// Receive data from connections to the <see cref="Server"/>.
+    /// Receive data from connections to the <see cref="Network"/>.
     /// </summary>
-    public static void Receive()
+    public void Receive()
     {
         while (_events.TryDequeue(out var e))
         {
@@ -154,9 +123,9 @@ internal static partial class Server
     }
 
     /// <summary>
-    /// Send data to <see cref="Server"/> connections.
+    /// Send data to <see cref="Network"/> connections.
     /// </summary>
-    public static void Send()
+    public void Send()
     {
         var packets = new Dictionary<Connection, List<ArraySegment<byte>>>();
 
@@ -216,12 +185,12 @@ internal static partial class Server
         }
     }
 
-    private static void BeginAccept()
+    private void BeginAccept()
     {
         _socket.BeginAccept(EndAccept, null);
     }
 
-    private static void EndAccept(IAsyncResult e)
+    private void EndAccept(IAsyncResult e)
     {
         var socket = _socket.EndAccept(e);
 
@@ -233,14 +202,14 @@ internal static partial class Server
         BeginAccept();
     }
 
-    private static void Connect(Socket socket)
+    private void Connect(Socket socket)
     {
         socket.NoDelay = true;
 
-        Connection.Allocate(socket).Connect();
+        Connection.Allocate(this, socket).Connect();
     }
 
-    private static void Process(in NetworkEvent e)
+    private void Process(in NetworkEvent e)
     {
         var connection = e.Connection;
         
@@ -262,7 +231,6 @@ internal static partial class Server
                 {
                     Log.Verbose("Client {connection} disconnected from the server.", connection);
 
-                    _disconnectMiddleware.ForEach(func => func(connection));
                     _connections.TryRemove(connection.Id, out _);
 
                     connection.Dispose();
@@ -276,7 +244,6 @@ internal static partial class Server
                     if (!_handlers.TryGetValue(message.Command, out var command))
                     {
                         Log.Verbose("Unhandled 0x{command:X4} from {connection}.", message.Command, connection.Id);
-                        _unhandledMiddleware.ForEach(func => func(connection, message.Command));
                     }
                     else
                     {
@@ -307,28 +274,28 @@ internal static partial class Server
         }
     }
 
-    private static Controller GetOrCreateController(Type type)
+    private Controller GetOrCreateController(Type type)
     {
         if (!_controllers.TryGetValue(type, out var controller))
         {
-            controller = _controllers[type] = (Controller) Activator.CreateInstance(type)!;
+            controller = _controllers[type] = (Controller) ActivatorUtilities.CreateInstance(_services, type)!;
         }
 
         return controller;
     }
 }
 
-internal partial class Server
+public partial class Network
 {
     /// <summary>
-    /// Issue a <see cref="NETCOMMAND"/> on behalf of the <see cref="Server"/>.
+    /// Issue a <see cref="NETCOMMAND"/> on behalf of the <see cref="Network"/>.
     /// </summary>
     /// <param name="connection">A <see cref="Connection"/>.</param>
     /// <param name="command">A <see cref="NETCOMMAND"/>.</param>
     /// <param name="data">A <see cref="ProtocolBuffer"/>.</param>
     /// <param name="dispose">Whether or not to dispose of the <see cref="ProtocolBuffer"/>.</param>
     /// <param name="serialize">Whether or not to serialize the <see cref="ProtocolBuffer"/>.</param>
-    public static void Command(Connection connection, ushort command, ProtocolBuffer data, bool dispose = true, bool serialize = true)
+    public void Command(Connection connection, ushort command, ProtocolBuffer data, bool dispose = true, bool serialize = true)
     {
         if (serialize)
         {
@@ -373,13 +340,13 @@ internal partial class Server
     }
 
     /// <summary>
-    /// Multicast a <see cref="NETCOMMAND"/> on behalf of the <see cref="Server"/>.
+    /// Multicast a <see cref="NETCOMMAND"/> on behalf of the <see cref="Network"/>.
     /// </summary>
     /// <param name="command">A <see cref="NETCOMMAND"/>.</param>
     /// <param name="data">A <see cref="ProtocolBuffer"/>.</param>
     /// <param name="filter">An optional filter.</param>
     /// <param name="dispose">Whether or not to dispose of the <see cref="ProtocolBuffer"/>.</param>
-    public static void Multicast(ushort command, ProtocolBuffer data, Expression<Func<Connection, bool>>? filter = default, bool dispose = true)
+    public void Multicast(ushort command, ProtocolBuffer data, Expression<Func<Connection, bool>>? filter = default, bool dispose = true)
     {
         data.Serialize(true);
 
@@ -400,12 +367,12 @@ internal partial class Server
     }
 
     /// <summary>
-    /// Broadcast a <see cref="NETCOMMAND"/> on behalf of the <see cref="Server"/>.
+    /// Broadcast a <see cref="NETCOMMAND"/> on behalf of the <see cref="Network"/>.
     /// </summary>
     /// <param name="command">A <see cref="NETCOMMAND"/>.</param>
     /// <param name="data">A <see cref="ProtocolBuffer"/>.</param>
     /// <param name="dispose">Whether or not to dispose of the <see cref="ProtocolBuffer"/>.</param>
-    public static void Broadcast(ushort command, ProtocolBuffer data, bool dispose = true)
+    public void Broadcast(ushort command, ProtocolBuffer data, bool dispose = true)
     {
         Multicast(command, data, default, dispose);
     }

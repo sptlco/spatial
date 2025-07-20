@@ -1,7 +1,5 @@
 // Copyright © Spatial Corporation. All rights reserved.
 
-using Spatial.Mathematics;
-
 namespace Spatial.Hardware;
 
 /// <summary>

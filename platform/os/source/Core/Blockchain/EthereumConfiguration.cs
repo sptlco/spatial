@@ -8,18 +8,12 @@ namespace Spatial.Blockchain;
 public class EthereumConfiguration
 {
     /// <summary>
-    /// Configurable options for automated trading.
+    /// The system's Infura URL.
     /// </summary>
-    public TradeConfiguration Trades { get; set; } = new TradeConfiguration();
+    public string Url { get; set; }
 
     /// <summary>
-    /// Configurable options for automated trading.
+    /// The system's private key.
     /// </summary>
-    public class TradeConfiguration
-    {
-        /// <summary>
-        /// Whether or not automated trading is enabled.
-        /// </summary>
-        public bool Enabled { get; set; } = true;
-    }
+    public string PrivateKey { get; set; }
 }

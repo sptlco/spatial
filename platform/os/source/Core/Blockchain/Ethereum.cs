@@ -20,8 +20,8 @@ public class Ethereum
     /// </summary>
     public Ethereum()
     {
-        _account = new Account("");
-        _web3 = new Web3(_account, "");
+        _account = new Account(Configuration.Current.Ethereum.PrivateKey);
+        _web3 = new Web3(_account, Configuration.Current.Ethereum.Url);
         _http = new Http();
     }
 

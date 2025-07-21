@@ -252,21 +252,11 @@ public class Application
     {
         _network.Receive();
 
-        if (Configuration.Ethereum.Trades.Enabled)
-        {
-            Interval.Invoke(Trade, Time.FromMinutes(1));
-        }
-
         Update(delta);
 
         _network.Send();
 
         _time += delta;
         _ticks++;
-    }
-
-    private void Trade()
-    {
-        // ...
     }
 }

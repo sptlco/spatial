@@ -2,4 +2,4 @@
 
 using Spatial;
 
-Application.Run<Baymax>();
+Application.Run<Server>();

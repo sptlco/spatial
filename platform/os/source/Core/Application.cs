@@ -8,6 +8,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 using Serilog;
 using Serilog.Events;
+using Spatial.Blockchain;
 using Spatial.Compute;
 using Spatial.Networking;
 using System.Net;
@@ -23,6 +24,7 @@ public class Application
 
     private readonly Processor _processor;
     private readonly Network _network;
+    private readonly Ethereum _ethereum;
     private readonly WebApplication _wapp;
     private Time _time;
     private long _ticks;
@@ -57,6 +59,11 @@ public class Application
     /// The application's <see cref="Networking.Network"/>.
     /// </summary>
     public Network Network => _network;
+
+    /// <summary>
+    /// The application's <see cref="Blockchain.Ethereum"/> provider.
+    /// </summary>
+    public Ethereum Ethereum => _ethereum;
 
     /// <summary>
     /// The application's local time.
@@ -245,11 +252,21 @@ public class Application
     {
         _network.Receive();
 
+        if (Configuration.Ethereum.Trades.Enabled)
+        {
+            Interval.Invoke(Trade, Time.FromMinutes(1));
+        }
+
         Update(delta);
 
         _network.Send();
 
         _time += delta;
         _ticks++;
+    }
+
+    private void Trade()
+    {
+        // ...
     }
 }

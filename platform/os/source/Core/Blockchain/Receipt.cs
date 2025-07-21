@@ -1,6 +1,6 @@
 // Copyright © Spatial Corporation. All rights reserved.
 
-namespace Spatial.Exchange;
+namespace Spatial.Blockchain;
 
 /// <summary>
 /// Record of an Ethereum transaction.

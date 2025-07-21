@@ -55,7 +55,7 @@ public abstract partial class Job : IDisposable
     public static void Command(Action action)
     {
         using var graph = Graph.Create().Add(CommandJob.Create(action));
-        using var handle = Processor.Dispatch(graph);
+        using var handle = Processor.Current.Dispatch(graph);
 
         handle.Wait();
     }
@@ -122,7 +122,7 @@ public abstract partial class Job : IDisposable
         }
         
         using var graph = Graph.Create().Add(ParallelForJob.Create(iterations, batchSize, function, batchStrategy));
-        using var handle = Processor.Dispatch(graph);
+        using var handle = Processor.Current.Dispatch(graph);
         
         handle.Wait();
     }
@@ -156,7 +156,7 @@ public abstract partial class Job : IDisposable
         }
         
         using var graph = Graph.Create().Add(ParallelFor2DJob.Create(width, height, batchSizeX, batchSizeY, function, batchStrategy));
-        using var handle = Processor.Dispatch(graph);
+        using var handle = Processor.Current.Dispatch(graph);
         
         handle.Wait();
     }
@@ -164,7 +164,7 @@ public abstract partial class Job : IDisposable
     private static void Kernel(KernelJob job)
     {
         using var graph = Graph.Create().Add(job);
-        using var handle = Processor.Dispatch(graph);
+        using var handle = Processor.Current.Dispatch(graph);
 
         handle.Wait();
     }

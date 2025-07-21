@@ -4,7 +4,7 @@ using Nethereum.Web3;
 using Nethereum.Web3.Accounts;
 using Spatial.Networking;
 
-namespace Spatial.Exchange;
+namespace Spatial.Blockchain;
 
 /// <summary>
 /// A means of interaction with Ethereum networks.

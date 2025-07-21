@@ -17,10 +17,10 @@ public class Processor
     private static Processor _instance;
 
     private Agent[] _agents;
-    private static ConcurrentDictionary<string, Job> _jobs;
-    private static ConcurrentDictionary<Job, StrongBox<int>> _dependencies;
-    private static int _running;
-    private static uint _next;
+    private ConcurrentDictionary<string, Job> _jobs;
+    private ConcurrentDictionary<Job, StrongBox<int>> _dependencies;
+    private int _running;
+    private uint _next;
 
     /// <summary>
     /// Create a new <see cref="Processor"/>.
@@ -28,8 +28,13 @@ public class Processor
     public Processor()
     {
         _instance = this;
-        _agents = new Agent[System.Environment.ProcessorCount];
+        _agents = new Agent[Environment.ProcessorCount];
     }
+
+    /// <summary>
+    /// The current <see cref="Processor"/>.
+    /// </summary>
+    public static Processor Current => _instance;
 
     /// <summary>
     /// The agents of the <see cref="Processor"/>.
@@ -83,7 +88,7 @@ public class Processor
     /// </summary>
     /// <param name="graph">A <see cref="Job"/> execution <see cref="Graph"/>.</param>
     /// <returns>A <see cref="Handle"/>.</returns>
-    internal static Handle Dispatch(Graph graph)
+    internal Handle Dispatch(Graph graph)
     {
         // First, topologically sort the graph using Khan's algorithm
         // under the hood, ensuring there are no circular dependencies.
@@ -106,7 +111,7 @@ public class Processor
         // dependencies have all been met.
 
         graph.Handle = Handle.Create(graph.Jobs.Count);
-        graph.Jobs.ForEach(_instance.Submit);
+        graph.Jobs.ForEach(Submit);
 
         return graph.Handle;
     }

@@ -42,7 +42,7 @@ public class Ethereum
         string function,
         params object[] input)
     {
-        var target = _web3.Eth.GetContract(DownloadAbi(abi), contract).GetFunction(function);
+        var target = _web3.Eth.GetContract(Download(abi), contract).GetFunction(function);
         var gas = await target.EstimateGasAsync(input);
 
         return await target.CallAsync<TResult>(from, gas, null, input);
@@ -64,20 +64,20 @@ public class Ethereum
         string function,
         params object[] input)
     {
-        var target = _web3.Eth.GetContract(DownloadAbi(abi), contract).GetFunction(function);
+        var target = _web3.Eth.GetContract(Download(abi), contract).GetFunction(function);
         var gas = await target.EstimateGasAsync(input);
         var receipt = await target.SendTransactionAndWaitForReceiptAsync(from, gas, null, null, input);
 
         return new Receipt(receipt.TransactionHash);
     }
 
-    private string DownloadAbi(string source)
+    private string Download(string contract)
     {
-        if (Uri.TryCreate(source, UriKind.Absolute, out var uri) && (uri.Scheme == Uri.UriSchemeHttp || uri.Scheme == Uri.UriSchemeHttps))
+        if (Uri.TryCreate(contract, UriKind.Absolute, out var uri) && (uri.Scheme == Uri.UriSchemeHttp || uri.Scheme == Uri.UriSchemeHttps))
         {
             return _http.CreateClient().GetStringAsync(uri).GetAwaiter().GetResult();
         }
 
-        return File.Exists(source) ? File.ReadAllText(source) : source;
+        return File.Exists(contract) ? File.ReadAllText(contract) : contract;
     }
 }

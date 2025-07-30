@@ -5,10 +5,50 @@ namespace Spatial.Mathematics;
 /// <summary>
 /// A point in two-dimensional space.
 /// </summary>
-/// <param name="X">The point's X-component.</param>
-/// <param name="Y">The point's Y-component.</param>
-public record struct Point2D(float X, float Y)
+public readonly record struct Point2D
 {
+    private readonly Tensor _tensor;
+
+    /// <summary>
+    /// Create a new <see cref="Point2D"/>,
+    /// </summary>
+    /// <param name="scalar"></param>
+    public Point2D(float scalar = 0.0F)
+    {
+        _tensor = Tensor.Create([2], _ => scalar);
+    }
+
+    /// <summary>
+    /// Create a new <see cref="Point2D"/>.
+    /// </summary>
+    /// <param name="x">The point's X-component.</param>
+    /// <param name="y">The point's Y-component.</param>
+    public Point2D(float x, float y)
+    {
+        _tensor = Tensor.Zero([2]);
+
+        _tensor[0] = x;
+        _tensor[1] = y;
+    }
+
+    /// <summary>
+    /// The point's X-component.
+    /// </summary>
+    public float X
+    {
+        get => _tensor[0];
+        set => _tensor[0] = value;
+    }
+
+    /// <summary>
+    /// The point's Y-component.
+    /// </summary>
+    public float Y
+    {
+        get => _tensor[1];
+        set => _tensor[1] = value;
+    }
+
     /// <summary>
     /// Add two points.
     /// </summary>

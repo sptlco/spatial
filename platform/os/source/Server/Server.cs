@@ -1,5 +1,9 @@
 // Copyright © Spatial Corporation. All rights reserved.
 
+using Spatial.Contracts;
+using Spatial.Systems.Computing;
+using Spatial.Systems.Tokens.Swapping;
+
 namespace Spatial;
 
 /// <summary>
@@ -8,19 +12,24 @@ namespace Spatial;
 public class Server : Application
 {
     /// <summary>
-    /// Update the <see cref="Server"/>.
+    /// Configure the <see cref="Server"/>.
     /// </summary>
-    /// <param name="delta">The <see cref="Time"/> passed since the last update.</param>
-    public override void Update(Time delta)
+    /// <param name="builder">The server's <see cref="IHostApplicationBuilder"/>.</param>
+    public override void Configure(IHostApplicationBuilder builder)
     {
-        // Every 1 minute, trade on the Ethereum network.
-        // Use a momentum strategy to decide whether to buy or sell.
-
-        Interval.Invoke(Trade, Time.FromMinutes(1));
+        builder.Services
+            .AddOptions<CloudConfiguration>()
+            .Bind(builder.Configuration.GetSection(Constants.CloudSettingSection))
+            .ValidateDataAnnotations()
+            .ValidateOnStart();
     }
 
-    private void Trade()
+    /// <summary>
+    /// Start the <see cref="Server"/>.
+    /// </summary>
+    public override void Start()
     {
-        // ...
+        Use<Computer>();
+        Use<Swapper>();
     }
 }

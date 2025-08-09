@@ -11,6 +11,7 @@ using Serilog.Events;
 using Spatial.Blockchain;
 using Spatial.Compute;
 using Spatial.Networking;
+using Spatial.Simulation;
 using System.Net;
 
 namespace Spatial;
@@ -22,6 +23,7 @@ public class Application
 {
     private static Application _instance;
 
+    private readonly Space _space;
     private readonly Processor _processor;
     private readonly Network _network;
     private readonly Ethereum _ethereum;
@@ -35,6 +37,7 @@ public class Application
     public Application()
     {
         _instance = this;
+        _space = Space.Empty();
         _processor = new Processor();
         _network = new Network((_wapp = CreateWebApplication()).Services);
         _ticks = (_time = Time.Now).Ticks;
@@ -46,9 +49,14 @@ public class Application
     public static Application Current => _instance;
 
     /// <summary>
-    /// The application's <see cref="Spatial.Configuration"/>;
+    /// The application's <see cref="Spatial.Configuration"/>.
     /// </summary>
     public Configuration Configuration => _wapp.Services.GetRequiredService<IOptionsMonitor<Configuration>>().CurrentValue;
+
+    /// <summary>
+    /// The application's <see cref="Simulation.Space"/>.
+    /// </summary>
+    public Space Space => _space;
 
     /// <summary>
     /// The application's <see cref="Compute.Processor"/>.
@@ -154,10 +162,15 @@ public class Application
     }
 
     /// <summary>
+    /// Configure the <see cref="Application"/>.
+    /// </summary>
+    /// <param name="builder">The builder configuring the <see cref="Application"/>.</param>
+    public virtual void Configure(IHostApplicationBuilder builder) { }
+
+    /// <summary>
     /// Start the <see cref="Application"/>.
     /// </summary>
-    /// <param name="args">Optional command-line arguments.</param>
-    public virtual void Start(params string[] args) { }
+    public virtual void Start() { }
 
     /// <summary>
     /// Update the <see cref="Application"/>.
@@ -169,6 +182,16 @@ public class Application
     /// Shutdown the <see cref="Application"/>.
     /// </summary>
     public virtual void Shutdown() { }
+
+    /// <summary>
+    /// Configure the <see cref="Application"/> to use a system.
+    /// </summary>
+    /// <typeparam name="T">The type of system to use.</typeparam>
+    /// <returns>The configured <see cref="Simulation.Space"/>.</returns>
+    protected Space Use<T>() where T : System<Space>
+    {
+        return _space.Use(x => ActivatorUtilities.CreateInstance<T>(_wapp.Services));
+    }
 
     private static void ConfigureTelemetry()
     {
@@ -196,6 +219,8 @@ public class Application
     private WebApplication CreateWebApplication()
     {
         var builder = WebApplication.CreateBuilder();
+
+        Configure(builder);
 
         builder.Services
             .AddOptions<Configuration>()
@@ -252,6 +277,7 @@ public class Application
     {
         _network.Receive();
 
+        _space.Update(delta);
         Update(delta);
 
         _network.Send();

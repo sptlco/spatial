@@ -25,6 +25,8 @@ public class Ethereum
         _http = new Http();
     }
 
+    // DC: ...
+
     /// <summary>
     /// Call a smart contract's function.
     /// </summary>

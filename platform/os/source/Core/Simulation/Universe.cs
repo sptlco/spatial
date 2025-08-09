@@ -1,7 +1,7 @@
 // Copyright © Spatial Corporation. All rights reserved.
 
-using System.Runtime.CompilerServices;
 using Spatial.Compute.Jobs;
+using System.Runtime.CompilerServices;
 
 namespace Spatial.Simulation;
 
@@ -40,6 +40,17 @@ public sealed class Universe : IDisposable
         {
             _spaces.Add(space);
         }
+    }
+
+    /// <summary>
+    /// Get a <see cref="Space"/>.
+    /// </summary>
+    /// <param name="index">The space's index number.</param>
+    /// <returns>The <see cref="Space"/> at the index.</returns>
+    /// <exception cref="NullReference">Thrown if the <see cref="Space"/> does not exist.</exception>
+    public Space SpaceAt(int index)
+    {
+        return _spaces.ElementAtOrDefault(index) ?? throw new NullReference();
     }
 
     /// <summary>

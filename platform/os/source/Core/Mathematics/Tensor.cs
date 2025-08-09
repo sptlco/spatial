@@ -74,13 +74,23 @@ public class Tensor
     public static implicit operator Tensor(Tensor[] children) => new Tensor(children);
 
     /// <summary>
-    /// Create a new zeroed <see cref="Tensor"/>.
+    /// Create a new zero <see cref="Tensor"/>.
     /// </summary>
     /// <param name="shape">The shape of the <see cref="Tensor"/>.</param>
-    /// <returns>A zeroed <see cref="Tensor"/>.</returns>
+    /// <returns>A zero <see cref="Tensor"/>.</returns>
     public static Tensor Zero(int[] shape)
     {
         return Create(shape, _ => 0.0F);
+    }
+
+    /// <summary>
+    /// Create a new random <see cref="Tensor"/>.
+    /// </summary>
+    /// <param name="shape">The shape of the <see cref="Tensor"/>.</param>
+    /// <returns>A random <see cref="Tensor"/>.</returns>
+    public static Tensor Random(int[] shape)
+    {
+        return Create(shape, _ => Strong.Float(1.0F));
     }
 
     /// <summary>

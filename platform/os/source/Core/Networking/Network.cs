@@ -187,19 +187,28 @@ public partial class Network
 
     private void BeginAccept()
     {
+        if (Interlocked.CompareExchange(ref _open, 0, 0) == 0)
+        {
+            return;
+        }
+
         _socket.BeginAccept(EndAccept, null);
     }
 
     private void EndAccept(IAsyncResult e)
     {
-        var socket = _socket.EndAccept(e);
-
-        if (socket != null)
+        try
         {
-            Connect(socket);
+            if (_socket.EndAccept(e) is Socket socket)
+            {
+                Connect(socket);
+            }
         }
-
-        BeginAccept();
+        catch (SocketException) { }
+        finally
+        {
+            BeginAccept();
+        }
     }
 
     private void Connect(Socket socket)

@@ -1,5 +1,7 @@
 // Copyright © Spatial Corporation. All rights reserved.
 
+using System.ComponentModel.DataAnnotations;
+
 namespace Spatial.Blockchain;
 
 /// <summary>
@@ -10,10 +12,12 @@ public class EthereumConfiguration
     /// <summary>
     /// The system's Infura URL.
     /// </summary>
+    [Required]
     public string Url { get; set; }
 
     /// <summary>
     /// The system's private key.
     /// </summary>
-    public string PrivateKey { get; set; }
+    [Required]
+    public string Key { get; set; }
 }

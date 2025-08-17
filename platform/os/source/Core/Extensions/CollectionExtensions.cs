@@ -33,4 +33,18 @@ public static class CollectionExtensions
 
         return destination;
     }
+
+    /// <summary>
+    /// Execute an action for each element of a collection.
+    /// </summary>
+    /// <typeparam name="T">The type of elements in the collection.</typeparam>
+    /// <param name="collection">A collection of elements.</param>
+    /// <param name="action">An action to execute.</param>
+    public static void ForEach<T>(this IEnumerable<T> collection, Action<T> action)
+    {
+        foreach (var element in collection)
+        {
+            action(element);
+        }
+    }
 }

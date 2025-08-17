@@ -1,8 +1,6 @@
 // Copyright © Spatial Corporation. All rights reserved.
 
 using Spatial.Contracts;
-using Spatial.Systems.Computing;
-using Spatial.Systems.Tokens.Swapping;
 
 namespace Spatial;
 
@@ -19,17 +17,8 @@ public class Server : Application
     {
         builder.Services
             .AddOptions<CloudConfiguration>()
-            .Bind(builder.Configuration.GetSection(Constants.CloudSettingSection))
+            .Bind(builder.Configuration.GetSection(Constants.ConfigurationSection))
             .ValidateDataAnnotations()
             .ValidateOnStart();
-    }
-
-    /// <summary>
-    /// Start the <see cref="Server"/>.
-    /// </summary>
-    public override void Start()
-    {
-        Use<Computer>();
-        Use<Swapper>();
     }
 }

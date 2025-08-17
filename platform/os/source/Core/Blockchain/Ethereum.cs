@@ -11,18 +11,26 @@ namespace Spatial.Blockchain;
 /// </summary>
 public class Ethereum
 {
+    private static Ethereum? _instance;
+
     private readonly Account _account;
     private readonly Web3 _web3;
     private readonly Http _http;
 
-    /// <summary>
-    /// Create a new <see cref="Ethereum"/>.
-    /// </summary>
-    public Ethereum()
+    private Ethereum()
     {
-        _account = new Account(Configuration.Current.Ethereum.PrivateKey);
+        _account = new Account(Configuration.Current.Ethereum.Key);
         _web3 = new Web3(_account, Configuration.Current.Ethereum.Url);
         _http = new Http();
+    }
+
+    /// <summary>
+    /// Create a new <see cref="Ethereum"/> client, or get an existing one.
+    /// </summary>
+    /// <returns>An <see cref="Ethereum"/> client.</returns>
+    public static Ethereum GetOrCreateClient()
+    {
+        return _instance ??= new Ethereum();
     }
 
     // DC: ...

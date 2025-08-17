@@ -8,7 +8,7 @@ namespace Spatial;
 public class Constants
 {
     /// <summary>
-    /// The name of the cloud setting section.
+    /// The name of the configuration section.
     /// </summary>
-    public const string CloudSettingSection = "Cloud";
+    public const string ConfigurationSection = "Cloud";
 }

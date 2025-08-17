@@ -3,16 +3,18 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 using Serilog;
 using Serilog.Events;
-using Spatial.Blockchain;
 using Spatial.Compute;
+using Spatial.Extensions;
 using Spatial.Networking;
 using Spatial.Simulation;
 using System.Net;
+using System.Reflection;
 
 namespace Spatial;
 
@@ -24,12 +26,12 @@ public class Application
     private static Application _instance;
 
     private readonly Space _space;
-    private readonly Processor _processor;
-    private readonly Network _network;
-    private readonly Ethereum _ethereum;
     private readonly WebApplication _wapp;
     private Time _time;
     private long _ticks;
+
+    private readonly Processor _processor;
+    private readonly Network _network;
 
     /// <summary>
     /// Create a new <see cref="Application"/>.
@@ -38,8 +40,9 @@ public class Application
     {
         _instance = this;
         _space = Space.Empty();
+        _wapp = CreateWebApplication();
         _processor = new Processor();
-        _network = new Network((_wapp = CreateWebApplication()).Services);
+        _network = new Network(_wapp.Services);
         _ticks = (_time = Time.Now).Ticks;
     }
 
@@ -67,11 +70,6 @@ public class Application
     /// The application's <see cref="Networking.Network"/>.
     /// </summary>
     public Network Network => _network;
-
-    /// <summary>
-    /// The application's <see cref="Blockchain.Ethereum"/> provider.
-    /// </summary>
-    public Ethereum Ethereum => _ethereum;
 
     /// <summary>
     /// The application's local time.
@@ -128,10 +126,18 @@ public class Application
 
         INFO("Application starting...");
 
+        AppDomain.CurrentDomain
+            .GetAssemblies()
+            .SelectMany(asm => asm.GetTypes())
+            .Where(type => type.GetCustomAttribute<DependencyAttribute>() is not null)
+            .OrderBy(type => type.GetCustomAttribute<DependencyAttribute>()!.Layer)
+            .ForEach(application.Use);
+
         application.Start();
         application._wapp.Start();
-        application._processor.Run();
+
         application._network.Open(application.Configuration.Network.Endpoint);
+        application._processor.Run();
 
         if (cancellationToken == default)
         {
@@ -183,16 +189,6 @@ public class Application
     /// </summary>
     public virtual void Shutdown() { }
 
-    /// <summary>
-    /// Configure the <see cref="Application"/> to use a system.
-    /// </summary>
-    /// <typeparam name="T">The type of system to use.</typeparam>
-    /// <returns>The configured <see cref="Simulation.Space"/>.</returns>
-    protected Space Use<T>() where T : System<Space>
-    {
-        return _space.Use(x => ActivatorUtilities.CreateInstance<T>(_wapp.Services));
-    }
-
     private static void ConfigureTelemetry()
     {
         var config = new LoggerConfiguration()
@@ -222,6 +218,11 @@ public class Application
 
         Configure(builder);
 
+        builder.Configuration.AddJsonFile(
+            path: "appsettings.override.json",
+            optional: true, 
+            reloadOnChange: true);
+
         builder.Services
             .AddOptions<Configuration>()
             .Bind(builder.Configuration)
@@ -230,7 +231,7 @@ public class Application
 
         builder.Services
             .AddSerilog()
-            .AddExceptionHandler<FaultHandler>()
+            .AddExceptionHandler<FaultIndicator>()
             .AddProblemDetails()
             .AddControllers();
 
@@ -247,6 +248,13 @@ public class Application
         application.MapControllers();
 
         return application;
+    }
+
+    private void Use(Type system)
+    {
+        INFO("{System} running.", system.FullName!);
+
+        _space.Use(_ => (System<Space>) ActivatorUtilities.CreateInstance(_wapp.Services, system));
     }
 
     private static CancellationToken CreateCancellationToken()

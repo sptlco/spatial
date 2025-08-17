@@ -1,7 +1,6 @@
 // Copyright © Spatial Corporation. All rights reserved.
 
 using Microsoft.Extensions.Options;
-using Spatial.Blockchain;
 using Spatial.Contracts;
 using Spatial.Simulation;
 
@@ -10,9 +9,9 @@ namespace Spatial.Systems.Tokens.Swapping;
 /// <summary>
 /// An automated token swapping system.
 /// </summary>
+[Dependency(1)]
 public class Swapper : System
 {
-    private readonly Ethereum _ethereum;
     private readonly IOptionsMonitor<CloudConfiguration> _config;
 
     /// <summary>
@@ -21,7 +20,6 @@ public class Swapper : System
     /// <param name="config">Configurable options for the <see cref="Swapper"/>.</param>
     public Swapper(IOptionsMonitor<CloudConfiguration> config)
     {
-        _ethereum = new Ethereum();
         _config = config;
     }
 

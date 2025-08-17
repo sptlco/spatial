@@ -1,5 +1,6 @@
 // Copyright © Spatial Corporation. All rights reserved.
 
+using Microsoft.Extensions.Options;
 using Spatial.Blockchain;
 using Spatial.Networking;
 using Spatial.Persistence;
@@ -24,15 +25,18 @@ public class Configuration
     /// <summary>
     /// Configurable options for the system's <see cref="Document"/> database.
     /// </summary>
+    [ValidateObjectMembers]
     public DatabaseConfiguration Database { get; set; } = new DatabaseConfiguration();
 
     /// <summary>
     /// Configurable options for the system's private <see cref="Networking.Network"/>.
     /// </summary>
+    [ValidateObjectMembers]
     public NetworkConfiguration Network { get; set; } = new NetworkConfiguration();
 
     /// <summary>
     /// Configurable options for the system's <see cref="Blockchain.Ethereum"/> provider.
     /// </summary>
+    [ValidateObjectMembers]
     public EthereumConfiguration Ethereum { get; set; } = new EthereumConfiguration();
 }

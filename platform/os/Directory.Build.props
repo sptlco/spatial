@@ -6,6 +6,11 @@
         <DefaultItemExcludes>$(DefaultItemExcludes);Directory.*.props;BenchmarkDotNet.Artifacts\**\*;*.log</DefaultItemExcludes>
     </PropertyGroup>
     <ItemGroup>
+        <None Update="appsettings.*.json">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
+    </ItemGroup>
+    <ItemGroup>
         <Using Include="Spatial.Telemetry.Logger" Static="true" />
     </ItemGroup>
 </Project>

@@ -8,7 +8,7 @@ namespace Spatial;
 /// <summary>
 /// A global <see cref="IExceptionHandler"/> for HTTP requests.
 /// </summary>
-public class FaultHandler : IExceptionHandler
+public class FaultIndicator : IExceptionHandler
 {
     /// <summary>
     /// Handle an <see cref="Exception"/>.

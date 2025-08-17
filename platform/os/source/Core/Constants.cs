@@ -116,6 +116,11 @@ internal class Constants
     /// The name of the log database collection.
     /// </summary>
     public const string LogCollectionName = "Logs";
+
+    /// <summary>
+    /// The path to the system's configuration override file.
+    /// </summary>
+    public const string OverridePath = "appsettings.override.json";
 }
 
 /// <summary>

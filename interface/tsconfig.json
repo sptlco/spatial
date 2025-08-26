@@ -16,7 +16,7 @@
     "incremental": true
   },
   "references": [
-    { "path": "source/design" },
-    { "path": "source/interface/web" }
+    { "path": "design/" },
+    { "path": "web/" }
   ]
 }

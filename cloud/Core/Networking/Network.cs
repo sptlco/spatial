@@ -204,7 +204,10 @@ public partial class Network
                 Connect(socket);
             }
         }
-        catch (SocketException) { }
+        catch (Exception exception)
+        {
+            ERROR(exception, "Activation of network connection failed.");
+        }
         finally
         {
             BeginAccept();

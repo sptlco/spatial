@@ -14,7 +14,7 @@ public class DependencyAttribute : Attribute
     /// Create a new <see cref="DependencyAttribute"/>.
     /// </summary>
     /// <param name="layer">The system's execution layer.</param>
-    public DependencyAttribute(int layer)
+    public DependencyAttribute(int layer = 0)
     {
         _layer = layer;
     }

@@ -1,5 +1,7 @@
 // Copyright © Spatial Corporation. All rights reserved.
 
+using Spatial.Contracts.Systems;
+
 namespace Spatial.Contracts;
 
 /// <summary>
@@ -7,5 +9,8 @@ namespace Spatial.Contracts;
 /// </summary>
 public class CloudConfiguration
 {
-    // DC: ...
+    /// <summary>
+    /// Configurable options for cloud systems.
+    /// </summary>
+    public SystemConfiguration Systems { get; set; } = new SystemConfiguration();
 }

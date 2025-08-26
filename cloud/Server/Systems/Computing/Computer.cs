@@ -4,7 +4,7 @@ using Spatial.Simulation;
 
 namespace Spatial.Systems.Computing;
 
-[Dependency(0)]
+[Dependency]
 public class Computer : System
 {
     // ...

@@ -4,24 +4,28 @@ using Microsoft.Extensions.Options;
 using Spatial.Contracts;
 using Spatial.Simulation;
 
-namespace Spatial.Systems.Tokens.Swapping;
+namespace Spatial.Systems.Trading;
 
 /// <summary>
-/// An automated token swapping system.
+/// An automated trading system.
 /// </summary>
-[Dependency(1)]
-public class Swapper : System
+[Dependency]
+public class Trader : System
 {
     private readonly IOptionsMonitor<CloudConfiguration> _config;
 
     /// <summary>
-    /// Create a new <see cref="Swapper"/>.
+    /// Create a new <see cref="Trader"/>.
     /// </summary>
-    /// <param name="config">Configurable options for the <see cref="Swapper"/>.</param>
-    public Swapper(IOptionsMonitor<CloudConfiguration> config)
+    /// <param name="config">Configurable options for the <see cref="Trader"/>.</param>
+    public Trader(IOptionsMonitor<CloudConfiguration> config)
     {
         _config = config;
     }
+
+    // DC: Legion
+        
+
 
     /// <summary>
     /// Update the <see cref="Space"/>.
@@ -30,15 +34,15 @@ public class Swapper : System
     /// <param name="delta"><see cref="Time"/> since the last update.</param>
     public override void Update(Space space, Time delta)
     {
-        Interval.Invoke(
-            interval: Time.FromMinutes(1),
-            function: () => {
+        foreach (var token in _config.CurrentValue.Systems.Trading.Watch)
+        {
+            Interval.Invoke(
+                interval: Time.FromMinutes(1),
+                function: () => {
 
-                // Execute a trade every minute on Ethereum.
-                // Use a momentum strategy to determine whether to buy or sell.
+                    // ...
 
-                // ...
-
-            });
+                });
+        }
     }
 }

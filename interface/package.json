@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "private": true,
   "workspaces": [
-    "source/**/*"
+    "design/",
+    "web/"
   ],
   "scripts": {
     "dev:next": "next dev --turbopack --experimental-https",

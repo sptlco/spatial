@@ -17,6 +17,6 @@
   },
   "references": [
     { "path": "design/" },
-    { "path": "web/" }
+    { "path": "interface/web/" }
   ]
 }

@@ -4,7 +4,7 @@
   "private": true,
   "workspaces": [
     "design/",
-    "web/"
+    "interface/web/"
   ],
   "scripts": {
     "dev:next": "next dev --turbopack --experimental-https",

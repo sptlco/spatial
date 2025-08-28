@@ -120,51 +120,74 @@ public class Application
         Time tickRate = default,
         CancellationToken cancellationToken = default) where T : Application, new()
     {
-        var application = new T();
-
-        ConfigureTelemetry();
-
-        INFO("Application starting...");
-
-        AppDomain.CurrentDomain
-            .GetAssemblies()
-            .SelectMany(asm => asm.GetTypes())
-            .Where(type => type.GetCustomAttribute<DependencyAttribute>() is not null)
-            .OrderBy(type => type.GetCustomAttribute<DependencyAttribute>()!.Layer)
-            .ForEach(application.Use);
-
-        application.Start();
-        application._wapp.Start();
-
-        application._network.Open(application.Configuration.Network.Endpoint);
-        application._processor.Run();
-
-        if (cancellationToken == default)
+        try
         {
-            cancellationToken = CreateCancellationToken();
+            var application = new T();
+
+            ConfigureTelemetry();
+
+            try
+            {
+                INFO("Time: {Time}", Time.Now.Milliseconds);
+                INFO("Version: {Version}", application.Configuration.Version);
+
+                INFO("Application starting.");
+
+                try
+                {
+                    application.Start();
+                    application._wapp.Start();
+                }
+                catch (Exception exception)
+                {
+                    ERROR(exception, "Failed to start the application.");
+                    return;
+                }
+
+                application.ConfigureSystems();                
+
+                application._network.Open(application.Configuration.Network.Endpoint);
+                application._processor.Run();
+
+                if (cancellationToken == default)
+                {
+                    cancellationToken = CreateCancellationToken();
+                }
+            }
+            catch (Exception exception)
+            {
+                ERROR(exception, "Failed to run the application.");
+                return;
+            }
+
+            if (tickRate > Time.Zero)
+            {
+                INFO("Running at {TickRate} TPS.", tickRate);
+
+                Ticker.Run(application.Tick, tickRate, cancellationToken);
+            }
+            else
+            {
+                INFO("Running as fast as possible.");
+
+                Ticker.Run(application.Tick, cancellationToken);
+            }
+
+            INFO("Shutting down the application.");
+
+            application.Shutdown();
+            await application._wapp.StopAsync(CancellationToken.None);
+            application._processor.Shutdown();
+            application._network.Close();
+
+            INFO("Application shut down.");
+
+            Log.CloseAndFlush();
         }
-
-        INFO("Application running.");
-
-        if (tickRate > Time.Zero)
+        catch (Exception exception)
         {
-            Ticker.Run(application.Tick, tickRate, cancellationToken);
+            Console.WriteLine($"Failed to run the application.\n{exception}");
         }
-        else
-        {
-            Ticker.Run(application.Tick, cancellationToken);
-        }
-
-        INFO("Application shutting down...");
-
-        application.Shutdown();
-        await application._wapp.StopAsync(CancellationToken.None);
-        application._processor.Shutdown();
-        application._network.Close();
-
-        INFO("Application exited gracefully.");
-
-        Log.CloseAndFlush();
     }
 
     /// <summary>
@@ -195,13 +218,16 @@ public class Application
             .Enrich.FromLogContext()
             .MinimumLevel.Override("Microsoft", LogEventLevel.Fatal)
             .WriteTo.Console()
-            .WriteTo.MongoDBCapped(
-                databaseUrl: Current.Configuration.Database.ConnectionString,
-                collectionName: Constants.LogCollectionName)
             .WriteTo.File(
                 path: Constants.LogFilePath,
                 rollingInterval: RollingInterval.Infinite,
                 rollOnFileSizeLimit: true);
+
+        try
+        {
+            config.WriteTo.MongoDBCapped(Current.Configuration.Database.ConnectionString, collectionName: Constants.LogCollectionName);
+        }
+        catch (OptionsValidationException) { }
 
 #if DEBUG
         config.MinimumLevel.Is(LogEventLevel.Debug);
@@ -209,7 +235,19 @@ public class Application
 
         Log.Logger = config.CreateLogger();
 
-        INFO("Application telemetry is currently enabled.");
+        INFO("Telemetry enabled.");
+    }
+
+    private void ConfigureSystems()
+    {
+        AppDomain.CurrentDomain
+            .GetAssemblies()
+            .SelectMany(asm => asm.GetTypes())
+            .Where(type => type.GetCustomAttribute<DependencyAttribute>() is not null)
+            .OrderBy(type => type.GetCustomAttribute<DependencyAttribute>()!.Layer)
+            .ForEach(Use);
+
+        INFO("Systems online.");
     }
 
     private WebApplication CreateWebApplication()
@@ -220,7 +258,7 @@ public class Application
 
         builder.Configuration.AddJsonFile(
             path: "appsettings.override.json",
-            optional: true, 
+            optional: true,
             reloadOnChange: true);
 
         builder.Services
@@ -252,8 +290,6 @@ public class Application
 
     private void Use(Type system)
     {
-        INFO("{System} running.", system.FullName!);
-
         _space.Use(_ => (System<Space>) ActivatorUtilities.CreateInstance(_wapp.Services, system));
     }
 

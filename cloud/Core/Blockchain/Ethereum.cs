@@ -19,7 +19,7 @@ public class Ethereum
 
     private Ethereum()
     {
-        _account = new Account(Configuration.Current.Ethereum.Key);
+        _account = new Account(Configuration.Current.Ethereum.Address);
         _web3 = new Web3(_account, Configuration.Current.Ethereum.Url);
         _http = new Http();
     }
@@ -32,8 +32,6 @@ public class Ethereum
     {
         return _instance ??= new Ethereum();
     }
-
-    // DC: ...
 
     /// <summary>
     /// Call a smart contract's function.

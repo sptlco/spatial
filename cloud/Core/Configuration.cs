@@ -4,6 +4,7 @@ using Microsoft.Extensions.Options;
 using Spatial.Blockchain;
 using Spatial.Networking;
 using Spatial.Persistence;
+using System.ComponentModel.DataAnnotations;
 
 namespace Spatial;
 
@@ -20,7 +21,8 @@ public class Configuration
     /// <summary>
     /// The system's version.
     /// </summary>
-    public string Version { get; set; } = "";
+    [Required]
+    public string Version { get; set; }
 
     /// <summary>
     /// Configurable options for the system's <see cref="Document"/> database.

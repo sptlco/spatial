@@ -69,3 +69,15 @@ public class NotFound : UserError
     /// </summary>
     public NotFound() : base("The requested resource does not exist.", 404) { }
 }
+
+/// <summary>
+/// A <see cref="UserError"/> indicating that a configurable option is misconfigured.
+/// </summary>
+public class Misconfiguration : UserError
+{
+    /// <summary>
+    /// Create a new <see cref="Misconfiguration"/>.
+    /// </summary>
+    /// <param name="message"></param>
+    public Misconfiguration(string message) : base(message) { }
+}

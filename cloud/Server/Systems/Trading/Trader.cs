@@ -1,18 +1,20 @@
 // Copyright © Spatial Corporation. All rights reserved.
 
 using Microsoft.Extensions.Options;
+using Spatial.Blockchain;
 using Spatial.Contracts;
 using Spatial.Simulation;
 
 namespace Spatial.Systems.Trading;
 
 /// <summary>
-/// An automated trading system.
+/// Automated trading by way of token swaps.
 /// </summary>
 [Dependency]
 public class Trader : System
 {
     private readonly IOptionsMonitor<CloudConfiguration> _config;
+    private readonly Ethereum _ethereum;
 
     /// <summary>
     /// Create a new <see cref="Trader"/>.
@@ -21,11 +23,12 @@ public class Trader : System
     public Trader(IOptionsMonitor<CloudConfiguration> config)
     {
         _config = config;
+
+        if (_config.CurrentValue.Systems.Trading.Enabled)
+        {
+            _ethereum = Ethereum.GetOrCreateClient();
+        }
     }
-
-    // DC: Legion
-        
-
 
     /// <summary>
     /// Update the <see cref="Space"/>.
@@ -34,15 +37,14 @@ public class Trader : System
     /// <param name="delta"><see cref="Time"/> since the last update.</param>
     public override void Update(Space space, Time delta)
     {
-        foreach (var token in _config.CurrentValue.Systems.Trading.Watch)
+        if (_config.CurrentValue.Systems.Trading.Enabled)
         {
-            Interval.Invoke(
-                interval: Time.FromMinutes(1),
-                function: () => {
-
-                    // ...
-
-                });
+            Interval.Invoke(Trade, Time.FromMinutes(1));
         }
+    }
+
+    private void Trade()
+    {
+        // ...
     }
 }

@@ -3,18 +3,18 @@
 namespace Spatial.Networking;
 
 /// <summary>
-/// Unit tests for <see cref="HandlerAttribute"/>.
+/// Unit tests for <see cref="OperationAttribute"/>.
 /// </summary>
 public class HandlerAttributeTests
 {
     /// <summary>
-    /// Test the <see cref="HandlerAttribute"/> constructor.
+    /// Test the <see cref="OperationAttribute"/> constructor.
     /// </summary>
     [Fact]
     public void TestHandlerAttribute()
     {
-        var attribute = new HandlerAttribute(10);
+        var attribute = new OperationAttribute(10);
 
-        Assert.Equal(10, attribute.Command);
+        Assert.Equal(10, attribute.Code);
     }
 }

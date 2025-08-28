@@ -16,8 +16,8 @@ public class EthereumConfiguration
     public string Url { get; set; }
 
     /// <summary>
-    /// The system's private key.
+    /// The system's address.
     /// </summary>
     [Required]
-    public string Key { get; set; }
+    public string Address { get; set; }
 }

@@ -22,7 +22,7 @@ public partial class Network
     private readonly IServiceProvider _services;
     private readonly Socket _socket;
     private readonly Dictionary<Type, Controller> _controllers;
-    private readonly Dictionary<ushort, (Controller Controller, Command Handler, Type Prototype)> _handlers;
+    private readonly Dictionary<ushort, (Controller Controller, Command Command, Type Prototype)> _operations;
     private int _open;
 
     private readonly ConcurrentDictionary<long, Connection> _connections;
@@ -37,12 +37,12 @@ public partial class Network
         _services = services;
         _socket = new(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
         _controllers = [];
-        _handlers = AppDomain.CurrentDomain
+        _operations = AppDomain.CurrentDomain
             .GetAssemblies()
             .SelectMany(asm => asm.GetTypes().Where(type => type.IsAssignableTo(typeof(Controller))))
-            .SelectMany(type => type.GetMethods().Where(method => method.GetCustomAttribute<HandlerAttribute>(true) != null))
+            .SelectMany(type => type.GetMethods().Where(method => method.GetCustomAttribute<OperationAttribute>(true) != null))
             .ToDictionary(
-                keySelector: method => method.GetCustomAttribute<HandlerAttribute>(true)!.Command,
+                keySelector: method => method.GetCustomAttribute<OperationAttribute>(true)!.Code,
                 elementSelector: method => 
                 {
                     var controller = GetOrCreateController(method.DeclaringType!);
@@ -62,7 +62,7 @@ public partial class Network
     /// <summary>
     /// The network's endpoint.
     /// </summary>
-    public IPEndPoint Endpoint => _socket.LocalEndPoint as IPEndPoint ?? throw new InvalidOperationException("The server has not been opened.");
+    public IPEndPoint Endpoint => _socket.LocalEndPoint as IPEndPoint ?? throw new InvalidOperationException("The network has not been opened.");
 
     /// <summary>
     /// Active connections to the <see cref="Network"/>.
@@ -90,7 +90,7 @@ public partial class Network
 
         BeginAccept();
 
-        Log.Information("Server opened at {endpoint}.", Endpoint);
+        Log.Information("Open to IPV4 at {Endpoint}.", Endpoint);
     }
 
     /// <summary>
@@ -107,7 +107,7 @@ public partial class Network
         _connections.Clear();
         _events.Clear();
         _updates.Clear();
-        _handlers.Clear();
+        _operations.Clear();
     }
 
     /// <summary>
@@ -253,13 +253,9 @@ public partial class Network
                 {
                     var message = e.Message!;
 
-                    if (!_handlers.TryGetValue(message.Command, out var command))
+                    if (_operations.TryGetValue(message.Command, out var command))
                     {
-                        Log.Verbose("Unhandled 0x{command:X4} from {connection}.", message.Command, connection.Id);
-                    }
-                    else
-                    {
-                        Log.Verbose("Handling 0x{command:X4} from {connection}.", message.Command, connection.Id);
+                        Log.Verbose("Invoking operation 0x{command:X4} on behalf of {connection}.", message.Command, connection.Id);
 
                         try
                         {
@@ -268,11 +264,11 @@ public partial class Network
                             command.Controller.Connection = connection;
                             command.Controller.Message = message;
 
-                            command.Handler(data);
+                            command.Command(data);
                         }
                         catch (Exception exception)
                         {
-                            Log.Error(exception, "Failed to handle 0x{command:X4} from {connection}.", message.Command, connection.Id);
+                            Log.Error(exception, "Failed to invoke operation 0x{command:X4} on behalf of {connection}.", message.Command, connection.Id);
                         }
                         finally
                         {

@@ -17,7 +17,7 @@ public class Server : Application
     {
         builder.Services
             .AddOptions<CloudConfiguration>()
-            .Bind(builder.Configuration.GetSection(Constants.ConfigurationSection))
+            .Bind(builder.Configuration)
             .ValidateDataAnnotations()
             .ValidateOnStart();
     }

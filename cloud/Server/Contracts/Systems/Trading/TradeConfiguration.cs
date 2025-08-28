@@ -3,12 +3,12 @@
 namespace Spatial.Contracts.Systems.Trading;
 
 /// <summary>
-/// Configurable trading options.
+/// Configurable options for automated trading.
 /// </summary>
 public class TradeConfiguration
 {
     /// <summary>
-    /// A list of tokens to watch.
+    /// Whether or not automated trading is enabled.
     /// </summary>
-    public List<string> Watch { get; set; } = [];
+    public bool Enabled { get; set; } = false;
 }

@@ -1,7 +1,6 @@
 // Copyright © Spatial Corporation. All rights reserved.
 
 using Microsoft.Extensions.Options;
-using Spatial.Contracts.Systems.Trading;
 
 namespace Spatial.Contracts.Systems;
 
@@ -11,8 +10,8 @@ namespace Spatial.Contracts.Systems;
 public class SystemConfiguration
 {
     /// <summary>
-    /// Configurable trading options.
+    /// Configurable options for the <see cref="Systems.Trader"/>.
     /// </summary>
     [ValidateObjectMembers]
-    public TradeConfiguration Trading { get; set; } = new TradeConfiguration();
+    public TraderConfiguration Trader { get; set; } = new TraderConfiguration();
 }

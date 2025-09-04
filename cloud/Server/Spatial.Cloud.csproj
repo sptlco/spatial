@@ -14,8 +14,6 @@
 
   <ItemGroup>
     <Folder Include="Components\" />
-    <Folder Include="Contracts\" />
-    <Folder Include="Systems\" />
   </ItemGroup>
 
 </Project>

@@ -33,11 +33,11 @@ public class Ticker
     /// Run a <see cref="Ticker"/>.
     /// </summary>
     /// <param name="function">A function to perform each tick.</param>
-    /// <param name="rate">The rate at which to perform <paramref name="function"/>.</param>
+    /// <param name="delta">The rate at which to perform <paramref name="function"/>.</param>
     /// <param name="cancellationToken">An optional <see cref="CancellationToken"/>.</param>
     public static void Run(
         Action<Time> function, 
-        Time rate, 
+        Time delta, 
         CancellationToken cancellationToken = default)
     {
         var t0 = Time.Now;
@@ -51,10 +51,10 @@ public class Ticker
             accumulated += elapsed;
             t0 = t;
 
-            while (!cancellationToken.IsCancellationRequested && accumulated >= rate)
+            while (!cancellationToken.IsCancellationRequested && accumulated >= delta)
             {
-                accumulated -= rate;
-                function(rate);
+                accumulated -= delta;
+                function(delta);
             }
         }
     }

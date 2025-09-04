@@ -10,14 +10,14 @@ namespace Spatial.Blockchain;
 public class EthereumConfiguration
 {
     /// <summary>
-    /// The system's Infura URL.
+    /// The system's RPC URL.
     /// </summary>
     [Required]
     public string Url { get; set; }
 
     /// <summary>
-    /// The system's address.
+    /// The system's private key.
     /// </summary>
     [Required]
-    public string Address { get; set; }
+    public string Key { get; set; }
 }

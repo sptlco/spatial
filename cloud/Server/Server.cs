@@ -15,10 +15,6 @@ public class Server : Application
     /// <param name="builder">The server's <see cref="IHostApplicationBuilder"/>.</param>
     public override void Configure(IHostApplicationBuilder builder)
     {
-        builder.Services
-            .AddOptions<CloudConfiguration>()
-            .Bind(builder.Configuration)
-            .ValidateDataAnnotations()
-            .ValidateOnStart();
+        AddOptions<CloudConfiguration>(builder);
     }
 }

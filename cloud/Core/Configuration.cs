@@ -25,6 +25,11 @@ public class Configuration
     public string Version { get; set; }
 
     /// <summary>
+    /// The system's tick rate.
+    /// </summary>
+    public int TickRate { get; set; } = 30;
+
+    /// <summary>
     /// Configurable options for the system's <see cref="Document"/> database.
     /// </summary>
     [ValidateObjectMembers]

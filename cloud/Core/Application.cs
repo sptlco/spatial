@@ -54,7 +54,7 @@ public class Application
     /// <summary>
     /// The application's <see cref="Spatial.Configuration"/>.
     /// </summary>
-    public Configuration Configuration => _wapp.Services.GetRequiredService<IOptionsMonitor<Configuration>>().CurrentValue;
+    public Configuration Configuration => _wapp.Services.GetRequiredService<Configuration>();
 
     /// <summary>
     /// The application's <see cref="Simulation.Space"/>.
@@ -85,44 +85,13 @@ public class Application
     /// Run an <see cref="Application"/>.
     /// </summary>
     /// <typeparam name="T">The type of <see cref="Application"/> to run.</typeparam>
-    public static void Run<T>() where T : Application, new()
-    {
-        Run<T>(default, default);
-    }
-
-    /// <summary>
-    /// Run an <see cref="Application"/>.
-    /// </summary>
-    /// <typeparam name="T">The type of <see cref="Application"/> to run.</typeparam>
     /// <param name="cancellationToken">An optional <see cref="CancellationToken"/>.</param>
-    public static void Run<T>(CancellationToken cancellationToken) where T : Application, new()
-    {
-        Run<T>(default, cancellationToken);
-    }
-
-    /// <summary>
-    /// Run an <see cref="Application"/>.
-    /// </summary>
-    /// <typeparam name="T">The type of <see cref="Application"/> to run.</typeparam>
-    /// <param name="tickRate">The application's tick rate.</param>
-    public static void Run<T>(Time tickRate) where T : Application, new()
-    {
-        Run<T>(tickRate, default);
-    }
-
-    /// <summary>
-    /// Run an <see cref="Application"/>.
-    /// </summary>
-    /// <typeparam name="T">The type of <see cref="Application"/> to run.</typeparam>
-    /// <param name="tickRate">The application's tick rate.</param>
-    /// <param name="cancellationToken">An optional <see cref="CancellationToken"/>.</param>
-    public static async void Run<T>(
-        Time tickRate = default,
-        CancellationToken cancellationToken = default) where T : Application, new()
+    public static async void Run<T>(CancellationToken cancellationToken = default) where T : Application, new()
     {
         try
         {
             var application = new T();
+            var tickRate = (Time) (application.Configuration.TickRate / 60);
 
             ConfigureTelemetry();
 
@@ -130,7 +99,6 @@ public class Application
             {
                 INFO("Time: {Time}", Time.Now.Milliseconds);
                 INFO("Version: {Version}", application.Configuration.Version);
-
                 INFO("Application starting.");
 
                 try
@@ -145,7 +113,6 @@ public class Application
                 }
 
                 application.ConfigureSystems();                
-
                 application._network.Open(application.Configuration.Network.Endpoint);
                 application._processor.Run();
 
@@ -160,11 +127,11 @@ public class Application
                 return;
             }
 
-            if (tickRate > Time.Zero)
+            if (application.Configuration.TickRate > 0)
             {
-                INFO("Running at {TickRate} TPS.", tickRate);
+                INFO("Running at {TickRate} TPS.", application.Configuration.TickRate);
 
-                Ticker.Run(application.Tick, tickRate, cancellationToken);
+                Ticker.Run(application.Tick, 1000.0D / application.Configuration.TickRate, cancellationToken);
             }
             else
             {
@@ -188,6 +155,20 @@ public class Application
         {
             Console.WriteLine($"Failed to run the application.\n{exception}");
         }
+    }
+
+    /// <summary>
+    /// Add configurable options to the <see cref="Application"/>.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    protected void AddOptions<T>(IHostApplicationBuilder builder) where T : class
+    {
+        builder.Services
+            .AddTransient<T>(x => x.GetRequiredService<IOptionsMonitor<T>>().CurrentValue)
+            .AddOptions<T>()
+            .Bind(builder.Configuration)
+            .ValidateDataAnnotations()
+            .ValidateOnStart();
     }
 
     /// <summary>
@@ -261,11 +242,7 @@ public class Application
             optional: true,
             reloadOnChange: true);
 
-        builder.Services
-            .AddOptions<Configuration>()
-            .Bind(builder.Configuration)
-            .ValidateDataAnnotations()
-            .ValidateOnStart();
+        AddOptions<Configuration>(builder);
 
         builder.Services
             .AddSerilog()

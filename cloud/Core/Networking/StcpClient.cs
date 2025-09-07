@@ -2,6 +2,7 @@
 
 using Spatial.Networking.Contracts;
 using Spatial.Networking.Contracts.Miscellaneous;
+using Spatial.Networking.Helpers;
 using System.Buffers;
 using System.Net;
 using System.Net.Sockets;
@@ -18,7 +19,11 @@ public class StcpClient : IDisposable
 
     private Socket _socket;
     private byte _connected;
+    private byte _secure;
     private ushort _seed;
+    private int _key1;
+    private int _key2;
+    private byte[] _keystream;
 
     /// <summary>
     /// Create a new <see cref="StcpClient"/>.
@@ -30,13 +35,24 @@ public class StcpClient : IDisposable
 
         Handle<PROTO_NC_MISC_SEED_CMD>(
             command: (ushort) NETCOMMAND.NC_MISC_SEED_CMD, 
-            handler: (_, data) => Interlocked.Exchange(ref _seed, data.Seed));
+            handler: (_, data) => {
+                Interlocked.Exchange(ref _secure, 1);
+                Interlocked.Exchange(ref _key1, 0);
+                Interlocked.Exchange(ref _key2, 0);
+                Interlocked.Exchange(ref _seed, data.Seed);
+                Interlocked.Exchange(ref _keystream, Network.GenerateKeystream(data.Seed));
+            });
     }
 
     /// <summary>
     /// Whether or not the <see cref="StcpClient"/> is connected.
     /// </summary>
     public bool Connected => Interlocked.CompareExchange(ref _connected, 1, 1) == 1;
+
+    /// <summary>
+    /// The client's current seed.
+    /// </summary>
+    public ushort Seed => Interlocked.CompareExchange(ref _seed, 1, 1);
 
     /// <summary>
     /// The client's remote endpoint.
@@ -112,6 +128,8 @@ public class StcpClient : IDisposable
             data.Dispose();
         }
 
+        Cipher.Transform(array, 0, array.Length, _keystream, ref _key1);
+
         byte[] buffer;
 
         if (size <= byte.MaxValue)
@@ -163,22 +181,7 @@ public class StcpClient : IDisposable
         _socket.Dispose();
     }
 
-    private void Encode(ArraySegment<byte> data)
-    {
-        for (var i = 0; i < data.Count; i++)
-        {
-            ushort seed, update;
-
-            do
-            {
-                seed = Volatile.Read(ref _seed);
-                update = (ushort) ((seed + 1) % Constants.ServerBits.Length);
-            }
-            while (Interlocked.CompareExchange(ref _seed, update, seed) != seed);
-
-            data.Array![data.Offset + i] ^= Constants.ServerBits[seed];
-        }
-    }
+    private void Encode(ArraySegment<byte> data) => Cipher.Transform(data.Array!, data.Offset, data.Count, _keystream, ref _key1);
 
     private void Receive()
     {
@@ -246,6 +249,11 @@ public class StcpClient : IDisposable
 
         foreach (var (handler, prototype) in handlers)
         {
+            if (Interlocked.CompareExchange(ref _secure, 1, 1) == 1)
+            {
+                Cipher.Transform(buffer.Array!, 2, buffer.Count - 2, _keystream, ref _key2);
+            }
+
             handler(this, ProtocolBuffer.FromSpan(prototype, buffer.AsSpan(2, buffer.Count - 2)));
         }
     }

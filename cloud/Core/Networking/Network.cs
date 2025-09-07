@@ -12,6 +12,7 @@ using System.Linq.Expressions;
 using System.Net;
 using System.Net.Sockets;
 using System.Reflection;
+using System.Security.Cryptography;
 
 namespace Spatial.Networking;
 
@@ -68,6 +69,24 @@ public partial class Network
     /// The network's event queue.
     /// </summary>
     internal InterlockedQueue<NetworkEvent> Queue => _events;
+
+    /// <summary>
+    /// Generate a keystream.
+    /// </summary>
+    /// <param name="seed">A seed value.</param>
+    /// <returns>A keystream.</returns>
+    public static byte[] GenerateKeystream(ushort seed)
+    {
+        var state = BitConverter.GetBytes(seed);
+        var keystream = new byte[Constants.KeystreamSize];
+
+        for (var i = 0; i < keystream.Length; i += 32)
+        {
+            Array.Copy(state = SHA256.HashData(state), 0, keystream, i, Math.Min(32, keystream.Length - i));
+        }
+
+        return keystream;
+    }
 
     /// <summary>
     /// Listen for connections at an <paramref name="endpoint"/>.
@@ -216,9 +235,11 @@ public partial class Network
 
                     _connections[connection.Id] = connection;
 
-                    connection.Send(
+                    Send(
+                        connection: connection,
                         command: (ushort) NETCOMMAND.NC_MISC_SEED_CMD,
-                        data: new PROTO_NC_MISC_SEED_CMD(connection.Seed));
+                        data: new PROTO_NC_MISC_SEED_CMD(connection.Seed),
+                        encrypt: false);
 
                     break;
                 }
@@ -286,7 +307,8 @@ public partial class Network
     /// <param name="data">A <see cref="ProtocolBuffer"/>.</param>
     /// <param name="dispose">Whether or not to dispose of the <see cref="ProtocolBuffer"/>.</param>
     /// <param name="serialize">Whether or not to serialize the <see cref="ProtocolBuffer"/>.</param>
-    public void Send(Connection connection, ushort command, ProtocolBuffer data, bool dispose = true, bool serialize = true)
+    /// <param name="encrypt">Whether or not to encrypt the message.</param>
+    public void Send(Connection connection, ushort command, ProtocolBuffer data, bool dispose = true, bool serialize = true, bool encrypt = true)
     {
         if (serialize)
         {
@@ -299,6 +321,11 @@ public partial class Network
         if (dispose)
         {
             data.Dispose();
+        }
+
+        if (encrypt)
+        {
+            connection.Encrypt(array);
         }
 
         byte[] buffer;

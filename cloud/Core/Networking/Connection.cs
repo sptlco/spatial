@@ -1,6 +1,7 @@
 // Copyright © Spatial Corporation. All rights reserved.
 
 using Serilog;
+using Spatial.Networking.Helpers;
 using System.Buffers;
 using System.Collections.Concurrent;
 using System.Net.Sockets;
@@ -15,19 +16,22 @@ public sealed class Connection : IDisposable
     private static readonly ConcurrentBag<Connection> _pool = [];
     private static long _counter;
 
-    private Network _server;
+    private Network _network;
     private Socket _socket;
     private int _connected;
     private byte[] _buffer;
     private ushort _seed;
+    private int _key1;
+    private int _key2;
+    private byte[] _keystream;
     private readonly Dictionary<string, object?> _metadata;
 
     /// <summary>
     /// Create a new <see cref="Connection"/>.
     /// </summary>
-    public Connection(Network server)
+    public Connection(Network network)
     {
-        _server = server;
+        _network = network;
         _metadata = [];
     }
 
@@ -70,7 +74,7 @@ public sealed class Connection : IDisposable
             connection = new(server);
         }
 
-        connection._server = server;
+        connection._network = server;
         connection._socket = socket;
         connection._buffer = ArrayPool<byte>.Shared.Rent(Constants.ConnectionSize);
 
@@ -82,10 +86,11 @@ public sealed class Connection : IDisposable
     /// </summary>
     internal void Connect()
     {
-        _seed = Strong.UInt16((ushort) Constants.ServerBits.Length);
+        _key1 = _key2 = 0;
+        _keystream = Network.GenerateKeystream(_seed = Strong.UInt16());
         _connected = 1;
 
-        _server.Queue.Enqueue(NetworkEvent.Create(this, NetworkEventCode.EVENT_CONNECT, null));
+        _network.Queue.Enqueue(NetworkEvent.Create(this, NetworkEventCode.EVENT_CONNECT, null));
 
         BeginReceive();
     }
@@ -97,7 +102,7 @@ public sealed class Connection : IDisposable
     {
         if (Interlocked.CompareExchange(ref _connected, 0, 1) == 1)
         {
-            _server.Queue.Enqueue(NetworkEvent.Create(this, NetworkEventCode.EVENT_DISCONNECT));
+            _network.Queue.Enqueue(NetworkEvent.Create(this, NetworkEventCode.EVENT_DISCONNECT));
         }
     }
 
@@ -142,6 +147,12 @@ public sealed class Connection : IDisposable
     }
 
     /// <summary>
+    /// Encrypt <paramref name="data"/>.
+    /// </summary>
+    /// <param name="data">Binary data to encrypt.</param>
+    public void Encrypt(ArraySegment<byte> data) => Cipher.Transform(data.Array!, data.Offset, data.Count, _keystream, ref _key1);
+
+    /// <summary>
     /// Send a message to the <see cref="Connection"/>.
     /// </summary>
     /// <param name="command">The command to issue.</param>
@@ -153,8 +164,8 @@ public sealed class Connection : IDisposable
         {
             return;
         }
-        
-        _server.Send(this, command, data, dispose);
+
+        _network.Send(this, command, data, dispose);
     }
 
     /// <summary>
@@ -216,13 +227,9 @@ public sealed class Connection : IDisposable
 
                 var buffer = ArrayPool<byte>.Shared.Rent(size);
 
-                for (var i = 0; i < size; i++)
-                {
-                    buffer[i] = (byte) (_buffer[offset + i] ^ Constants.ServerBits[_seed]);
-                    _seed = (ushort) ((_seed + 1) % Constants.ServerBits.Length);
-                }
+                Cipher.Transform(buffer, offset, size, _keystream, ref _key2);
 
-                _server.Queue.Enqueue(NetworkEvent.Create(
+                _network.Queue.Enqueue(NetworkEvent.Create(
                     connection: this, 
                     code: NetworkEventCode.EVENT_MESSAGE,
                     message: Message.Create(this, BitConverter.ToUInt16(buffer), buffer, size)));

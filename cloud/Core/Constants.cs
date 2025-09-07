@@ -48,29 +48,14 @@ internal class Constants
     public const int MaxPoolSize = ushort.MaxValue;
 
     /// <summary>
-    /// The network's default endpoint.
-    /// </summary>
-    public const string DefaultNetworkEndpoint = "127.0.0.1:9010";
-
-    /// <summary>
     /// The size of a <see cref="Connection"/>, in bytes.
     /// </summary>
     public const int ConnectionSize = 1024 * 16;
 
     /// <summary>
-    /// The name of the database environment variable.
-    /// </summary>
-    public const string DatabaseUrlVariableName = "SPATIAL_DATABASE_URL";
-
-    /// <summary>
     /// The default name of the database.
     /// </summary>
     public const string DefaultDatabaseUrl = "mongodb://localhost:27017";
-
-    /// <summary>
-    /// The name of the database environment variable.
-    /// </summary>
-    public const string DatabaseNameVariableName = "SPATIAL_DATABASE_NAME";
 
     /// <summary>
     /// The default name of the database.
@@ -121,15 +106,79 @@ internal class Constants
     /// The path to the system's configuration override file.
     /// </summary>
     public const string OverridePath = "appsettings.override.json";
-}
 
-/// <summary>
-/// A command issued over the network.
-/// </summary>
-public static class NETCOMMAND
-{
     /// <summary>
-    /// Issue a seed to a <see cref="Connection"/>.
+    /// Log property names.
     /// </summary>
-    public const ushort NC_MISC_SEED_CMD = 0x0807;
+    public static class Properties
+    {
+        /// <summary>
+        /// A trace identifier.
+        /// </summary>
+        public const string TraceId = "TraceId";
+    }
+
+    /// <summary>
+    /// Constant URI schemes.
+    /// </summary>
+    public static class UriSchemes
+    {
+        /// <summary>
+        /// The HTTP URI scheme.
+        /// </summary>
+        public const string Http = "http";
+
+        /// <summary>
+        /// The HTTPS URI scheme.
+        /// </summary>
+        public const string Https = "https";
+
+        /// <summary>
+        /// The STCP URI scheme.
+        /// </summary>
+        public const string Spatial = "spatial";
+    }
+
+    /// <summary>
+    /// Constant smart contract addresses.
+    /// </summary>
+    public static class Contracts
+    {
+        /// <summary>
+        /// The Uniswap Router's contract address.
+        /// </summary>
+        public const string UniswapV2Router02 = "0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D";
+    }
+
+    /// <summary>
+    /// Constant smart contract ABI definitions.
+    /// </summary>
+    public static class ABI
+    {
+        /// <summary>
+        /// The Uniswap V2 Router 02 ABI.
+        /// </summary>
+        public const string UniswapV2Router02 = "https://unpkg.com/@uniswap/v2-periphery@1.1.0-beta.0/build/IUniswapV2Router02.json";
+    }
+
+    /// <summary>
+    /// Constant smart contract function names.
+    /// </summary>
+    public static class Functions
+    {
+        /// <summary>
+        /// A function that lets you swap Ethereum for ERC20 tokens.
+        /// </summary>
+        public const string SwapExactETHForTokens = "swapExactETHForTokens";
+
+        /// <summary>
+        /// A function that lets you swap ERC20 tokens for Ethereum.
+        /// </summary>
+        public const string SwapExactTokensForETH = "swapExactTokensForETH";
+
+        /// <summary>
+        /// A function that lets you swap ERC20 tokens for ERC20 tokens.
+        /// </summary>
+        public const string SwapExactTokensForTokens = "swapExactTokensForTokens";
+    }
 }

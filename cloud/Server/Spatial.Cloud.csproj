@@ -6,14 +6,13 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <ServerGarbageCollection>true</ServerGarbageCollection>
+    <RootNamespace>Spatial.Cloud</RootNamespace>
   </PropertyGroup>
-
   <ItemGroup>
     <ProjectReference Include="..\Core\Spatial.csproj" />
   </ItemGroup>
-
   <ItemGroup>
-    <Folder Include="Components\" />
+    <Folder Include="Components/" />
+    <Folder Include="Contracts/" />
   </ItemGroup>
-
 </Project>

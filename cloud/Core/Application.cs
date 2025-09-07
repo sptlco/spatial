@@ -3,11 +3,14 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc.ApplicationParts;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 using Serilog;
+using Serilog.Context;
 using Serilog.Events;
 using Spatial.Compute;
 using Spatial.Extensions;
@@ -57,6 +60,16 @@ public class Application
     public Configuration Configuration => _wapp.Services.GetRequiredService<Configuration>();
 
     /// <summary>
+    /// The name of the <see cref="Application"/>.
+    /// </summary>
+    public string Name => Configuration.Name;
+
+    /// <summary>
+    /// The application's version.
+    /// </summary>
+    public string Version => Configuration.Version;
+
+    /// <summary>
     /// The application's <see cref="Simulation.Space"/>.
     /// </summary>
     public Space Space => _space;
@@ -97,64 +110,81 @@ public class Application
 
             try
             {
-                INFO("Time: {Time}", Time.Now.Milliseconds);
-                INFO("Version: {Version}", application.Configuration.Version);
-                INFO("Application starting.");
+                INFO("Time: {Time} ms.", Time.Now.Milliseconds);
 
-                try
-                {
-                    application.Start();
-                    application._wapp.Start();
-                }
-                catch (Exception exception)
-                {
-                    ERROR(exception, "Failed to start the application.");
-                    return;
-                }
+                application.ConfigureSystems();
+                application.ConfigureConnectivity();
 
-                application.ConfigureSystems();                
-                application._network.Open(application.Configuration.Network.Endpoint);
-                application._processor.Run();
+                INFO("Starting {Application} {Version}.", application.Name, application.Version);
+
+                application.Start();
+                application._wapp.Start();
+
+                //application.Work();
 
                 if (cancellationToken == default)
                 {
                     cancellationToken = CreateCancellationToken();
                 }
+
+                if (application.Configuration.TickRate > 0)
+                {
+                    INFO("Application running at {TickRate} ticks/s.", application.Configuration.TickRate);
+
+                    Ticker.Run(application.InvokeTick, 1000.0D / application.Configuration.TickRate, cancellationToken);
+                }
+                else
+                {
+                    INFO("Application running as fast as possible.");
+
+                    Ticker.Run(application.InvokeTick, cancellationToken);
+                }
+
+                INFO("Shutting down the application.");
+
+                application.Shutdown();
+                await application._wapp.StopAsync(CancellationToken.None);
+                application._processor.Shutdown();
+                application._network.Close();
+
+                INFO("Application shut down.");
             }
             catch (Exception exception)
             {
                 ERROR(exception, "Failed to run the application.");
                 return;
             }
-
-            if (application.Configuration.TickRate > 0)
+            finally
             {
-                INFO("Running at {TickRate} TPS.", application.Configuration.TickRate);
-
-                Ticker.Run(application.Tick, 1000.0D / application.Configuration.TickRate, cancellationToken);
+                Log.CloseAndFlush();
             }
-            else
-            {
-                INFO("Running as fast as possible.");
-
-                Ticker.Run(application.Tick, cancellationToken);
-            }
-
-            INFO("Shutting down the application.");
-
-            application.Shutdown();
-            await application._wapp.StopAsync(CancellationToken.None);
-            application._processor.Shutdown();
-            application._network.Close();
-
-            INFO("Application shut down.");
-
-            Log.CloseAndFlush();
         }
         catch (Exception exception)
         {
             Console.WriteLine($"Failed to run the application.\n{exception}");
         }
+    }
+
+    /// <summary>
+    /// Connect to an <see cref="Application"/> via STCP.
+    /// </summary>
+    /// <param name="endpoint">The application's endpoint.</param>
+    public static StcpClient Connect(string endpoint) => Connect(IPEndPoint.Parse(endpoint));
+
+    /// <summary>
+    /// Connect to an <see cref="Application"/> via STCP.
+    /// </summary>
+    /// <param name="port">The application's port.</param>
+    public static StcpClient Connect(int port) => Connect(new IPEndPoint(IPAddress.Loopback, port));
+
+    /// <summary>
+    /// Connect to an <see cref="Application"/> via STCP.
+    /// </summary>
+    /// <param name="endpoint">The application's endpoint.</param>
+    /// <returns>A <see cref="StcpClient"/> connected to the <see cref="Application"/>.</returns>
+    public static StcpClient Connect(IPEndPoint endpoint)
+    {
+        return new StcpClient().Connect(endpoint);
     }
 
     /// <summary>
@@ -186,7 +216,7 @@ public class Application
     /// Update the <see cref="Application"/>.
     /// </summary>
     /// <param name="delta"></param>
-    public virtual void Update(Time delta) { }
+    public virtual void Tick(Time delta) { }
 
     /// <summary>
     /// Shutdown the <see cref="Application"/>.
@@ -215,8 +245,6 @@ public class Application
 #endif
 
         Log.Logger = config.CreateLogger();
-
-        INFO("Telemetry enabled.");
     }
 
     private void ConfigureSystems()
@@ -227,8 +255,33 @@ public class Application
             .Where(type => type.GetCustomAttribute<DependencyAttribute>() is not null)
             .OrderBy(type => type.GetCustomAttribute<DependencyAttribute>()!.Layer)
             .ForEach(Use);
+    }
 
-        INFO("Systems online.");
+    private void ConfigureConnectivity()
+    {
+        foreach (var url in Configuration.Endpoints)
+        {
+            switch (new Uri(url.Replace("*", "localhost")).Scheme.ToLowerInvariant())
+            {
+                case Constants.UriSchemes.Http:
+                    _wapp.Urls.Add(url);
+                    INFO("HTTP supported, url: {Url}", url);
+                    break;
+                case Constants.UriSchemes.Https:
+                    _wapp.Urls.Add(url);
+                    INFO("HTTPS supported, url: {Url}", url);
+                    break;
+                case Constants.UriSchemes.Spatial:
+                    _network.Listen(url.Replace($"{Constants.UriSchemes.Spatial}://", "").Replace("*", IPAddress.Any.ToString()));
+                    INFO("STCP supported, url: {Url}", url);
+                    break;
+            }
+        }
+    }
+
+    private void Work()
+    {
+        _processor.Run();
     }
 
     private WebApplication CreateWebApplication()
@@ -256,7 +309,10 @@ public class Application
             .UseExceptionHandler()
             .UseStatusCodePages(ReportStatusCode)
             .UseHttpsRedirection()
-            .UseStaticFiles()
+            .UseStaticFiles(new StaticFileOptions {
+                FileProvider = new PhysicalFileProvider(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "wwwroot")),
+                RequestPath = ""
+            })
             .UseAuthorization()
             .UseHsts();
 
@@ -285,21 +341,23 @@ public class Application
         var context = status.HttpContext;
         var traceId = context.TraceIdentifier;
 
+        using var _ = LogContext.PushProperty(Constants.Properties.TraceId, traceId);
+
         switch ((HttpStatusCode) status.HttpContext.Response.StatusCode)
         {
             case HttpStatusCode.NotFound:
-                ERROR("Resource {Path} not found for request {Request}.", context.Request.Path, traceId);
+                ERROR("Requested resource not found: {Resource}", context.Request.Path);
                 await context.Response.WriteAsJsonAsync(new NotFound().ToFault().ToResponse(traceId));
                 break;
         }
     }
 
-    private void Tick(Time delta)
+    private void InvokeTick(Time delta)
     {
         _network.Receive();
-
         _space.Update(delta);
-        Update(delta);
+
+        Tick(delta);
 
         _network.Send();
 

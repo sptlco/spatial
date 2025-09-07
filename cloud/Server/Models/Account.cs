@@ -1,11 +1,11 @@
 // Copyright © Spatial Corporation. All rights reserved.
 
-namespace Spatial.Models;
+namespace Spatial.Cloud.Models;
 
 /// <summary>
 /// ...
 /// </summary>
-public class Account
+internal class Account
 {
     // ...
 }

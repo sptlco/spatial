@@ -3,6 +3,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using Serilog;
 using Spatial.Compute.Jobs;
+using Spatial.Networking.Contracts;
 using Spatial.Networking.Contracts.Miscellaneous;
 using Spatial.Structures;
 using System.Buffers;
@@ -20,11 +21,10 @@ namespace Spatial.Networking;
 public partial class Network
 {
     private readonly IServiceProvider _services;
-    private readonly Socket _socket;
     private readonly Dictionary<Type, Controller> _controllers;
     private readonly Dictionary<ushort, (Controller Controller, Command Command, Type Prototype)> _operations;
-    private int _open;
 
+    private readonly List<Socket> _endpoints;
     private readonly ConcurrentDictionary<long, Connection> _connections;
     private readonly InterlockedQueue<NetworkEvent> _events;
     private readonly InterlockedQueue<Message> _updates;
@@ -35,7 +35,6 @@ public partial class Network
     public Network(IServiceProvider services)
     {
         _services = services;
-        _socket = new(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
         _controllers = [];
         _operations = AppDomain.CurrentDomain
             .GetAssemblies()
@@ -54,15 +53,11 @@ public partial class Network
                     return (controller, (Command) ((data) => delg.DynamicInvoke(data)), prototype);
                 });
 
+        _endpoints = [];
         _connections = [];
         _events = new();
         _updates = new();
     }
-
-    /// <summary>
-    /// The network's endpoint.
-    /// </summary>
-    public IPEndPoint Endpoint => _socket.LocalEndPoint as IPEndPoint ?? throw new InvalidOperationException("The network has not been opened.");
 
     /// <summary>
     /// Active connections to the <see cref="Network"/>.
@@ -75,22 +70,19 @@ public partial class Network
     internal InterlockedQueue<NetworkEvent> Queue => _events;
 
     /// <summary>
-    /// Open the <see cref="Network"/>.
+    /// Listen for connections at an <paramref name="endpoint"/>.
     /// </summary>
-    /// <param name="endpoint">The server's <see cref="IPEndPoint"/>.</param>
-    public void Open(IPEndPoint endpoint)
+    /// <param name="endpoint">The endpoint to listen at.</param>
+    public void Listen(string endpoint)
     {
-        if (Interlocked.Exchange(ref _open, 1) != 0)
-        {
-            return;
-        }
+        var socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
 
-        _socket.Bind(endpoint);
-        _socket.Listen();
+        socket.Bind(IPEndPoint.Parse(endpoint));
+        socket.Listen();
 
-        BeginAccept();
+        BeginAccept(socket);
 
-        Log.Information("Open to IPV4 at {Endpoint}.", Endpoint);
+        _endpoints.Add(socket);
     }
 
     /// <summary>
@@ -98,12 +90,11 @@ public partial class Network
     /// </summary>
     public void Close()
     {
-        if (Interlocked.Exchange(ref _open, 0) != 1)
+        foreach (var endpoint in _endpoints)
         {
-            return;
+            endpoint.Close();
         }
 
-        _socket.Close();
         _connections.Clear();
         _events.Clear();
         _updates.Clear();
@@ -185,33 +176,25 @@ public partial class Network
         }
     }
 
-    private void BeginAccept()
+    private void BeginAccept(Socket endpoint)
     {
-        if (Interlocked.CompareExchange(ref _open, 0, 0) == 0)
-        {
-            return;
-        }
-
-        _socket.BeginAccept(EndAccept, null);
+        endpoint.BeginAccept(EndAccept, endpoint);
     }
 
     private void EndAccept(IAsyncResult e)
     {
+        var endpoint = (Socket) e.AsyncState!;
+
         try
         {
-            if (_socket.EndAccept(e) is Socket socket)
+            if (endpoint.EndAccept(e) is Socket socket)
             {
                 Connect(socket);
             }
+
+            BeginAccept((Socket) e.AsyncState!);
         }
-        catch (Exception exception)
-        {
-            ERROR(exception, "Activation of network connection failed.");
-        }
-        finally
-        {
-            BeginAccept();
-        }
+        catch (Exception) { }
     }
 
     private void Connect(Socket socket)
@@ -233,8 +216,8 @@ public partial class Network
 
                     _connections[connection.Id] = connection;
 
-                    connection.Command(
-                        command: NETCOMMAND.NC_MISC_SEED_CMD,
+                    connection.Send(
+                        command: (ushort) NETCOMMAND.NC_MISC_SEED_CMD,
                         data: new PROTO_NC_MISC_SEED_CMD(connection.Seed));
 
                     break;
@@ -296,14 +279,14 @@ public partial class Network
 public partial class Network
 {
     /// <summary>
-    /// Issue a <see cref="NETCOMMAND"/> on behalf of the <see cref="Network"/>.
+    /// Send a message to a <see cref="Connection"/>.
     /// </summary>
     /// <param name="connection">A <see cref="Connection"/>.</param>
     /// <param name="command">A <see cref="NETCOMMAND"/>.</param>
     /// <param name="data">A <see cref="ProtocolBuffer"/>.</param>
     /// <param name="dispose">Whether or not to dispose of the <see cref="ProtocolBuffer"/>.</param>
     /// <param name="serialize">Whether or not to serialize the <see cref="ProtocolBuffer"/>.</param>
-    public void Command(Connection connection, ushort command, ProtocolBuffer data, bool dispose = true, bool serialize = true)
+    public void Send(Connection connection, ushort command, ProtocolBuffer data, bool dispose = true, bool serialize = true)
     {
         if (serialize)
         {
@@ -364,7 +347,7 @@ public partial class Network
         {
             if (func == default || func(connection))
             {
-                Command(connection, command, data, false, false);
+                Send(connection, command, data, false, false);
             }
         });
 

@@ -15,7 +15,7 @@ public class FaultResponse
     public FaultResponse(Fault fault, string request)
     {
         Time = fault.Error.Time;
-        Request = request;
+        TraceId = request;
         Status = fault.Error.Status;
         Code = fault.Error.Code;
         Message = fault.Error.Message;
@@ -29,7 +29,7 @@ public class FaultResponse
     /// <summary>
     /// The request's trace identifier.
     /// </summary>
-    public string Request { get; }
+    public string TraceId { get; }
 
     /// <summary>
     /// The status of a request after the <see cref="Error"/> occurred.

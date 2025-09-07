@@ -142,19 +142,19 @@ public sealed class Connection : IDisposable
     }
 
     /// <summary>
-    /// Issue a command to the <see cref="Connection"/>.
+    /// Send a message to the <see cref="Connection"/>.
     /// </summary>
     /// <param name="command">The command to issue.</param>
     /// <param name="data">A <see cref="ProtocolBuffer"/>.</param>
     /// <param name="dispose">Whether or not to dispose of the <see cref="ProtocolBuffer"/>.</param>
-    public void Command(ushort command, ProtocolBuffer data, bool dispose = true)
+    public void Send(ushort command, ProtocolBuffer data, bool dispose = true)
     {
         if (!Connected)
         {
             return;
         }
         
-        _server.Command(this, command, data, dispose);
+        _server.Send(this, command, data, dispose);
     }
 
     /// <summary>

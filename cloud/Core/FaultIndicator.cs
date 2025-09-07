@@ -2,6 +2,7 @@
 
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Http;
+using Serilog.Context;
 
 namespace Spatial;
 
@@ -24,7 +25,9 @@ public class FaultIndicator : IExceptionHandler
             return false;
         }
 
-        ERROR(fault, "Encountered {Error} while handling request {Request}.", fault.Error.Code, context.TraceIdentifier);
+        using var _ = LogContext.PushProperty(Constants.Properties.TraceId, context.TraceIdentifier);
+
+        ERROR(fault, "Encountered {Error}.", fault.Error.Code);
 
         context.Response.StatusCode = fault.Error.Status;
 

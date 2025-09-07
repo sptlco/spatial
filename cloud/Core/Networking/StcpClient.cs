@@ -1,5 +1,6 @@
 // Copyright © Spatial Corporation. All rights reserved.
 
+using Spatial.Networking.Contracts;
 using Spatial.Networking.Contracts.Miscellaneous;
 using System.Buffers;
 using System.Net;
@@ -10,9 +11,9 @@ namespace Spatial.Networking;
 /// <summary>
 /// A device that communicates with the <see cref="Network"/>.
 /// </summary>
-public class Client : IDisposable
+public class StcpClient : IDisposable
 {
-    private readonly Dictionary<ushort, List<(Action<Client, ProtocolBuffer> Handler, Type Prototype)>> _handlers;
+    private readonly Dictionary<ushort, List<(Action<StcpClient, ProtocolBuffer> Handler, Type Prototype)>> _handlers;
     private readonly byte[] _buffer;
 
     private Socket _socket;
@@ -20,20 +21,20 @@ public class Client : IDisposable
     private ushort _seed;
 
     /// <summary>
-    /// Create a new <see cref="Client"/>.
+    /// Create a new <see cref="StcpClient"/>.
     /// </summary>
-    public Client()
+    internal StcpClient()
     {
         _handlers = [];
         _buffer = ArrayPool<byte>.Shared.Rent(Constants.ConnectionSize);
 
         Handle<PROTO_NC_MISC_SEED_CMD>(
-            command: NETCOMMAND.NC_MISC_SEED_CMD, 
+            command: (ushort) NETCOMMAND.NC_MISC_SEED_CMD, 
             handler: (_, data) => Interlocked.Exchange(ref _seed, data.Seed));
     }
 
     /// <summary>
-    /// Whether or not the <see cref="Client"/> is connected.
+    /// Whether or not the <see cref="StcpClient"/> is connected.
     /// </summary>
     public bool Connected => Interlocked.CompareExchange(ref _connected, 1, 1) == 1;
 
@@ -48,51 +49,53 @@ public class Client : IDisposable
     /// <typeparam name="T">The type of data to bind the <see cref="NETCOMMAND"/> to.</typeparam>
     /// <param name="command">A <see cref="NETCOMMAND"/>.</param>
     /// <param name="handler">A handler.</param>
-    /// <returns>The <see cref="Client"/>.</returns>
-    public Client Handle<T>(ushort command, Action<Client, T> handler) where T : ProtocolBuffer
+    /// <returns>The <see cref="StcpClient"/>.</returns>
+    public StcpClient Handle<T>(ushort command, Action<StcpClient, T> handler) where T : ProtocolBuffer
     {
         if (!_handlers.TryGetValue(command, out var handlers))
         {
             handlers = _handlers[command] = [];
         }
         
-        handlers.Add(((client, data) => handler(client, (T) data), typeof(T)));
+        handlers.Add(((sender, data) => handler(sender, (T) data), typeof(T)));
 
         return this;
     }
 
     /// <summary>
-    /// Connect the <see cref="Client"/>.
+    /// Connect the <see cref="StcpClient"/>.
     /// </summary>
     /// <param name="endpoint">A <see cref="Network"/> endpoint.</param>
-    public void Connect(string endpoint) => Connect(IPEndPoint.Parse(endpoint));
+    internal StcpClient Connect(string endpoint) => Connect(IPEndPoint.Parse(endpoint));
 
     /// <summary>
-    /// Connect the <see cref="Client"/>.
+    /// Connect the <see cref="StcpClient"/>.
     /// </summary>
     /// <param name="port">A <see cref="Network"/> port.</param>
-    public void Connect(int port) => Connect(new IPEndPoint(IPAddress.Loopback, port));
+    internal StcpClient Connect(int port) => Connect(new IPEndPoint(IPAddress.Loopback, port));
 
     /// <summary>
-    /// Connect the <see cref="Client"/>.
+    /// Connect the <see cref="StcpClient"/>.
     /// </summary>
     /// <param name="endpoint">A <see cref="Network"/> endpoint.</param>
-    public void Connect(IPEndPoint endpoint)
+    internal StcpClient Connect(IPEndPoint endpoint)
     {
         _socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
         _socket.Connect(endpoint);
         _connected = 1;
 
         Receive();
+
+        return this;
     }
 
     /// <summary>
-    /// Issue a <see cref="NETCOMMAND"/> to the <see cref="Client"/>.
+    /// Send a message to the <see cref="Network"/>.
     /// </summary>
     /// <param name="command">A <see cref="NETCOMMAND"/>.</param>
     /// <param name="data">A <see cref="ProtocolBuffer"/>.</param>
     /// <param name="dispose">Whether or not to dispose of the <see cref="ProtocolBuffer"/>.</param>
-    public void Command(ushort command, ProtocolBuffer data, bool dispose = true)
+    public void Send(ushort command, ProtocolBuffer data, bool dispose = true)
     {
         if (!Connected)
         {
@@ -148,7 +151,7 @@ public class Client : IDisposable
     }
 
     /// <summary>
-    /// Dispose of the <see cref="Client"/>.
+    /// Dispose of the <see cref="StcpClient"/>.
     /// </summary>
     /// <exception cref="NotImplementedException"></exception>
     public void Dispose()

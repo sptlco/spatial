@@ -1,9 +1,9 @@
 // Copyright © Spatial Corporation. All rights reserved.
 
-using System.Numerics;
 using Nethereum.Web3;
 using Nethereum.Web3.Accounts;
-using Spatial.Networking;
+using Spatial.Networking.Helpers;
+using System.Numerics;
 
 namespace Spatial.Blockchain;
 
@@ -16,13 +16,11 @@ public class Ethereum
 
     private readonly Account _account;
     private readonly Web3 _web3;
-    private readonly Http _http;
 
     private Ethereum()
     {
         _account = new Account(Configuration.Current.Ethereum.Key);
         _web3 = new Web3(_account, Configuration.Current.Ethereum.Url);
-        _http = new Http();
     }
 
     /// <summary>
@@ -72,7 +70,7 @@ public class Ethereum
     /// <param name="function">The name of the function to send the transaction to.</param>
     /// <param name="input">The transaction's input parameters.</param>
     /// <returns>Receipt of the transaction.</returns>
-    public async Task<Receipt> SendTransactionAsync(
+    public async Task<string> SendTransactionAsync(
         string abi,
         string contract,
         string function,
@@ -80,16 +78,15 @@ public class Ethereum
     {
         var target = _web3.Eth.GetContract(Download(abi), contract).GetFunction(function);
         var gas = await target.EstimateGasAsync(input);
-        var receipt = await target.SendTransactionAndWaitForReceiptAsync(_account.Address, gas, null, null, input);
 
-        return new Receipt(receipt.TransactionHash);
+        return (await target.SendTransactionAndWaitForReceiptAsync(_account.Address, gas, null, null, input)).TransactionHash;
     }
 
     private string Download(string contract)
     {
         if (Uri.TryCreate(contract, UriKind.Absolute, out var uri) && (uri.Scheme == Uri.UriSchemeHttp || uri.Scheme == Uri.UriSchemeHttps))
         {
-            return _http.CreateClient().GetStringAsync(uri).GetAwaiter().GetResult();
+            return Http.GetOrCreateClient().GetStringAsync(uri).GetAwaiter().GetResult();
         }
 
         return File.Exists(contract) ? File.ReadAllText(contract) : contract;

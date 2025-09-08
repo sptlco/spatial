@@ -87,7 +87,7 @@ public sealed class Connection : IDisposable
     internal void Connect()
     {
         _key1 = _key2 = 0;
-        _keystream = Network.GenerateKeystream(_seed = Strong.UInt16());
+        _keystream = Cipher.GenerateKeystream(_seed = Strong.UInt16());
         _connected = 1;
 
         _network.Queue.Enqueue(NetworkEvent.Create(this, NetworkEventCode.EVENT_CONNECT, null));

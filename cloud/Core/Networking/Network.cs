@@ -71,24 +71,6 @@ public partial class Network
     internal InterlockedQueue<NetworkEvent> Queue => _events;
 
     /// <summary>
-    /// Generate a keystream.
-    /// </summary>
-    /// <param name="seed">A seed value.</param>
-    /// <returns>A keystream.</returns>
-    public static byte[] GenerateKeystream(ushort seed)
-    {
-        var state = BitConverter.GetBytes(seed);
-        var keystream = new byte[Constants.KeystreamSize];
-
-        for (var i = 0; i < keystream.Length; i += 32)
-        {
-            Array.Copy(state = SHA256.HashData(state), 0, keystream, i, Math.Min(32, keystream.Length - i));
-        }
-
-        return keystream;
-    }
-
-    /// <summary>
     /// Listen for connections at an <paramref name="endpoint"/>.
     /// </summary>
     /// <param name="endpoint">The endpoint to listen at.</param>

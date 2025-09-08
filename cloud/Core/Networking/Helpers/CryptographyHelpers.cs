@@ -1,5 +1,7 @@
 // Copyright © Spatial Corporation. All rights reserved.
 
+using System.Security.Cryptography;
+
 namespace Spatial.Networking.Helpers;
 
 /// <summary>
@@ -7,6 +9,24 @@ namespace Spatial.Networking.Helpers;
 /// </summary>
 public static class Cipher
 {
+    /// <summary>
+    /// Generate a cryptographically strong keystream.
+    /// </summary>
+    /// <param name="seed">A seed value.</param>
+    /// <returns>A cryptographyically strong keystream.</returns>
+    public static byte[] GenerateKeystream(ushort seed)
+    {
+        var state = BitConverter.GetBytes(seed);
+        var keystream = new byte[Constants.KeystreamSize];
+
+        for (var i = 0; i < keystream.Length; i += 32)
+        {
+            Array.Copy(state = SHA256.HashData(state), 0, keystream, i, Math.Min(32, keystream.Length - i));
+        }
+
+        return keystream;
+    }
+
     /// <summary>
     /// Transform a <see cref="Cipher"/>.
     /// </summary>

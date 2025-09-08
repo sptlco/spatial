@@ -40,7 +40,7 @@ public class StcpClient : IDisposable
                 Interlocked.Exchange(ref _key1, 0);
                 Interlocked.Exchange(ref _key2, 0);
                 Interlocked.Exchange(ref _seed, data.Seed);
-                Interlocked.Exchange(ref _keystream, Network.GenerateKeystream(data.Seed));
+                Interlocked.Exchange(ref _keystream, Cipher.GenerateKeystream(data.Seed));
             });
     }
 

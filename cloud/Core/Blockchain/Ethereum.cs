@@ -20,8 +20,13 @@ public class Ethereum
     private Ethereum()
     {
         _account = new Account(Configuration.Current.Ethereum.Key);
-        _web3 = new Web3(_account, Configuration.Current.Ethereum.Url);
+        _web3 = new Web3(_account, Configuration.Current.Ethereum.Endpoint);
     }
+
+    /// <summary>
+    /// The application's <see cref="Nethereum.Web3.Accounts.Account"/>.
+    /// </summary>
+    public Account Account => _account;
 
     /// <summary>
     /// Create a new <see cref="Ethereum"/> client, or get an existing one.
@@ -33,12 +38,52 @@ public class Ethereum
     }
 
     /// <summary>
-    /// Get the system's Ethereum balance.
+    /// Get the Ethereum balance.
     /// </summary>
-    /// <returns>The system's current Ethereum balance.</returns>
-    public async Task<BigInteger> GetBalanceAsync()
+    /// <returns>The wallet's Ethereum balance.</returns>
+    public async Task<decimal> GetBalanceAsync()
     {
-        return (await _web3.Eth.GetBalance.SendRequestAsync(_account.Address)).Value;
+        return await GetBalanceAsync(_account.Address);
+    }
+
+    /// <summary>
+    /// Get an Ethereum balance.
+    /// </summary>
+    /// <param name="address">A wallet address.</param>
+    /// <returns>The wallet's Ethereum balance.</returns>
+    public async Task<decimal> GetBalanceAsync(string address)
+    {
+        return (decimal) (await _web3.Eth.GetBalance.SendRequestAsync(address)).Value / (decimal) 1e18;
+    }
+
+    /// <summary>
+    /// Get a token balance.
+    /// </summary>
+    /// <param name="token">An ERC20 token address.</param>
+    /// <returns>The wallet's <paramref name="token"/> balance.</returns>
+    public async Task<decimal> GetERC20BalanceAsync(string token)
+    {
+        return await GetERC20BalanceAsync(token, _account.Address);
+    }
+
+    /// <summary>
+    /// Get a token balance.
+    /// </summary>
+    /// <param name="token">An ERC20 token address.</param>
+    /// <param name="address">A wallet address.</param>
+    /// <returns>The wallet's <paramref name="token"/> balance.</returns>
+    public async Task<decimal> GetERC20BalanceAsync(string token, string address)
+    {
+        var decimals = await CallAsync<int>(
+            abi: Constants.ABI.ERC20,
+            contract: token,
+            function: Constants.Functions.Decimals);
+
+        return (decimal) await CallAsync<BigInteger>(
+            abi: Constants.ABI.ERC20,
+            contract: token,
+            function: Constants.Functions.BalanceOf,
+            input: [address]) / (decimal) Math.Pow(10, decimals);
     }
 
     /// <summary>
@@ -56,10 +101,10 @@ public class Ethereum
         string function,
         params object[] input)
     {
-        var target = _web3.Eth.GetContract(Download(abi), contract).GetFunction(function);
-        var gas = await target.EstimateGasAsync(input);
-
-        return await target.CallAsync<TResult>(_account.Address, gas, null, input);
+        return await _web3.Eth
+            .GetContract(Download(abi), contract)
+            .GetFunction(function)
+            .CallAsync<TResult>(_account.Address, null, null, input);
     }
 
     /// <summary>

@@ -1,7 +1,6 @@
 // Copyright © Spatial Corporation. All rights reserved.
 
-using Microsoft.Extensions.Options;
-using Spatial.Cloud.Systems;
+using Spatial.Cloud.Contracts;
 
 namespace Spatial.Cloud;
 
@@ -18,16 +17,4 @@ internal class Server : Application
     {
         AddOptions<ServerConfiguration>(builder);
     }
-}
-
-/// <summary>
-/// Configurable options for the <see cref="Server"/>.
-/// </summary>
-internal class ServerConfiguration
-{
-    /// <summary>
-    /// Configurable options for cloud systems.
-    /// </summary>
-    [ValidateObjectMembers]
-    public SystemConfiguration Systems { get; set; } = new SystemConfiguration();
 }

@@ -27,14 +27,14 @@ public class CommandJobBenchmarks
     }
 
     /// <summary>
-    /// Measure <see cref="Job.Command"/>.
+    /// Measure <see cref="Job.Invoke"/>.
     /// </summary>
     [Benchmark(OperationsPerInvoke = _iterations)]
     public void JobCommand()
     {
         for (int i = 0; i < _iterations; i++)
         {
-            Job.Command(EmptyAction);
+            Job.Invoke(EmptyAction);
         }
     }
 

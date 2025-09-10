@@ -436,6 +436,19 @@ public sealed partial class Space : IDisposable
     }
 
     /// <summary>
+    /// Get or create a single instance of type <typeparamref name="T"/>.
+    /// </summary>
+    /// <typeparam name="T">The type of <see cref="IComponent"/> to get.</typeparam>
+    /// <returns>A singleton instance of the specified type.</returns>
+    public ref T Singleton<T>() where T : unmanaged, IComponent
+    {
+        var entities = Query<T>(_ => true);
+        var entity = entities.Any() ? entities.First() : Create<T>();
+
+        return ref _archetypes[_entities[entity].Archetype]!.Chunks[0].Ref<T>(0);
+    }
+
+    /// <summary>
     /// Query the <see cref="Space"/>.
     /// </summary>
     /// <param name="query">A filter for the space.</param>
@@ -626,6 +639,8 @@ public sealed partial class Space : IDisposable
             return;
         }
 
+        _systems.ForEach(sys => sys.Destroy(this));
+
         for (var i = 0; i < _archetypes.Length; i++)
         {
             _archetypes[i]?.Dispose();
@@ -739,6 +754,14 @@ public sealed partial class Space : IDisposable
 
 public sealed partial class Space
 {
+    /// <summary>
+    /// Initialize the <see cref="Space"/>.
+    /// </summary>
+    public void Initialize()
+    {
+        _systems.ForEach(sys => sys.Create(this));
+    }
+
     /// <summary>
     /// Update the <see cref="Space"/>.
     /// </summary>

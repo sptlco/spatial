@@ -8,6 +8,12 @@ namespace Spatial.Simulation;
 public abstract class System<T>
 {
     /// <summary>
+    /// Create the <see cref="System{T}"/>.
+    /// </summary>
+    /// <param name="arg">An argument of type <typeparamref name="T"/>.</param>
+    public virtual void Create(T arg) { }
+
+    /// <summary>
     /// Execute code before updating the <see cref="System{T}"/>.
     /// </summary>
     /// <param name="arg">An argument of type <typeparamref name="T"/>.</param>
@@ -25,4 +31,10 @@ public abstract class System<T>
     /// </summary>
     /// <param name="arg">An argument of type <typeparamref name="T"/>.</param>
     public virtual void AfterUpdate(T arg) { }
+
+    /// <summary>
+    /// Destroy the <see cref="System{T}"/>.
+    /// </summary>
+    /// <param name="arg">An argument of type <typeparamref name="T"/>.</param>
+    public virtual void Destroy(T arg) { }
 }

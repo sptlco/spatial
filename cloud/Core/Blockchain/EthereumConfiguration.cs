@@ -10,10 +10,10 @@ namespace Spatial.Blockchain;
 public class EthereumConfiguration
 {
     /// <summary>
-    /// The system's RPC URL.
+    /// An Ethereum network's RPC endpoint.
     /// </summary>
     [Required]
-    public string Url { get; set; }
+    public string Endpoint { get; set; }
 
     /// <summary>
     /// The system's private key.

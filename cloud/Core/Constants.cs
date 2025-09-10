@@ -110,6 +110,26 @@ internal class Constants
     }
 
     /// <summary>
+    /// Constant API addresses.
+    /// </summary>
+    public static class API
+    {
+        /// <summary>
+        /// Get coin data from Coin Gecko.
+        /// </summary>
+        /// <param name="coin">The coin whose data to get.</param>
+        /// <returns>The Coin Gecko coin data API.</returns>
+        public static string Coin(string coin) => $"https://api.coingecko.com/api/v3/coins/{coin}";
+
+        /// <summary>
+        /// Get market data from Coin Gecko.
+        /// </summary>
+        /// <param name="coins">The coins whose data to get.</param>
+        /// <returns>The Coin Gecko market data API.</returns>
+        public static string Markets(params string[] coins) => $"https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&ids={string.Join(",", coins)}";
+    }
+
+    /// <summary>
     /// Constant smart contract addresses.
     /// </summary>
     public static class Contracts
@@ -126,6 +146,11 @@ internal class Constants
     public static class ABI
     {
         /// <summary>
+        /// The ERC20 token ABI.
+        /// </summary>
+        public const string ERC20 = "https://gist.githubusercontent.com/veox/8800debbf56e24718f9f483e1e40c35c/raw/f853187315486225002ba56e5283c1dba0556e6f/erc20.abi.json";
+
+        /// <summary>
         /// The Uniswap V2 Router 02 ABI.
         /// </summary>
         public const string UniswapV2Router02 = "https://unpkg.com/@uniswap/v2-periphery@1.1.0-beta.0/build/IUniswapV2Router02.json";
@@ -136,6 +161,16 @@ internal class Constants
     /// </summary>
     public static class Functions
     {
+        /// <summary>
+        /// A function that lets you query an ERC20 token balance.
+        /// </summary>
+        public const string BalanceOf = "balanceOf";
+
+        /// <summary>
+        /// A function gets a token's decimal count for unit conversion.
+        /// </summary>
+        public const string Decimals = "decimals";
+
         /// <summary>
         /// A function that lets you swap Ethereum for ERC20 tokens.
         /// </summary>

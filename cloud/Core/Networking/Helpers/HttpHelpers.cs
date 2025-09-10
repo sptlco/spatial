@@ -15,6 +15,14 @@ public static class Http
     /// <returns>An <see cref="HttpClient"/>.</returns>
     public static HttpClient GetOrCreateClient()
     {
-        return _client ??= new HttpClient();
+        if (_client is null)
+        {
+            var config = Application.Current.Configuration;
+
+            _client = new HttpClient();
+            _client.DefaultRequestHeaders.Add("User-Agent", $"{config.Name}/{config.Version}");
+        }
+
+        return _client;
     }
 }

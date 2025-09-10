@@ -1,7 +1,6 @@
 // Copyright © Spatial Corporation. All rights reserved.
 
 using System.Collections.Concurrent;
-using System.Runtime.CompilerServices;
 
 namespace Spatial;
 
@@ -10,40 +9,40 @@ namespace Spatial;
 /// </summary>
 public class Interval
 {
-    private static readonly ConcurrentDictionary<long, Time> _intervals = [];
+    private static readonly ConcurrentDictionary<string, Time> _intervals = [];
 
     /// <summary>
     /// Invoke an <see cref="Action"/> periodically.
     /// </summary>
+    /// <param name="name">A name for the interval.</param>
     /// <param name="function">The <see cref="Action"/> to invoke.</param>
     /// <param name="interval">The rate at which to invoke the <see cref="Action"/>.</param>
-    /// <param name="file">The path to the file that declared the <see cref="Action"/>.</param>
-    /// <param name="line">The line containing the <see cref="Action"/>.</param>
     public static void Invoke(
+        string name,
         Action function,
-        Time interval,
-        [CallerFilePath] string file = "",
-        [CallerLineNumber] int line = 0)
+        Time interval)
     {
         var now = Time.Now;
-        var key = GenerateKey(function, file, line);
 
-        if (!_intervals.TryGetValue(key, out var time) || (now - time) >= interval)
+        if (!_intervals.TryGetValue(name, out var time) || (now - time) >= interval)
         {
-            _intervals[key] = now;
+            _intervals[name] = now;
 
             function.Invoke();
         }
     }
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private static long GenerateKey(Action function, string file, int line)
+    /// <summary>
+    /// Invoke an <see cref="Action"/> in the background periodically.
+    /// </summary>
+    /// <param name="name">A name for the interval.</param>
+    /// <param name="function">The <see cref="Action"/> to invoke.</param>
+    /// <param name="interval">The rate at which to invoke the <see cref="Action"/>.</param>
+    public static void FireAndForget(
+        string name,
+        Action function,
+        Time interval)
     {
-        if (function.Target == null)
-        {
-            return ((long) function.Method.MetadataToken << 32) | (uint) file.GetHashCode();
-        }
-        
-        return ((long) RuntimeHelpers.GetHashCode(function.Target) << 32) | (uint) (line ^ file.GetHashCode());
+        Invoke(name, () => Task.Run(function), interval);       
     }
 }

@@ -47,6 +47,8 @@ public class Application
         _processor = new Processor();
         _network = new Network(_wapp.Services);
         _ticks = (_time = Time.Now).Ticks;
+
+        ConfigureSystems();
     }
 
     /// <summary>
@@ -58,6 +60,11 @@ public class Application
     /// The application's <see cref="Spatial.Configuration"/>.
     /// </summary>
     public Configuration Configuration => _wapp.Services.GetRequiredService<Configuration>();
+
+    /// <summary>
+    /// The application's registered services.
+    /// </summary>
+    public IServiceProvider Services => _wapp.Services;
 
     /// <summary>
     /// The name of the <see cref="Application"/>.
@@ -112,15 +119,13 @@ public class Application
             {
                 INFO("Time: {Time} ms.", Time.Now.Milliseconds);
 
-                application.ConfigureSystems();
                 application.ConfigureConnectivity();
 
                 INFO("Starting {Application} {Version}.", application.Name, application.Version);
 
                 application.Start();
                 application._wapp.Start();
-
-                //application.Work();
+                application._processor.Run();
 
                 if (cancellationToken == default)
                 {
@@ -144,6 +149,7 @@ public class Application
 
                 application.Shutdown();
                 await application._wapp.StopAsync(CancellationToken.None);
+                application._space.Dispose();
                 application._processor.Shutdown();
                 application._network.Close();
 
@@ -255,6 +261,8 @@ public class Application
             .Where(type => type.GetCustomAttribute<DependencyAttribute>() is not null)
             .OrderBy(type => type.GetCustomAttribute<DependencyAttribute>()!.Layer)
             .ForEach(Use);
+
+        _space.Initialize();
     }
 
     private void ConfigureConnectivity()
@@ -265,23 +273,18 @@ public class Application
             {
                 case Constants.UriSchemes.Http:
                     _wapp.Urls.Add(url);
-                    INFO("HTTP supported, url: {Url}", url);
+                    INFO("HTTP supported, url: {Url}.", url);
                     break;
                 case Constants.UriSchemes.Https:
                     _wapp.Urls.Add(url);
-                    INFO("HTTPS supported, url: {Url}", url);
+                    INFO("HTTPS supported, url: {Url}.", url);
                     break;
                 case Constants.UriSchemes.Spatial:
                     _network.Listen(url.Replace($"{Constants.UriSchemes.Spatial}://", "").Replace("*", IPAddress.Any.ToString()));
-                    INFO("STCP supported, url: {Url}", url);
+                    INFO("STCP supported, url: {Url}.", url);
                     break;
             }
         }
-    }
-
-    private void Work()
-    {
-        _processor.Run();
     }
 
     private WebApplication CreateWebApplication()

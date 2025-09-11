@@ -22,5 +22,5 @@ internal class TraderConfiguration
     /// <summary>
     /// A list of ERC20 tokens watched by the <see cref="Trader"/>.
     /// </summary>
-    public Dictionary<string, string?> Watchlist { get; set; } = [];
+    public Dictionary<string, string> Watchlist { get; set; } = [];
 }

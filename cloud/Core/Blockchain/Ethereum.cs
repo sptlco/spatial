@@ -1,5 +1,11 @@
 // Copyright © Spatial Corporation. All rights reserved.
 
+using Nethereum.ABI.FunctionEncoding;
+using Nethereum.ABI.Model;
+using Nethereum.Contracts;
+using Nethereum.Contracts.QueryHandlers.MultiCall;
+using Nethereum.Contracts.Standards.ERC20.ContractDefinition;
+using Nethereum.Hex.HexConvertors.Extensions;
 using Nethereum.Web3;
 using Nethereum.Web3.Accounts;
 using Spatial.Networking.Helpers;
@@ -41,7 +47,7 @@ public class Ethereum
     /// Get the Ethereum balance.
     /// </summary>
     /// <returns>The wallet's Ethereum balance.</returns>
-    public async Task<decimal> GetBalanceAsync()
+    public async Task<BigInteger> GetBalanceAsync()
     {
         return await GetBalanceAsync(_account.Address);
     }
@@ -51,9 +57,34 @@ public class Ethereum
     /// </summary>
     /// <param name="address">A wallet address.</param>
     /// <returns>The wallet's Ethereum balance.</returns>
-    public async Task<decimal> GetBalanceAsync(string address)
+    public async Task<BigInteger> GetBalanceAsync(string address)
     {
-        return (decimal) (await _web3.Eth.GetBalance.SendRequestAsync(address)).Value / (decimal) 1e18;
+        return await _web3.Eth.GetBalance.SendRequestAsync(address);
+    }
+
+    /// <summary>
+    /// Get aggregated coin balances.
+    /// </summary>
+    /// <param name="coins">A list of ERC20 coins.</param>
+    /// <returns>The coins' balances.</returns>
+    public async Task<Dictionary<string, BigInteger>> GetERC20BalancesAsync(params string[] coins)
+    {
+        var calls = coins.Select(coin => new Call {
+            Target = coin,
+            CallData = new BalanceOfFunction { Owner = _account.Address }.GetCallData()
+        });
+
+        var results = await MulticallAsync(calls);
+        var balances = new Dictionary<string, BigInteger>();
+        var decoder = new FunctionCallDecoder();
+        var parameter = new Parameter("uint256");
+
+        for (var i = 0; i < coins.Length; i++)
+        {
+            balances[coins[i]] = decoder.DecodeSimpleTypeOutput<BigInteger>(parameter, results[i].ToHex(true));
+        }
+
+        return balances;
     }
 
     /// <summary>
@@ -61,7 +92,7 @@ public class Ethereum
     /// </summary>
     /// <param name="token">An ERC20 token address.</param>
     /// <returns>The wallet's <paramref name="token"/> balance.</returns>
-    public async Task<decimal> GetERC20BalanceAsync(string token)
+    public async Task<BigInteger> GetERC20BalanceAsync(string token)
     {
         return await GetERC20BalanceAsync(token, _account.Address);
     }
@@ -72,18 +103,28 @@ public class Ethereum
     /// <param name="token">An ERC20 token address.</param>
     /// <param name="address">A wallet address.</param>
     /// <returns>The wallet's <paramref name="token"/> balance.</returns>
-    public async Task<decimal> GetERC20BalanceAsync(string token, string address)
+    public async Task<BigInteger> GetERC20BalanceAsync(string token, string address)
     {
-        var decimals = await CallAsync<int>(
-            abi: Constants.ABI.ERC20,
-            contract: token,
-            function: Constants.Functions.Decimals);
-
-        return (decimal) await CallAsync<BigInteger>(
+        return await CallAsync<BigInteger>(
             abi: Constants.ABI.ERC20,
             contract: token,
             function: Constants.Functions.BalanceOf,
-            input: [address]) / (decimal) Math.Pow(10, decimals);
+            input: [address]);
+    }
+
+    /// <summary>
+    /// Batch multiple calls using the Multicall contract.
+    /// </summary>
+    /// <param name="calls">A list of function calls.</param>
+    /// <returns>The aggregated results of the function calls.</returns>
+    public async Task<List<byte[]>> MulticallAsync(IEnumerable<Call> calls)
+    {
+        var result = await _web3.Eth
+            .GetContract(Download(Constants.ABI.Multicall), Constants.Contracts.Multicall)
+            .GetFunction(Constants.Functions.Aggregate)
+            .CallAsync<AggregateOutputDTO>([(object[]) [.. calls.Select(c => new object[] { c.Target, c.CallData })]]);
+
+        return result.ReturnData;
     }
 
     /// <summary>
@@ -135,5 +176,21 @@ public class Ethereum
         }
 
         return File.Exists(contract) ? File.ReadAllText(contract) : contract;
+    }
+
+    /// <summary>
+    /// Aggregated function call results.
+    /// </summary>
+    public class AggregatedResults
+    {
+        /// <summary>
+        /// The block that executed the function calls.
+        /// </summary>
+        public BigInteger Block { get; set; }
+
+        /// <summary>
+        /// The results of each function call.
+        /// </summary>
+        public List<byte[]> Results { get; set; }
     }
 }

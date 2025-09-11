@@ -1,6 +1,7 @@
 // Copyright © Spatial Corporation. All rights reserved.
 
 using Spatial.Networking.Helpers;
+using System.Numerics;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
@@ -73,7 +74,7 @@ public static class CoinGecko
         /// <summary>
         /// The coin's balance.
         /// </summary>
-        public decimal Balance { get; set; }
+        public BigInteger Balance { get; set; }
 
         /// <summary>
         /// The token's market capitalization.

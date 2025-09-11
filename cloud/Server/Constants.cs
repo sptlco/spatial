@@ -18,6 +18,16 @@ internal static class Constants
     public const string GPT = "gpt-5";
 
     /// <summary>
+    /// The name of the system.
+    /// </summary>
+    public const string Spatial = "spatial";
+
+    /// <summary>
+    /// The name of the native asset.
+    /// </summary>
+    public const string Ethereum = "ethereum";
+
+    /// <summary>
     /// Constant interval names.
     /// </summary>
     public static class Intervals

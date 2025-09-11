@@ -138,6 +138,11 @@ internal class Constants
         /// The Uniswap Router's contract address.
         /// </summary>
         public const string UniswapV2Router02 = "0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D";
+
+        /// <summary>
+        /// The Multicall contract address.
+        /// </summary>
+        public const string Multicall = "0xcA11bde05977b3631167028862bE2a173976CA11";
     }
 
     /// <summary>
@@ -154,6 +159,11 @@ internal class Constants
         /// The Uniswap V2 Router 02 ABI.
         /// </summary>
         public const string UniswapV2Router02 = "https://unpkg.com/@uniswap/v2-periphery@1.1.0-beta.0/build/IUniswapV2Router02.json";
+
+        /// <summary>
+        /// The Multicall contract ABI.
+        /// </summary>
+        public const string Multicall = "https://gist.githubusercontent.com/cundiffd/4ea872974d516ef82e29cc68119dd4a8/raw/91f02b45ff992c8f69230dcded4c903761b5abd0/multicall.abi.json";
     }
 
     /// <summary>
@@ -165,6 +175,11 @@ internal class Constants
         /// A function that lets you query an ERC20 token balance.
         /// </summary>
         public const string BalanceOf = "balanceOf";
+
+        /// <summary>
+        /// A function that lets you aggregate multiple function calls into one.
+        /// </summary>
+        public const string Aggregate = "aggregate";
 
         /// <summary>
         /// A function gets a token's decimal count for unit conversion.

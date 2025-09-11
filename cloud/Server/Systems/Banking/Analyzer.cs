@@ -1,9 +1,7 @@
 // Copyright © Spatial Corporation. All rights reserved.
 
-using Spatial.Blockchain;
 using Spatial.Blockchain.Helpers;
-using Spatial.Cloud.Models.Banking;
-using System.Collections.Concurrent;
+using Spatial.Cloud.Systems.Banking.Engines;
 
 namespace Spatial.Cloud.Systems.Banking;
 
@@ -13,41 +11,24 @@ namespace Spatial.Cloud.Systems.Banking;
 internal static class Analyzer
 {
     /// <summary>
-    /// Analyze a list of tokens.
+    /// Analyze a list of coins for trade recommendations.
     /// </summary>
-    /// <param name="watchlist">The watchlist to analyze.</param>
-    /// <returns>An <see cref="Analysis"/>.</returns>
-    public static async Task<List<Analysis>> AnalyzeAsync(Dictionary<string, string?> watchlist)
+    /// <param name="coins">A list of coins.</param>
+    /// <returns>A list of trade recommendations.</returns>
+    public static async Task<List<Recommendation>> AnalyzeAsync(List<CoinGecko.Coin> coins)
     {
-        var ethereum = Ethereum.GetOrCreateClient();
-        var data = new ConcurrentBag<Analysis>();
-        var coins = await CoinGecko.GetMarketsAsync([.. watchlist.Keys]);
-
-        foreach (var coin in coins)
+        try
         {
-            coin.Address = watchlist[coin.Id];
-            coin.Balance = !string.IsNullOrEmpty(coin.Address) ? await ethereum.GetERC20BalanceAsync(coin.Address) : await ethereum.GetBalanceAsync();
+            return await new OpenAIRecommender().NextAsync(coins);
         }
-
-        foreach (var coin in coins)
+        catch (Exception exception)
         {
-            if (string.IsNullOrEmpty(coin.Address))
-            {
-                continue;
-            }
+            // Fallback to the default recommendation algorithm.
+            // This generally means we were unable to connect to OpenAI or have insufficient quota.
 
-            var analysis = new Analysis(coin);
-            var recommendation = Recommender.NextAsync(coin, coins).GetAwaiter().GetResult();
+            WARN(exception, "Recommendations from OpenAI unavailable, falling back to default recommender.");
 
-            analysis.Model = recommendation.Model;
-            analysis.Score = recommendation.Score;
-            analysis.Size = recommendation.Size;
-
-            INFO("Analyzed {Coin} using {Model}, score: {Score:F8} size: {Size:F8}.", coin.Symbol.ToUpper(), analysis.Model, analysis.Score, analysis.Size);
-
-            data.Add(analysis);
+            return await new DefaultRecommender().NextAsync(coins);
         }
-
-        return [.. data];
     }
 }

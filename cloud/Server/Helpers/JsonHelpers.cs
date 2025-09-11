@@ -24,6 +24,15 @@ public class Json
             type = underlying;
         }
 
+        if (type.IsEnum)
+        {
+            return new
+            {
+                type = "string",
+                @enum = Enum.GetNames(type)
+            };
+        }
+
         if (type == typeof(string))
         {
             return new { type = "string" };
@@ -49,11 +58,32 @@ public class Json
             return new { type = "number" };
         }
 
-        if (type.IsArray || (type.IsGenericType && typeof(IEnumerable<>).IsAssignableFrom(type.GetGenericTypeDefinition())))
+        if (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Dictionary<,>))
         {
+            var key = type.GetGenericArguments()[0];
+            var value = type.GetGenericArguments()[1];
+
+            if (key != typeof(string))
+            {
+                throw new NotSupportedException("Only Dictionary<string, T> is supported in schema.");
+            }
+
+            return new {
+                type = "object",
+                additionalProperties = BuildSchema(value)
+            };
+        }
+
+        if (type.IsArray || type.GetInterfaces().Any(i => i.IsGenericType && i.GetGenericTypeDefinition() == typeof(IEnumerable<>)))
+        {
+            var element = type.IsArray ? type.GetElementType()! : type
+                .GetInterfaces()
+                .First(i => i.IsGenericType && i.GetGenericTypeDefinition() == typeof(IEnumerable<>))
+                .GetGenericArguments()[0];
+
             return new {
                 type = "array",
-                items = BuildSchema(type.IsArray ? type.GetElementType()! : type.GetGenericArguments()[0])
+                items = BuildSchema(element)
             };
         }
 

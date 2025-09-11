@@ -1,5 +1,7 @@
 // Copyright © Spatial Corporation. All rights reserved.
 
+using Spatial.Blockchain;
+using Spatial.Blockchain.Helpers;
 using Spatial.Cloud.Contracts;
 using Spatial.Simulation;
  
@@ -40,36 +42,44 @@ internal class Trader : System
 
     private async void Trade()
     {
+        var start = Time.Now;
+        var next = Time.FromMilliseconds(start + _config.Systems.Banking.Trader.Interval.TotalMilliseconds).ToDateTime().ToLocalTime();
+
         INFO("Trade dependant on analysis.");
 
         try
         {
-            var data = await Analyzer.AnalyzeAsync(_config.Systems.Banking.Trader.Watchlist);
+            var recommendations = await Analyzer.AnalyzeAsync(await GetCoinsAsync());
 
-            foreach (var analysis in data)
+            INFO("Completed trade analysis with {Recommendations} recommendations.", recommendations.Count);
+
+            foreach (var trade in recommendations)
             {
-                if ((analysis.Score is > -1.0D and < 1.0D) || analysis.Size <= 0.0M)
-                {
-                    continue;
-                }
-
-                if (analysis.Score <= -1.0D)
-                {
-                    INFO("Swap {Size} {Coin} for ETH at {Price} USD.", analysis.Size, analysis.Coin.Symbol.ToUpper(), analysis.Coin.Price);
-
-                    // ...
-                }
-                else if (analysis.Score >= 1.0D)
-                {
-                    INFO("Swap {Size} ETH for {Coin} at {Price} USD.", analysis.Size, analysis.Coin.Symbol.ToUpper(), analysis.Coin.Price);
-
-                    // ...
-                }
+                // ...
             }
+
+            INFO("Trade complete, next at {Time}.", next);
         }
         catch (Exception exception)
         {
-            ERROR(exception, "Failed to trade due to an unhandled exception.");
+            ERROR(exception, "Trade failed, next at {Time}.", next);
         }
+    }
+
+    private async Task<List<CoinGecko.Coin>> GetCoinsAsync()
+    {
+        var ethereum = Ethereum.GetOrCreateClient();
+        var watchlist = _config.Systems.Banking.Trader.Watchlist;
+        var coins = await CoinGecko.GetMarketsAsync([Constants.Ethereum, .. watchlist.Keys]);
+        var funds = await ethereum.GetBalanceAsync();
+        var balances = await ethereum.GetERC20BalancesAsync([.. watchlist.Values]);
+
+        foreach (var coin in coins)
+        {
+            coin.Address = watchlist.GetValueOrDefault(coin.Id);
+            coin.Balance = coin.Address is string address ? balances[address] : funds;
+        }
+
+        return coins;
     }
 }

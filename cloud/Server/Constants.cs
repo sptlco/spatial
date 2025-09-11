@@ -28,6 +28,16 @@ internal static class Constants
     public const string Ethereum = "ethereum";
 
     /// <summary>
+    /// The wrapped Ethereum (WETH) contract address.
+    /// </summary>
+    public const string WETH = "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2";
+
+    /// <summary>
+    /// The Uniswap Router's contract address.
+    /// </summary>
+    public const string UniswapV2Router02 = "0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D";
+
+    /// <summary>
     /// Constant interval names.
     /// </summary>
     public static class Intervals

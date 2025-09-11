@@ -6,6 +6,7 @@ using Nethereum.Contracts;
 using Nethereum.Contracts.QueryHandlers.MultiCall;
 using Nethereum.Contracts.Standards.ERC20.ContractDefinition;
 using Nethereum.Hex.HexConvertors.Extensions;
+using Nethereum.Hex.HexTypes;
 using Nethereum.Web3;
 using Nethereum.Web3.Accounts;
 using Spatial.Networking.Helpers;
@@ -41,6 +42,34 @@ public class Ethereum
     public static Ethereum GetOrCreateClient()
     {
         return _instance ??= new Ethereum();
+    }
+
+    /// <summary>
+    /// Authorize a designated smart contract to spend a quantity of tokens.
+    /// </summary>
+    /// <param name="contract">The token's smart contract.</param>
+    /// <param name="spender">The address of the permitted smart contract or any Ethereum address.</param>
+    /// <param name="amount">The amount of tokens that can be spent.</param>
+    public async Task ApproveAsync(string contract, string spender, BigInteger amount)
+    {
+        await SendTransactionAsync(
+            abi: Constants.ABI.ERC20,
+            contract: contract,
+            function: Constants.Functions.Approve,
+            input: [spender, amount]);
+    }
+
+    /// <summary>
+    /// Get a token's decimal count.
+    /// </summary>
+    /// <param name="token">A token address.</param>
+    /// <returns>The token's decimal count.</returns>
+    public async Task<int> GetDecimalsAsync(string token)
+    {
+        return await CallAsync<int>(
+            abi: Constants.ABI.ERC20,
+            contract: token,
+            function: Constants.Functions.Decimals);
     }
 
     /// <summary>
@@ -154,18 +183,21 @@ public class Ethereum
     /// <param name="abi">The contract's ABI; a URL, file path, or source code.</param>
     /// <param name="contract">The contract's address.</param>
     /// <param name="function">The name of the function to send the transaction to.</param>
+    /// <param name="value">An amount of ETH to send along with the transaction.</param>
     /// <param name="input">The transaction's input parameters.</param>
     /// <returns>Receipt of the transaction.</returns>
     public async Task<string> SendTransactionAsync(
         string abi,
         string contract,
         string function,
+        BigInteger? value = null,
         params object[] input)
     {
         var target = _web3.Eth.GetContract(Download(abi), contract).GetFunction(function);
-        var gas = await target.EstimateGasAsync(input);
+        var wei = value.HasValue ? new HexBigInteger(value.Value) : null;
+        var gas = await target.EstimateGasAsync(_account.Address, null, wei, input);
 
-        return (await target.SendTransactionAndWaitForReceiptAsync(_account.Address, gas, null, null, input)).TransactionHash;
+        return (await target.SendTransactionAndWaitForReceiptAsync(_account.Address, gas, wei, null, input)).TransactionHash;
     }
 
     private string Download(string contract)
@@ -176,21 +208,5 @@ public class Ethereum
         }
 
         return File.Exists(contract) ? File.ReadAllText(contract) : contract;
-    }
-
-    /// <summary>
-    /// Aggregated function call results.
-    /// </summary>
-    public class AggregatedResults
-    {
-        /// <summary>
-        /// The block that executed the function calls.
-        /// </summary>
-        public BigInteger Block { get; set; }
-
-        /// <summary>
-        /// The results of each function call.
-        /// </summary>
-        public List<byte[]> Results { get; set; }
     }
 }

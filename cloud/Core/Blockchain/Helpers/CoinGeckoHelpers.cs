@@ -45,7 +45,7 @@ public static class CoinGecko
         /// The coin's contract address.
         /// </summary>
         [JsonPropertyName("contract_address")]
-        public string? Address { get; set; }
+        public string Address { get; set; }
 
         /// <summary>
         /// The coin's identifier.

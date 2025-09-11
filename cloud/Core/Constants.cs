@@ -158,7 +158,7 @@ internal class Constants
         /// <summary>
         /// The Uniswap V2 Router 02 ABI.
         /// </summary>
-        public const string UniswapV2Router02 = "https://unpkg.com/@uniswap/v2-periphery@1.1.0-beta.0/build/IUniswapV2Router02.json";
+        public const string UniswapV2Router02 = "https://gist.githubusercontent.com/cundiffd/c34a6778425295c8a4dafcaecf018f6b/raw/61f91032a0cf54b8216d602fdd3989b18c121437/uniswap.abi.json";
 
         /// <summary>
         /// The Multicall contract ABI.
@@ -182,6 +182,11 @@ internal class Constants
         public const string Aggregate = "aggregate";
 
         /// <summary>
+        /// Authorize the spending of an ERC20 token.
+        /// </summary>
+        public const string Approve = "approve";
+
+        /// <summary>
         /// A function gets a token's decimal count for unit conversion.
         /// </summary>
         public const string Decimals = "decimals";
@@ -197,8 +202,8 @@ internal class Constants
         public const string SwapExactTokensForETH = "swapExactTokensForETH";
 
         /// <summary>
-        /// A function that lets you swap ERC20 tokens for ERC20 tokens.
+        /// A function that lets you get expected output token amounts from a swap.
         /// </summary>
-        public const string SwapExactTokensForTokens = "swapExactTokensForTokens";
+        public const string GetAmountsOut = "getAmountsOut";
     }
 }

@@ -24,7 +24,7 @@ public class Recommendation
     /// The size of the trade.
     /// </summary>
     [JsonNumberHandling(JsonNumberHandling.AllowReadingFromString)]
-    public decimal Size { get; set; }
+    public double Size { get; set; }
 
     /// <summary>
     /// The trade's confidence score.

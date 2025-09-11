@@ -4,6 +4,7 @@ using Spatial.Blockchain;
 using Spatial.Blockchain.Helpers;
 using Spatial.Cloud.Contracts;
 using Spatial.Simulation;
+using System.Numerics;
  
 namespace Spatial.Cloud.Systems.Banking;
 
@@ -49,13 +50,48 @@ internal class Trader : System
 
         try
         {
-            var recommendations = await Analyzer.AnalyzeAsync(await GetCoinsAsync());
+            var coins = await GetCoinsAsync();
+            var ethereum = coins.First(c => c.Id == Constants.Ethereum);
+            var recommendations = await Analyzer.AnalyzeAsync(coins);
+            var threshold = _config.Systems.Banking.Trader.ConfidenceThreshold;
+            var max = _config.Systems.Banking.Trader.MaxTradesPerCycle;
 
             INFO("Completed trade analysis with {Recommendations} recommendations.", recommendations.Count);
 
-            foreach (var trade in recommendations)
+            recommendations = [.. recommendations
+                .Where(rec => rec.Confidence >= threshold)
+                .OrderByDescending(rec => rec.Confidence)
+                .Take(max)];
+
+            if (recommendations.Count <= 0)
             {
-                // ...
+                WARN("Trading requires at most {Trades} recommendations with confidence over {Threshold}.", max, threshold);
+            }
+            else
+            {
+                INFO("Executing top {Trades} trade recommendations.", recommendations.Count);
+
+                foreach (var trade in recommendations)
+                {
+                    var coin = coins.First(coin => coin.Id == trade.Coin);
+                    var decimals = await Ethereum.GetOrCreateClient().GetDecimalsAsync(coin.Address);
+                    var size = (BigInteger) ((double) (trade.Action == TradeAction.Buy ? ethereum.Balance : coin.Balance) * trade.Size);
+
+                    var transaction = await (trade.Action switch {
+                        TradeAction.Buy => Broker.BuyAsync(coin, size),
+                        TradeAction.Sell => Broker.SellAsync(coin, size),
+                    });
+
+                    decimal GetReadableSize()
+                    {
+                        return trade.Action switch {
+                            TradeAction.Sell => (decimal) size / (decimal) Math.Pow(10, decimals),
+                            TradeAction.Buy => (decimal) size / (decimal) 1e18 * ethereum.Price / coin.Price
+                        };
+                    }
+                    
+                    INFO("{Action} {Size} {Symbol} at {Price} USD: {Transaction}", trade.Action, GetReadableSize(), coin.Symbol.ToUpper(), coin.Price, transaction);
+                }
             }
 
             INFO("Trade complete, next at {Time}.", next);
@@ -76,8 +112,12 @@ internal class Trader : System
 
         foreach (var coin in coins)
         {
-            coin.Address = watchlist.GetValueOrDefault(coin.Id);
-            coin.Balance = coin.Address is string address ? balances[address] : funds;
+            if (watchlist.TryGetValue(coin.Id, out var address))
+            {
+                coin.Address = address;
+            }
+
+            coin.Balance = !string.IsNullOrEmpty(coin.Address) ? balances[coin.Address] : funds;
         }
 
         return coins;

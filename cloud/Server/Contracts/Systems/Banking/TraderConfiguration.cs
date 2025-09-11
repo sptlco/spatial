@@ -20,6 +20,17 @@ internal class TraderConfiguration
     public TimeSpan Interval { get; set; } = TimeSpan.FromHours(1);
 
     /// <summary>
+    /// The confidence required to executge a trade.
+    /// </summary>
+    public int ConfidenceThreshold { get; set; } = 60;
+
+    /// <summary>
+    /// The maximum number of trades the <see cref="Trader"/> will attempt to execute 
+    /// per trading cycle.
+    /// </summary>
+    public int MaxTradesPerCycle { get; set; } = 2;
+
+    /// <summary>
     /// A list of ERC20 tokens watched by the <see cref="Trader"/>.
     /// </summary>
     public Dictionary<string, string> Watchlist { get; set; } = [];

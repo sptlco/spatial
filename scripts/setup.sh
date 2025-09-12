@@ -143,19 +143,19 @@ install_node
 install_dotnet
 install_mongodb
 
-install_mfe() {
-    printf "\t1. Install MFE "
+install_interface() {
+    printf "\t1. Install interface packages "
     exec >/dev/null
 
-    cd platform/mfe
+    cd interface
     npm i --force --silent
 
     exec >/dev/tty
     printf "✔\n"
 }
 
-install_os() {
-    printf "\t2. Install OS "
+install_engine() {
+    printf "\t2. Restore engine packages "
     exec >/dev/null
 
     cd ../os
@@ -176,16 +176,16 @@ config_environment() {
     printf "✔\n"
 }
 
-install_system() {
+install() {
     echo ""
     echo "Installing the system..."
 
-    install_mfe
-    install_os
+    install_interface
+    install_engine
     config_environment
 }
 
-install_system
+install
 
 cd "$SCRIPT_PATH"
 cd ..

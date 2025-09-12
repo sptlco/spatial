@@ -1,0 +1,21 @@
+<Project>
+    <PropertyGroup>
+        <RootNamespace>Spatial</RootNamespace>
+        <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+    </PropertyGroup>
+    <PropertyGroup>
+        <DefaultItemExcludes>$(DefaultItemExcludes);Directory.*.props;BenchmarkDotNet.Artifacts\**\*;*.log</DefaultItemExcludes>
+    </PropertyGroup>
+    <ItemGroup>
+        <None Update="appsettings.*.json">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
+        <Content Include="*.ico">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+            <TargetPath>wwwroot\%(Filename)%(Extension)</TargetPath>
+        </Content>
+    </ItemGroup>
+    <ItemGroup>
+        <Using Include="Spatial.Telemetry.Logger" Static="true" />
+    </ItemGroup>
+</Project>

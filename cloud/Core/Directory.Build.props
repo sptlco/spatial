@@ -1,0 +1,22 @@
+<Project>
+    <PropertyGroup>
+        <ParentDirectoryBuildPropsPath>$([MSBuild]::GetPathOfFileAbove('Directory.Build.props', '$(MSBuildThisFileDirectory)..\'))</ParentDirectoryBuildPropsPath>
+    </PropertyGroup>
+
+    <ImportGroup>
+        <Import Project="$(ParentDirectoryBuildPropsPath)" />
+    </ImportGroup>
+
+    <PropertyGroup>
+        <RootDirectory>$(MSBuildThisFileDirectory)..\</RootDirectory>
+        <Platform Condition="'$(Platform)' == ''">AnyCPU</Platform>
+        <Configuration Condition="'$(Configuration)' == ''">Debug</Configuration>
+        <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+    </PropertyGroup>
+    <PropertyGroup>
+        <DefaultItemExcludes>$(DefaultItemExcludes);Directory.*.props;BenchmarkDotNet.Artifacts\**\*</DefaultItemExcludes>
+    </PropertyGroup>
+    <ItemGroup>
+        <None Include="$(RootDirectory)\icon.jpg" Visible="false" Pack="true" PackagePath="\" />
+    </ItemGroup>
+</Project>

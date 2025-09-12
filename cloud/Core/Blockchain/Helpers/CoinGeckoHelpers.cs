@@ -77,6 +77,16 @@ public static class CoinGecko
         public BigInteger Balance { get; set; }
 
         /// <summary>
+        /// The coin's decimal count.
+        /// </summary>
+        public byte Decimals { get; set; }
+
+        /// <summary>
+        /// The coin's value in dollars.
+        /// </summary>
+        public decimal Value => (decimal) Balance / (decimal) Math.Pow(10, Decimals) * Price;
+
+        /// <summary>
         /// The token's market capitalization.
         /// </summary>
         [JsonPropertyName("market_cap")]

@@ -15,6 +15,7 @@ namespace Spatial.Cloud.Systems.Banking;
 internal class Trader : System
 {
     private readonly ServerConfiguration _config;
+    private long _interval;
 
     /// <summary>
     /// Create a new <see cref="Trader"/>.
@@ -23,6 +24,7 @@ internal class Trader : System
     public Trader(ServerConfiguration config)
     {
         _config = config;
+        _interval = (long) _config.Systems.Banking.Trader.Interval.Period.TotalMilliseconds;
     }
 
     /// <summary>
@@ -37,68 +39,77 @@ internal class Trader : System
             // Since transactions and function calls may take some time, perform 
             // the trade operation asynchronously (don't block the main thread).
 
-            Interval.FireAndForget(Constants.Intervals.Trade, Trade, Time.FromMilliseconds(_config.Systems.Banking.Trader.Interval.TotalMilliseconds));
+            Interval.FireAndForget(Constants.Intervals.Trade, Trade, Interlocked.Read(ref _interval));
         }
     }
 
     private async void Trade()
     {
         var start = Time.Now;
-        var next = Time.FromMilliseconds(start + _config.Systems.Banking.Trader.Interval.TotalMilliseconds).ToDateTime().ToLocalTime();
+        var coins = await GetCoinsAsync();
+        var next = Time.FromMilliseconds((long) start + GetInterval(coins));
+
+        Interlocked.Exchange(ref _interval, (long) next);
 
         INFO("Trade dependant on analysis.");
 
         try
         {
-            var coins = await GetCoinsAsync();
-            var ethereum = coins.First(c => c.Id == Constants.Ethereum);
+            var portfolio = coins.Sum(coin => coin.Id == Constants.Ethereum ? 0 : coin.Value);
+            var ethereum = coins.First(coin => coin.Id == Constants.Ethereum);
             var recommendations = await Analyzer.AnalyzeAsync(coins);
-            var threshold = _config.Systems.Banking.Trader.ConfidenceThreshold;
-            var max = _config.Systems.Banking.Trader.MaxTradesPerCycle;
 
             INFO("Completed trade analysis with {Recommendations} recommendations.", recommendations.Count);
+            INFO("Executing {Trades} trade recommendations.", recommendations.Count);
 
-            recommendations = [.. recommendations
-                .Where(rec => rec.Confidence >= threshold)
-                .OrderByDescending(rec => rec.Confidence)
-                .Take(max)];
-
-            if (recommendations.Count <= 0)
+            foreach (var trade in recommendations)
             {
-                WARN("Trading requires at most {Trades} recommendations with confidence over {Threshold}.", max, threshold);
-            }
-            else
-            {
-                INFO("Executing top {Trades} trade recommendations.", recommendations.Count);
+                var funds = await Ethereum.GetOrCreateClient().GetBalanceAsync() - new BigInteger(_config.Systems.Banking.Trader.Reserves * 1e18M);
+                var coin = coins.First(coin => coin.Id == trade.Coin);
 
-                foreach (var trade in recommendations)
+                var size = trade.Action switch {
+                    TradeAction.Buy => (BigInteger) ((decimal) trade.Size * (decimal) funds),
+                    TradeAction.Sell => (BigInteger) ((decimal) trade.Size * (decimal) coin.Balance)
+                };
+
+                decimal GetReadableSize()
                 {
-                    var coin = coins.First(coin => coin.Id == trade.Coin);
-                    var decimals = await Ethereum.GetOrCreateClient().GetDecimalsAsync(coin.Address);
-                    var size = (BigInteger) ((double) (trade.Action == TradeAction.Buy ? ethereum.Balance : coin.Balance) * trade.Size);
+                    return trade.Action switch {
+                        TradeAction.Buy => (decimal) size / (decimal) 1e18 * ethereum.Price / coin.Price,
+                        TradeAction.Sell => (decimal) size / (decimal) Math.Pow(10, coin.Decimals)
+                    };
+                }
 
+                if (GetReadableSize() <= _config.Systems.Banking.Trader.MinimumTrade)
+                {
+                    INFO("Insufficient trade size: {Size} {Symbol}.", GetReadableSize(), trade.Action == TradeAction.Buy ? "ETH": coin.Symbol.ToUpper());
+                    continue;
+                }
+
+                try
+                {
                     var transaction = await (trade.Action switch {
                         TradeAction.Buy => Broker.BuyAsync(coin, size),
-                        TradeAction.Sell => Broker.SellAsync(coin, size),
+                        TradeAction.Sell => Broker.SellAsync(coin, size)
                     });
 
-                    decimal GetReadableSize()
-                    {
-                        return trade.Action switch {
-                            TradeAction.Sell => (decimal) size / (decimal) Math.Pow(10, decimals),
-                            TradeAction.Buy => (decimal) size / (decimal) 1e18 * ethereum.Price / coin.Price
-                        };
-                    }
-                    
                     INFO("{Action} {Size} {Symbol} at {Price} USD: {Transaction}", trade.Action, GetReadableSize(), coin.Symbol.ToUpper(), coin.Price, transaction);
                 }
-            }
+                catch (Exception exception)
+                {
+                    WARN(exception, "Transaction failed: {Action} {Size} {Symbol} at {Price} USD.", trade.Action, GetReadableSize(), coin.Symbol.ToUpper(), coin.Price);
+                }
+            } 
 
-            INFO("Trade complete, next at {Time}.", next);
+            INFO("Trade complete, next at {Time}.", next.ToDateTime());
         }
         catch (Exception exception)
         {
-            ERROR(exception, "Trade failed, next at {Time}.", next);
+            ERROR(exception, "Trade failed, next at {Time}.", next.ToDateTime());
+        }
+        finally
+        {
+            
         }
     }
 
@@ -108,7 +119,7 @@ internal class Trader : System
         var watchlist = _config.Systems.Banking.Trader.Watchlist;
         var coins = await CoinGecko.GetMarketsAsync([Constants.Ethereum, .. watchlist.Keys]);
         var funds = await ethereum.GetBalanceAsync();
-        var balances = await ethereum.GetERC20BalancesAsync([.. watchlist.Values]);
+        var details = await ethereum.GetERC20DetailsAsync([.. watchlist.Values]);
 
         foreach (var coin in coins)
         {
@@ -117,9 +128,35 @@ internal class Trader : System
                 coin.Address = address;
             }
 
-            coin.Balance = !string.IsNullOrEmpty(coin.Address) ? balances[coin.Address] : funds;
+            if (!string.IsNullOrEmpty(coin.Address) && details.TryGetValue(coin.Address, out var deets))
+            {
+                coin.Balance = deets.Balance;
+                coin.Decimals = deets.Decimals;
+            }
+            else
+            {
+                coin.Balance = funds;
+                coin.Decimals = 18;
+            }
         }
 
         return coins;
+    }
+
+    private long GetInterval(List<CoinGecko.Coin> coins)
+    {
+        return _config.Systems.Banking.Trader.Interval.Mode switch {
+            Contracts.Systems.Banking.TraderConfiguration.IntervalMode.Fixed => (long) _config.Systems.Banking.Trader.Interval.Period.TotalMilliseconds,
+            Contracts.Systems.Banking.TraderConfiguration.IntervalMode.Adaptive => ComputeAdaptiveInterval(coins)
+        };
+    }
+
+    private long ComputeAdaptiveInterval(List<CoinGecko.Coin> coins)
+    {
+        var volatility = coins.Max(coin => (coin.High24H - coin.Low24H) / coin.Price);
+        var period = _config.Systems.Banking.Trader.Interval.Period.TotalHours;
+        var sensitivity = _config.Systems.Banking.Trader.Interval.Sensitivity;
+
+        return (long) TimeSpan.FromHours(Math.Max(Constants.MinTradeIntervalHours, Math.Min(period, period / (1 + sensitivity * (double) volatility)))).TotalMilliseconds;
     }
 }

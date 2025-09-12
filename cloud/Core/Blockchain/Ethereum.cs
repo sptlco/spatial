@@ -60,16 +60,32 @@ public class Ethereum
     }
 
     /// <summary>
-    /// Get a token's decimal count.
+    /// Get ERC20 coin details.
     /// </summary>
-    /// <param name="token">A token address.</param>
-    /// <returns>The token's decimal count.</returns>
-    public async Task<int> GetDecimalsAsync(string token)
+    /// <param name="coins">A list of ERC20 coins.</param>
+    /// <returns>The coins' details.</returns>
+    public async Task<Dictionary<string, (BigInteger Balance, byte Decimals)>> GetERC20DetailsAsync(params string[] coins)
     {
-        return await CallAsync<int>(
-            abi: Constants.ABI.ERC20,
-            contract: token,
-            function: Constants.Functions.Decimals);
+        var results = await MulticallAsync(coins.SelectMany<string, Call>(coin => [
+            new Call { Target = coin, CallData = new BalanceOfFunction { Owner = _account.Address }.GetCallData() },
+            new Call { Target = coin, CallData = new DecimalsFunction().GetCallData() }
+        ]));
+
+        var decoder = new FunctionCallDecoder();
+        var details = new Dictionary<string, (BigInteger Balance, byte Decimals)>();
+        var balance = new Parameter("uint256");
+        var decimals = new Parameter("uint8");
+
+        for (var i = 0; i < coins.Length; i++)
+        {
+            var index = i * 2;
+
+            details[coins[i]] = (
+                Balance: decoder.DecodeSimpleTypeOutput<BigInteger>(balance, results[index].ToHex(true)),
+                Decimals: decoder.DecodeSimpleTypeOutput<byte>(decimals, results[index + 1].ToHex(true)));
+        }
+
+        return details;
     }
 
     /// <summary>
@@ -89,56 +105,6 @@ public class Ethereum
     public async Task<BigInteger> GetBalanceAsync(string address)
     {
         return await _web3.Eth.GetBalance.SendRequestAsync(address);
-    }
-
-    /// <summary>
-    /// Get aggregated coin balances.
-    /// </summary>
-    /// <param name="coins">A list of ERC20 coins.</param>
-    /// <returns>The coins' balances.</returns>
-    public async Task<Dictionary<string, BigInteger>> GetERC20BalancesAsync(params string[] coins)
-    {
-        var calls = coins.Select(coin => new Call {
-            Target = coin,
-            CallData = new BalanceOfFunction { Owner = _account.Address }.GetCallData()
-        });
-
-        var results = await MulticallAsync(calls);
-        var balances = new Dictionary<string, BigInteger>();
-        var decoder = new FunctionCallDecoder();
-        var parameter = new Parameter("uint256");
-
-        for (var i = 0; i < coins.Length; i++)
-        {
-            balances[coins[i]] = decoder.DecodeSimpleTypeOutput<BigInteger>(parameter, results[i].ToHex(true));
-        }
-
-        return balances;
-    }
-
-    /// <summary>
-    /// Get a token balance.
-    /// </summary>
-    /// <param name="token">An ERC20 token address.</param>
-    /// <returns>The wallet's <paramref name="token"/> balance.</returns>
-    public async Task<BigInteger> GetERC20BalanceAsync(string token)
-    {
-        return await GetERC20BalanceAsync(token, _account.Address);
-    }
-
-    /// <summary>
-    /// Get a token balance.
-    /// </summary>
-    /// <param name="token">An ERC20 token address.</param>
-    /// <param name="address">A wallet address.</param>
-    /// <returns>The wallet's <paramref name="token"/> balance.</returns>
-    public async Task<BigInteger> GetERC20BalanceAsync(string token, string address)
-    {
-        return await CallAsync<BigInteger>(
-            abi: Constants.ABI.ERC20,
-            contract: token,
-            function: Constants.Functions.BalanceOf,
-            input: [address]);
     }
 
     /// <summary>

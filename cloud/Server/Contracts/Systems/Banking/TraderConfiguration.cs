@@ -1,5 +1,6 @@
 // Copyright © Spatial Corporation. All rights reserved.
 
+using Microsoft.Extensions.Options;
 using Spatial.Cloud.Systems.Banking;
 
 namespace Spatial.Cloud.Contracts.Systems.Banking;
@@ -17,21 +18,58 @@ internal class TraderConfiguration
     /// <summary>
     /// The interval at which the <see cref="Trader"/> trades.
     /// </summary>
-    public TimeSpan Interval { get; set; } = TimeSpan.FromHours(1);
+    [ValidateObjectMembers]
+    public IntervalConfiguration Interval { get; set; } = new IntervalConfiguration();
 
     /// <summary>
-    /// The confidence required to executge a trade.
+    /// An amount of ETH to reserve for liquidity and gas fees.
     /// </summary>
-    public int ConfidenceThreshold { get; set; } = 60;
+    public decimal Reserves { get; set; } = 0.0M;
 
     /// <summary>
-    /// The maximum number of trades the <see cref="Trader"/> will attempt to execute 
-    /// per trading cycle.
+    /// The minimum amount of ETH or coins the <see cref="Trader"/> will attempt to trade.
     /// </summary>
-    public int MaxTradesPerCycle { get; set; } = 2;
+    public decimal MinimumTrade { get; set; } = 0.00001M;
 
     /// <summary>
     /// A list of ERC20 tokens watched by the <see cref="Trader"/>.
     /// </summary>
     public Dictionary<string, string> Watchlist { get; set; } = [];
+
+    /// <summary>
+    /// Configurable options for the trader's trade interval.
+    /// </summary>
+    public class IntervalConfiguration
+    {
+        /// <summary>
+        /// The interval's mode.
+        /// </summary>
+        public IntervalMode Mode { get; set; } = IntervalMode.Adaptive;
+
+        /// <summary>
+        /// The interval at which the trader trades.
+        /// </summary>
+        public TimeSpan Period { get; set; } = TimeSpan.FromHours(6);
+
+        /// <summary>
+        /// The interval's sensitivity to the market volatility.
+        /// </summary>
+        public double Sensitivity { get; set; } = 20.0D;
+    }
+
+    /// <summary>
+    /// Determines the rate at which the <see cref="Trader"/> trades.
+    /// </summary>
+    public enum IntervalMode
+    {
+        /// <summary>
+        /// The <see cref="Trader"/> executes trades on a fixed interval.
+        /// </summary>
+        Fixed,
+
+        /// <summary>
+        /// The <see cref="Trader"/> adapts its trade interval according to the market's volatility.
+        /// </summary>
+        Adaptive
+    }
 }

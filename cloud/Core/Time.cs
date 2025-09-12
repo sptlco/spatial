@@ -77,6 +77,13 @@ public readonly struct Time
     public static Time FromMinutes(double minutes) => FromSeconds(minutes * 60D);
 
     /// <summary>
+    /// Create a new <see cref="Time"/> from a number of hours.
+    /// </summary>
+    /// <param name="hours">A number of hours.</param>
+    /// <returns>A <see cref="Time"/>.</returns>
+    public static Time FromHours(double hours) => FromMinutes(hours * 60);
+
+    /// <summary>
     /// Create a new <see cref="Time"/> from a <see cref="DateTime"/>.
     /// </summary>
     /// <param name="time">A <see cref="DateTime"/>.</param>

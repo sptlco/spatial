@@ -38,6 +38,16 @@ internal static class Constants
     public const string UniswapV2Router02 = "0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D";
 
     /// <summary>
+    /// The coin volume at which the coin is considered liquid.
+    /// </summary>
+    public const decimal vL = 1000000;
+
+    /// <summary>
+    /// The minimum number of hours between trades executed by the <see cref="Systems.Banking.Trader"/>.
+    /// </summary>
+    public const double MinTradeIntervalHours = 0.5;
+
+    /// <summary>
     /// Constant interval names.
     /// </summary>
     public static class Intervals

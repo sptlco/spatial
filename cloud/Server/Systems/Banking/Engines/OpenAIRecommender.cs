@@ -20,31 +20,21 @@ internal class OpenAIRecommender : IRecommender
         var response = await OpenAI.GenerateAsync<Response>(
             instructions: @"
                 You are a financial assistant.
-                Return ONLY a JSON array (no objects, no metadata, no explanations).
-                Each array element must be a recommendation object with exactly these fields:
+                Return ONLY a JSON array of recommendations.
+                Each element must have:
 
                 - Coin (string): The coin's identifier.
-                - Action (string): (""buy"" or ""sell"") (use lowercase, must exactly match).
-                - Size (number): Trade size as a fraction of:
-                    • If buying: ETH_BALANCE.
-                    • If selling: The coin's balance.
-                - Confidence (number): Confidence score from 0–100.
+                - Action (string): (""Buy"" or ""Sell"").
+                - Size (number): Fraction of ETH balance (buy) or coin balance (sell).
 
-                IMPORTANT:
-                - Balances are in WEI.
-                - Don't generate a recommendation for native Ethereum.
-                - Do not include any extra keys like Capacity, Item, or metadata.
-                - The output must be valid JSON that matches List<Recommendation>.
-                - Example output:
-                [
-                    { ""Coin"": ""ethereum"", ""Action"": ""hold"", ""Size"": 0, ""Confidence"": 70 },
-                    { ""Coin"": ""chainlink"", ""Action"": ""buy"", ""Size"": 0.15, ""Confidence"": 65 }
-                ]
+                Example output: {
+                    ""Recommendations"": [
+                        { ""Coin"": ""chainlink"", ""Action"": ""Buy"", ""Size"": 0.15 },
+                        { ""Coin"": ""tether"", ""Action"": ""Sell"", ""Size"": 0.35 }
+                    ]
+                }
             ",
-            input: new {
-                Coins = coins,
-                ETH_BALANCE = coins.First(coin => coin.Id == Constants.Ethereum).Balance
-            });
+            input: new { Coins = coins });
             
         return response.Recommendations;
     }

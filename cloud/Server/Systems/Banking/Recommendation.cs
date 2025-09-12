@@ -21,16 +21,10 @@ public class Recommendation
     public TradeAction Action { get; set; }
 
     /// <summary>
-    /// The size of the trade.
+    /// The size of the trade as a fraction, also encoding the strength/confidence of the trade.
     /// </summary>
     [JsonNumberHandling(JsonNumberHandling.AllowReadingFromString)]
     public double Size { get; set; }
-
-    /// <summary>
-    /// The trade's confidence score.
-    /// </summary>
-    [JsonNumberHandling(JsonNumberHandling.AllowReadingFromString)]
-    public double Confidence { get; set; }
 }
 
 /// <summary>

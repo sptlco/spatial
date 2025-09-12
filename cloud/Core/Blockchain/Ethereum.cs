@@ -19,8 +19,6 @@ namespace Spatial.Blockchain;
 /// </summary>
 public class Ethereum
 {
-    private static Ethereum? _instance;
-
     private readonly Account _account;
     private readonly Web3 _web3;
 
@@ -36,12 +34,12 @@ public class Ethereum
     public Account Account => _account;
 
     /// <summary>
-    /// Create a new <see cref="Ethereum"/> client, or get an existing one.
+    /// Create a new <see cref="Ethereum"/> client.
     /// </summary>
     /// <returns>An <see cref="Ethereum"/> client.</returns>
-    public static Ethereum GetOrCreateClient()
+    public static Ethereum CreateClient()
     {
-        return _instance ??= new Ethereum();
+        return new Ethereum();
     }
 
     /// <summary>

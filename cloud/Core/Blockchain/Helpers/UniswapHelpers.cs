@@ -25,7 +25,7 @@ public static class Uniswap
         string to,
         uint deadline)
     {
-        return await Ethereum.GetOrCreateClient().SendTransactionAsync(
+        return await Ethereum.CreateClient().SendTransactionAsync(
             abi: Constants.ABI.UniswapV2Router02,
             contract: Constants.Contracts.UniswapV2Router02,
             function: Constants.Functions.SwapExactETHForTokens,
@@ -49,7 +49,7 @@ public static class Uniswap
         string to,
         uint deadline)
     {
-        return await Ethereum.GetOrCreateClient().SendTransactionAsync(
+        return await Ethereum.CreateClient().SendTransactionAsync(
             abi: Constants.ABI.UniswapV2Router02,
             contract: Constants.Contracts.UniswapV2Router02,
             function: Constants.Functions.SwapExactTokensForETH,
@@ -65,7 +65,7 @@ public static class Uniswap
     /// <returns>All output token amounts.</returns>
     public static async Task<List<BigInteger>> GetAmountsOutAsync(BigInteger amountIn, string[] path)
     {
-        return await Ethereum.GetOrCreateClient().CallAsync<List<BigInteger>>(
+        return await Ethereum.CreateClient().CallAsync<List<BigInteger>>(
             abi: Constants.ABI.UniswapV2Router02,
             contract: Constants.Contracts.UniswapV2Router02,
             function: Constants.Functions.GetAmountsOut,

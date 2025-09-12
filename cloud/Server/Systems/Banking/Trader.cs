@@ -57,6 +57,7 @@ internal class Trader : System
         {
             var portfolio = coins.Sum(coin => coin.Id == Constants.Ethereum ? 0 : coin.Value);
             var ethereum = coins.First(coin => coin.Id == Constants.Ethereum);
+            var funds = ethereum.Balance - new BigInteger(_config.Systems.Banking.Trader.Reserves * 1e18M);
             var recommendations = await Analyzer.AnalyzeAsync(coins);
 
             INFO("Completed trade analysis with {Recommendations} recommendations.", recommendations.Count);
@@ -64,9 +65,7 @@ internal class Trader : System
 
             foreach (var trade in recommendations)
             {
-                var funds = await Ethereum.GetOrCreateClient().GetBalanceAsync() - new BigInteger(_config.Systems.Banking.Trader.Reserves * 1e18M);
                 var coin = coins.First(coin => coin.Id == trade.Coin);
-
                 var size = trade.Action switch {
                     TradeAction.Buy => (BigInteger) ((decimal) trade.Size * (decimal) funds),
                     TradeAction.Sell => (BigInteger) ((decimal) trade.Size * (decimal) coin.Balance)
@@ -107,15 +106,11 @@ internal class Trader : System
         {
             ERROR(exception, "Trade failed, next at {Time}.", next.ToDateTime());
         }
-        finally
-        {
-            
-        }
     }
 
     private async Task<List<CoinGecko.Coin>> GetCoinsAsync()
     {
-        var ethereum = Ethereum.GetOrCreateClient();
+        var ethereum = Ethereum.CreateClient();
         var watchlist = _config.Systems.Banking.Trader.Watchlist;
         var coins = await CoinGecko.GetMarketsAsync([Constants.Ethereum, .. watchlist.Keys]);
         var funds = await ethereum.GetBalanceAsync();

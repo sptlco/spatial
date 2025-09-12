@@ -19,7 +19,7 @@ public static class Broker
     /// <returns>The hash of the transaction.</returns>
     public static async Task<string> BuyAsync(CoinGecko.Coin coin, BigInteger size)
     {
-        var ethereum = Ethereum.GetOrCreateClient();
+        var ethereum = Ethereum.CreateClient();
         var path = new string[] { Constants.WETH, coin.Address };
 
         return await Uniswap.SwapExactETHForTokensAsync(
@@ -38,7 +38,7 @@ public static class Broker
     /// <returns>The hash of the transaction.</returns>
     public static async Task<string> SellAsync(CoinGecko.Coin coin, BigInteger size)
     {
-        var ethereum = Ethereum.GetOrCreateClient();
+        var ethereum = Ethereum.CreateClient();
         var path = new string[] { coin.Address, Constants.WETH };
 
         await ethereum.ApproveAsync(coin.Address, Constants.UniswapV2Router02, size);

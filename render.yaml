@@ -1,0 +1,9 @@
+services:
+  - type: web
+    name: spatial-cloud
+    runtime: dotnet
+    rootDir: cloud/Server
+    region: oregon
+    plan: starter
+    buildCommand: dotnet publish -c Release -o dist
+    startCommand: dotnet dist/Spatial.Cloud.dll

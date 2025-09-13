@@ -1,0 +1,9 @@
+{
+  "include-v-in-tag": false
+  "packages": {
+    "cloud": {
+      "package-name": "Spatial Cloud",
+      "release-type": "simple"
+    }
+  }
+}

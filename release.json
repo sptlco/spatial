@@ -10,6 +10,16 @@
       "package-name": "spatial-cloud",
       "changelog-path": "cloud/CHANGES.md",
       "release-type": "simple"
+    },
+    "api": {
+      "package-name": "spatial-api",
+      "changelog-path": "api/CHANGES.md",
+      "release-type": "simple"
+    },
+    "interface/web": {
+      "package-name": "spatial-interface-web",
+      "changelog-path": "interface/web/CHANGES.md",
+      "release-type": "simple"
     }
   }
 }

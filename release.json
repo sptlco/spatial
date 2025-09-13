@@ -16,6 +16,11 @@
       "changelog-path": "api/CHANGES.md",
       "release-type": "simple"
     },
+    "design": {
+      "package-name": "spatial-design",
+      "changelog-path": "design/CHANGES.md",
+      "release-type": "simple"
+    },
     "interface/web": {
       "package-name": "spatial-interface-web",
       "changelog-path": "interface/web/CHANGES.md",

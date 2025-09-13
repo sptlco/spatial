@@ -25,7 +25,7 @@ export type ComboboxProps = FieldProps & {
    * An optional change event handler.
    * @param value The combobox's value.
    */
-  onChange?: (value: string) => void;
+  onChange?: (value: string | null) => void;
 
   /**
    * A list of options.

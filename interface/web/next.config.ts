@@ -10,13 +10,7 @@ const config: NextConfig = {
     ignoreDuringBuilds: true,
   },
   async redirects() {
-    return [
-      {
-        source: "/",
-        destination: "/conference",
-        permanent: true,
-      },
-    ];
+    return [];
   },
 };
 

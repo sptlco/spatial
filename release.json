@@ -1,8 +1,14 @@
 {
   "include-v-in-tag": false,
   "packages": {
+    ".": {
+      "package-name": "spatial",
+      "changelog-path": "CHANGES.md",
+      "release-type": "simple"
+    },
     "cloud": {
-      "package-name": "Spatial Cloud",
+      "package-name": "spatial-cloud",
+      "changelog-path": "cloud/CHANGES.md",
       "release-type": "simple"
     }
   }

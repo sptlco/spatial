@@ -47,9 +47,10 @@ internal class Trader : System
     {
         var start = Time.Now;
         var coins = await GetCoinsAsync();
-        var next = Time.FromMilliseconds((long) start + GetInterval(coins));
+        var interval = GetInterval(coins);
+        var next = Time.FromMilliseconds((long) start + interval);
 
-        Interlocked.Exchange(ref _interval, (long) next);
+        Interlocked.Exchange(ref _interval, ref interval);
 
         INFO("Trade dependant on analysis.");
 

@@ -1,0 +1,61 @@
+name: Deploy
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up .NET Core
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '9.x'
+
+      - name: Build
+        run: dotnet build cloud/Server --configuration Release
+
+      - name: Publish
+        run: dotnet publish cloud/Server -c Release -o ${{env.DOTNET_ROOT}}/app
+
+      - name: Upload
+        uses: actions/upload-artifact@v4
+        with:
+          name: .net-app
+          path: ${{env.DOTNET_ROOT}}/app
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build
+    permissions:
+      id-token: write
+      contents: read
+
+    steps:
+      - name: Download
+        uses: actions/download-artifact@v4
+        with:
+          name: .net-app
+
+      - name: Login to Azure
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_94994E34F5F14961A6FBFBE7A28A163A }}
+          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_51F2DB4BC4BB454396E0272D36131F9C }}
+          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_A76905DDBD8545AA829BD652DBAF032A }}
+
+      - name: Deploy
+        id: deploy-to-webapp
+        uses: azure/webapps-deploy@v3
+        with:
+          app-name: 'spatial'
+          slot-name: 'Production'
+          package: .

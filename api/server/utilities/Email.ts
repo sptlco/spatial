@@ -2,7 +2,7 @@
 
 import { ReactElement } from "react";
 import { createTransport } from "nodemailer";
-import { render } from "@react-email/components";
+import { render } from "@react-email/render";
 
 import Mail from "nodemailer/lib/mailer";
 import SMTPTransport from "nodemailer/lib/smtp-transport";
@@ -26,7 +26,7 @@ export const email = async (options: EmailOptions) => {
     from: `Spatial <${process.env.MAIL_USER}>`,
     to: options.to,
     subject: options.subject,
-    html: render(options.body),
+    html: await render(options.body),
   };
 
   try {

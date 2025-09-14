@@ -2,8 +2,22 @@ name: Drop
 
 on:
   push:
-    branches:
-      - main
+    branches: [main]
+    paths:
+      - 'api/**'
+      - 'cloud/**'
+      - 'design/**'
+      - 'documentation/**'
+      - 'examples/**'
+      - 'interface/**'
+      - 'scripts/**'
+      - package.json
+      - .eslintrc
+      - .gitignore
+      - .prettierrc
+      - LICENSE
+      - package.json
+      - tsconfig.json
 
 concurrency:
   group: release
@@ -23,6 +37,3 @@ jobs:
         with:
           config-file: release.json
           manifest-file: manifest.json
-
-
-

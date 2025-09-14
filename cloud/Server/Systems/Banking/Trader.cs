@@ -108,12 +108,12 @@ internal class Trader : System
                     }
                 } 
 
-                INFO("Trade complete, next at {Time}.", next.ToDateTime());
+                INFO("Trade complete, next at {Time} ms.", next.Milliseconds);
             }
         }
         catch (Exception exception)
         {
-            ERROR(exception, "Trade failed, next at {Time}.", next.ToDateTime());
+            ERROR(exception, "Trade failed, next at {Time} ms.", next.Milliseconds);
         }
     }
 

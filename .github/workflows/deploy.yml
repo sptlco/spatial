@@ -55,4 +55,5 @@ jobs:
           host: ${{ secrets.AZURE_HOST }}
           username: ${{ secrets.AZURE_USER }}
           key: ${{ secrets.AZURE_KEY }}
-          script: powershell -File "C:\Spatial\cloud\patch.ps1"
+          script: powershell -File "C:\Spatial\scripts\patch.ps1"
+

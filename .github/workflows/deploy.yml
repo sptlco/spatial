@@ -12,7 +12,6 @@ on:
       - 'examples/**'
       - 'interface/**'
       - 'scripts/**'
-      - package.json
       - .eslintrc
       - .gitignore
       - .prettierrc
@@ -75,3 +74,4 @@ jobs:
           username: ${{ secrets.AZURE_USER }}
           key: ${{ secrets.AZURE_KEY }}
           script: powershell -File "C:\Spatial\scripts\patch.ps1"
+

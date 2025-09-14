@@ -46,7 +46,7 @@ jobs:
           username: ${{ secrets.AZURE_USER }}
           key: ${{ secrets.AZURE_KEY }}
           source: "patch/*"
-          target: /C:/System/patch
+          target: ".spatial/patch"
           tar_dereference: true
           rm: true
   
@@ -58,17 +58,20 @@ jobs:
           key: ${{ secrets.AZURE_KEY }}
           script: |
             powershell -Command "
-            $target = 'C:\System\build';
-            $new = 'C:\System\patch';
-            $old = 'C:\System\backup';
+            $root = ".spatial";
+
+            $patch = '$target\patch';
+            $build = '$target\build';
+            $backup = '$target\backup';
       
             net stop spatial
       
-            if (Test-Path $old) { Remove-Item -Recurse -Force $old }
-            if (Test-Path $target) { Rename-Item $target $old }
+            if (Test-Path $backup) { Remove-Item -Recurse -Force $backup }
+            if (Test-Path $build) { Rename-Item $build $backup }
       
-            Rename-Item $new $target
+            Rename-Item $patch $build
       
             net start spatial
             "
+
 

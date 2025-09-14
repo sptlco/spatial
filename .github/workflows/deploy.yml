@@ -1,1 +1,70 @@
+name: Deploy
 
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '9.x'
+
+      - name: Publish
+        run: |
+          dotnet publish cloud/Server `
+            -c Release `
+            -o ./build `
+            --self-contained false
+
+      - name: Upload
+        uses: actions/upload-artifact@v4
+        with:
+          name: spatial-cloud
+          path: ./build
+
+  deploy:
+    runs-on: windows-latest
+    needs: build
+    steps:
+      - name: Download
+        uses: actions/download-artifact@v4
+        with:
+          name: spatial-cloud
+
+      - name: Upload
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.AZURE_HOST }}
+          username: ${{ secrets.AZURE_USER }}
+          key: ${{ secrets.AZURE_KEY }}
+          source: "./*"
+          target: "C:/System/patch"
+
+      - name: Patch
+        uses: appleboy/ssh-action@v1.2.0
+        with:
+          host: ${{ secrets.AZURE_HOST }}
+          username: ${{ secrets.AZURE_USER }}
+          key: ${{ secrets.AZURE_KEY }}
+          script: |
+            powershell -Command "
+            $publishPath = 'C:\System\build';
+            $newPath = 'C:\System\patch';
+            $oldPath = 'C:\System\backup';
+
+            net stop spatial
+
+            if (Test-Path $oldPath) { Remove-Item -Recurse -Force $oldPath }
+            if (Test-Path $publishPath) { Rename-Item $publishPath $oldPath }
+
+            Rename-Item $newPath $publishPath
+
+            net start spatial
+            "

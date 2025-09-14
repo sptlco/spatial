@@ -59,49 +59,57 @@ internal class Trader : System
             var portfolio = coins.Sum(coin => coin.Id == Constants.Ethereum ? 0 : coin.Value);
             var ethereum = coins.First(coin => coin.Id == Constants.Ethereum);
             var funds = ethereum.Balance - new BigInteger(_config.Systems.Banking.Trader.Reserves * 1e18M);
-            var recommendations = await Analyzer.AnalyzeAsync(coins);
 
-            INFO("Completed trade analysis with {Recommendations} recommendations.", recommendations.Count);
-            INFO("Executing {Trades} trade recommendations.", recommendations.Count);
-
-            foreach (var trade in recommendations)
+            if (funds <= 0)
             {
-                var coin = coins.First(coin => coin.Id == trade.Coin);
-                var size = trade.Action switch {
-                    TradeAction.Buy => (BigInteger) ((decimal) trade.Size * (decimal) funds),
-                    TradeAction.Sell => (BigInteger) ((decimal) trade.Size * (decimal) coin.Balance)
-                };
+                INFO("Aborting trade analysis due to low reserves, balance: {Balance}, reserves: {Reserves}.", (decimal) funds / 1e18M, _config.Systems.Banking.Trader.Reserves);
+            }
+            else
+            {
+                var recommendations = await Analyzer.AnalyzeAsync(coins);
 
-                decimal GetReadableSize()
+                INFO("Completed trade analysis with {Recommendations} recommendations.", recommendations.Count);
+                INFO("Executing {Trades} trade recommendations.", recommendations.Count);
+
+                foreach (var trade in recommendations)
                 {
-                    return trade.Action switch {
-                        TradeAction.Buy => (decimal) size / (decimal) 1e18 * ethereum.Price / coin.Price,
-                        TradeAction.Sell => (decimal) size / (decimal) Math.Pow(10, coin.Decimals)
+                    var coin = coins.First(coin => coin.Id == trade.Coin);
+                    var size = trade.Action switch {
+                        TradeAction.Buy => (BigInteger) ((decimal) trade.Size * (decimal) funds),
+                        TradeAction.Sell => (BigInteger) ((decimal) trade.Size * (decimal) coin.Balance)
                     };
-                }
 
-                if (GetReadableSize() <= _config.Systems.Banking.Trader.MinimumTrade)
-                {
-                    INFO("Insufficient trade size: {Size} {Symbol}.", GetReadableSize(), trade.Action == TradeAction.Buy ? "ETH": coin.Symbol.ToUpper());
-                    continue;
-                }
+                    decimal GetReadableSize()
+                    {
+                        return trade.Action switch {
+                            TradeAction.Buy => (decimal) size / (decimal) 1e18 * ethereum.Price / coin.Price,
+                            TradeAction.Sell => (decimal) size / (decimal) Math.Pow(10, coin.Decimals)
+                        };
+                    }
 
-                try
-                {
-                    var transaction = await (trade.Action switch {
-                        TradeAction.Buy => Broker.BuyAsync(coin, size),
-                        TradeAction.Sell => Broker.SellAsync(coin, size)
-                    });
+                    if (GetReadableSize() <= _config.Systems.Banking.Trader.MinimumTrade)
+                    {
+                        INFO("Insufficient trade size: {Size} {Symbol}.", GetReadableSize(), trade.Action == TradeAction.Buy ? "ETH": coin.Symbol.ToUpper());
+                        continue;
+                    }
 
-                    INFO("{Action} {Size} {Symbol} at {Price} USD: {Transaction}", trade.Action, GetReadableSize(), coin.Symbol.ToUpper(), coin.Price, transaction);
-                }
-                catch (Exception exception)
-                {
-                    WARN(exception, "Transaction failed: {Action} {Size} {Symbol} at {Price} USD.", trade.Action, GetReadableSize(), coin.Symbol.ToUpper(), coin.Price);
-                }
-            } 
+                    try
+                    {
+                        var transaction = await (trade.Action switch {
+                            TradeAction.Buy => Broker.BuyAsync(coin, size),
+                            TradeAction.Sell => Broker.SellAsync(coin, size)
+                        });
 
-            INFO("Trade complete, next at {Time}.", next.ToDateTime());
+                        INFO("{Action} {Size} {Symbol} at {Price} USD: {Transaction}", trade.Action, GetReadableSize(), coin.Symbol.ToUpper(), coin.Price, transaction);
+                    }
+                    catch (Exception exception)
+                    {
+                        WARN(exception, "Transaction failed: {Action} {Size} {Symbol} at {Price} USD.", trade.Action, GetReadableSize(), coin.Symbol.ToUpper(), coin.Price);
+                    }
+                } 
+
+                INFO("Trade complete, next at {Time}.", next.ToDateTime());
+            }
         }
         catch (Exception exception)
         {

@@ -29,6 +29,10 @@ jobs:
           name: spatial-cloud
           path: ./build
 
+      - name: List build
+        run: ls -la ./build
+
+
   deploy:
     runs-on: ubuntu-latest
     needs: build
@@ -47,7 +51,7 @@ jobs:
           key: ${{ secrets.AZURE_KEY }}
           script: |
             mkdir "C:\System\patch" -Force
-            scp -r ./patch/* sysadmin@${{ secrets.AZURE_HOST }}:"C:/System/patch"
+            scp -r patch/* sysadmin@${{ secrets.AZURE_HOST }}:"C:/System/patch"
   
       - name: Patch
         uses: appleboy/ssh-action@v1.2.2
@@ -71,3 +75,4 @@ jobs:
   
             net start spatial
             "
+

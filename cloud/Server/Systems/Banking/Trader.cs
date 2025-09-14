@@ -50,7 +50,7 @@ internal class Trader : System
         var interval = GetInterval(coins);
         var next = Time.FromMilliseconds((long) start + interval);
 
-        Interlocked.Exchange(ref _interval, ref interval);
+        Interlocked.Exchange(ref _interval, interval);
 
         INFO("Trade dependant on analysis.");
 

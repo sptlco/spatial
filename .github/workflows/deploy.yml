@@ -30,7 +30,7 @@ jobs:
           path: ./build
 
       - name: List build
-        run: ls -la ./build
+        run: dir ./build
 
 
   deploy:
@@ -75,4 +75,5 @@ jobs:
   
             net start spatial
             "
+
 

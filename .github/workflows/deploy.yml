@@ -37,7 +37,7 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: spatial-cloud
-
+  
       - name: Upload
         uses: appleboy/scp-action@v0.1.7
         with:
@@ -45,8 +45,8 @@ jobs:
           username: ${{ secrets.AZURE_USER }}
           key: ${{ secrets.AZURE_KEY }}
           source: "./*"
-          target: "C:/System/patch"
-
+          target: "/c/System/patch"
+  
       - name: Patch
         uses: appleboy/ssh-action@v1.2.0
         with:
@@ -58,15 +58,13 @@ jobs:
             $publishPath = 'C:\System\build';
             $newPath = 'C:\System\patch';
             $oldPath = 'C:\System\backup';
-
+  
             net stop spatial
-
+  
             if (Test-Path $oldPath) { Remove-Item -Recurse -Force $oldPath }
             if (Test-Path $publishPath) { Rename-Item $publishPath $oldPath }
-
+  
             Rename-Item $newPath $publishPath
-
+  
             net start spatial
             "
-
-

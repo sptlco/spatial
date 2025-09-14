@@ -40,23 +40,15 @@ jobs:
           path: patch
   
       - name: Upload
-        uses: appleboy/ssh-action@v1.2.2
+        uses: appleboy/scp-action@v1
         with:
           host: ${{ secrets.AZURE_HOST }}
           username: ${{ secrets.AZURE_USER }}
           key: ${{ secrets.AZURE_KEY }}
-          script: |
-            powershell -Command "
-              $target = 'C:\System\patch';
-              if (-Not (Test-Path $target)) {
-                  New-Item -ItemType Directory -Path $target -Force
-              }
-            "
-      
-            scp -r patch/* sysadmin@${{ secrets.AZURE_HOST }}:'C:/System/patch'
-
-      - name: List patch
-        run: ls -R patch
+          source: "patch/*"
+          target: "/c/System/patch"
+          tar_dereference: true
+          rm: true
   
       - name: Patch
         uses: appleboy/ssh-action@v1.2.2
@@ -66,21 +58,16 @@ jobs:
           key: ${{ secrets.AZURE_KEY }}
           script: |
             powershell -Command "
-            
             $target = 'C:\System\build';
             $new = 'C:\System\patch';
             $old = 'C:\System\backup';
-  
+      
             net stop spatial
-  
+      
             if (Test-Path $old) { Remove-Item -Recurse -Force $old }
             if (Test-Path $target) { Rename-Item $target $old }
-  
+      
             Rename-Item $new $target
-  
+      
             net start spatial
             "
-
-
-
-

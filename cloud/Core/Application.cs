@@ -309,10 +309,6 @@ public class Application
 
         var application = builder.Build();
 
-        application.UseForwardedHeaders(new ForwardedHeadersOptions {
-            ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
-        });
-
         application
             .UseExceptionHandler()
             .UseStatusCodePages(ReportStatusCode)

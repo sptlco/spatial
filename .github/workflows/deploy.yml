@@ -46,7 +46,7 @@ jobs:
           username: ${{ secrets.AZURE_USER }}
           key: ${{ secrets.AZURE_KEY }}
           source: "patch/*"
-          target: "/c/System/patch"
+          target: /C:/System/patch
           tar_dereference: true
           rm: true
   
@@ -71,3 +71,4 @@ jobs:
       
             net start spatial
             "
+

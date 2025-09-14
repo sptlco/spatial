@@ -65,13 +65,19 @@ jobs:
             net stop spatial
       
             if (Test-Path $backup) { Remove-Item -Recurse -Force $backup }
-            if (Test-Path $build) { Rename-Item $build $backup }
+            
+            if (Test-Path $build) {
+                Copy-Item -Path $build -Destination $backup -Recurse -Force
+                Remove-Item -Recurse -Force $build
+            }
       
-            New-Item -ItemType Directory -Path $build -Force
-            Get-ChildItem -Path $patch -Recurse | Move-Item -Destination $build -Force
+            if (-Not (Test-Path $build)) { New-Item -ItemType Directory -Path $build }
+      
+            Get-ChildItem -Path $patch -Force | ForEach-Object {
+                Move-Item -Path $_.FullName -Destination $build -Force
+            }
       
             Remove-Item -Recurse -Force $patch
       
             net start spatial
             "
-

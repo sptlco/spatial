@@ -37,7 +37,6 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: spatial-cloud
-          path: patch
   
       - name: Upload
         uses: appleboy/scp-action@v1
@@ -45,7 +44,7 @@ jobs:
           host: ${{ secrets.AZURE_HOST }}
           username: ${{ secrets.AZURE_USER }}
           key: ${{ secrets.AZURE_KEY }}
-          source: "patch/*"
+          source: "*"
           target: "/c/spatial/patch"
           tar_dereference: true
           rm: true
@@ -75,3 +74,4 @@ jobs:
       
             net start spatial
             "
+

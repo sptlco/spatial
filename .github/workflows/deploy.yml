@@ -58,18 +58,20 @@ jobs:
           key: ${{ secrets.AZURE_KEY }}
           script: |
             powershell -Command "
-            $patch = 'patch';
-            $build = 'build';
-            $backup = 'backup';
+            $root = 'C:\Spatial';
+            $patch = Join-Path $root 'patch';
+            $build = Join-Path $root 'build';
+            $backup = Join-Path $root 'backup';
       
             net stop spatial
       
             if (Test-Path $backup) { Remove-Item -Recurse -Force $backup }
             if (Test-Path $build) { Rename-Item $build $backup }
       
-            Rename-Item $patch $build
+            New-Item -ItemType Directory -Path $build -Force
+            Get-ChildItem -Path $patch -Recurse | Move-Item -Destination $build -Force
+      
+            Remove-Item -Recurse -Force $patch
       
             net start spatial
             "
-
-

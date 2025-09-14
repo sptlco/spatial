@@ -58,14 +58,14 @@ internal class Trader : System
         {
             var portfolio = coins.Sum(coin => coin.Id == Constants.Ethereum ? 0 : coin.Value);
             var ethereum = coins.First(coin => coin.Id == Constants.Ethereum);
-            var funds = ethereum.Balance - new BigInteger(_config.Systems.Banking.Trader.Reserves * 1e18M);
 
-            if (funds <= 0)
+            if ((decimal) ethereum.Balance < _config.Systems.Banking.Trader.Reserves * 1e18M)
             {
-                INFO("Aborting trade analysis due to low reserves, balance: {Balance}, reserves: {Reserves}.", (decimal) funds / 1e18M, _config.Systems.Banking.Trader.Reserves);
+                INFO("Insufficient trade funds: {Balance}/{Reserves} ETH.", (decimal) ethereum.Balance / 1e18M, _config.Systems.Banking.Trader.Reserves);
             }
             else
             {
+                var funds = ethereum.Balance - new BigInteger(_config.Systems.Banking.Trader.Reserves * 1e18M);
                 var recommendations = await Analyzer.AnalyzeAsync(coins);
 
                 INFO("Completed trade analysis with {Recommendations} recommendations.", recommendations.Count);

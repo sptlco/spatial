@@ -39,16 +39,15 @@ jobs:
           name: spatial-cloud
           path: patch
   
-      - name: Upload
-        uses: appleboy/scp-action@v1
+      - name: Upload via scp
+        uses: appleboy/ssh-action@v1.2.2
         with:
           host: ${{ secrets.AZURE_HOST }}
           username: ${{ secrets.AZURE_USER }}
           key: ${{ secrets.AZURE_KEY }}
-          source: "patch/*"
-          target: "C:/System/patch"
-          tar_dereference: true
-          rm: true
+          script: |
+            mkdir "C:\System\patch" -Force
+            scp -r ./patch/* sysadmin@${{ secrets.AZURE_HOST }}:"C:/System/patch"
   
       - name: Patch
         uses: appleboy/ssh-action@v1.2.2
@@ -72,7 +71,3 @@ jobs:
   
             net start spatial
             "
-
-
-
-

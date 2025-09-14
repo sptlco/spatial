@@ -58,11 +58,9 @@ jobs:
           key: ${{ secrets.AZURE_KEY }}
           script: |
             powershell -Command "
-            $root = "C:\Spatial";
-
-            $patch = '$target\patch';
-            $build = '$target\build';
-            $backup = '$target\backup';
+            $patch = 'patch';
+            $build = 'build';
+            $backup = 'backup';
       
             net stop spatial
       
@@ -73,6 +71,3 @@ jobs:
       
             net start spatial
             "
-
-
-

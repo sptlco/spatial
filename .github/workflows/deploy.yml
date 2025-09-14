@@ -46,7 +46,7 @@ jobs:
           username: ${{ secrets.AZURE_USER }}
           key: ${{ secrets.AZURE_KEY }}
           source: "patch/*"
-          target: ".spatial/patch"
+          target: "/c/spatial/patch"
           tar_dereference: true
           rm: true
   
@@ -58,7 +58,7 @@ jobs:
           key: ${{ secrets.AZURE_KEY }}
           script: |
             powershell -Command "
-            $root = ".spatial";
+            $root = "C:\Spatial";
 
             $patch = '$target\patch';
             $build = '$target\build';
@@ -73,5 +73,6 @@ jobs:
       
             net start spatial
             "
+
 
 

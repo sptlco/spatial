@@ -4,6 +4,9 @@ on:
   workflow_dispatch:
   push:
     branches: [main]
+    paths-ignore:
+    - 'CHANGELOG.md'
+    - 'manifest.json'
 
 concurrency:
   group: deploy
@@ -60,5 +63,6 @@ jobs:
           username: ${{ secrets.AZURE_USER }}
           key: ${{ secrets.AZURE_KEY }}
           script: powershell -File "C:\Spatial\scripts\patch.ps1"
+
 
 

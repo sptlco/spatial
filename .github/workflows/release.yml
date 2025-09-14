@@ -11,7 +11,6 @@ on:
       - 'examples/**'
       - 'interface/**'
       - 'scripts/**'
-      - package.json
       - .eslintrc
       - .gitignore
       - .prettierrc
@@ -37,3 +36,4 @@ jobs:
         with:
           config-file: release.json
           manifest-file: manifest.json
+

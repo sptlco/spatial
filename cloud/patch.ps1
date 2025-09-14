@@ -12,7 +12,6 @@ if (Test-Path $backup) {
 
 if (Test-Path $build) {
     Copy-Item -Path $build -Destination $backup -Recurse -Force
-    Remove-Item -Recurse -Force $build
 }
 
 if (-Not (Test-Path $build)) {

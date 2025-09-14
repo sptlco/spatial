@@ -78,11 +78,6 @@ internal class Constants
     public const string OverridePath = "appsettings.override.json";
 
     /// <summary>
-    /// The path to the system's SSL certificate.
-    /// </summary>
-    public const string CertificatePath = "certificate.pfx";
-
-    /// <summary>
     /// Log property names.
     /// </summary>
     public static class Properties

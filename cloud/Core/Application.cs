@@ -20,6 +20,7 @@ using Spatial.Networking;
 using Spatial.Simulation;
 using System.Net;
 using System.Reflection;
+using System.Security.Cryptography.X509Certificates;
 
 namespace Spatial;
 
@@ -305,9 +306,17 @@ public class Application
         builder.WebHost.ConfigureKestrel(options => {
             options.ListenAnyIP(80);
 
-            var certificate = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, Constants.CertificatePath);
+            using var store = new X509Store(StoreName.My, StoreLocation.LocalMachine);
 
-            if (File.Exists(certificate))
+            store.Open(OpenFlags.ReadOnly);
+
+            var certificate = store.Certificates
+                .OfType<X509Certificate2>()
+                .Where(c => c.HasPrivateKey && c.NotAfter > DateTime.Now)
+                .OrderByDescending(c => c.NotBefore)
+                .FirstOrDefault();
+
+            if (certificate is not null)
             {
                 options.ListenAnyIP(443, listener => listener.UseHttps(certificate));
             }

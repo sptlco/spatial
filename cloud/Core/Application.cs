@@ -2,6 +2,7 @@
 
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Mvc.ApplicationParts;
@@ -300,6 +301,17 @@ public class Application
             reloadOnChange: true);
 
         AddOptions<Configuration>(builder);
+
+        builder.WebHost.ConfigureKestrel(options => {
+            options.ListenAnyIP(80);
+
+            var certificate = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, Constants.CertificatePath);
+
+            if (File.Exists(certificate))
+            {
+                options.ListenAnyIP(443, listener => listener.UseHttps(certificate));
+            }
+        });
 
         builder.Services
             .AddSerilog()

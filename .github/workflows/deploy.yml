@@ -46,6 +46,7 @@ jobs:
           key: ${{ secrets.AZURE_KEY }}
           source: "./*"
           target: "/c/System/patch"
+          tar_dereference: true
   
       - name: Patch
         uses: appleboy/ssh-action@v1.2.0
@@ -68,3 +69,4 @@ jobs:
   
             net start spatial
             "
+

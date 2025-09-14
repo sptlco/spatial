@@ -40,7 +40,7 @@ jobs:
           path: patch
   
       - name: Upload
-        uses: appleboy/scp-action@v0.1.7
+        uses: appleboy/scp-action@v1
         with:
           host: ${{ secrets.AZURE_HOST }}
           username: ${{ secrets.AZURE_USER }}
@@ -51,7 +51,7 @@ jobs:
           rm: true
   
       - name: Patch
-        uses: appleboy/ssh-action@v1.2.0
+        uses: appleboy/ssh-action@v1.2.2
         with:
           host: ${{ secrets.AZURE_HOST }}
           username: ${{ secrets.AZURE_USER }}
@@ -72,5 +72,6 @@ jobs:
   
             net start spatial
             "
+
 
 

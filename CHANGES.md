@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.1.2](https://github.com/sptlco/spatial/compare/spatial-1.1.1...spatial-1.1.2) (2025-09-14)
+
+
+### Bug Fixes
+
+* Honor reserves ([185da39](https://github.com/sptlco/spatial/commit/185da39017c55b56b40ca67a2308643028bfb5ac))
+* Use milliseconds ([83aa6aa](https://github.com/sptlco/spatial/commit/83aa6aab4c9e36511a0d54ecb911d7e73facff61))
+
 ## [1.1.1](https://github.com/sptlco/spatial/compare/spatial-1.1.0...spatial-1.1.1) (2025-09-14)
 
 

@@ -7,27 +7,61 @@
     ".": {
       "package-name": "spatial",
       "changelog-path": "CHANGES.md",
-      "release-type": "simple"
+      "release-type": "simple",
+      "extra-files": [
+        {
+          "type": "generic",
+          "path": "cloud/Core/Spatial.csproj",
+          "regex": "<Version>(?<version>.*)</Version>"
+        }
+      ]
     },
     "cloud": {
       "package-name": "spatial-cloud",
       "changelog-path": "CHANGES.md",
-      "release-type": "simple"
+      "release-type": "simple",
+      "extra-files": [
+        {
+          "type": "json",
+          "path": "Server/appsettings.json",
+          "jsonpath": "$.Version"
+        }
+      ]
     },
     "api": {
       "package-name": "spatial-api",
       "changelog-path": "CHANGES.md",
-      "release-type": "simple"
+      "release-type": "simple",
+      "extra-files": [
+        {
+          "type": "json",
+          "path": "package.json",
+          "jsonpath": "$.version"
+        }
+      ]
     },
     "design": {
       "package-name": "spatial-design",
       "changelog-path": "CHANGES.md",
-      "release-type": "simple"
+      "release-type": "simple",
+      "extra-files": [
+        {
+          "type": "json",
+          "path": "package.json",
+          "jsonpath": "$.version"
+        }
+      ]
     },
     "interface/web": {
       "package-name": "spatial-interface-web",
       "changelog-path": "CHANGES.md",
-      "release-type": "simple"
+      "release-type": "simple",
+      "extra-files": [
+        {
+          "type": "json",
+          "path": "package.json"
+        }
+      ]
     }
   }
 }

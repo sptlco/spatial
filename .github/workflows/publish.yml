@@ -26,25 +26,6 @@ jobs:
         with:
           dotnet-version: '9.x'
 
-      - name: Get base release
-        id: get_version
-        run: |
-          git fetch --tags
-          TAG=$(git tag --list 'spatial-[0-9]*.[0-9]*.[0-9]*' --sort=-v:refname | head -n 1)
-          if [ -z "$TAG" ]; then
-            echo "No base tag found, exiting"
-            exit 1
-          fi
-          BASE_VERSION="${TAG#spatial-}"
-          echo "BASE_VERSION=$BASE_VERSION" >> $GITHUB_ENV
-          echo "Base version is $BASE_VERSION"
-
-      - name: Update version
-        run: |
-          CSPROJ="cloud/Core/Spatial.csproj"
-          echo "Updating $CSPROJ to version $BASE_VERSION"
-          sed -i "s/<Version>.*<\/Version>/<Version>${BASE_VERSION}<\/Version>/" "$CSPROJ"
-
       - name: Restore
         run: dotnet restore cloud/Core/Spatial.csproj
 

@@ -3,6 +3,9 @@ name: Release
 on:
   push:
     branches: [main]
+    tags-ignore:
+      - 'spatial-[0-9]*.[0-9]*.[0-9]*'
+      - 'spatial-cloud-[0-9]*.[0-9]*.[0-9]*'
 
 concurrency:
   group: release

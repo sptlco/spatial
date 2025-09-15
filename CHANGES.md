@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.1.17](https://github.com/sptlco/spatial/compare/spatial-1.1.16...spatial-1.1.17) (2025-09-15)
+
+
+### Bug Fixes
+
+* Update release.json ([d1d3e58](https://github.com/sptlco/spatial/commit/d1d3e58f531dd98c40ece3c94264f4f0e9763e61))
+* Update Trader.cs ([3103f87](https://github.com/sptlco/spatial/commit/3103f8704aa4d7624a80ce87748b22b64811ae8a))
+
 ## [1.1.16](https://github.com/sptlco/spatial/compare/spatial-1.1.15...spatial-1.1.16) (2025-09-15)
 
 

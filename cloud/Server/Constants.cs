@@ -8,11 +8,6 @@ namespace Spatial.Cloud;
 internal static class Constants
 {
     /// <summary>
-    /// The maximum number of tokens the global portfolio can hold.
-    /// </summary>
-    public const byte MaxTokens = 30;
-
-    /// <summary>
     /// The preferred GPT model.
     /// </summary>
     public const string GPT = "gpt-5";

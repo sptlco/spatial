@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.11](https://github.com/sptlco/spatial/compare/spatial-1.1.10...spatial-1.1.11) (2025-09-15)
+
+
+### Bug Fixes
+
+* Update publish.yml ([cb943ec](https://github.com/sptlco/spatial/commit/cb943ecdc3b73a98b50df8ad6740f7cba429dd2f))
+
 ## [1.1.10](https://github.com/sptlco/spatial/compare/spatial-1.1.9...spatial-1.1.10) (2025-09-15)
 
 

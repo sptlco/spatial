@@ -3,20 +3,6 @@ name: Drop
 on:
   push:
     branches: [main]
-    paths:
-      - 'api/**'
-      - 'cloud/**'
-      - 'design/**'
-      - 'documentation/**'
-      - 'examples/**'
-      - 'interface/**'
-      - 'scripts/**'
-      - .eslintrc
-      - .gitignore
-      - .prettierrc
-      - LICENSE
-      - package.json
-      - tsconfig.json
 
 concurrency:
   group: release
@@ -30,6 +16,7 @@ permissions:
 
 jobs:
   release:
+    if: "!startsWith(github.event.head_commit.message, 'chore: release main')"
     runs-on: ubuntu-latest
     steps:
       - uses: googleapis/release-please-action@v4
@@ -79,3 +66,4 @@ jobs:
           dotnet nuget push ./nupkg/*.nupkg \
             --source "https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json" \
             --api-key ${{ secrets.GITHUB_TOKEN }}
+

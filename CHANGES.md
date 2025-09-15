@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.13](https://github.com/sptlco/spatial/compare/spatial-1.1.12...spatial-1.1.13) (2025-09-15)
+
+
+### Bug Fixes
+
+* Update Spatial.csproj ([100e6fa](https://github.com/sptlco/spatial/commit/100e6fa6a169fc4c6de688e669852a5bad9e35c2))
+
 ## [1.1.12](https://github.com/sptlco/spatial/compare/spatial-1.1.11...spatial-1.1.12) (2025-09-15)
 
 

@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.22](https://github.com/sptlco/spatial/compare/spatial-1.1.21...spatial-1.1.22) (2025-09-15)
+
+
+### Bug Fixes
+
+* Update run order ([ef5fe2c](https://github.com/sptlco/spatial/commit/ef5fe2c5eca61d35b5b4cda4dc5c5b5d3dd28b41))
+
 ## [1.1.21](https://github.com/sptlco/spatial/compare/spatial-1.1.20...spatial-1.1.21) (2025-09-15)
 
 

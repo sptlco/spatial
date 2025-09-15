@@ -1,6 +1,6 @@
 {
   "include-v-in-tag": false,
-  "group-pull-request-title-pattern": "Spatial ${version}",
+  "group-pull-request-title-pattern": "chore: Release ${version}",
   "pull-request-header": "Release Notes",
   "pull-request-footer": "This pull request was generated automatically.\nPlease review and merge to publish the release.",
   "packages": {

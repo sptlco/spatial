@@ -121,10 +121,9 @@ public class Application
             try
             {
                 INFO("Time: {Time} ms.", Time.Now.Milliseconds);
+                INFO("Starting {Application} {Version}.", application.Name, application.Version);
 
                 application.ConfigureConnectivity();
-
-                INFO("Starting {Application} {Version}.", application.Name, application.Version);
 
                 application.Start();
                 application._wapp.Start();

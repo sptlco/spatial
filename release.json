@@ -17,7 +17,13 @@
       "package-name": "spatial-cloud",
       "changelog-path": "CHANGES.md",
       "release-type": "simple",
-      "extra-files": [ "Server/appsettings.json" ]
+      "extra-files": [ 
+        {
+          "type": "json",
+          "path": "Server/appsettings.json",
+          "jsonpath": "$.Version"
+        }
+      ]
     },
     "api": {
       "package-name": "spatial-api",

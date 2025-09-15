@@ -1,0 +1,26 @@
+name: QA
+
+on:
+  workflow_dispatch:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+
+jobs:
+  test:
+    if: github.head_ref != 'release-please--branches--main'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '9.x'
+
+      - name: Restore
+        run: dotnet restore cloud/Tests/Spatial.Tests.csproj
+
+      - name: Test
+        run: dotnet test cloud/Tests/Spatial.Tests.csproj --no-build --verbosity normal

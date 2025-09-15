@@ -5,7 +5,16 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
         <GenerateDocumentationFile>true</GenerateDocumentationFile>
+
+        <PackageId>Spatial</PackageId>
         <PackageIcon>icon.jpg</PackageIcon>
+        <Authors>Spatial Corporation</Authors>
+        <Company>Spatial Corporation</Company>
+        <Description>Core module providing fundamental types, utilities, and platform services.</Description>
+        <PackageLicenseExpression>MIT</PackageLicenseExpression>
+        <RepositoryUrl>https://github.com/sptlco/spatial</RepositoryUrl>
+        <PackageOutputPath>nupkg</PackageOutputPath>
+        <Version>0.0.0</Version>
     </PropertyGroup>
     <ItemGroup>
         <ProjectReference Include="..\Generators\Spatial.Generators.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />

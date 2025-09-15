@@ -13,6 +13,11 @@
           "type": "generic",
           "path": "cloud/Core/Spatial.csproj",
           "regex": "<Version>(?<version>.*)</Version>"
+        },
+        {
+          "type": "json",
+          "path": "package.json",
+          "jsonpath": "$.version"
         }
       ]
     },

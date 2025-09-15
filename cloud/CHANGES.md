@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.9](https://github.com/sptlco/spatial/compare/spatial-cloud-1.0.8...spatial-cloud-1.0.9) (2025-09-15)
+
+
+### Bug Fixes
+
+* Update run order ([ef5fe2c](https://github.com/sptlco/spatial/commit/ef5fe2c5eca61d35b5b4cda4dc5c5b5d3dd28b41))
+
 ## [1.0.8](https://github.com/sptlco/spatial/compare/spatial-cloud-1.0.7...spatial-cloud-1.0.8) (2025-09-15)
 
 

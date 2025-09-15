@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.9](https://github.com/sptlco/spatial/compare/spatial-1.1.8...spatial-1.1.9) (2025-09-15)
+
+
+### Bug Fixes
+
+* Update publish.yml ([7dd4c67](https://github.com/sptlco/spatial/commit/7dd4c67bc3bfab8efce04049adcb03a0f05d9d62))
+
 ## [1.1.8](https://github.com/sptlco/spatial/compare/spatial-1.1.7...spatial-1.1.8) (2025-09-15)
 
 

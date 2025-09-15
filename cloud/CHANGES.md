@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.8](https://github.com/sptlco/spatial/compare/spatial-cloud-1.0.7...spatial-cloud-1.0.8) (2025-09-15)
+
+
+### Bug Fixes
+
+* Remove whitespace ([fb51220](https://github.com/sptlco/spatial/commit/fb512202f98b2c720fc134ff58d1da9538833909))
+
 ## [1.0.7](https://github.com/sptlco/spatial/compare/spatial-cloud-1.0.6...spatial-cloud-1.0.7) (2025-09-15)
 
 

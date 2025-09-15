@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.21](https://github.com/sptlco/spatial/compare/spatial-1.1.20...spatial-1.1.21) (2025-09-15)
+
+
+### Bug Fixes
+
+* Remove whitespace ([fb51220](https://github.com/sptlco/spatial/commit/fb512202f98b2c720fc134ff58d1da9538833909))
+
 ## [1.1.20](https://github.com/sptlco/spatial/compare/spatial-1.1.19...spatial-1.1.20) (2025-09-15)
 
 

@@ -26,6 +26,7 @@ permissions:
   contents: write
   issues: write
   pull-requests: write
+  packages: write
   
 jobs:
   release:
@@ -36,4 +37,53 @@ jobs:
         with:
           config-file: release.json
           manifest-file: manifest.json
+          
+  publish:
+    needs: release
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+  
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: '9.x'
+  
+      - name: Get base release version
+        id: get_version
+        run: |
+          git fetch --tags
+          BASE_TAG=$(git tag --list 'spatial-*' --sort=-v:refname | head -n 1)
+          BASE_VERSION="${BASE_TAG#spatial-}"
+          echo "BASE_VERSION=$BASE_VERSION" >> $GITHUB_ENV
+          echo "Base version is $BASE_VERSION"
 
+      - name: Version
+        run: |
+          find . -name '*Spatial.csproj' | while read csproj; do
+            echo "Updating $csproj to version $BASE_VERSION"
+            sed -i "s/<Version>.*<\/Version>/<Version>${BASE_VERSION}<\/Version>/" "$csproj"
+          done
+
+      - name: Restore
+        run: |
+          find . -name '*.csproj' | while read csproj; do
+            dotnet restore "$csproj"
+          done
+
+      - name: Package
+        run: |
+          mkdir -p ./nupkg
+          find . -name '*Spatial.csproj' | while read csproj; do
+            echo "Packing $csproj"
+            dotnet pack "$csproj" -c Release -o ./nupkg
+          done
+
+      - name: Publish
+        run: |
+          for pkg in ./nupkg/*.nupkg; do
+            echo "Pushing $pkg"
+            dotnet nuget push "$pkg" \
+              --source "https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json" \
+              --api-key ${{ secrets.GITHUB_TOKEN }}
+          done

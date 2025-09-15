@@ -10,7 +10,7 @@
         <PackageIcon>icon.jpg</PackageIcon>
         <Authors>Spatial Corporation</Authors>
         <Company>Spatial Corporation</Company>
-        <Description>Core module providing fundamental types, utilities, and platform services.</Description>
+        <Description>Core module providing fundamental types, utilities, and services.</Description>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
         <RepositoryUrl>https://github.com/sptlco/spatial</RepositoryUrl>
         <PackageOutputPath>nupkg</PackageOutputPath>

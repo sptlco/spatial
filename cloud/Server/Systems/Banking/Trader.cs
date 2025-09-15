@@ -89,7 +89,7 @@ internal class Trader : System
 
                     if (GetReadableSize() <= _config.Systems.Banking.Trader.MinimumTrade)
                     {
-                        INFO("Insufficient volume: {Size} {Symbol}.", GetReadableSize(), trade.Action == TradeAction.Buy ? "ETH": coin.Symbol.ToUpper());
+                        INFO("Insignificant trade: {Size} {Symbol}.", GetReadableSize(), trade.Action == TradeAction.Buy ? "ETH": coin.Symbol.ToUpper());
                         continue;
                     }
 

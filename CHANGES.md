@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.1.19](https://github.com/sptlco/spatial/compare/spatial-1.1.18...spatial-1.1.19) (2025-09-15)
+
+
+### Bug Fixes
+
+* Annotate version ([f24a879](https://github.com/sptlco/spatial/commit/f24a87928da0daa218d3c5b6a1b3ee3c57d843a5))
+* Bump package.json ([d57e2f8](https://github.com/sptlco/spatial/commit/d57e2f8a98280029f603ea44f5aa24692a4fa195))
+* Remove unused constant ([494f714](https://github.com/sptlco/spatial/commit/494f714d9e1f786e1e3000dbfe64991d84aa55a4))
+* Target version ([03266c1](https://github.com/sptlco/spatial/commit/03266c1ea696d361c6d3c528efed2cd0367961ac))
+* Update releases ([67fcc00](https://github.com/sptlco/spatial/commit/67fcc0099e41b0b8654e60372350b036542cc715))
+* Update version ([24dbfd6](https://github.com/sptlco/spatial/commit/24dbfd67b5392bfb7eb2197b08ef4bc29bdd1607))
+
 ## [1.1.18](https://github.com/sptlco/spatial/compare/spatial-1.1.17...spatial-1.1.18) (2025-09-15)
 
 

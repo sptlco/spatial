@@ -1,5 +1,14 @@
 # Changelog
 
+## [1.0.6](https://github.com/sptlco/spatial/compare/spatial-cloud-1.0.5...spatial-cloud-1.0.6) (2025-09-15)
+
+
+### Bug Fixes
+
+* Annotate version ([f24a879](https://github.com/sptlco/spatial/commit/f24a87928da0daa218d3c5b6a1b3ee3c57d843a5))
+* Remove unused constant ([494f714](https://github.com/sptlco/spatial/commit/494f714d9e1f786e1e3000dbfe64991d84aa55a4))
+* Update version ([24dbfd6](https://github.com/sptlco/spatial/commit/24dbfd67b5392bfb7eb2197b08ef4bc29bdd1607))
+
 ## [1.0.5](https://github.com/sptlco/spatial/compare/spatial-cloud-1.0.4...spatial-cloud-1.0.5) (2025-09-15)
 
 

@@ -61,7 +61,7 @@ internal class Trader : System
 
             if ((decimal) ethereum.Balance < _config.Systems.Banking.Trader.Reserves * 1e18M)
             {
-                INFO("Insufficient trade funds: {Balance}/{Reserves} ETH.", (decimal) ethereum.Balance / 1e18M, _config.Systems.Banking.Trader.Reserves);
+                INFO("Insufficient funds: {Balance}/{Reserves} ETH.", (decimal) ethereum.Balance / 1e18M, _config.Systems.Banking.Trader.Reserves);
             }
             else
             {
@@ -89,7 +89,7 @@ internal class Trader : System
 
                     if (GetReadableSize() <= _config.Systems.Banking.Trader.MinimumTrade)
                     {
-                        INFO("Insufficient trade size: {Size} {Symbol}.", GetReadableSize(), trade.Action == TradeAction.Buy ? "ETH": coin.Symbol.ToUpper());
+                        INFO("Insufficient volume: {Size} {Symbol}.", GetReadableSize(), trade.Action == TradeAction.Buy ? "ETH": coin.Symbol.ToUpper());
                         continue;
                     }
 

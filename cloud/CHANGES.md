@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.4](https://github.com/sptlco/spatial/compare/spatial-cloud-1.0.3...spatial-cloud-1.0.4) (2025-09-15)
+
+
+### Bug Fixes
+
+* Update Spatial.csproj ([100e6fa](https://github.com/sptlco/spatial/commit/100e6fa6a169fc4c6de688e669852a5bad9e35c2))
+
 ## [1.0.3](https://github.com/sptlco/spatial/compare/spatial-cloud-1.0.2...spatial-cloud-1.0.3) (2025-09-15)
 
 

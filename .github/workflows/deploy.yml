@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
   push:
     tags:
-      - 'spatial-cloud-*'
+      - 'spatial-cloud-[0-9]+.[0-9]+.[0-9]+'
 
 concurrency:
   group: deploy
@@ -61,6 +61,7 @@ jobs:
           username: ${{ secrets.AZURE_USER }}
           key: ${{ secrets.AZURE_KEY }}
           script: powershell -File "C:\Spatial\scripts\patch.ps1"
+
 
 
 

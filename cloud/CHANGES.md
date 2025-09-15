@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.7](https://github.com/sptlco/spatial/compare/spatial-cloud-1.0.6...spatial-cloud-1.0.7) (2025-09-15)
+
+
+### Bug Fixes
+
+* Change name ([d5107af](https://github.com/sptlco/spatial/commit/d5107af0d81133030be692da698912edf41dda64))
+
 ## [1.0.6](https://github.com/sptlco/spatial/compare/spatial-cloud-1.0.5...spatial-cloud-1.0.6) (2025-09-15)
 
 

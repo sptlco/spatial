@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.20](https://github.com/sptlco/spatial/compare/spatial-1.1.19...spatial-1.1.20) (2025-09-15)
+
+
+### Bug Fixes
+
+* Change name ([d5107af](https://github.com/sptlco/spatial/commit/d5107af0d81133030be692da698912edf41dda64))
+
 ## [1.1.19](https://github.com/sptlco/spatial/compare/spatial-1.1.18...spatial-1.1.19) (2025-09-15)
 
 

@@ -27,41 +27,6 @@ permissions:
   issues: write
   pull-requests: write
   packages: write
-  
-jobs:
-  release:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: googleapis/release-please-action@v4
-        name: Release
-        with:
-          config-file: release.json
-          manifest-file: manifest.json
-          
-  name: Drop
-
-on:
-  push:
-    branches: [main]
-    paths:
-      - 'cloud/Core/Spatial.csproj'
-      - 'cloud/**'
-      - .eslintrc
-      - .gitignore
-      - .prettierrc
-      - LICENSE
-      - package.json
-      - tsconfig.json
-
-concurrency:
-  group: release
-  cancel-in-progress: false
-
-permissions:
-  contents: write
-  issues: write
-  pull-requests: write
-  packages: write
 
 jobs:
   release:

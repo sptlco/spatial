@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.5](https://github.com/sptlco/spatial/compare/spatial-cloud-1.0.4...spatial-cloud-1.0.5) (2025-09-15)
+
+
+### Bug Fixes
+
+* Update Trader.cs ([3103f87](https://github.com/sptlco/spatial/commit/3103f8704aa4d7624a80ce87748b22b64811ae8a))
+
 ## [1.0.4](https://github.com/sptlco/spatial/compare/spatial-cloud-1.0.3...spatial-cloud-1.0.4) (2025-09-15)
 
 

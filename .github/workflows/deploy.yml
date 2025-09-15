@@ -2,6 +2,7 @@ name: Deploy
 
 on:
   push:
+    branches: [main]
     tags:
       - 'spatial-cloud-[0-9]*.[0-9]*.[0-9]*'
 
@@ -60,6 +61,7 @@ jobs:
           username: ${{ secrets.AZURE_USER }}
           key: ${{ secrets.AZURE_KEY }}
           script: powershell -File "C:\Spatial\scripts\patch.ps1"
+
 
 
 

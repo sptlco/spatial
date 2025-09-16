@@ -18,6 +18,7 @@ using Spatial.Compute;
 using Spatial.Extensions;
 using Spatial.Networking;
 using Spatial.Simulation;
+using Spatial.Telemetry;
 using System.Net;
 using System.Reflection;
 using System.Security.Cryptography.X509Certificates;
@@ -305,19 +306,26 @@ public class Application
         builder.WebHost.ConfigureKestrel(options => {
             options.ListenAnyIP(80);
 
-            using var store = new X509Store(StoreName.My, StoreLocation.LocalMachine);
-
-            store.Open(OpenFlags.ReadOnly);
-
-            var certificate = store.Certificates
-                .OfType<X509Certificate2>()
-                .Where(c => c.HasPrivateKey && c.NotAfter > DateTime.Now)
-                .OrderByDescending(c => c.NotBefore)
-                .FirstOrDefault();
-
-            if (certificate is not null)
+            try
             {
-                options.ListenAnyIP(443, listener => listener.UseHttps(certificate));
+                using var store = new X509Store(StoreLocation.LocalMachine);
+
+                store.Open(OpenFlags.ReadOnly);
+
+                var certificate = store.Certificates
+                    .OfType<X509Certificate2>()
+                    .Where(c => c.HasPrivateKey && c.NotAfter > DateTime.Now)
+                    .OrderByDescending(c => c.NotBefore)
+                    .FirstOrDefault();
+
+                if (certificate is not null)
+                {
+                    options.ListenAnyIP(443, listener => listener.UseHttps(certificate));
+                }
+            }
+            catch (Exception exception)
+            {
+                WARN(exception, "Failed to locate a valid SSL certificate, HTTPS unsupported.");   
             }
         });
 
@@ -337,6 +345,7 @@ public class Application
                 FileProvider = new PhysicalFileProvider(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "wwwroot")),
                 RequestPath = ""
             })
+            .UseSerilogRequestLogging()
             .UseAuthorization()
             .UseHsts();
 

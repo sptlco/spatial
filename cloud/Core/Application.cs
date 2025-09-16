@@ -379,7 +379,6 @@ public class Application
         switch ((HttpStatusCode) status.HttpContext.Response.StatusCode)
         {
             case HttpStatusCode.NotFound:
-                ERROR("Requested resource not found: {Resource}", context.Request.Path);
                 await context.Response.WriteAsJsonAsync(new NotFound().ToFault().ToResponse(traceId));
                 break;
         }

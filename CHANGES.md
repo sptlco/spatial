@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.24](https://github.com/sptlco/spatial/compare/spatial-1.1.23...spatial-1.1.24) (2025-09-16)
+
+
+### Bug Fixes
+
+* Remove log ([eb0a4c8](https://github.com/sptlco/spatial/commit/eb0a4c8a1b55b399409dfe7e7a905edba42fd5ef))
+
 ## [1.1.23](https://github.com/sptlco/spatial/compare/spatial-1.1.22...spatial-1.1.23) (2025-09-16)
 
 

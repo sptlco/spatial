@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.0](https://github.com/sptlco/spatial/compare/spatial-1.1.24...spatial-1.2.0) (2025-09-18)
+
+
+### Features
+
+* Ship with OpenAI ([ef5ee29](https://github.com/sptlco/spatial/commit/ef5ee29006791437481c46ff8e98c53cbd2adf41))
+
 ## [1.1.24](https://github.com/sptlco/spatial/compare/spatial-1.1.23...spatial-1.1.24) (2025-09-16)
 
 

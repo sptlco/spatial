@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.0](https://github.com/sptlco/spatial/compare/spatial-cloud-1.0.11...spatial-cloud-1.1.0) (2025-09-18)
+
+
+### Features
+
+* Ship with OpenAI ([ef5ee29](https://github.com/sptlco/spatial/commit/ef5ee29006791437481c46ff8e98c53cbd2adf41))
+
 ## [1.0.11](https://github.com/sptlco/spatial/compare/spatial-cloud-1.0.10...spatial-cloud-1.0.11) (2025-09-16)
 
 

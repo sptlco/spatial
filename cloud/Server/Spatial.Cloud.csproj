@@ -13,9 +13,6 @@
     <ProjectReference Include="..\Core\Spatial.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="OpenAI" Version="2.4.0" />
-  </ItemGroup>
-  <ItemGroup>
     <Folder Include="Components/" />
   </ItemGroup>
 </Project>

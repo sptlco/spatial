@@ -19,7 +19,7 @@ internal static class Analyzer
     {
         try
         {
-            return await new OpenAIRecommender().NextAsync(coins);
+            return await new GPTRecommender().NextAsync(coins);
         }
         catch (Exception exception)
         {

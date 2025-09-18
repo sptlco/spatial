@@ -3,12 +3,12 @@
 using System.Reflection;
 using System.Text.Json;
 
-namespace Spatial.Cloud.Helpers;
+namespace Spatial;
 
 /// <summary>
 /// Helper methods for JSON.
 /// </summary>
-public class Json
+public static class Json
 {
     /// <summary>
     /// Generate a JSON schema for type <typeparamref name="T"/>.

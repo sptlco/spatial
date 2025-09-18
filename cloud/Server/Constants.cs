@@ -8,11 +8,6 @@ namespace Spatial.Cloud;
 internal static class Constants
 {
     /// <summary>
-    /// The preferred GPT model.
-    /// </summary>
-    public const string GPT = "gpt-5";
-
-    /// <summary>
     /// The name of the system.
     /// </summary>
     public const string Spatial = "spatial";

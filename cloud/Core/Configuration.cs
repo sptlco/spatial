@@ -2,6 +2,7 @@
 
 using Microsoft.Extensions.Options;
 using Spatial.Blockchain;
+using Spatial.Intelligence;
 using Spatial.Persistence;
 using System.ComponentModel.DataAnnotations;
 
@@ -51,4 +52,10 @@ public class Configuration
     /// </summary>
     [ValidateObjectMembers]
     public EthereumConfiguration Ethereum { get; set; } = new EthereumConfiguration();
+
+    /// <summary>
+    /// Configurable options for OpenAI.
+    /// </summary>
+    [ValidateObjectMembers]
+    public OpenAIConfiguration OpenAI { get; set; } = new OpenAIConfiguration();
 }

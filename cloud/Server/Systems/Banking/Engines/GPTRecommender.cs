@@ -1,6 +1,7 @@
 // Copyright © Spatial Corporation. All rights reserved.
 
 using Spatial.Blockchain.Helpers;
+using Spatial.Intelligence;
 
 namespace Spatial.Cloud.Systems.Banking.Engines;
 
@@ -8,7 +9,7 @@ namespace Spatial.Cloud.Systems.Banking.Engines;
 /// A <see cref="IRecommender"/> that communicates with ChatGPT as if 
 /// it were a financial assistant for trade advice.
 /// </summary>
-internal class OpenAIRecommender : IRecommender
+internal class GPTRecommender : IRecommender
 {
     /// <summary>
     /// Generate a list of trade recommendations.
@@ -17,7 +18,7 @@ internal class OpenAIRecommender : IRecommender
     /// <returns>A list of trade recommendations./returns>
     public async Task<List<Recommendation>> NextAsync(List<CoinGecko.Coin> coins)
     {
-        var response = await OpenAI.GenerateAsync<Response>(
+        var response = await ChatGPT.GenerateAsync<Response>(
             instructions: @"
                 You are a financial assistant.
                 Return ONLY a JSON array of recommendations.
@@ -40,7 +41,7 @@ internal class OpenAIRecommender : IRecommender
     }
 
     /// <summary>
-    /// A response from OpenAI.
+    /// A response from ChatGPT.
     /// </summary>
     public class Response
     {

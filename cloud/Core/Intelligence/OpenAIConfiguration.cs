@@ -1,6 +1,6 @@
 // Copyright © Spatial Corporation. All rights reserved.
 
-namespace Spatial.Cloud.Contracts;
+namespace Spatial.Intelligence;
 
 /// <summary>
 /// Configurable options for OpenAI.
@@ -8,7 +8,12 @@ namespace Spatial.Cloud.Contracts;
 public class OpenAIConfiguration
 {
     /// <summary>
-    /// The system's OpenAI API key.
+    /// An OpenAI API key.
     /// </summary>
     public string ApiKey { get; set; }
+
+    /// <summary>
+    /// The model used for requests sent to OpenAI.
+    /// </summary>
+    public string Model { get; set; } = "gpt-5";
 }

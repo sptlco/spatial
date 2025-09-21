@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.1](https://github.com/sptlco/spatial/compare/spatial-1.2.0...spatial-1.2.1) (2025-09-21)
+
+
+### Bug Fixes
+
+* Update icons ([673a5b0](https://github.com/sptlco/spatial/commit/673a5b0d18a298868a632ee47e6e2bec64e805ee))
+
 ## [1.2.0](https://github.com/sptlco/spatial/compare/spatial-1.1.24...spatial-1.2.0) (2025-09-18)
 
 

@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.1](https://github.com/sptlco/spatial/compare/spatial-cloud-1.1.0...spatial-cloud-1.1.1) (2025-09-21)
+
+
+### Bug Fixes
+
+* Update icons ([673a5b0](https://github.com/sptlco/spatial/commit/673a5b0d18a298868a632ee47e6e2bec64e805ee))
+
 ## [1.1.0](https://github.com/sptlco/spatial/compare/spatial-cloud-1.0.11...spatial-cloud-1.1.0) (2025-09-18)
 
 

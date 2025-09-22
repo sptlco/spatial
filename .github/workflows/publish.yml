@@ -2,8 +2,10 @@ name: Publish
 
 on:
   push:
-    tags:
-      - 'spatial-[0-9]*.[0-9]*.[0-9]*'
+    branches:
+      - 'main'
+    paths:
+      - 'cloud/**'
 
 concurrency:
   group: publish

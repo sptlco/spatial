@@ -1,8 +1,9 @@
 {
   "expo": {
-    "name": "mobile",
-    "slug": "mobile",
+    "name": "Spatial",
+    "slug": "spatial",
     "version": "1.0.0",
+    "owner": "sptlco",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "userInterfaceStyle": "light",
@@ -31,7 +32,6 @@
       "eas": {
         "projectId": "f250664d-19f8-46a0-9391-40fe62e21048"
       }
-    },
-    "owner": "sptlco"
+    }
   }
 }

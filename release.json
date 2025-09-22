@@ -23,6 +23,12 @@
         }
       ]
     },
+    "interface/mobile": {
+      "package-name": "spatial-interface-mobile",
+      "changelog-path": "CHANGES.md",
+      "release-type": "simple",
+      "extra-files": [ "package.json" ]
+    },
     "interface/web": {
       "package-name": "spatial-interface-web",
       "changelog-path": "CHANGES.md",

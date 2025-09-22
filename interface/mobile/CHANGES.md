@@ -1,5 +1,14 @@
 # Changelog
 
+## [1.1.2](https://github.com/sptlco/spatial/compare/spatial-interface-mobile-1.1.1...spatial-interface-mobile-1.1.2) (2025-09-22)
+
+
+### Bug Fixes
+
+* add package names ([6cd3116](https://github.com/sptlco/spatial/commit/6cd311665ebe554481e417d49f39aee9fc0a1cf8))
+* configure builds ([ff34a71](https://github.com/sptlco/spatial/commit/ff34a71f26018dc2efa2cae75a0b0691e36da38d))
+* update metro configuration ([e35d38b](https://github.com/sptlco/spatial/commit/e35d38b8e891cfc6b7050439315c9f5eb2e3bb50))
+
 ## [1.1.1](https://github.com/sptlco/spatial/compare/spatial-interface-mobile-1.1.0...spatial-interface-mobile-1.1.1) (2025-09-22)
 
 

@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.3](https://github.com/sptlco/spatial/compare/spatial-interface-mobile-1.1.2...spatial-interface-mobile-1.1.3) (2025-09-22)
+
+
+### Bug Fixes
+
+* removed background color ([a8ae4b3](https://github.com/sptlco/spatial/commit/a8ae4b3af8d12d95c353aca02d0e3b08c1f8e3ea))
+
 ## [1.1.2](https://github.com/sptlco/spatial/compare/spatial-interface-mobile-1.1.1...spatial-interface-mobile-1.1.2) (2025-09-22)
 
 

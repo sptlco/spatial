@@ -26,7 +26,14 @@
       "package-name": "spatial-interface-mobile",
       "changelog-path": "CHANGES.md",
       "release-type": "simple",
-      "extra-files": [ "package.json", "app.json" ]
+      "extra-files": [ 
+        "package.json", 
+        {
+          "type": "json",
+          "path": "app.json",
+          "jsonpath": "$.expo.version"
+        }
+      ]
     },
     "interface/web": {
       "package-name": "spatial-interface-web",

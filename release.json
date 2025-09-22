@@ -4,11 +4,6 @@
   "pull-request-header": "Release Notes",
   "pull-request-footer": "This pull request was generated automatically.\nPlease review and merge to publish the release.",
   "packages": {
-    ".": {
-      "package-name": "spatial",
-      "changelog-path": "CHANGES.md",
-      "release-type": "simple"
-    },
     "api": {
       "package-name": "spatial-api",
       "changelog-path": "CHANGES.md",

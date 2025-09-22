@@ -2,9 +2,11 @@ name: Deploy
 
 on:
   push:
-    tags:
-      - 'spatial-cloud-[0-9]*.[0-9]*.[0-9]*'
-
+    branches:
+      - 'main'
+    paths:
+      - 'cloud/**'
+    
 concurrency:
   group: deploy
   cancel-in-progress: false

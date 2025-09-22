@@ -1,42 +1,35 @@
-// Copyright © Spatial Corporation. All rights reserved.
+import type { Metadata } from "next";
+import { Geist, Geist_Mono } from "next/font/google";
 
-import { Metadata } from "next";
-import Head from "next/head";
-import { Analytics } from "@vercel/analytics/react";
+import "./global.css"
 
-import { ToastProvider } from "@spatial/compounds";
-import { Body, Html, Node, TooltipProvider } from "@spatial/elements";
+const geistSans = Geist({
+  variable: "--font-geist-sans",
+  subsets: ["latin"],
+});
 
-import "@spatial/design";
+const geistMono = Geist_Mono({
+  variable: "--font-geist-mono",
+  subsets: ["latin"],
+});
 
-/**
- * Configurable metadata for all pages.
- */
 export const metadata: Metadata = {
   title: "Spatial",
-  description: "Leading industrial research and development",
+  description: "Leading industrial research and development.",
 };
 
-/**
- * Create a new root layout element.
- * @param props Configurable options for the element.
- * @returns A root layout element.
- */
 export default function RootLayout({
   children,
-}: {
+}: Readonly<{
   children: React.ReactNode;
-}): Node {
+}>) {
   return (
-    <Html>
-      <Head>
-        <meta charSet="UTF-8" />
-      </Head>
-      <Body>
-        <TooltipProvider>{children}</TooltipProvider>
-        <ToastProvider />
-        <Analytics />
-      </Body>
-    </Html>
+    <html lang="en">
+      <body
+        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+      >
+        {children}
+      </body>
+    </html>
   );
 }

@@ -1,10 +1,7 @@
 import type { NextConfig } from "next";
 
-const config: NextConfig = {
-  pageExtensions: ["js", "jsx", "ts", "tsx"],
-  eslint: {
-    ignoreDuringBuilds: true,
-  }
+const nextConfig: NextConfig = {
+  /* config options here */
 };
 
-export default config;
+export default nextConfig;

@@ -26,6 +26,8 @@ public class Ticker
             t0 = time;
 
             function(delta);
+
+            Thread.Yield();
         }
     }
     
@@ -55,6 +57,17 @@ public class Ticker
             {
                 accumulated -= delta;
                 function(delta);
+            }
+
+            var sleep = (int) Math.Max(0, delta - accumulated);
+            
+            if (sleep > 0)
+            {
+                Thread.Sleep(sleep);
+            }
+            else
+            {
+                Thread.Yield();
             }
         }
     }

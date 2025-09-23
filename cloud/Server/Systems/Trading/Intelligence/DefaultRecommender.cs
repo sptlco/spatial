@@ -2,7 +2,7 @@
 
 using Spatial.Blockchain.Helpers;
 
-namespace Spatial.Cloud.Systems.Banking.Engines;
+namespace Spatial.Cloud.Systems.Trading.Intelligence;
 
 /// <summary>
 /// A default <see cref="IRecommender"/> that generates a <see cref="Recommendation"/> 

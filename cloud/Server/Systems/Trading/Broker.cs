@@ -4,7 +4,7 @@ using Spatial.Blockchain;
 using Spatial.Blockchain.Helpers;
 using System.Numerics;
 
-namespace Spatial.Cloud.Systems.Banking;
+namespace Spatial.Cloud.Systems.Trading;
 
 /// <summary>
 /// A trade execution agent.

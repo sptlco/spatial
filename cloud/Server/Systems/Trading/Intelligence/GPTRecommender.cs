@@ -3,7 +3,7 @@
 using Spatial.Blockchain.Helpers;
 using Spatial.Intelligence;
 
-namespace Spatial.Cloud.Systems.Banking.Engines;
+namespace Spatial.Cloud.Systems.Trading.Intelligence;
 
 /// <summary>
 /// A <see cref="IRecommender"/> that communicates with ChatGPT as if 

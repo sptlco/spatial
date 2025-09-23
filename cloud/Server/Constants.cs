@@ -33,7 +33,7 @@ internal static class Constants
     public const decimal vL = 1000000;
 
     /// <summary>
-    /// The minimum number of hours between trades executed by the <see cref="Systems.Banking.Trader"/>.
+    /// The minimum number of hours between trades executed by the <see cref="Systems.Trading.Trader"/>.
     /// </summary>
     public const double MinTradeIntervalHours = 0.5;
 

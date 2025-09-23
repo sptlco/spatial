@@ -1,9 +1,9 @@
 // Copyright © Spatial Corporation. All rights reserved.
 
 using Microsoft.Extensions.Options;
-using Spatial.Cloud.Systems.Banking;
+using Spatial.Cloud.Systems.Trading;
 
-namespace Spatial.Cloud.Contracts.Systems.Banking;
+namespace Spatial.Cloud.Contracts.Systems.Trading;
 
 /// <summary>
 /// Configurable options for the <see cref="Trader"/>.
@@ -24,7 +24,7 @@ internal class TraderConfiguration
     /// <summary>
     /// An amount of ETH to reserve for liquidity and gas fees.
     /// </summary>
-    public decimal Reserves { get; set; } = 0.0M;
+    public decimal Reserve { get; set; } = 0.0M;
 
     /// <summary>
     /// The minimum amount of ETH or coins the <see cref="Trader"/> will attempt to trade.

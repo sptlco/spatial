@@ -1,9 +1,9 @@
 // Copyright © Spatial Corporation. All rights reserved.
 
 using Spatial.Blockchain.Helpers;
-using Spatial.Cloud.Systems.Banking.Engines;
+using Spatial.Cloud.Systems.Trading.Intelligence;
 
-namespace Spatial.Cloud.Systems.Banking;
+namespace Spatial.Cloud.Systems.Trading;
 
 /// <summary>
 /// A market data analyzer for ERC20 tokens.

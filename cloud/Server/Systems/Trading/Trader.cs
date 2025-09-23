@@ -3,10 +3,12 @@
 using Spatial.Blockchain;
 using Spatial.Blockchain.Helpers;
 using Spatial.Cloud.Contracts;
+using Spatial.Cloud.Contracts.Systems.Trading;
+using Spatial.Cloud.Systems.Trading.Intelligence;
 using Spatial.Simulation;
 using System.Numerics;
- 
-namespace Spatial.Cloud.Systems.Banking;
+
+namespace Spatial.Cloud.Systems.Trading;
 
 /// <summary>
 /// Automated trading on the Ethereum network.
@@ -24,7 +26,7 @@ internal class Trader : System
     public Trader(ServerConfiguration config)
     {
         _config = config;
-        _interval = (long) _config.Systems.Banking.Trader.Interval.Period.TotalMilliseconds;
+        _interval = (long) _config.Systems.Trading.Trader.Interval.Period.TotalMilliseconds;
     }
 
     /// <summary>
@@ -34,7 +36,7 @@ internal class Trader : System
     /// <param name="delta"><see cref="Time"/> since the last update.</param>
     public override void Update(Space space, Time delta)
     {
-        if (_config.Systems.Banking.Trader.Enabled)
+        if (_config.Systems.Trading.Trader.Enabled)
         {
             // Since transactions and function calls may take some time, perform 
             // the trade operation asynchronously (don't block the main thread).
@@ -59,13 +61,13 @@ internal class Trader : System
             var portfolio = coins.Sum(coin => coin.Id == Constants.Ethereum ? 0 : coin.Value);
             var ethereum = coins.First(coin => coin.Id == Constants.Ethereum);
 
-            if ((decimal) ethereum.Balance < _config.Systems.Banking.Trader.Reserves * 1e18M)
+            if ((decimal) ethereum.Balance < _config.Systems.Trading.Trader.Reserve * 1e18M)
             {
-                INFO("Insufficient funds: {Balance}/{Reserves} ETH.", (decimal) ethereum.Balance / 1e18M, _config.Systems.Banking.Trader.Reserves);
+                INFO("Insufficient funds: {Balance}/{Reserves} ETH.", (decimal) ethereum.Balance / 1e18M, _config.Systems.Trading.Trader.Reserve);
             }
             else
             {
-                var funds = ethereum.Balance - new BigInteger(_config.Systems.Banking.Trader.Reserves * 1e18M);
+                var funds = ethereum.Balance - new BigInteger(_config.Systems.Trading.Trader.Reserve * 1e18M);
                 var recommendations = await Analyzer.AnalyzeAsync(coins);
 
                 INFO("Completed trade analysis with {Recommendations} recommendations.", recommendations.Count);
@@ -87,7 +89,7 @@ internal class Trader : System
                         };
                     }
 
-                    if (GetReadableSize() <= _config.Systems.Banking.Trader.MinimumTrade)
+                    if (GetReadableSize() <= _config.Systems.Trading.Trader.MinimumTrade)
                     {
                         INFO("Insignificant trade: {Size} {Symbol}.", GetReadableSize(), trade.Action == TradeAction.Buy ? "ETH": coin.Symbol.ToUpper());
                         continue;
@@ -120,7 +122,7 @@ internal class Trader : System
     private async Task<List<CoinGecko.Coin>> GetCoinsAsync()
     {
         var ethereum = Ethereum.CreateClient();
-        var watchlist = _config.Systems.Banking.Trader.Watchlist;
+        var watchlist = _config.Systems.Trading.Trader.Watchlist;
         var coins = await CoinGecko.GetMarketsAsync([Constants.Ethereum, .. watchlist.Keys]);
         var funds = await ethereum.GetBalanceAsync();
         var details = await ethereum.GetERC20DetailsAsync([.. watchlist.Values]);
@@ -149,17 +151,17 @@ internal class Trader : System
 
     private long GetInterval(List<CoinGecko.Coin> coins)
     {
-        return _config.Systems.Banking.Trader.Interval.Mode switch {
-            Contracts.Systems.Banking.TraderConfiguration.IntervalMode.Fixed => (long) _config.Systems.Banking.Trader.Interval.Period.TotalMilliseconds,
-            Contracts.Systems.Banking.TraderConfiguration.IntervalMode.Adaptive => ComputeAdaptiveInterval(coins)
+        return _config.Systems.Trading.Trader.Interval.Mode switch {
+            TraderConfiguration.IntervalMode.Fixed => (long) _config.Systems.Trading.Trader.Interval.Period.TotalMilliseconds,
+            TraderConfiguration.IntervalMode.Adaptive => ComputeAdaptiveInterval(coins)
         };
     }
 
     private long ComputeAdaptiveInterval(List<CoinGecko.Coin> coins)
     {
         var volatility = coins.Max(coin => (coin.High24H - coin.Low24H) / coin.Price);
-        var period = _config.Systems.Banking.Trader.Interval.Period.TotalHours;
-        var sensitivity = _config.Systems.Banking.Trader.Interval.Sensitivity;
+        var period = _config.Systems.Trading.Trader.Interval.Period.TotalHours;
+        var sensitivity = _config.Systems.Trading.Trader.Interval.Sensitivity;
 
         return (long) TimeSpan.FromHours(Math.Max(Constants.MinTradeIntervalHours, Math.Min(period, period / (1 + sensitivity * (double) volatility)))).TotalMilliseconds;
     }

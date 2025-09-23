@@ -1,7 +1,7 @@
 // Copyright © Spatial Corporation. All rights reserved.
 
 using Microsoft.Extensions.Options;
-using Spatial.Cloud.Contracts.Systems.Banking;
+using Spatial.Cloud.Contracts.Systems.Trading;
 
 namespace Spatial.Cloud.Contracts.Systems;
 
@@ -11,8 +11,8 @@ namespace Spatial.Cloud.Contracts.Systems;
 internal class SystemConfiguration
 {
     /// <summary>
-    /// Configurable options for banking.
+    /// Configurable options for trading.
     /// </summary>
     [ValidateObjectMembers]
-    public BankingConfiguration Banking { get; set; } = new BankingConfiguration();
+    public TradingConfiguration Trading { get; set; } = new TradingConfiguration();
 }

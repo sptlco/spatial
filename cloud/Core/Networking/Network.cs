@@ -12,7 +12,6 @@ using System.Linq.Expressions;
 using System.Net;
 using System.Net.Sockets;
 using System.Reflection;
-using System.Security.Cryptography;
 
 namespace Spatial.Networking;
 

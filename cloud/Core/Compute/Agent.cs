@@ -70,14 +70,7 @@ internal class Agent : IDisposable
                 continue;
             }
 
-            try
-            {
-                Execute(job);
-            }
-            catch
-            {
-                // ...
-            }
+            Execute(job);
         }
     }
 

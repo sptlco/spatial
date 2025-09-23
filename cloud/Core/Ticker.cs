@@ -27,7 +27,7 @@ public class Ticker
 
             function(delta);
 
-            Thread.Yield();
+            Thread.Sleep(1);
         }
     }
     
@@ -42,24 +42,19 @@ public class Ticker
         Time delta, 
         CancellationToken cancellationToken = default)
     {
-        var t0 = Time.Now;
-        var accumulated = Time.Zero;
+        var next = Time.Now;
 
         while (!cancellationToken.IsCancellationRequested)
         {
-            var t = Time.Now;
-            var elapsed = t - t0;
+            var now = Time.Now;
 
-            accumulated += elapsed;
-            t0 = t;
-
-            while (!cancellationToken.IsCancellationRequested && accumulated >= delta)
+            if (now >= next)
             {
-                accumulated -= delta;
                 function(delta);
+                next += delta;
             }
 
-            Thread.Yield();
+            Thread.Sleep((int) Math.Max(next - Time.Now, 1));
         }
     }
 }

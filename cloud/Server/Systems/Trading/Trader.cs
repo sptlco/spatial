@@ -36,7 +36,7 @@ internal class Trader : System
     /// <param name="delta"><see cref="Time"/> since the last update.</param>
     public override void Update(Space space, Time delta)
     {
-        if (_config.Systems.Trading.Trader.Enabled)
+        if (!_config.Systems.Trading.Trader.Enabled)
         {
             // Since transactions and function calls may take some time, perform 
             // the trade operation asynchronously (don't block the main thread).

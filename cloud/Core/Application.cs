@@ -125,7 +125,7 @@ public class Application
 
                 application.Start();
                 application._wapp.Start();
-                application._processor.Run();
+                //application._processor.Run();
 
                 if (cancellationToken == default)
                 {
@@ -136,13 +136,13 @@ public class Application
                 {
                     INFO("Application running at {TickRate} ticks/s.", application.Configuration.TickRate);
 
-                    await Ticker.RunAsync(application.InvokeTickAsync, 1000.0D / application.Configuration.TickRate, cancellationToken);
+                    Ticker.Run(application.InvokeTick, 1000.0D / application.Configuration.TickRate, cancellationToken);
                 }
                 else
                 {
                     INFO("Application running as fast as possible.");
 
-                    await Ticker.RunAsync(application.InvokeTickAsync, cancellationToken);
+                    Ticker.Run(application.InvokeTick, cancellationToken);
                 }
 
                 INFO("Shutting down the application.");
@@ -381,7 +381,7 @@ public class Application
         }
     }
 
-    private async Task InvokeTickAsync(Time delta)
+    private void InvokeTick(Time delta)
     {
         _network.Receive();
         _space.Update(delta);
@@ -392,7 +392,5 @@ public class Application
 
         _time += delta;
         _ticks++;
-
-        await Task.CompletedTask;
     }
 }

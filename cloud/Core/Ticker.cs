@@ -12,8 +12,8 @@ public class Ticker
     /// </summary>
     /// <param name="function">A function to perform each tick.</param>
     /// <param name="cancellationToken">An optional <see cref="CancellationToken"/>.</param>
-    public static async Task RunAsync(
-        Func<Time, Task> function,
+    public static void Run(
+        Action<Time> function,
         CancellationToken cancellationToken = default)
     {
         var t0 = Time.Now;
@@ -25,8 +25,9 @@ public class Ticker
 
             t0 = time;
 
-            await function(delta);
-            await Task.Yield();
+            function(delta);
+
+            Thread.Yield();
         }
     }
     
@@ -36,8 +37,8 @@ public class Ticker
     /// <param name="function">A function to perform each tick.</param>
     /// <param name="delta">The rate at which to perform <paramref name="function"/>.</param>
     /// <param name="cancellationToken">An optional <see cref="CancellationToken"/>.</param>
-    public static async Task RunAsync(
-        Func<Time, Task> function, 
+    public static void Run(
+        Action<Time> function, 
         Time delta, 
         CancellationToken cancellationToken = default)
     {
@@ -55,16 +56,10 @@ public class Ticker
             while (!cancellationToken.IsCancellationRequested && accumulated >= delta)
             {
                 accumulated -= delta;
-
-                await function(delta);
+                function(delta);
             }
 
-            var sleep = (int) Math.Max(0, delta - accumulated);
-
-            if (sleep > 0)
-            {
-                await Task.Delay(sleep, cancellationToken);
-            }
+            Thread.Yield();
         }
     }
 }

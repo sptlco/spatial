@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.2](https://github.com/sptlco/spatial/compare/spatial-cloud-1.1.1...spatial-cloud-1.1.2) (2025-09-23)
+
+
+### Bug Fixes
+
+* yield main thread ([514058a](https://github.com/sptlco/spatial/commit/514058a3a9b6f3d7af7d7d60bdd93e0f6c5b61d6))
+
 ## [1.1.1](https://github.com/sptlco/spatial/compare/spatial-cloud-1.1.0...spatial-cloud-1.1.1) (2025-09-21)
 
 

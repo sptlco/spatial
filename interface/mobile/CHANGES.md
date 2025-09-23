@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.0](https://github.com/sptlco/spatial/compare/spatial-interface-mobile-1.1.3...spatial-interface-mobile-1.2.0) (2025-09-23)
+
+
+### Features
+
+* add a symbol components ([f42f58b](https://github.com/sptlco/spatial/commit/f42f58b265c331fdf2abd18349d1d79ac24326f7))
+
 ## [1.1.3](https://github.com/sptlco/spatial/compare/spatial-interface-mobile-1.1.2...spatial-interface-mobile-1.1.3) (2025-09-22)
 
 

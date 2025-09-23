@@ -63,14 +63,12 @@ internal class Agent : IDisposable
     {
         while (!_cts.IsCancellationRequested)
         {
-            if (!Fetch(out var job))
+            if (Fetch(out var job))
             {
-                Thread.SpinWait(50);
-                Thread.Yield();
-                continue;
+                Execute(job);
             }
 
-            Execute(job);
+            Thread.Sleep(1);
         }
     }
 

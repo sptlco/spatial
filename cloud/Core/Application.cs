@@ -125,7 +125,7 @@ public class Application
 
                 application.Start();
                 application._wapp.Start();
-                //application._processor.Run();
+                application._processor.Run();
 
                 if (cancellationToken == default)
                 {

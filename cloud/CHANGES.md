@@ -1,5 +1,14 @@
 # Changelog
 
+## [1.1.3](https://github.com/sptlco/spatial/compare/spatial-cloud-1.1.2...spatial-cloud-1.1.3) (2025-09-23)
+
+
+### Bug Fixes
+
+* disable processor ([36a374a](https://github.com/sptlco/spatial/commit/36a374ac0463be6d8982892cf468ca886824cb85))
+* use async ([216491b](https://github.com/sptlco/spatial/commit/216491b374ffdf62feaef4546e29bbb9cd335b22))
+* use thread sleep ([25c338f](https://github.com/sptlco/spatial/commit/25c338fb247685ad7746c3a3b609a76e58cb6b90))
+
 ## [1.1.2](https://github.com/sptlco/spatial/compare/spatial-cloud-1.1.1...spatial-cloud-1.1.2) (2025-09-23)
 
 

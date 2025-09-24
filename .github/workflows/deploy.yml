@@ -2,8 +2,7 @@ name: Deploy
 
 on:
   push:
-    tags:
-      - '*'
+    branches: [main]
     
 concurrency:
   group: deploy
@@ -30,3 +29,4 @@ jobs:
             git pull origin main
             docker compose pull
             docker compose up -d --build
+            docker compose restart nginx

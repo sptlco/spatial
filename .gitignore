@@ -1,9 +1,7 @@
 .vs
 .vscode/*
 
-build
-backup
-patch
+config
 
 # Logs
 logs

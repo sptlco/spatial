@@ -1,0 +1,64 @@
+services:
+  api:
+    build: ./api
+    restart: always
+    expose:
+      - "80"
+    depends_on:
+      - cloud
+
+  cloud:
+    build: ./cloud
+    restart: always
+    expose:
+      - "80"
+    depends_on:
+      - mongo
+
+  web:
+    build: ./interface/web
+    restart: always
+    expose:
+      - "80"
+    depends_on:
+      - api
+
+  code:
+    image: codercom/code-server:latest
+    restart: always
+    ports:
+      - "8080:8080"
+    working_dir: /usr/src/spatial
+    volumes:
+      - ./config/code-server/config.yaml:/root/.config/code-server/config.yaml:ro
+      - ./:/usr/src/spatial
+    environment:
+      - DOCKER_USER=${USER}
+    user: "0:0"
+
+  nginx:
+    image: nginx:stable
+    restart: always
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./config/nginx:/etc/nginx/conf.d
+      - ./config/nginx/ssl/certs:/etc/ssl/certs/
+      - ./config/nginx/ssl/private:/etc/ssl/private
+    depends_on:
+      - api
+      - cloud
+      - web
+      - code
+
+  mongo:
+    image: mongo:7.0
+    restart: always
+    volumes:
+      - mongo:/data/db
+    expose:
+      - "27017"
+
+volumes:
+  mongo:

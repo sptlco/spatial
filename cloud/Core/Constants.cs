@@ -55,7 +55,7 @@ internal class Constants
     /// <summary>
     /// The default name of the database.
     /// </summary>
-    public const string DefaultDatabaseUrl = "mongodb://localhost:27017";
+    public const string DefaultDatabaseUrl = "mongodb://mongo:27017";
 
     /// <summary>
     /// The default name of the database.

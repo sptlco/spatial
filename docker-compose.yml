@@ -24,20 +24,15 @@ services:
       - api
 
   code:
-    image: codercom/code-server:latest
+    build: ./code
     restart: always
     ports:
       - "8080:8080"
-    working_dir: /usr/src/spatial
     volumes:
-      - ./:/usr/src/spatial
-      - ./config/code-server/config.yaml:/root/.config/code-server/config.yaml:ro
-      - ./config/code-server/data:/root/.local
-      - ~/.gitconfig:/root/.gitconfig:ro
-      - ~/.ssh:/root/.ssh:ro
-    environment:
-      - DOCKER_USER=${USER}
-    user: "0:0"
+      - ./:/home/spatial/project
+      - ./config/code/config.yaml:/home/spatial/.config/code-server/config.yaml:ro
+      - ./config/code/data:/home/spatial/.local/share/code-server
+      - ~/.gitconfig:/home/spatial/.gitconfig:ro
 
   nginx:
     image: nginx:stable

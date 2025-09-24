@@ -30,8 +30,9 @@ services:
       - "8080:8080"
     working_dir: /usr/src/spatial
     volumes:
-      - ./config/code-server/config.yaml:/root/.config/code-server/config.yaml:ro
       - ./:/usr/src/spatial
+      - ./config/code-server/config.yaml:/root/.config/code-server/config.yaml:ro
+      - ./config/code-server/data:/root/.local
     environment:
       - DOCKER_USER=${USER}
     user: "0:0"

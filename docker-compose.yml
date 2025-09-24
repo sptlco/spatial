@@ -31,7 +31,8 @@ services:
     volumes:
       - ./config/code-server/config.yaml:/root/.config/code-server/config.yaml:ro
       - ./config/code-server/data:/root/.local/share/code-server
-      - ./code:/usr/src/spatial
+      - ~/.gitconfig:/root/.gitconfig:ro
+      - ./:/usr/src/spatial
 
   nginx:
     image: nginx:stable

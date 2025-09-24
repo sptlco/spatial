@@ -31,7 +31,10 @@ services:
     volumes:
       - ./config/code-server/config.yaml:/root/.config/code-server/config.yaml:ro
       - ./config/code-server/data:/root/.local/share/code-server
+      - ./config/code-server/media:/usr/lib/code-server/lib/vscode/out/media
+      - ./config/code-server/resources:/usr/lib/code-server/lib/vscode/resources/server
       - ~/.gitconfig:/root/.gitconfig:ro
+      - ~/.ssh:/root/.ssh
       - ./:/usr/src/spatial
 
   nginx:

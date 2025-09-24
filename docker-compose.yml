@@ -24,7 +24,7 @@ services:
       - api
 
   code:
-    build: ./code
+    build: ./tools/code
     restart: always
     ports:
       - "8080:8080"

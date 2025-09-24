@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.3.0](https://github.com/sptlco/spatial/compare/spatial-interface-web-1.2.0...spatial-interface-web-1.3.0) (2025-09-24)
+
+
+### Features
+
+* use containers ([66650c4](https://github.com/sptlco/spatial/commit/66650c46715e05c0b66f2730d672b91ebbb52224))
+
 ## [1.2.0](https://github.com/sptlco/spatial/compare/spatial-interface-web-1.1.0...spatial-interface-web-1.2.0) (2025-09-22)
 
 

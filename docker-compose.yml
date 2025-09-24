@@ -34,10 +34,11 @@ services:
       - ./config/code-server/media:/usr/lib/code-server/lib/vscode/out/media
       - ./config/code-server/resources:/usr/lib/code-server/lib/vscode/resources/server
       - ~/.gitconfig:/root/.gitconfig:ro
+      - ~/.ssh:/root/.ssh:ro
       - ./:/usr/src/spatial
 
   nginx:
-    image: nginx:stable
+    image: nginx:latest
     restart: always
     ports:
       - "80:80"
@@ -53,7 +54,7 @@ services:
       - code
 
   mongo:
-    image: mongo:7.0
+    image: mongo:latest
     restart: always
     volumes:
       - mongo:/data/db

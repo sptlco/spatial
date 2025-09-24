@@ -29,10 +29,9 @@ services:
     ports:
       - "8080:8080"
     volumes:
-      - ./:/usr/src/spatial
       - ./config/code-server/config.yaml:/root/.config/code-server/config.yaml:ro
       - ./config/code-server/data:/root/.local/share/code-server
-      - ~/.gitconfig:/root/.gitconfig:ro
+      - ./:/usr/src/spatial
 
   nginx:
     image: nginx:stable

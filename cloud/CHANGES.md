@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.1](https://github.com/sptlco/spatial/compare/spatial-cloud-1.2.0...spatial-cloud-1.2.1) (2025-09-24)
+
+
+### Bug Fixes
+
+* persist settings ([c8631ff](https://github.com/sptlco/spatial/commit/c8631ff17a35d2b4b03f8c04b9775c99af19e47e))
+
 ## [1.2.0](https://github.com/sptlco/spatial/compare/spatial-cloud-1.1.3...spatial-cloud-1.2.0) (2025-09-24)
 
 

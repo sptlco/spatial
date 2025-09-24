@@ -33,6 +33,8 @@ services:
       - ./:/usr/src/spatial
       - ./config/code-server/config.yaml:/root/.config/code-server/config.yaml:ro
       - ./config/code-server/data:/root/.local
+      - ~/.gitconfig:/root/.gitconfig:ro
+      - ~/.ssh:/root/.ssh:ro
     environment:
       - DOCKER_USER=${USER}
     user: "0:0"

@@ -17,6 +17,11 @@ internal static class Analyzer
     /// <returns>A list of trade recommendations.</returns>
     public static async Task<List<Recommendation>> AnalyzeAsync(List<CoinGecko.Coin> coins)
     {
+        return [.. (await GetRecommendationsAsync(coins)).Where(rec => rec.Coin is not Constants.Ethereum)];
+    }
+    
+    private static async Task<List<Recommendation>> GetRecommendationsAsync(List<CoinGecko.Coin> coins)
+    {
         try
         {
             return await new GPTRecommender().NextAsync(coins);

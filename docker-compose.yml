@@ -14,6 +14,7 @@ services:
       - "80"
     depends_on:
       - mongo
+      - redis
 
   web:
     build: ./interface/web
@@ -40,7 +41,7 @@ services:
       - ./:/usr/src/spatial
 
   nginx:
-    image: nginx:latest
+    image: nginx
     restart: always
     ports:
       - "80:80"
@@ -56,12 +57,21 @@ services:
       - code
 
   mongo:
-    image: mongo:latest
+    image: mongo
     restart: always
-    volumes:
-      - mongo:/data/db
     expose:
       - "27017"
+    volumes:
+      - mongo:/data/db
+
+  redis:
+    image: redis
+    restart: always
+    expose:
+      - "6379"
+    volumes:
+      - redis:/data
 
 volumes:
   mongo:
+  redis:

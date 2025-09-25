@@ -30,6 +30,7 @@ services:
       - "8080:8080"
     volumes:
       - ./config/code-server/config.yaml:/root/.config/code-server/config.yaml
+      - ./config/code-server/strings.json:/root/.config/code-server/strings.json
       - ./config/code-server/browser/media:/usr/lib/code-server/src/browser/media
       - ./config/code-server/data:/root/.local/share/code-server
       - ./config/code-server/media:/usr/lib/code-server/lib/vscode/out/media

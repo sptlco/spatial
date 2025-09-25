@@ -19,6 +19,7 @@ internal class Agent : IDisposable
     private readonly Thread _thread;
     private readonly CancellationTokenSource _cts;
     private readonly InterlockedQueue<CommandJob> _queue;
+    private readonly ManualResetEventSlim _signal;
     private uint _next;
 
     /// <summary>
@@ -33,6 +34,7 @@ internal class Agent : IDisposable
         _thread = CreateThread();
         _cts = new();
         _queue = new();
+        _signal = new ManualResetEventSlim(false);
     }
 
     /// <summary>
@@ -49,14 +51,24 @@ internal class Agent : IDisposable
     }
 
     /// <summary>
+    /// Wake the <see cref="Agent"/>.
+    /// </summary>
+    public void Wake()
+    {
+        _signal.Set();
+    }
+
+    /// <summary>
     /// Dispose of the <see cref="Agent"/>.
     /// </summary>
     public void Dispose()
     {
         _cts.Cancel();
+        _signal.Set();
         _thread.Join();
         _cts.Dispose();
         _queue.Clear();
+        _signal.Dispose();
     }
 
     private void Work()
@@ -66,9 +78,11 @@ internal class Agent : IDisposable
             if (Fetch(out var job))
             {
                 Execute(job);
+                continue;
             }
 
-            Thread.Sleep(1);
+            _signal.Wait(_cts.Token);
+            _signal.Reset();
         }
     }
 
@@ -125,7 +139,7 @@ internal class Agent : IDisposable
         {
             job.Status = JobStatus.Failed;
 
-            Log.Error(e, "{job} failed", job.GetType().Name);
+            ERROR(e, "{job} failed", job.GetType().Name);
         }
         finally
         {

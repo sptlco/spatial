@@ -227,6 +227,9 @@ public class Processor
     {
         job.Status = JobStatus.Scheduled;
 
-        _agents[Interlocked.Increment(ref _next) % _agents.Length].Queue.Enqueue(job);
+        var agent = _agents[Interlocked.Increment(ref _next) % _agents.Length];
+
+        agent.Queue.Enqueue(job);
+        agent.Wake();
     }
 }

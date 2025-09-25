@@ -161,7 +161,7 @@ public class Ethereum
         var wei = value.HasValue ? new HexBigInteger(value.Value) : null;
         var gas = await target.EstimateGasAsync(_account.Address, null, wei, input);
 
-        return (await target.SendTransactionAndWaitForReceiptAsync(_account.Address, gas, wei, null, input)).TransactionHash;
+        return (await target.SendTransactionAndWaitForReceiptAsync(_account.Address, gas, wei, receiptRequestCancellationToken: null, input)).TransactionHash;
     }
 
     private string Download(string contract)

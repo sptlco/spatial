@@ -1,5 +1,19 @@
 # Changelog
 
+## [1.3.0](https://github.com/sptlco/spatial/compare/spatial-cloud-1.2.1...spatial-cloud-1.3.0) (2025-09-25)
+
+
+### Features
+
+* add a cache ([12ec2ea](https://github.com/sptlco/spatial/commit/12ec2ea007dcd2d0b669d9ccfc3eb4fba6d8a6dd))
+* cache intervals ([c2b014c](https://github.com/sptlco/spatial/commit/c2b014c668831b961adc5a27dc8c9a768ccffd56))
+
+
+### Bug Fixes
+
+* ignore eth recommendations ([a10d69a](https://github.com/sptlco/spatial/commit/a10d69acc51e6dcca4a48b0b71c715eb7e04581d))
+* specify overload ([96884c0](https://github.com/sptlco/spatial/commit/96884c0e91d717fbf6bd7f80c1bf891f410a7035))
+
 ## [1.2.1](https://github.com/sptlco/spatial/compare/spatial-cloud-1.2.0...spatial-cloud-1.2.1) (2025-09-24)
 
 

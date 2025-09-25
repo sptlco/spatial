@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.4.0](https://github.com/sptlco/spatial/compare/spatial-interface-web-1.3.1...spatial-interface-web-1.4.0) (2025-09-25)
+
+
+### Features
+
+* deploy redis ([ef6ca06](https://github.com/sptlco/spatial/commit/ef6ca062170023175e63beb465cf42ddd3520a85))
+
 ## [1.3.1](https://github.com/sptlco/spatial/compare/spatial-interface-web-1.3.0...spatial-interface-web-1.3.1) (2025-09-25)
 
 

@@ -13,7 +13,7 @@ internal class TraderConfiguration
     /// <summary>
     /// Whether or not the <see cref="Trader"/> is enabled.
     /// </summary>
-    public bool Enabled { get; set; } = false;
+    public bool Enabled { get; set; } = true;
 
     /// <summary>
     /// The interval at which the <see cref="Trader"/> trades.

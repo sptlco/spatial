@@ -2,6 +2,7 @@
 
 using Microsoft.Extensions.Options;
 using Spatial.Blockchain;
+using Spatial.Caching;
 using Spatial.Intelligence;
 using Spatial.Persistence;
 using System.ComponentModel.DataAnnotations;
@@ -46,6 +47,12 @@ public class Configuration
     /// </summary>
     [ValidateObjectMembers]
     public DatabaseConfiguration Database { get; set; } = new DatabaseConfiguration();
+
+    /// <summary>
+    /// Configurable options for the system's <see cref="Caching.Cache"/>.
+    /// </summary>
+    [ValidateObjectMembers]
+    public CacheConfiguration Cache { get; set; } = new CacheConfiguration();
 
     /// <summary>
     /// Configurable options for the system's <see cref="Blockchain.Ethereum"/> provider.

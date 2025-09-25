@@ -16,14 +16,6 @@ services:
       - mongo
       - redis
 
-  web:
-    build: ./interface/web
-    restart: always
-    expose:
-      - "80"
-    depends_on:
-      - api
-
   code:
     build: ./tools/code
     restart: always
@@ -40,6 +32,30 @@ services:
       - ~/.ssh:/root/.ssh:ro
       - ./:/usr/src/spatial
 
+  web:
+    build: ./interface/web
+    restart: always
+    expose:
+      - "80"
+    depends_on:
+      - api
+
+  mongo:
+    image: mongo
+    restart: always
+    expose:
+      - "27017:27017"
+    volumes:
+      - mongo:/data/db
+
+  redis:
+    image: redis
+    restart: always
+    expose:
+      - "6379:6379"
+    volumes:
+      - redis:/data
+
   nginx:
     image: nginx
     restart: always
@@ -53,24 +69,8 @@ services:
     depends_on:
       - api
       - cloud
-      - web
       - code
-
-  mongo:
-    image: mongo
-    restart: always
-    expose:
-      - "27017"
-    volumes:
-      - mongo:/data/db
-
-  redis:
-    image: redis
-    restart: always
-    expose:
-      - "6379"
-    volumes:
-      - redis:/data
+      - web
 
 volumes:
   mongo:

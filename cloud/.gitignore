@@ -20,7 +20,10 @@
 mono_crash.*
 
 # Application files
-appsettings.*.json
+appsettings.[Oo]verride.json
+
+# Web directory
+wwwroot
 
 # Build results
 [Bb]uild/

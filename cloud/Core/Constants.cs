@@ -75,7 +75,7 @@ internal class Constants
     /// <summary>
     /// The path to the system's configuration override file.
     /// </summary>
-    public const string OverridePath = "appsettings.override.json";
+    public const string OverridePath = "appsettings.Override.json";
 
     /// <summary>
     /// Log property names.

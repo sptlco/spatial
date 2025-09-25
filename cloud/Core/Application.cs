@@ -119,6 +119,7 @@ public class Application
             try
             {
                 INFO("Time: {Time} ms.", Time.Now.Milliseconds);
+                INFO("Environment: {Environment}.", application._wapp.Environment.EnvironmentName);
                 INFO("Starting {Application} {Version}.", application.Name, application.Version);
 
                 application.ConfigureConnectivity();
@@ -289,12 +290,13 @@ public class Application
 
     private WebApplication CreateWebApplication()
     {
+        var path = Directory.CreateDirectory("wwwroot").FullName;
         var builder = WebApplication.CreateBuilder();
 
         Configure(builder);
 
         builder.Configuration.AddJsonFile(
-            path: "appsettings.override.json",
+            path: Constants.OverridePath,
             optional: true,
             reloadOnChange: true);
 
@@ -333,13 +335,14 @@ public class Application
             .AddControllers();
 
         var application = builder.Build();
+       
 
         application
             .UseExceptionHandler()
             .UseStatusCodePages(ReportStatusCode)
             .UseHttpsRedirection()
             .UseStaticFiles(new StaticFileOptions {
-                FileProvider = new PhysicalFileProvider(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "wwwroot")),
+                FileProvider = new PhysicalFileProvider(path),
                 RequestPath = ""
             })
             .UseSerilogRequestLogging()

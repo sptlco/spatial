@@ -84,6 +84,13 @@ public readonly struct Time
     public static Time FromHours(double hours) => FromMinutes(hours * 60);
 
     /// <summary>
+    /// Create a new <see cref="Time"/> from a number of days.
+    /// </summary>
+    /// <param name="days">A number of days.</param>
+    /// <returns>A <see cref="Time"/>.</returns>
+    public static Time FromDays(double days) => FromHours(days * 24.0D);
+
+    /// <summary>
     /// Create a new <see cref="Time"/> from a <see cref="DateTime"/>.
     /// </summary>
     /// <param name="time">A <see cref="DateTime"/>.</param>
@@ -100,5 +107,14 @@ public readonly struct Time
     public DateTime ToDateTime()
     {
         return new DateTime((long) (_milliseconds * TimeSpan.TicksPerMillisecond), DateTimeKind.Utc);
+    }
+
+    /// <summary>
+    /// Get the <see cref="Time"/> as a <see cref="TimeSpan"/>.
+    /// </summary>
+    /// <returns>A <see cref="TimeSpan"/>.</returns>
+    public TimeSpan AsTimeSpan()
+    {
+        return TimeSpan.FromMilliseconds(_milliseconds);
     }
 }

@@ -1,6 +1,6 @@
 // Copyright © Spatial Corporation. All rights reserved.
 
-using System.Collections.Concurrent;
+using Spatial.Caching;
 
 namespace Spatial;
 
@@ -9,7 +9,7 @@ namespace Spatial;
 /// </summary>
 public class Interval
 {
-    private static readonly ConcurrentDictionary<string, Time> _intervals = [];
+    private static readonly Cache _cache = new();
 
     /// <summary>
     /// Invoke an <see cref="Action"/> periodically.
@@ -17,16 +17,16 @@ public class Interval
     /// <param name="name">A name for the interval.</param>
     /// <param name="function">The <see cref="Action"/> to invoke.</param>
     /// <param name="interval">The rate at which to invoke the <see cref="Action"/>.</param>
-    public static void Invoke(
+    public static void Schedule(
         string name,
         Action function,
         Time interval)
     {
         var now = Time.Now;
 
-        if (!_intervals.TryGetValue(name, out var time) || (now - time) >= interval)
+        if (!_cache.TryGet<double>(Constants.Intervals, name, out var time) || (now - time) >= interval)
         {
-            _intervals[name] = now;
+            _cache.Set(Constants.Intervals, name, now.Milliseconds, Time.FromDays(1));
 
             function.Invoke();
         }
@@ -38,11 +38,11 @@ public class Interval
     /// <param name="name">A name for the interval.</param>
     /// <param name="function">The <see cref="Action"/> to invoke.</param>
     /// <param name="interval">The rate at which to invoke the <see cref="Action"/>.</param>
-    public static void FireAndForget(
+    public static void ScheduleAsync(
         string name,
         Action function,
         Time interval)
     {
-        Invoke(name, () => Task.Run(function), interval);       
+        Schedule(name, () => Task.Run(function), interval);       
     }
 }

@@ -78,6 +78,11 @@ internal class Constants
     public const string OverridePath = "appsettings.Override.json";
 
     /// <summary>
+    /// The name of the interval cache group.
+    /// </summary>
+    public const string Intervals = "Intervals";
+
+    /// <summary>
     /// Log property names.
     /// </summary>
     public static class Properties

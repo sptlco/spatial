@@ -1,6 +1,7 @@
 // Copyright © Spatial Corporation. All rights reserved.
 
 using StackExchange.Redis;
+using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 
 namespace Spatial.Caching;
@@ -27,7 +28,7 @@ public class Cache
     /// <param name="group">The object's logical grouping.</param>
     /// <param name="key">The object's key in the <see cref="Cache"/>.</param>
     /// <returns>An <see cref="object"/> of type <typeparamref name="T"/>.</returns>
-    public T? GetOrDefault<T>(string group, string key) => GetOrDefault<T>(CreateKey(group, key));
+    public T Get<T>(string group, string key) => Get<T>(CreateKey(group, key));
 
     /// <summary>
     /// Get an <see cref="object"/> of type <typeparamref name="T"/> from the <see cref="Cache"/>.
@@ -35,16 +36,42 @@ public class Cache
     /// <typeparam name="T">The object's <see cref="Type"/>.</typeparam>
     /// <param name="key">The object's key in the <see cref="Cache"/>.</param>
     /// <returns>An <see cref="object"/> of type <typeparamref name="T"/>.</returns>
-    public T? GetOrDefault<T>(string key)
+    public T Get<T>(string key)
     {
-        var json = (string?) GetDatabase().StringGet(key);
+        return JsonSerializer.Deserialize<T>(GetValue(key)!)!;
+    }
 
-        if (json is null)
+    /// <summary>
+    /// Attempt to get a value from the <see cref="Cache"/>.
+    /// </summary>
+    /// <typeparam name="T">The <see cref="Type"/> of value to get.</typeparam>
+    /// <param name="group">The value's logical group.</param>
+    /// <param name="key">The value's key.</param>
+    /// <param name="value">The value.</param>
+    /// <returns>Whether or not the value was fetched.</returns>
+    public bool TryGet<T>(string group, string key, [MaybeNullWhen(false)] out T? value) => TryGet(CreateKey(group, key), out value);
+
+    /// <summary>
+    /// Attempt to get a value from the <see cref="Cache"/>.
+    /// </summary>
+    /// <typeparam name="T">The <see cref="Type"/> of value to get.</typeparam>
+    /// <param name="key">The value's key.</param>
+    /// <param name="value">The value.</param>
+    /// <returns>Whether or not the value was fetched.</returns>
+    public bool TryGet<T>(string key, [MaybeNullWhen(false)] out T value)
+    {
+        value = default;
+
+        var json = GetValue(key);
+
+        if (!json.HasValue)
         {
-            return default;
+            return false;
         }
 
-        return JsonSerializer.Deserialize<T>(json);
+        value = JsonSerializer.Deserialize<T>(json!)!;
+
+        return true;
     }
 
     /// <summary>
@@ -56,7 +83,7 @@ public class Cache
     /// <param name="value">The object's value.</param>
     /// <param name="ttl">The object's time-to-live, after which its data is invalidated.</param>
     /// <returns>The <see cref="object"/> added to the <see cref="Cache"/>.</returns>
-    public T Set<T>(string group, string key, T value, TimeSpan? ttl = default) => Set(CreateKey(group, key), value, ttl);
+    public T Set<T>(string group, string key, T value, Time? ttl = null) => Set(CreateKey(group, key), value, ttl);
 
     /// <summary>
     /// Set a <paramref name="key"/> in the <see cref="Cache"/> to a specified <paramref name="value"/>.
@@ -66,9 +93,9 @@ public class Cache
     /// <param name="value">The object's value.</param>
     /// <param name="ttl">The object's time-to-live, after which its data is invalidated.</param>
     /// <returns>The <see cref="object"/> added to the <see cref="Cache"/>.</returns>
-    public T Set<T>(string key, T value, TimeSpan? ttl = default)
+    public T Set<T>(string key, T value, Time? ttl = null)
     {
-        GetDatabase().StringSet(key, JsonSerializer.Serialize(value), ttl);
+        GetDatabase().StringSet(key, JsonSerializer.Serialize(value), ttl?.AsTimeSpan());
 
         return value;
     }
@@ -83,7 +110,7 @@ public class Cache
     /// <param name="factory">A factory method for creating the object's value.</param>
     /// <param name="ttl">The object's time-to-live, after which its data is invalidated.</param>
     /// <returns>An <see cref="object"/> of type <typeparamref name="T"/>.</returns>
-    public T GetOrSet<T>(string group, string key, Func<string, T> factory, TimeSpan? ttl = default) => GetOrSet(CreateKey(group, key), factory, ttl);
+    public T GetOrSet<T>(string group, string key, Func<string, T> factory, Time? ttl = null) => GetOrSet(CreateKey(group, key), factory, ttl);
 
     /// <summary>
     /// Get an <see cref="object"/> of type <typeparamref name="T"/> from the <see cref="Cache"/>, or set it 
@@ -94,18 +121,23 @@ public class Cache
     /// <param name="factory">A factory method for creating the object's value.</param>
     /// <param name="ttl">The object's time-to-live, after which its data is invalidated.</param>
     /// <returns>An <see cref="object"/> of type <typeparamref name="T"/>.</returns>
-    public T GetOrSet<T>(string key, Func<string, T> factory, TimeSpan? ttl = default)
+    public T GetOrSet<T>(string key, Func<string, T> factory, Time? ttl = null)
     {
-        return GetOrDefault<T>(key) ?? Set(key, factory(key), ttl);
+        return TryGet<T>(key, out var value) ? value : Set(key, factory(key), ttl);
     }
 
-    private IDatabase GetDatabase(int database = -1)
+    private IDatabase GetDatabase()
     {
-        return _cache.GetDatabase(database);
+        return _cache.GetDatabase(Configuration.Current.Cache.Database);
     }
 
     private string CreateKey(string group, string key)
     {
         return string.Join(".", group, key);
+    }
+
+    private RedisValue GetValue(string key)
+    {
+        return GetDatabase().StringGet(key);
     }
 }

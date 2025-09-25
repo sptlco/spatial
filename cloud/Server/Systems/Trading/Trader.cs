@@ -2,6 +2,7 @@
 
 using Spatial.Blockchain;
 using Spatial.Blockchain.Helpers;
+using Spatial.Caching;
 using Spatial.Cloud.Contracts;
 using Spatial.Cloud.Contracts.Systems.Trading;
 using Spatial.Cloud.Systems.Trading.Intelligence;
@@ -17,6 +18,7 @@ namespace Spatial.Cloud.Systems.Trading;
 internal class Trader : System
 {
     private readonly ServerConfiguration _config;
+    private readonly Cache _cache;
     private long _interval;
 
     /// <summary>
@@ -26,6 +28,7 @@ internal class Trader : System
     public Trader(ServerConfiguration config)
     {
         _config = config;
+        _cache = new Cache();
         _interval = (long) _config.Systems.Trading.Trader.Interval.Period.TotalMilliseconds;
     }
 
@@ -41,7 +44,7 @@ internal class Trader : System
             // Since transactions and function calls may take some time, perform 
             // the trade operation asynchronously (don't block the main thread).
 
-            Interval.FireAndForget(Constants.Intervals.Trade, Trade, Interlocked.Read(ref _interval));
+            Interval.ScheduleAsync(Constants.Intervals.Trade, Trade, Interlocked.Read(ref _interval));
         }
     }
 

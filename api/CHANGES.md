@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.3.1](https://github.com/sptlco/spatial/compare/spatial-api-1.3.0...spatial-api-1.3.1) (2025-09-25)
+
+
+### Bug Fixes
+
+* use latest node ([c0f2664](https://github.com/sptlco/spatial/commit/c0f2664c0a5b746a40779da7fd6d23b7494ff52e))
+
 ## [1.3.0](https://github.com/sptlco/spatial/compare/spatial-api-1.2.0...spatial-api-1.3.0) (2025-09-24)
 
 

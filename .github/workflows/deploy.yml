@@ -26,8 +26,10 @@ jobs:
           key: ${{ secrets.SERVER_KEY }}
           capture_stdout: true
           script: |
+            set -e
             cd .spatial
             git pull origin main
             docker compose pull
             docker compose up -d --build
             docker compose restart nginx
+

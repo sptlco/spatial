@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.3.2](https://github.com/sptlco/spatial/compare/spatial-cloud-1.3.1...spatial-cloud-1.3.2) (2025-09-26)
+
+
+### Bug Fixes
+
+* build identifiers ([#1](https://github.com/sptlco/spatial/issues/1)) ([7ea27f8](https://github.com/sptlco/spatial/commit/7ea27f87bf2e4f2acde4cf6967025e4cf4eec210))
+* remove import ([#3](https://github.com/sptlco/spatial/issues/3)) ([435ec84](https://github.com/sptlco/spatial/commit/435ec84f72349aa80f196c9e6c0f39806199a44a))
+
 ## [1.3.1](https://github.com/sptlco/spatial/compare/spatial-cloud-1.3.0...spatial-cloud-1.3.1) (2025-09-25)
 
 

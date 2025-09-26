@@ -2,7 +2,7 @@
 
 using Spatial.Blockchain.Helpers;
 
-namespace Spatial.Cloud.Systems.Trading.Intelligence;
+namespace Spatial.Cloud.Systems.Trading.Recommendations;
 
 /// <summary>
 /// A trade <see cref="Recommendation"/> generator.

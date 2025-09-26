@@ -2,7 +2,7 @@
 
 using System.Text.Json.Serialization;
 
-namespace Spatial.Cloud.Systems.Trading.Intelligence;
+namespace Spatial.Cloud.Systems.Trading.Recommendations;
 
 /// <summary>
 /// A trade recommendation.

@@ -36,15 +36,4 @@ internal static class Constants
     /// The minimum number of hours between trades executed by the <see cref="Systems.Trading.Trader"/>.
     /// </summary>
     public const double MinTradeIntervalHours = 0.5;
-
-    /// <summary>
-    /// Constant interval names.
-    /// </summary>
-    public static class Intervals
-    {
-        /// <summary>
-        /// The name of the trade interval.
-        /// </summary>
-        public const string Trade = "Trader.Trade";
-    }
 }

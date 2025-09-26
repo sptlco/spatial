@@ -24,6 +24,14 @@ jobs:
         with:
           dotnet-version: '9.x'
 
+      - name: Restore
+        working-directory: cloud
+        run: dotnet restore
+
+      - name: Build
+        working-directory: cloud
+        run: dotnet build -c Release
+
       - name: Test
         working-directory: cloud
-        run: dotnet test --verbosity normal
+        run: dotnet test -c Release --verbosity normal

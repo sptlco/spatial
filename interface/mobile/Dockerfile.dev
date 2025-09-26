@@ -1,0 +1,12 @@
+FROM node
+
+WORKDIR /app
+
+COPY . .
+
+RUN npm install -g expo-cli
+RUN npm install
+
+EXPOSE 19000 19001 19002
+
+CMD ["npm", "run", "dev"]

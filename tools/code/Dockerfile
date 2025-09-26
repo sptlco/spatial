@@ -11,6 +11,7 @@ RUN curl -fsSL https://code-server.dev/install.sh | sh
 COPY entry.sh /usr/local/bin/entry.sh
 RUN chmod +x /usr/local/bin/entry.sh
 
-EXPOSE 8080
+EXPOSE 80
+
 
 ENTRYPOINT ["/usr/local/bin/entry.sh"]

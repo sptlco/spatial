@@ -2,8 +2,7 @@
 .vscode/*
 
 [Bb]uild
-
-config
+[Cc]onfig
 
 # Logs
 logs

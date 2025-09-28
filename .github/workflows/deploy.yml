@@ -32,10 +32,10 @@ jobs:
             mkdir build
             cd build
 
-            git clone --depth 1 --branch main https://github.com/${{ github.repository }} .
+            git clone --depth 1 --branch main git@github.com:${{ github.repository }} .
             
             cp -r ~/.spatial/config ./config
             
-            docker compose pull
+            docker compose -p spatial pull
             docker compose -p spatial up -d --build
-            docker compose restart nginx
+            docker compose -p spatial restart nginx

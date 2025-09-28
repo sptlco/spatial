@@ -36,6 +36,6 @@ jobs:
             
             cp -r ~/.spatial/config ./config
             
-            docker compose -p spatial pull
-            docker compose -p spatial up -d --build
-            docker compose -p spatial restart nginx
+            docker compose --project-directory ~/.spatial -p spatial pull
+            docker compose --project-directory ~/.spatial -p spatial up -d --build
+            docker compose --project-directory ~/.spatial -p spatial restart nginx

@@ -2,7 +2,7 @@
   "expo": {
     "name": "Spatial",
     "slug": "mobile",
-    "version": "1.2.0",
+    "version": "1.2.1",
     "owner": "sptlco",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",

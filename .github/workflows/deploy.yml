@@ -34,7 +34,7 @@ jobs:
 
             git clone --depth 1 --branch main https://github.com/${{ github.repository }} .
             
-            cp ~/.spatial/config ./config
+            cp -r ~/.spatial/config ./config
             
             docker compose pull
             docker compose up -d --build

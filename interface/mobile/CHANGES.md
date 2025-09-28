@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.1](https://github.com/sptlco/spatial/compare/spatial-interface-mobile-1.2.0...spatial-interface-mobile-1.2.1) (2025-09-28)
+
+
+### Bug Fixes
+
+* update deployment ([#10](https://github.com/sptlco/spatial/issues/10)) ([351d91d](https://github.com/sptlco/spatial/commit/351d91d65e75684981bbcdb541946ea339dfb982))
+
 ## [1.2.0](https://github.com/sptlco/spatial/compare/spatial-interface-mobile-1.1.3...spatial-interface-mobile-1.2.0) (2025-09-23)
 
 

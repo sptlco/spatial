@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.4.1](https://github.com/sptlco/spatial/compare/spatial-interface-web-1.4.0...spatial-interface-web-1.4.1) (2025-09-28)
+
+
+### Bug Fixes
+
+* copy whole directory ([#50](https://github.com/sptlco/spatial/issues/50), [#51](https://github.com/sptlco/spatial/issues/51)) ([cc06e77](https://github.com/sptlco/spatial/commit/cc06e773d00e969716ad40917e6efe7e14ea0833))
+* update deployment ([#10](https://github.com/sptlco/spatial/issues/10)) ([351d91d](https://github.com/sptlco/spatial/commit/351d91d65e75684981bbcdb541946ea339dfb982))
+
 ## [1.4.0](https://github.com/sptlco/spatial/compare/spatial-interface-web-1.3.1...spatial-interface-web-1.4.0) (2025-09-25)
 
 

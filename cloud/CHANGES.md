@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.4.0](https://github.com/sptlco/spatial/compare/spatial-cloud-1.3.2...spatial-cloud-1.4.0) (2025-09-28)
+
+
+### Features
+
+* add educator ([#49](https://github.com/sptlco/spatial/issues/49)) ([44c6465](https://github.com/sptlco/spatial/commit/44c6465ad29d63125cbcb681c9c083fa766e92d1))
+
+
+### Bug Fixes
+
+* update deployment ([#10](https://github.com/sptlco/spatial/issues/10)) ([351d91d](https://github.com/sptlco/spatial/commit/351d91d65e75684981bbcdb541946ea339dfb982))
+
 ## [1.3.2](https://github.com/sptlco/spatial/compare/spatial-cloud-1.3.1...spatial-cloud-1.3.2) (2025-09-26)
 
 

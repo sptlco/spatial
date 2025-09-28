@@ -1,6 +1,8 @@
 .vs
 .vscode/*
 
+[Bb]uild
+
 config
 
 # Logs

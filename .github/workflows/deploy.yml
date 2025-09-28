@@ -27,9 +27,15 @@ jobs:
           script: |
             set -e
             cd .spatial
+
+            rm -rf build
             mkdir build
             cd build
-            git clone https://github.com/sptlco/spatial .
+
+            git clone --depth 1 --branch main https://github.com/${{ github.repository }} .
+            
+            cp ~/.spatial/config ./config
+            
             docker compose pull
             docker compose up -d --build
             docker compose restart nginx

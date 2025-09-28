@@ -27,9 +27,9 @@ jobs:
           script: |
             set -e
             cd .spatial
-            git pull origin main
+            mkdir build
+            cd build
+            git clone https://github.com/sptlco/spatial .
             docker compose pull
             docker compose up -d --build
             docker compose restart nginx
-
-

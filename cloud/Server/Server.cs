@@ -10,14 +10,14 @@ namespace Spatial.Cloud;
 /// </summary>
 internal class Server : Application
 {
-    private readonly World _world;
+    private readonly Realm _realm;
 
     /// <summary>
     /// Create a new <see cref="Server"/>.
     /// </summary>
     public Server()
     {
-        _world = new World();
+        _realm = new Realm();
     }
 
     /// <summary>

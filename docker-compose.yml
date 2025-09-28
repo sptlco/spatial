@@ -32,7 +32,7 @@ services:
       - ./api:/app
       - /app/node_modules
     ports:
-      - "3000:3000"
+      - "3001:3000"
     depends_on:
       - cloud
 
@@ -48,19 +48,24 @@ services:
     depends_on:
       - api-dev
 
-  mobile-dev:
+  mobile:
     build:
       context: ./interface/mobile
-      dockerfile: Dockerfile.dev
-    volumes:
-      - ./interface/mobile:/app
-      - /app/node_modules
+      args:
+        - NODE_ENV=development
+    environment:
+      - NODE_ENV=development
+    tty: true
     ports:
-      - "19000:19000"
-      - "19001:19001"
-      - "19002:19002"
-    depends_on:
-      - api-dev
+      - '8081:8081'
+      - '19006:19006'
+      - '19000:19000'
+      - '19001:19001'
+      - '19002:19002'
+    volumes:
+      - ./interface/mobile:/opt/spatial/app
+      - ./config/expo:/root/.expo
+      - mobile:/opt/spatial/app/node_modules
 
   code:
     build: ./tools/code
@@ -113,3 +118,4 @@ services:
 volumes:
   mongo:
   redis:
+  mobile:

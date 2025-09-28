@@ -5,7 +5,7 @@ namespace Spatial.Cloud.Models;
 /// <summary>
 /// A digital representation of the physical <see cref="Simulation.Space"/> inhabited by humans.
 /// </summary>
-internal class World
+internal class Realm
 {
     // TODO: serialize and deserialize component data
 }

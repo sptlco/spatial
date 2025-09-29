@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.5.0](https://github.com/sptlco/spatial/compare/spatial-interface-web-1.4.1...spatial-interface-web-1.5.0) (2025-09-29)
+
+
+### Features
+
+* add theme ([#51](https://github.com/sptlco/spatial/issues/51)) ([3e15152](https://github.com/sptlco/spatial/commit/3e15152c366fa817e0e64f1832401143d90d9fce))
+
 ## [1.4.1](https://github.com/sptlco/spatial/compare/spatial-interface-web-1.4.0...spatial-interface-web-1.4.1) (2025-09-28)
 
 

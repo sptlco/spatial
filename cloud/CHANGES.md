@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.4.2](https://github.com/sptlco/spatial/compare/spatial-cloud-1.4.1...spatial-cloud-1.4.2) (2025-09-29)
+
+
+### Bug Fixes
+
+* unwrap function ([#3](https://github.com/sptlco/spatial/issues/3)) ([8c5f419](https://github.com/sptlco/spatial/commit/8c5f419d13d6f8d29ccf36472f5910f0fc3a1efb))
+
 ## [1.4.1](https://github.com/sptlco/spatial/compare/spatial-cloud-1.4.0...spatial-cloud-1.4.1) (2025-09-29)
 
 

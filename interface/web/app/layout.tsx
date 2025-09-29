@@ -2,7 +2,6 @@
 
 import type { Metadata } from "next";
 import { ThemeProvider } from "next-themes";
-import { PropsWithChildren } from "react";
 
 import "@spatial/ux";
 
@@ -11,11 +10,11 @@ export const metadata: Metadata = {
   description: "Leading industrial research and development."
 };
 
-export default function RootLayout({ children }: PropsWithChildren) {
+export default function Layout(props: { children: React.ReactNode }) {
   return (
     <html lang="en" suppressHydrationWarning>
       <body className="bg-background-primary text-foreground-primary text-base font-regular">
-        <ThemeProvider>{children}</ThemeProvider>
+        <ThemeProvider>{props.children}</ThemeProvider>
       </body>
     </html>
   );

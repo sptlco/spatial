@@ -2,7 +2,6 @@
 
 using Spatial.Blockchain;
 using Spatial.Blockchain.Helpers;
-using Spatial.Caching;
 using Spatial.Cloud.Contracts;
 using Spatial.Cloud.Contracts.Systems.Trading;
 using Spatial.Cloud.Systems.Trading.Recommendations;
@@ -49,16 +48,17 @@ internal class Trader : System
     private async void Trade()
     {
         var start = Time.Now;
-        var coins = await GetCoinsAsync();
-        var interval = GetInterval(coins);
-        var next = Time.FromMilliseconds((long) start + interval);
-
-        Interlocked.Exchange(ref _interval, interval);
-
-        INFO("Trade dependant on analysis.");
 
         try
         {
+            var coins = await GetCoinsAsync();
+            var interval = GetInterval(coins);
+            var next = Time.FromMilliseconds((long) start + interval);
+
+            Interlocked.Exchange(ref _interval, interval);
+
+            INFO("Trade dependant on analysis.");
+            
             var portfolio = coins.Sum(coin => coin.Id == Constants.Ethereum ? 0 : coin.Value);
             var ethereum = coins.First(coin => coin.Id == Constants.Ethereum);
 
@@ -116,6 +116,11 @@ internal class Trader : System
         }
         catch (Exception exception)
         {
+            var interval = (long) _config.Systems.Trading.Trader.Interval.Period.TotalMilliseconds;
+            var next = Time.FromMilliseconds((long) start + interval);
+
+            Interlocked.Exchange(ref _interval, interval);
+
             ERROR(exception, "Trade failed, next at {Time} ms.", next.Milliseconds);
         }
     }

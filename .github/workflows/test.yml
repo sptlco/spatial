@@ -3,6 +3,7 @@ name: QA
 on:
   workflow_dispatch:
   push:
+    tags-ignore: "*"
   pull_request:
     branches: [main]
 
@@ -21,7 +22,7 @@ jobs:
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: '9.x'
+          dotnet-version: "9.x"
 
       - name: Restore
         working-directory: cloud

@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.5.1](https://github.com/sptlco/spatial/compare/spatial-interface-web-1.5.0...spatial-interface-web-1.5.1) (2025-09-29)
+
+
+### Bug Fixes
+
+* don't wait for receipt ([#3](https://github.com/sptlco/spatial/issues/3)) ([667b988](https://github.com/sptlco/spatial/commit/667b988311fd2fee1559474b0f31a480e6ed622d))
+
 ## [1.5.0](https://github.com/sptlco/spatial/compare/spatial-interface-web-1.4.1...spatial-interface-web-1.5.0) (2025-09-29)
 
 

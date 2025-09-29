@@ -45,7 +45,7 @@ internal class Trader : System
         }
     }
 
-    private async void Trade()
+    private async Task Trade()
     {
         var start = Time.Now;
 
@@ -53,7 +53,7 @@ internal class Trader : System
         {
             var coins = await GetCoinsAsync();
             var interval = GetInterval(coins);
-            var next = Time.FromMilliseconds((long) start + interval);
+            var next = (Time) (start + interval);
 
             Interlocked.Exchange(ref _interval, interval);
 
@@ -117,7 +117,7 @@ internal class Trader : System
         catch (Exception exception)
         {
             var interval = (long) _config.Systems.Trading.Trader.Interval.Period.TotalMilliseconds;
-            var next = Time.FromMilliseconds((long) start + interval);
+            var next = (Time) (start + interval);
 
             Interlocked.Exchange(ref _interval, interval);
 

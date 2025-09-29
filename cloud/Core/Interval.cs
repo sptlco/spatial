@@ -17,7 +17,8 @@ public class Interval
     /// </summary>
     /// <param name="function">The <see cref="Action"/> to invoke.</param>
     /// <param name="interval">The rate at which to invoke the <see cref="Action"/>.</param>
-    public static void Schedule(Action function, Time interval)
+    /// <param name="background">Whether or not to execute the function in the background.</param>
+    public static async void Schedule(Func<Task> function, Time interval, bool background = false)
     {
         var now = Time.Now;
         var key = function.GetOrCreateIdentifier();
@@ -26,7 +27,14 @@ public class Interval
         {
             _cache.Set(Constants.Intervals, key, now.Milliseconds, Time.FromDays(1));
 
-            function.Invoke();
+            if (background)
+            {
+                _ = Task.Run(function);
+                
+                return;
+            }
+
+            await function();
         }
     }
 
@@ -35,8 +43,5 @@ public class Interval
     /// </summary>
     /// <param name="function">The <see cref="Action"/> to invoke.</param>
     /// <param name="interval">The rate at which to invoke the <see cref="Action"/>.</param>
-    public static void ScheduleAsync(Action function, Time interval)
-    {
-        Schedule(() => Task.Run(function), interval);       
-    }
+    public static void ScheduleAsync(Func<Task> function, Time interval) => Schedule(function, interval, true);
 }

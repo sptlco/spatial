@@ -27,8 +27,6 @@ public class Interval
         {
             _cache.Set(Constants.Intervals, key, now.Milliseconds, Time.FromDays(1));
 
-            INFO("Invoking {Key}", key);
-
             if (background)
             {
                 Task.Run(function);

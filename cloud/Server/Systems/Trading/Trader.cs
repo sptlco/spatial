@@ -64,7 +64,7 @@ internal class Trader : System
 
             Interlocked.Exchange(ref _interval, interval);
 
-            INFO("Trade dependant on analysis, instance: {This}.", this.GetHashCode());
+            INFO("Trade dependant on analysis.");
 
             var portfolio = coins.Sum(coin => coin.Id == Constants.Ethereum ? 0 : coin.Value);
             var ethereum = coins.First(coin => coin.Id == Constants.Ethereum);

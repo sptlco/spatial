@@ -8,24 +8,21 @@ RUN apt-get update && apt-get install -y curl sudo gnupg build-essential \
 RUN curl -fsSL https://code-server.dev/install.sh | sh
 
 WORKDIR /usr/src/spatial
+
 COPY entry.sh /usr/local/bin/entry.sh
 RUN chmod +x /usr/local/bin/entry.sh
 
-RUN cd api
+WORKDIR /usr/src/spatial/api
 RUN npm install
-RUN cd ..
 
-RUN cd cloud
+WORKDIR /usr/src/spatial/cloud
 RUN dotnet restore
-RUN cd ..
 
-RUN cd interface/mobile
+WORKDIR /usr/src/spatial/interface/mobile
 RUN npm install
-RUN cd ../..
 
-RUN cd interface/web
+WORKDIR /usr/src/spatial/interface/web
 RUN npm install
-RUN cd ../..
 
 EXPOSE 80
 

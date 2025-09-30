@@ -17,7 +17,9 @@ namespace Spatial.Cloud.Systems.Trading;
 internal class Trader : System
 {
     private readonly ServerConfiguration _config;
+
     private long _interval;
+    private byte _trading;
 
     /// <summary>
     /// Create a new <see cref="Trader"/>.
@@ -47,6 +49,11 @@ internal class Trader : System
 
     private async Task Trade()
     {
+        if (Interlocked.Exchange(ref _trading, 1) == 1)
+        {
+            return;
+        }
+
         var start = Time.Now;
 
         try
@@ -57,8 +64,8 @@ internal class Trader : System
 
             Interlocked.Exchange(ref _interval, interval);
 
-            INFO("Trade dependant on analysis.");
-            
+            INFO("Trade dependant on analysis, instance: {This}.", this.GetHashCode());
+
             var portfolio = coins.Sum(coin => coin.Id == Constants.Ethereum ? 0 : coin.Value);
             var ethereum = coins.First(coin => coin.Id == Constants.Ethereum);
 
@@ -92,7 +99,7 @@ internal class Trader : System
 
                     if (GetReadableSize() <= _config.Systems.Trading.Trader.MinimumTrade)
                     {
-                        INFO("Insignificant trade: {Size} {Symbol}.", GetReadableSize(), trade.Action == TradeAction.Buy ? "ETH": coin.Symbol.ToUpper());
+                        INFO("Insignificant trade: {Size} {Symbol}.", GetReadableSize(), trade.Action == TradeAction.Buy ? "ETH" : coin.Symbol.ToUpper());
                         continue;
                     }
 
@@ -109,19 +116,18 @@ internal class Trader : System
                     {
                         WARN(exception, "Transaction failed: {Action} {Size} {Symbol} at {Price} USD.", trade.Action, GetReadableSize(), coin.Symbol.ToUpper(), coin.Price);
                     }
-                } 
+                }
 
                 INFO("Trade complete, next at {Time} ms.", next.Milliseconds);
             }
         }
         catch (Exception exception)
         {
-            var interval = (long) _config.Systems.Trading.Trader.Interval.Period.TotalMilliseconds;
-            var next = (Time) (start + interval);
-
-            Interlocked.Exchange(ref _interval, interval);
-
-            ERROR(exception, "Trade failed, next at {Time} ms.", next.Milliseconds);
+            ERROR(exception, "Trade failed, next at {Time} ms.", ((Time) (start + _interval)).Milliseconds);
+        }
+        finally
+        {
+            Interlocked.Exchange(ref _trading, 0);
         }
     }
 

@@ -32,7 +32,7 @@ public class Application
     private readonly Space _space;
     private readonly WebApplication _wapp;
     private Time _time;
-    private long _ticks;
+    private double _ticks;
 
     private readonly Processor _processor;
     private readonly Network _network;
@@ -100,7 +100,7 @@ public class Application
     /// <summary>
     /// The application's tick count.
     /// </summary>
-    public long Ticks => _ticks;
+    public double Ticks => _ticks;
 
     /// <summary>
     /// Run an <see cref="Application"/>.

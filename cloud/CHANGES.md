@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.4.3](https://github.com/sptlco/spatial/compare/spatial-cloud-1.4.2...spatial-cloud-1.4.3) (2025-09-30)
+
+
+### Bug Fixes
+
+* restore cloud stability ([#49](https://github.com/sptlco/spatial/issues/49)) ([38b0cf6](https://github.com/sptlco/spatial/commit/38b0cf6a52acfb1d494bc8811562fbcba7c8d439))
+
 ## [1.4.2](https://github.com/sptlco/spatial/compare/spatial-cloud-1.4.1...spatial-cloud-1.4.2) (2025-09-29)
 
 

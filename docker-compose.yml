@@ -111,9 +111,11 @@ services:
       - ./config/nginx/ssl/private:/etc/ssl/private
     depends_on:
       - api
+      - api-dev
       - cloud
       - code
       - web
+      - web-dev
 
 volumes:
   mongo:

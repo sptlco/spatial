@@ -12,8 +12,8 @@ export const metadata: Metadata = {
 
 export default function Layout(props: { children: React.ReactNode }) {
   return (
-    <html lang="en" suppressHydrationWarning>
-      <body className="bg-background-primary text-foreground-primary text-base font-regular">
+    <html lang="en" className="h-full" suppressHydrationWarning>
+      <body className="h-full bg-background-primary text-foreground-primary text-base font-regular">
         <ThemeProvider>{props.children}</ThemeProvider>
       </body>
     </html>

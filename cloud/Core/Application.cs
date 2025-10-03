@@ -137,13 +137,13 @@ public class Application
                 {
                     INFO("Application running at {TickRate} ticks/s.", application.Configuration.TickRate);
 
-                    Ticker.Run(application.InvokeTick, 1000.0D / application.Configuration.TickRate, cancellationToken);
+                    Ticker.Run(application.TryTick, 1000.0D / application.Configuration.TickRate, cancellationToken);
                 }
                 else
                 {
                     INFO("Application running as fast as possible.");
 
-                    Ticker.Run(application.InvokeTick, cancellationToken);
+                    Ticker.Run(application.TryTick, cancellationToken);
                 }
 
                 INFO("Shutting down the application.");
@@ -384,12 +384,19 @@ public class Application
         }
     }
 
-    private void InvokeTick(Time delta)
+    private void TryTick(Time delta)
     {
         _network.Receive();
         _space.Update(delta);
 
-        Tick(delta);
+        try
+        {
+            Tick(delta);
+        }
+        catch (Exception exception)
+        {
+            ERROR(exception, "Failed to tick.");
+        }
 
         _network.Send();
 

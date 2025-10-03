@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.5.2](https://github.com/sptlco/spatial/compare/spatial-interface-web-1.5.1...spatial-interface-web-1.5.2) (2025-10-03)
+
+
+### Bug Fixes
+
+* update nginx deps ([c6a72fb](https://github.com/sptlco/spatial/commit/c6a72fb9f6594f9bf792f0cc1bfce7ea04098118))
+
 ## [1.5.1](https://github.com/sptlco/spatial/compare/spatial-interface-web-1.5.0...spatial-interface-web-1.5.1) (2025-09-29)
 
 

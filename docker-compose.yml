@@ -24,65 +24,6 @@ services:
     depends_on:
       - api
 
-  api-dev:
-    build:
-      context: ./api
-      dockerfile: Dockerfile.dev
-    volumes:
-      - ./api:/app
-      - /app/node_modules
-    ports:
-      - "3001:3000"
-    depends_on:
-      - cloud
-
-  web-dev:
-    build:
-      context: ./interface/web
-      dockerfile: Dockerfile.dev
-    volumes:
-      - ./interface/web:/app
-      - /app/node_modules
-    ports:
-      - "3000:3000"
-    depends_on:
-      - api-dev
-
-  mobile:
-    build:
-      context: ./interface/mobile
-      args:
-        - NODE_ENV=development
-    environment:
-      - NODE_ENV=development
-    tty: true
-    ports:
-      - '8081:8081'
-      - '19006:19006'
-      - '19000:19000'
-      - '19001:19001'
-      - '19002:19002'
-    volumes:
-      - ./interface/mobile:/opt/spatial/app
-      - ./config/expo:/root/.expo
-      - mobile:/opt/spatial/app/node_modules
-
-  code:
-    build: ./tools/code
-    restart: always
-    ports:
-      - "8080:8080"
-    volumes:
-      - ./config/code-server/config.yaml:/root/.config/code-server/config.yaml
-      - ./config/code-server/strings.json:/root/.config/code-server/strings.json
-      - ./config/code-server/browser/media:/usr/lib/code-server/src/browser/media
-      - ./config/code-server/data:/root/.local/share/code-server
-      - ./config/code-server/media:/usr/lib/code-server/lib/vscode/out/media
-      - ./config/code-server/resources:/usr/lib/code-server/lib/vscode/resources/server
-      - ~/.gitconfig:/root/.gitconfig:ro
-      - ~/.ssh:/root/.ssh:ro
-      - ./:/usr/src/spatial
-
   mongo:
     image: mongo
     restart: always
@@ -111,13 +52,9 @@ services:
       - ./config/nginx/ssl/private:/etc/ssl/private
     depends_on:
       - api
-      - api-dev
       - cloud
-      - code
       - web
-      - web-dev
 
 volumes:
   mongo:
   redis:
-  mobile:

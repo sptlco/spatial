@@ -13,7 +13,7 @@ namespace Spatial.Simulation;
 /// </summary>
 public sealed partial class Space : IDisposable
 {
-    private readonly List<System<Space>> _systems;
+    private readonly List<System> _systems;
 
     private Entity[] _entities;
     private ConcurrentBag<uint> _entityPool;
@@ -775,35 +775,35 @@ public sealed partial class Space
     }
 
     /// <summary>
-    /// Use a <see cref="System{Space}"/>.
+    /// Use a <see cref="System"/>.
     /// </summary>
-    /// <typeparam name="T">The type of <see cref="System{Space}"/> to run.</typeparam>
+    /// <typeparam name="T">The type of <see cref="System"/> to run.</typeparam>
     /// <returns>The <see cref="Space"/> for method chaining.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public Space Use<T>(params object[] args) where T : System<Space>
+    public Space Use<T>(params object[] args) where T : System
     {
         return Use(_ => (T) Activator.CreateInstance(typeof(T), args)!);
     }
 
     /// <summary>
-    /// Use a <see cref="System{Space}"/>.
+    /// Use a <see cref="System"/>.
     /// </summary>
-    /// <typeparam name="T">The type of <see cref="System{Space}"/> to run.</typeparam>
-    /// <param name="system">The <see cref="System{Space}"/> to use.</param>
+    /// <typeparam name="T">The type of <see cref="System"/> to run.</typeparam>
+    /// <param name="system">The <see cref="System"/> to use.</param>
     /// <returns>The <see cref="Space"/> for method chaining.</returns>
-    public Space Use<T>(T system) where T : System<Space>
+    public Space Use<T>(T system) where T : System
     {
         return Use(_ => system);
     }
 
     /// <summary>
-    /// Use a <see cref="System{Space}"/>.
+    /// Use a <see cref="System"/>.
     /// </summary>
-    /// <typeparam name="T">The type of <see cref="System{Space}"/> to run.</typeparam>
-    /// <param name="builder">A <see cref="System{Space}"/> builder.</param>
+    /// <typeparam name="T">The type of <see cref="System"/> to run.</typeparam>
+    /// <param name="builder">A <see cref="System"/> builder.</param>
     /// <returns>The <see cref="Space"/> for method chaining.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public Space Use<T>(Func<Space, T> builder) where T : System<Space>
+    public Space Use<T>(Func<Space, T> builder) where T : System
     {
         _systems.Add(builder(this));
         return this;

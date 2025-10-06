@@ -356,7 +356,7 @@ public class Application
 
     private void Use(Type system)
     {
-        _space.Use(_ => (System<Space>) ActivatorUtilities.CreateInstance(_wapp.Services, system));
+        _space.Use(_ => (System) ActivatorUtilities.CreateInstance(_wapp.Services, system));
     }
 
     private static CancellationToken CreateCancellationToken()

@@ -1,7 +1,6 @@
 // Copyright © Spatial Corporation. All rights reserved.
 
 using Spatial.Cloud.Contracts;
-using Spatial.Cloud.Models;
 
 namespace Spatial.Cloud;
 
@@ -10,16 +9,6 @@ namespace Spatial.Cloud;
 /// </summary>
 internal class Server : Application
 {
-    private readonly Realm _realm;
-
-    /// <summary>
-    /// Create a new <see cref="Server"/>.
-    /// </summary>
-    public Server()
-    {
-        _realm = new Realm();
-    }
-
     /// <summary>
     /// Configure the <see cref="Server"/>.
     /// </summary>

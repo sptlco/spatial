@@ -43,7 +43,7 @@ internal class Constants
     public const int AgentMaxYields = 100;
 
     /// <summary>
-    /// The maximum size of the <see cref="Compute.Jobs.Job"/> pool.
+    /// The maximum size of the <see cref="Job"/> pool.
     /// </summary>
     public const int MaxPoolSize = ushort.MaxValue;
 

@@ -2,7 +2,7 @@
 
 using Microsoft.Extensions.DependencyInjection;
 using Serilog;
-using Spatial.Compute.Jobs;
+using Spatial.Compute;
 using Spatial.Networking.Contracts;
 using Spatial.Networking.Contracts.Miscellaneous;
 using Spatial.Structures;

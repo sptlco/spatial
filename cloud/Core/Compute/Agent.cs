@@ -1,8 +1,6 @@
 // Copyright © Spatial Corporation. All rights reserved.
 
-using Serilog;
-using Spatial.Compute.Jobs;
-using Spatial.Compute.Jobs.Commands;
+using Spatial.Compute.Commands;
 using Spatial.Structures;
 using System.Diagnostics.CodeAnalysis;
 
@@ -10,12 +8,12 @@ namespace Spatial.Compute;
 
 /// <summary>
 /// An opportunistic worker that pulls and executes <see cref="CommandJob"/>s
-/// from the <see cref="Processor"/> or another <see cref="Agent"/>.
+/// from the <see cref="Computer"/> or another <see cref="Agent"/>.
 /// </summary>
 internal class Agent : IDisposable
 {
-    private readonly Processor _processor;
     private readonly int _id;
+    private readonly Computer _computer;
     private readonly Thread _thread;
     private readonly CancellationTokenSource _cts;
     private readonly InterlockedQueue<CommandJob> _queue;
@@ -25,12 +23,12 @@ internal class Agent : IDisposable
     /// <summary>
     /// Create a new <see cref="Agent"/>.
     /// </summary>
-    /// <param name="processor">The agent's <see cref="Processor"/>.</param>
+    /// <param name="computer">The agent's <see cref="Computer"/>.</param>
     /// <param name="id">The agent's identification number.</param>
-    public Agent(Processor processor, int id)
+    public Agent(Computer computer, int id)
     {
-        _processor = processor;
         _id = id;
+        _computer = computer;
         _thread = CreateThread();
         _cts = new();
         _queue = new();
@@ -95,7 +93,7 @@ internal class Agent : IDisposable
     {
         job = default;
 
-        if (_processor.Agents.Length <= 1)
+        if (_computer.Agents.Length <= 1)
         {
             return false;
         }
@@ -105,14 +103,14 @@ internal class Agent : IDisposable
 
         while (true)
         {
-            var agent = _next++ % (uint) _processor.Agents.Length;
+            var agent = _next++ % (uint) _computer.Agents.Length;
 
-            if (agent != _id && _processor.Agents[agent].Queue.TryDequeue(out job))
+            if (agent != _id && _computer.Agents[agent].Queue.TryDequeue(out job))
             {
                 return true;
             }
 
-            if (++failures >= 2 * (_processor.Agents.Length - 1))
+            if (++failures >= 2 * (_computer.Agents.Length - 1))
             {
                 Thread.Yield();
 
@@ -143,7 +141,7 @@ internal class Agent : IDisposable
         }
         finally
         {
-            _processor.Finalize(job.Id);
+            _computer.Finalize(job.Id);
         }
     }
 

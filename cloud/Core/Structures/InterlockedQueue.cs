@@ -7,10 +7,6 @@ namespace Spatial.Structures;
 /// <summary>
 /// A thread-safe <see cref="Queue{T}"/>.
 /// </summary>
-/// <remarks>
-/// This is a more efficient alternative to the <see cref="System.Collections.Concurrent.ConcurrentQueue{T}"/>, 
-/// which can bog down system resources.
-/// </remarks>
 /// <typeparam name="T">The type of objects in the <see cref="InterlockedQueue{T}"/>.</typeparam>
 public sealed class InterlockedQueue<T>
 {

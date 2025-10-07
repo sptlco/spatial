@@ -34,7 +34,7 @@ public class Application
     private Time _time;
     private double _ticks;
 
-    private readonly Processor _processor;
+    private readonly Computer _computer;
     private readonly Network _network;
 
     /// <summary>
@@ -45,7 +45,7 @@ public class Application
         _instance = this;
         _space = Space.Empty();
         _wapp = CreateWebApplication();
-        _processor = new Processor();
+        _computer = new Computer();
         _network = new Network(_wapp.Services);
         _ticks = (_time = Time.Now).Ticks;
 
@@ -83,9 +83,9 @@ public class Application
     public Space Space => _space;
 
     /// <summary>
-    /// The application's <see cref="Compute.Processor"/>.
+    /// The application's <see cref="Compute.Computer"/>.
     /// </summary>
-    public Processor Processor => _processor;
+    public Computer Computer => _computer;
 
     /// <summary>
     /// The application's <see cref="Networking.Network"/>.
@@ -126,7 +126,7 @@ public class Application
 
                 application.Start();
                 application._wapp.Start();
-                application._processor.Run();
+                application._computer.Run();
 
                 if (cancellationToken == default)
                 {
@@ -151,7 +151,7 @@ public class Application
                 application.Shutdown();
                 await application._wapp.StopAsync(CancellationToken.None);
                 application._space.Dispose();
-                application._processor.Shutdown();
+                application._computer.Shutdown();
                 application._network.Close();
 
                 INFO("Application shut down.");

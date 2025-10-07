@@ -65,7 +65,7 @@ public sealed class Connection : IDisposable
     /// Allocate a <see cref="Connection"/>.
     /// </summary>
     /// <param name="server">The <see cref="Network"/> that accepted the <see cref="Connection"/>.</param>
-    /// <param name="socket">A <see cref="System.Net.Sockets.Socket"/>.</param>
+    /// <param name="socket">The connection's socket.</param>
     /// <returns>A <see cref="Connection"/>.</returns>
     internal static Connection Allocate(Network server, Socket socket)
     {

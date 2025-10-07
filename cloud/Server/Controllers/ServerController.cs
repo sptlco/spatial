@@ -15,6 +15,7 @@ public class ServerController : Controller
     /// Get the server's current name.
     /// </summary>
     /// <returns>The server's current name.</returns>
+    [GET]
     [Path("name")]
     public string GetName()
     {
@@ -25,6 +26,7 @@ public class ServerController : Controller
     /// Get the server's current version.
     /// </summary>
     /// <returns>The server's current version.</returns>
+    [GET]
     [Path("version")]
     public string GetVersion()
     {

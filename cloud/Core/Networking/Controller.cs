@@ -1,5 +1,7 @@
 // Copyright © Spatial Corporation. All rights reserved.
 
+using Microsoft.AspNetCore.Mvc;
+
 namespace Spatial.Networking;
 
 /// <summary>
@@ -16,4 +18,24 @@ public abstract class Controller : Microsoft.AspNetCore.Mvc.Controller
     /// A <see cref="Networking.Message"/> sent to the <see cref="Network"/>.
     /// </summary>
     public Message Message { get; internal set; }
+
+    /// <summary>
+    /// Identifies a route that supports HTTP POST.
+    /// </summary>
+    public class POSTAttribute : HttpPostAttribute { }
+
+    /// <summary>
+    /// Identifies a route that supports HTTP GET.
+    /// </summary>
+    public class GETAttribute : HttpGetAttribute { }
+
+    /// <summary>
+    /// Identifies a route that supports HTTP PATCH.
+    /// </summary>
+    public class PATCHAttribute : HttpPatchAttribute { }
+
+    /// <summary>
+    /// Identifies a route that supports HTTP DELETE.
+    /// </summary>
+    public class DELETEAttribute : HttpDeleteAttribute { }
 }

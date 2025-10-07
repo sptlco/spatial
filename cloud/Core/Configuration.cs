@@ -43,7 +43,7 @@ public class Configuration
     public int TickRate { get; set; } = 30;
 
     /// <summary>
-    /// Configurable options for the system's <see cref="Document"/> database.
+    /// Configurable options for the system's <see cref="Record"/> database.
     /// </summary>
     [ValidateObjectMembers]
     public DatabaseConfiguration Database { get; set; } = new DatabaseConfiguration();

@@ -2,7 +2,6 @@
 
 using Serilog;
 using Spatial.Compute.Commands;
-using System.Collections.Concurrent;
 
 namespace Spatial.Compute.Acceleration;
 
@@ -11,8 +10,6 @@ namespace Spatial.Compute.Acceleration;
 /// </summary>
 public sealed class ParallelFor2DJob : ParallelJob
 {
-    private static readonly ConcurrentBag<ParallelFor2DJob> _jobs = [];
-
     private readonly int _width, _height;
     private readonly int _batchSizeX, _batchSizeY;
     private new readonly Action<int, int> _function;
@@ -69,17 +66,6 @@ public sealed class ParallelFor2DJob : ParallelJob
     {
         _function(iteration % _width, iteration / _width);
     }
-
-    /// <summary>
-    /// Dispose of the <see cref="Job"/>.
-    /// </summary>
-    public override void Dispose()
-    {
-        // if (_jobs.Count < Constants.MaxPoolSize)
-        // {
-        //     _jobs.Add(this);
-        // }
-    }
 }
 
 /// <summary>
@@ -87,13 +73,19 @@ public sealed class ParallelFor2DJob : ParallelJob
 /// </summary>
 internal sealed class Batch2DJob : CommandJob
 {
-    private static readonly ConcurrentBag<Batch2DJob> _jobs = [];
-
     private ParallelFor2DJob _parent;
     private int _startX, _endX;
     private int _startY, _endY;
 
-    private Batch2DJob(ParallelFor2DJob parent, int startX, int endX, int startY, int endY)
+    /// <summary>
+    /// Create a new <see cref="Batch2DJob"/>.
+    /// </summary>
+    /// <param name="parent">The job's parent <see cref="ParallelFor2DJob"/>.</param>
+    /// <param name="startX">The beginning of the iteration range of the first dimension.</param>
+    /// <param name="endX">The end of the iteration range of the first dimension.</param>
+    /// <param name="startY">The beginning of the iteration range of the second dimension.</param>
+    /// <param name="endY">The end of the iteration range of the second dimension.</param>
+    public Batch2DJob(ParallelFor2DJob parent, int startX, int endX, int startY, int endY)
     {
         _parent = parent;
         _startX = startX;
@@ -111,33 +103,6 @@ internal sealed class Batch2DJob : CommandJob
     /// The job's parent <see cref="ParallelFor2DJob"/>.
     /// </summary>
     public ParallelFor2DJob Parent => _parent;
-
-    /// <summary>
-    /// Create a new <see cref="Batch2DJob"/>.
-    /// </summary>
-    /// <param name="parent">The job's parent <see cref="ParallelFor2DJob"/>.</param>
-    /// <param name="startX">The beginning of the iteration range of the first dimension.</param>
-    /// <param name="endX">The end of the iteration range of the first dimension.</param>
-    /// <param name="startY">The beginning of the iteration range of the second dimension.</param>
-    /// <param name="endY">The end of the iteration range of the second dimension.</param>
-    /// <returns>A <see cref="Batch2DJob"/>.</returns>
-    public static Batch2DJob Create(ParallelFor2DJob parent, int startX, int endX, int startY, int endY)
-    {
-        if (_jobs.TryTake(out var job))
-        {
-            job.Reset();
-            
-            job._parent = parent;
-            job._startX = startX;
-            job._endX = endX;
-            job._startY = startY;
-            job._endY = endY;
-
-            return job;
-        }
-
-        return new(parent, startX, endX, startY, endY);
-    }
 
     /// <summary>
     /// Execute the <see cref="Batch2DJob"/>.
@@ -158,17 +123,6 @@ internal sealed class Batch2DJob : CommandJob
                     throw;
                 }
             }
-        }
-    }
-
-    /// <summary>
-    /// Dispose of the <see cref="Job"/>.
-    /// </summary>
-    public override void Dispose()
-    {
-        if (_jobs.Count < Constants.MaxPoolSize)
-        {
-            _jobs.Add(this);
         }
     }
 }

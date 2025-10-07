@@ -191,7 +191,7 @@ public class Computer
                 {
                     var start = i * job1D.BatchSize;
                     var end = Math.Min(start + job1D.BatchSize, job1D.Iterations);
-                    var batch = BatchJob.Create(job1D, start, end);
+                    var batch = new BatchJob(job1D, start, end);
 
                     Submit(batch);
                 }
@@ -209,7 +209,7 @@ public class Computer
                         var endX = Math.Min(startX + job2D.BatchSizeX, job2D.Width);
                         var startY = by * job2D.BatchSizeY;
                         var endY = Math.Min(startY + job2D.BatchSizeY, job2D.Height);
-                        var batch = Batch2DJob.Create(job2D, startX, endX, startY, endY);
+                        var batch = new Batch2DJob(job2D, startX, endX, startY, endY);
 
                         Submit(batch);
                     }

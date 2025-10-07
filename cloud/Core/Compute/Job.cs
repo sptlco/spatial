@@ -20,7 +20,7 @@ public abstract partial class Job : IDisposable
     /// <summary>
     /// The job's identification number.
     /// </summary>
-    public string Id { get; internal set; } = GenerateId();
+    public string Id { get; internal set; } = Guid.NewGuid().ToString("N");
 
     /// <summary>
     /// The <see cref="Compute.Graph"/> the <see cref="Job"/> belongs to.
@@ -189,24 +189,13 @@ public abstract partial class Job : IDisposable
         return Task.FromResult(Schedule(job));
     }
 
-    private static string GenerateId()
-    {
-        return Guid.NewGuid().ToString("N");
-    }
-
-    /// <summary>
-    /// Reset the <see cref="Job"/>.
-    /// </summary>
-    protected void Reset()
-    {
-        Id = GenerateId();
-        Status = JobStatus.Submitted;
-    }
-
     /// <summary>
     /// Dispose of the <see cref="Job"/>.
     /// </summary>
-    public virtual void Dispose() { }
+    public virtual void Dispose()
+    {
+        GC.SuppressFinalize(this);
+    }
 }
 
 /// <summary>

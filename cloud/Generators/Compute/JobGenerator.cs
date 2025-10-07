@@ -117,11 +117,11 @@ $@" /// <summary>
     /// <param name=""function"">The function to execute.</param>
     /// <typeparam name=""TIndex"">The kernel's index type.</typeparam>
     /// {typeParamDocs}
-    public static void Kernel<TIndex, {typeParams}>(Accelerator accelerator, TIndex extent, {functionArguments}, Action<TIndex, {typeParams}> function)
+    public static Handle Kernel<TIndex, {typeParams}>(Accelerator accelerator, TIndex extent, {functionArguments}, Action<TIndex, {typeParams}> function)
         where TIndex : struct, IIndex
         {constraints}
     {{
-        Kernel(new KernelJob<TIndex, {typeParams}>(accelerator, extent, {args}, function));
+        return Schedule(new KernelJob<TIndex, {typeParams}>(accelerator, extent, {args}, function));
     }}";
         }
     }

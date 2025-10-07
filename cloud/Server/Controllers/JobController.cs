@@ -1,32 +1,27 @@
 // Copyright © Spatial Corporation. All rights reserved.
 
-using Spatial.Cloud.Contracts.Jobs;
-using Spatial.Compute.Commands;
+using Spatial.Cloud.Contracts;
 using Spatial.Networking;
 
 namespace Spatial.Cloud.Controllers;
 
 /// <summary>
-/// <see cref="Controller"/> for compute jobs.
+/// A <see cref="Controller"/> for <see cref="Compute.Job"/>.
 /// </summary>
 [Module]
 [Path("jobs")]
 public class JobController : Controller
 {
     /// <summary>
-    /// Schedule a <see cref="Job"/>.
+    /// Create a new <see cref="Job"/>.
     /// </summary>
-    /// <param name="instructions">Instructions for the job's execution.</param>
     /// <returns>A <see cref="Job"/>.</returns>
     [POST]
-    [Path("schedule")]
-    public async Task ScheduleJobAsync([Json] Instructions instructions)
+    [Path("/")]
+    public async Task<Job> CreateJobAsync()
     {
-        await Compute.Job.ScheduleAsync(CreateJob(instructions));
-    }
+        // ...
 
-    private CommandJob CreateJob(Instructions instructions)
-    {
-        return new CommandJob(() => INFO("Hello, world!"));
+        return await Task.FromResult(new Job());
     }
 }

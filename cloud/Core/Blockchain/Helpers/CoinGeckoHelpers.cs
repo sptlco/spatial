@@ -1,6 +1,6 @@
 // Copyright © Spatial Corporation. All rights reserved.
 
-using Spatial.Networking.Helpers;
+using Spatial.Helpers;
 using System.Numerics;
 using System.Text.Json;
 using System.Text.Json.Serialization;

@@ -1,9 +1,9 @@
 // Copyright © Spatial Corporation. All rights reserved.
 
 using Microsoft.Extensions.Options;
+using Spatial.AI;
 using Spatial.Blockchain;
 using Spatial.Caching;
-using Spatial.Intelligence;
 using Spatial.Persistence;
 using System.ComponentModel.DataAnnotations;
 
@@ -34,8 +34,7 @@ public class Configuration
     /// <summary>
     /// The application's public endpoints.
     /// </summary>
-    [Required]
-    public string[] Endpoints { get; set; }
+    public string[] Endpoints { get; set; } = [];
 
     /// <summary>
     /// The system's tick rate.

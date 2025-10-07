@@ -2,10 +2,11 @@
 
 using OpenAI;
 using OpenAI.Chat;
+using Spatial.Helpers;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
-namespace Spatial.Intelligence;
+namespace Spatial.AI;
 
 /// <summary>
 /// A means of interaction with ChatGPT.

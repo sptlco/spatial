@@ -14,6 +14,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Core\Spatial.csproj" />
+    <ProjectReference Include="..\Server\Spatial.Cloud.csproj" />
   </ItemGroup>
   <ItemGroup>
     <Using Include="Xunit" />

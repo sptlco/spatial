@@ -1,8 +1,8 @@
 // Copyright © Spatial Corporation. All rights reserved.
 
+using Spatial.Helpers;
 using Spatial.Networking.Contracts;
 using Spatial.Networking.Contracts.Miscellaneous;
-using Spatial.Networking.Helpers;
 using System.Buffers;
 using System.Net;
 using System.Net.Sockets;

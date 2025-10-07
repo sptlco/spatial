@@ -1,6 +1,6 @@
 // Copyright © Spatial Corporation. All rights reserved.
 
-namespace Spatial.Networking.Helpers;
+namespace Spatial.Helpers;
 
 /// <summary>
 /// Helper methods for HTTP.

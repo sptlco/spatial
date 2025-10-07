@@ -176,7 +176,7 @@ public abstract partial class Job : IDisposable
     /// <returns>A <see cref="Handle"/>.</returns>
     public static Handle Schedule(CommandJob job)
     {
-        return Computer.Current.Dispatch(Graph.Create().Add(job));
+        return Computer.Current.Dispatch(new Graph().Add(job));
     }
 
     /// <summary>
@@ -187,14 +187,6 @@ public abstract partial class Job : IDisposable
     public static Task<Handle> ScheduleAsync(CommandJob job)
     {
         return Task.FromResult(Schedule(job));
-    }
-
-    private static void Kernel(KernelJob job)
-    {
-        using var graph = Graph.Create().Add(job);
-        using var handle = Computer.Current.Dispatch(graph);
-
-        handle.Wait();
     }
 
     private static string GenerateId()

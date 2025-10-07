@@ -2,7 +2,7 @@
 
 using System.Security.Cryptography;
 
-namespace Spatial.Networking.Helpers;
+namespace Spatial.Helpers;
 
 /// <summary>
 /// Helper methods for ciphers.

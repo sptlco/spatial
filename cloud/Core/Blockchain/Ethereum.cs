@@ -9,7 +9,7 @@ using Nethereum.Hex.HexConvertors.Extensions;
 using Nethereum.Hex.HexTypes;
 using Nethereum.Web3;
 using Nethereum.Web3.Accounts;
-using Spatial.Networking.Helpers;
+using Spatial.Helpers;
 using System.Numerics;
 
 namespace Spatial.Blockchain;

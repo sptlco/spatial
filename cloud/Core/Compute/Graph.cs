@@ -1,21 +1,14 @@
 // Copyright © Spatial Corporation. All rights reserved.
 
 using Spatial.Extensions;
-using System.Collections.Concurrent;
 
 namespace Spatial.Compute;
 
 /// <summary>
 /// A <see cref="Job"/> execution graph.
 /// </summary>
-internal class Graph : IDisposable
+public class Graph : IDisposable
 {
-    private static readonly ConcurrentBag<Graph> _pool = [];
-
-    private Graph()
-    {
-    }
-    
     /// <summary>
     /// The graph's handle.
     /// </summary>
@@ -35,20 +28,6 @@ internal class Graph : IDisposable
     /// A directed acyclic graph (DAG) of dependants.
     /// </summary>
     public Dictionary<Job, List<Job>> Dependants { get; } = [];
-
-    /// <summary>
-    /// Create a new <see cref="Graph"/>.
-    /// </summary>
-    /// <returns>A <see cref="Graph"/>.</returns>
-    internal static Graph Create()
-    {
-        // if (_pool.TryTake(out var graph))
-        // {
-        //     return graph;
-        // }
-
-        return new();
-    }
     
     /// <summary>
     /// Add a <see cref="Job"/> to the graph.
@@ -126,7 +105,5 @@ internal class Graph : IDisposable
         Jobs.Clear();
         Dependencies.Clear();
         Dependants.Clear();
-
-        // _pool.Add(this);
     }
 }

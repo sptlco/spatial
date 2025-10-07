@@ -1,7 +1,7 @@
 // Copyright © Spatial Corporation. All rights reserved.
 
 using Serilog;
-using Spatial.Networking.Helpers;
+using Spatial.Helpers;
 using System.Buffers;
 using System.Collections.Concurrent;
 using System.Net.Sockets;

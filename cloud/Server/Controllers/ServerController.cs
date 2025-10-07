@@ -5,7 +5,7 @@ using Spatial.Networking;
 namespace Spatial.Cloud.Controllers;
 
 /// <summary>
-/// A control plane for the <see cref="Server"/>.
+/// A controller for <see cref="Server"/>.
 /// </summary>
 [Module]
 [Path("/")]

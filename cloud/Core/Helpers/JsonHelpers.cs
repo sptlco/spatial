@@ -3,7 +3,7 @@
 using System.Reflection;
 using System.Text.Json;
 
-namespace Spatial;
+namespace Spatial.Helpers;
 
 /// <summary>
 /// Helper methods for JSON.

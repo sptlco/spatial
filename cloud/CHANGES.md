@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.5.0](https://github.com/sptlco/spatial/compare/spatial-cloud-1.4.4...spatial-cloud-1.5.0) (2025-10-07)
+
+
+### Features
+
+* refactor compute ([#49](https://github.com/sptlco/spatial/issues/49)) ([7092542](https://github.com/sptlco/spatial/commit/7092542e91f346a761eea7eb33afd663147a9d64))
+* refactor systems ([#49](https://github.com/sptlco/spatial/issues/49)) ([ac6f292](https://github.com/sptlco/spatial/commit/ac6f29230b563082812c6c6f7ec042ebb3d14cc7))
+
 ## [1.4.4](https://github.com/sptlco/spatial/compare/spatial-cloud-1.4.3...spatial-cloud-1.4.4) (2025-10-03)
 
 

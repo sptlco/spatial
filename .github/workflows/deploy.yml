@@ -27,15 +27,8 @@ jobs:
           script: |
             set -e
             cd .spatial
-
-            rm -rf build
-            mkdir build
-            cd build
-
-            git clone --depth 1 --branch main git@github.com:${{ github.repository }} .
+            git pull
             
-            cp -r ~/.spatial/config ./config
-            
-            docker compose --project-directory ~/.spatial -p spatial pull
-            docker compose --project-directory ~/.spatial -p spatial up -d --build
-            docker compose --project-directory ~/.spatial -p spatial restart nginx
+            docker compose -p spatial pull
+            docker compose -p spatial up -d --build
+            docker compose -p spatial restart nginx

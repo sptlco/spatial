@@ -5,15 +5,20 @@ namespace Spatial.Mathematics;
 /// <summary>
 /// A point in two-dimensional space.
 /// </summary>
-public readonly record struct Point2D
+public class Point2D
 {
     private readonly Tensor _tensor;
+
+    /// <summary>
+    /// Get a <see cref="Point2D"/> at the origin.
+    /// </summary>
+    public static Point2D Zero => new Point2D();
 
     /// <summary>
     /// Create a new <see cref="Point2D"/>,
     /// </summary>
     /// <param name="scalar"></param>
-    public Point2D(float scalar = 0.0F)
+    public Point2D(double scalar = 0.0F)
     {
         _tensor = Tensor.Create([2], _ => scalar);
     }
@@ -23,7 +28,7 @@ public readonly record struct Point2D
     /// </summary>
     /// <param name="x">The point's X-component.</param>
     /// <param name="y">The point's Y-component.</param>
-    public Point2D(float x, float y)
+    public Point2D(double x, double y)
     {
         _tensor = Tensor.Zero([2]);
 
@@ -34,7 +39,7 @@ public readonly record struct Point2D
     /// <summary>
     /// The point's X-component.
     /// </summary>
-    public float X
+    public double X
     {
         get => _tensor[0];
         set => _tensor[0] = value;
@@ -43,7 +48,7 @@ public readonly record struct Point2D
     /// <summary>
     /// The point's Y-component.
     /// </summary>
-    public float Y
+    public double Y
     {
         get => _tensor[1];
         set => _tensor[1] = value;
@@ -99,7 +104,7 @@ public readonly record struct Point2D
     /// <param name="point">A <see cref="Point2D"/>.</param>
     /// <param name="scalar">A scalar value.</param>
     /// <returns>The sum of the <see cref="Point2D"/> and the scalar.</returns>
-    public static Point2D operator +(in Point2D point, in float scalar)
+    public static Point2D operator +(in Point2D point, in double scalar)
     {
         return new(point.X + scalar, point.Y + scalar);
     }
@@ -110,7 +115,7 @@ public readonly record struct Point2D
     /// <param name="point">A <see cref="Point2D"/>.</param>
     /// <param name="scalar">A scalar value.</param>
     /// <returns>The difference of the <see cref="Point2D"/> and the scalar.</returns>
-    public static Point2D operator -(in Point2D point, in float scalar)
+    public static Point2D operator -(in Point2D point, in double scalar)
     {
         return new(point.X - scalar, point.Y - scalar);
     }
@@ -121,7 +126,7 @@ public readonly record struct Point2D
     /// <param name="point">A <see cref="Point2D"/>.</param>
     /// <param name="scalar">A scalar value.</param>
     /// <returns>The product of the <see cref="Point2D"/> and the scalar.</returns>
-    public static Point2D operator *(in Point2D point, in float scalar)
+    public static Point2D operator *(in Point2D point, in double scalar)
     {
         return new(point.X * scalar, point.Y * scalar);
     }
@@ -132,7 +137,7 @@ public readonly record struct Point2D
     /// <param name="point">A <see cref="Point2D"/>.</param>
     /// <param name="scalar">A scalar value.</param>
     /// <returns>The quotient of the <see cref="Point2D"/> and the scalar.</returns>
-    public static Point2D operator /(in Point2D point, in float scalar)
+    public static Point2D operator /(in Point2D point, in double scalar)
     {
         return new(point.X / scalar, point.Y / scalar);
     }

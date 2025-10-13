@@ -7,14 +7,14 @@ namespace Spatial.Mathematics;
 /// </summary>
 public class Tensor
 {
-    private readonly float? _scalar;
+    private readonly double? _scalar;
     private readonly Tensor[]? _children;
 
     /// <summary>
     /// Create a new <see cref="Tensor"/>.
     /// </summary>
     /// <param name="scalar">A scalar value.</param>
-    private Tensor(float scalar)
+    private Tensor(double scalar)
     {
         _scalar = scalar;
     }
@@ -42,7 +42,7 @@ public class Tensor
     /// <summary>
     /// The tensor's value.
     /// </summary>
-    public float Scalar => _scalar ?? throw new NullReference();
+    public double Scalar => _scalar ?? throw new NullReference();
 
     /// <summary>
     /// The tensor's children.
@@ -53,13 +53,13 @@ public class Tensor
     /// Cast the <see cref="Tensor"/> to a scalar value.
     /// </summary>
     /// <param name="tensor">A <see cref="Tensor"/>.</param>
-    public static implicit operator float(Tensor tensor) => tensor.Scalar;
+    public static implicit operator double(Tensor tensor) => tensor.Scalar;
 
     /// <summary>
     /// Cast the scalar value to a <see cref="Tensor"/>.
     /// </summary>
     /// <param name="scalar">A scalar value.</param>
-    public static implicit operator Tensor(float scalar) => new Tensor(scalar);
+    public static implicit operator Tensor(double scalar) => new Tensor(scalar);
 
     /// <summary>
     /// Cast the <see cref="Tensor"/> to an array of tensors.
@@ -90,7 +90,7 @@ public class Tensor
     /// <returns>A random <see cref="Tensor"/>.</returns>
     public static Tensor Random(int[] shape)
     {
-        return Create(shape, _ => Strong.Float(1.0F));
+        return Create(shape, _ => Strong.Double(1.0F));
     }
 
     /// <summary>
@@ -99,12 +99,12 @@ public class Tensor
     /// <param name="shape">The shape of the <see cref="Tensor"/>.</param>
     /// <param name="factory">A method to create the <see cref="Tensor"/>.</param>
     /// <returns>A <see cref="Tensor"/>.</returns>
-    public static Tensor Create(int[] shape, Func<int, float> factory)
+    public static Tensor Create(int[] shape, Func<int, double> factory)
     {
         return Create(shape, 0, factory);
     }
 
-    private static Tensor Create(int[] shape, int offset, Func<int, float> factory)
+    private static Tensor Create(int[] shape, int offset, Func<int, double> factory)
     {
         var dimension = shape.Length - offset;
 

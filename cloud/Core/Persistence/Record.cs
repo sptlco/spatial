@@ -1,7 +1,6 @@
 // Copyright © Spatial Corporation. All rights reserved.
 
 using MongoDB.Bson;
-using MongoDB.Bson.Serialization.Attributes;
 using MongoDB.Driver;
 using System.Linq.Expressions;
 using System.Reflection;
@@ -14,15 +13,22 @@ namespace Spatial.Persistence;
 public class Record
 {
     /// <summary>
+    /// Create a new <see cref="Record"/>.
+    /// </summary>
+    public Record()
+    {
+        Id = ObjectId.GenerateNewId().ToString();
+    }
+
+    /// <summary>
     /// The document's identification number.
     /// </summary>
-    [BsonId]
-    public uint Id { get; set; }
+    public string Id { get; set; }
 
     /// <summary>
     /// The <see cref="DateTime"/> the <see cref="Record"/> was created.
     /// </summary>
-    public DateTime Created { get; set; } = DateTime.UtcNow;
+    public double Created { get; set; } = Time.Now;
 }
 
 /// <summary>
@@ -47,8 +53,6 @@ public static class Record<T> where T : Record
     /// <param name="record">The <see cref="Record"/> to store.</param>
     public static void Store(in T record)
     {
-        record.Id = GenerateId();
-
         GetCollection().InsertOne(record);
     }
 
@@ -57,9 +61,9 @@ public static class Record<T> where T : Record
     /// </summary>
     /// <param name="id">The document's identification number.</param>
     /// <returns>A of type <typeparamref name="T"/>.</returns>
-    public static T Read(uint id)
+    public static T Read(string id)
     {
-        return First(doc => doc.Id == id);
+        return First(record => record.Id.Equals(id));
     }
 
     /// <summary>
@@ -122,23 +126,6 @@ public static class Record<T> where T : Record
         GetCollection().DeleteMany(filter ?? FilterDefinition<T>.Empty);
     }
 
-    private static uint GenerateId()
-    {
-        var filter = Builders<Counter>.Filter.Eq(c => c.Name, typeof(T).Name);
-        var update = Builders<Counter>.Update.Inc<uint>(c => c.Count, 1);
-
-        var options = new FindOneAndUpdateOptions<Counter> {
-            IsUpsert = true,
-            ReturnDocument = ReturnDocument.After
-        };
-
-        var counter = GetDatabase()
-            .GetCollection<Counter>(Constants.CounterCollectionName)
-            .FindOneAndUpdate(filter, update, options);
-
-        return counter.Count;
-    }
-
     private static IMongoDatabase GetDatabase()
     {
         return _client.GetDatabase(Application.Current.Configuration.Database.Name);
@@ -165,25 +152,4 @@ public static class Record<T> where T : Record
     {
         return new MongoClient(Application.Current.Configuration.Database.ConnectionString);
     }
-}
-
-/// <summary>
-/// Counts documents in the database.
-/// </summary>
-public class Counter
-{
-    /// <summary>
-    /// The counter's identifier.
-    /// </summary>
-    public ObjectId Id { get; set; }
-
-    /// <summary>
-    /// The name of the <see cref="Counter"/>.
-    /// </summary>
-    public string Name { get; set; }
-
-    /// <summary>
-    /// The current <see cref="Record"/> count.
-    /// </summary>
-    public uint Count { get; set; }
 }

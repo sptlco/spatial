@@ -5,15 +5,20 @@ namespace Spatial.Mathematics;
 /// <summary>
 /// A point in three-dimensional space.
 /// </summary>
-public readonly record struct Point3D
+public class Point3D
 {
     private readonly Tensor _tensor;
+
+    /// <summary>
+    /// Get a <see cref="Point3D"/> at the origin.
+    /// </summary>
+    public static Point3D Zero => new Point3D();
 
     /// <summary>
     /// Create a new <see cref="Point2D"/>,
     /// </summary>
     /// <param name="scalar"></param>
-    public Point3D(float scalar = 0.0F)
+    public Point3D(double scalar = 0.0F)
     {
         _tensor = Tensor.Create([3], _ => scalar);
     }
@@ -24,7 +29,7 @@ public readonly record struct Point3D
     /// <param name="x">The point's X-component.</param>
     /// <param name="y">The point's Y-component.</param>
     /// <param name="z">The point's Z-component.</param>
-    public Point3D(float x, float y, float z)
+    public Point3D(double x, double y, double z)
     {
         _tensor = Tensor.Zero([3]);
 
@@ -36,7 +41,7 @@ public readonly record struct Point3D
     /// <summary>
     /// The point's X-component.
     /// </summary>
-    public float X
+    public double X
     {
         get => _tensor[0];
         set => _tensor[0] = value;
@@ -45,7 +50,7 @@ public readonly record struct Point3D
     /// <summary>
     /// The point's Y-component.
     /// </summary>
-    public float Y
+    public double Y
     {
         get => _tensor[1];
         set => _tensor[1] = value;
@@ -54,7 +59,7 @@ public readonly record struct Point3D
     /// <summary>
     /// The point's Z-component.
     /// </summary>
-    public float Z
+    public double Z
     {
         get => _tensor[2];
         set => _tensor[2] = value;
@@ -110,7 +115,7 @@ public readonly record struct Point3D
     /// <param name="point">A <see cref="Point3D"/>.</param>
     /// <param name="scalar">A scalar value.</param>
     /// <returns>The sum of the <see cref="Point3D"/> and the scalar.</returns>
-    public static Point3D operator +(in Point3D point, in float scalar)
+    public static Point3D operator +(in Point3D point, in double scalar)
     {
         return new(point.X + scalar, point.Y + scalar, point.Z + scalar);
     }
@@ -121,7 +126,7 @@ public readonly record struct Point3D
     /// <param name="point">A <see cref="Point3D"/>.</param>
     /// <param name="scalar">A scalar value.</param>
     /// <returns>The difference of the <see cref="Point3D"/> and the scalar.</returns>
-    public static Point3D operator -(in Point3D point, in float scalar)
+    public static Point3D operator -(in Point3D point, in double scalar)
     {
         return new(point.X - scalar, point.Y - scalar, point.Z - scalar);
     }
@@ -132,7 +137,7 @@ public readonly record struct Point3D
     /// <param name="point">A <see cref="Point3D"/>.</param>
     /// <param name="scalar">A scalar value.</param>
     /// <returns>The product of the <see cref="Point3D"/> and the scalar.</returns>
-    public static Point3D operator *(in Point3D point, in float scalar)
+    public static Point3D operator *(in Point3D point, in double scalar)
     {
         return new(point.X * scalar, point.Y * scalar, point.Y * scalar);
     }
@@ -143,7 +148,7 @@ public readonly record struct Point3D
     /// <param name="point">A <see cref="Point3D"/>.</param>
     /// <param name="scalar">A scalar value.</param>
     /// <returns>The quotient of the <see cref="Point3D"/> and the scalar.</returns>
-    public static Point3D operator /(in Point3D point, in float scalar)
+    public static Point3D operator /(in Point3D point, in double scalar)
     {
         return new(point.X / scalar, point.Y / scalar, point.Z / scalar);
     }

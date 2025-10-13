@@ -5,8 +5,8 @@ using Microsoft.AspNetCore.Mvc;
 namespace Spatial.Networking;
 
 /// <summary>
-/// Indicates that a parameter is read from a JSON message body.
+/// Indicates that a <see cref="Controller"/> endpoint parameter is read from a JSON message body.
 /// </summary>
-public class JsonAttribute : FromBodyAttribute
+public class BodyAttribute : FromBodyAttribute
 {
 }

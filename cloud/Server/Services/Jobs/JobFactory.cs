@@ -1,8 +1,8 @@
 // Copyright © Spatial Corporation. All rights reserved.
 
-using Spatial.Cloud.Models;
+using Spatial.Cloud.Models.Jobs;
 
-namespace Spatial.Cloud.Services;
+namespace Spatial.Cloud.Services.Jobs;
 
 public class JobFactory
 {

@@ -1,11 +1,11 @@
 // Copyright © Spatial Corporation. All rights reserved.
 
-namespace Spatial.Cloud.Contracts;
+namespace Spatial.Cloud.Models.Jobs;
 
 /// <summary>
-/// A task executed by the <see cref="Server"/>.
+/// A <see cref="Job"/> execution graph.
 /// </summary>
-public class Job
+public class Graph
 {
     // ...
 }

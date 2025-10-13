@@ -6,7 +6,7 @@ using Spatial.Helpers;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
-namespace Spatial.AI;
+namespace Spatial.Intelligence.ThirdParty;
 
 /// <summary>
 /// A means of interaction with ChatGPT.

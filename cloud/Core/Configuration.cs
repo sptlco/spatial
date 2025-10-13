@@ -1,9 +1,9 @@
 // Copyright © Spatial Corporation. All rights reserved.
 
 using Microsoft.Extensions.Options;
-using Spatial.AI;
 using Spatial.Blockchain;
 using Spatial.Caching;
+using Spatial.Intelligence.ThirdParty;
 using Spatial.Persistence;
 using System.ComponentModel.DataAnnotations;
 

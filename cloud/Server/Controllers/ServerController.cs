@@ -5,16 +5,16 @@ using Spatial.Networking;
 namespace Spatial.Cloud.Controllers;
 
 /// <summary>
-/// A controller for <see cref="Server"/>.
+/// A <see cref="Controller"/> for <see cref="Server"/>.
 /// </summary>
 [Module]
 [Path("/")]
 public class ServerController : Controller
 {
     /// <summary>
-    /// Get the server's current name.
+    /// Get the server's name.
     /// </summary>
-    /// <returns>The server's current name.</returns>
+    /// <returns>The server's name.</returns>
     [GET]
     [Path("name")]
     public string GetName()
@@ -23,9 +23,9 @@ public class ServerController : Controller
     }
 
     /// <summary>
-    /// Get the server's current version.
+    /// Get the server's version.
     /// </summary>
-    /// <returns>The server's current version.</returns>
+    /// <returns>The server's version.</returns>
     [GET]
     [Path("version")]
     public string GetVersion()

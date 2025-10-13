@@ -1,6 +1,6 @@
 // Copyright © Spatial Corporation. All rights reserved.
 
-namespace Spatial.AI;
+namespace Spatial.Intelligence.ThirdParty;
 
 /// <summary>
 /// Configurable options for OpenAI.

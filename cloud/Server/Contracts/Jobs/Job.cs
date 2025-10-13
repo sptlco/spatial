@@ -1,13 +1,11 @@
 // Copyright © Spatial Corporation. All rights reserved.
 
-using Spatial.Persistence;
-
-namespace Spatial.Cloud.Models;
+namespace Spatial.Cloud.Contracts.Jobs;
 
 /// <summary>
 /// A task executed by the <see cref="Server"/>.
 /// </summary>
-public class Job : Record
+public class Job
 {
     // ...
 }

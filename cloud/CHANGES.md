@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.6.0](https://github.com/sptlco/spatial/compare/spatial-cloud-1.5.0...spatial-cloud-1.6.0) (2025-10-21)
+
+
+### Features
+
+* add nodes ([#49](https://github.com/sptlco/spatial/issues/49)) ([678d62a](https://github.com/sptlco/spatial/commit/678d62a4916e9c9974aee2e6b5c4d26293f79e13))
+* support job timeouts ([#49](https://github.com/sptlco/spatial/issues/49)) ([1415874](https://github.com/sptlco/spatial/commit/141587443376f415d700e4f8672cdab1af542111))
+
 ## [1.5.0](https://github.com/sptlco/spatial/compare/spatial-cloud-1.4.4...spatial-cloud-1.5.0) (2025-10-07)
 
 

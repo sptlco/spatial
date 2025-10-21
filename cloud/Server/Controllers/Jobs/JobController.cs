@@ -16,39 +16,31 @@ public class JobController : Controller
     private readonly Compiler _compiler;
 
     /// <summary>
-    /// Create a new <see cref="JobController"/>.
+    /// Create a new <see cref="GraphController"/>.
     /// </summary>
     public JobController()
     {
         _compiler = new Compiler();
     }
-
+    
     /// <summary>
     /// Create a new <see cref="Job"/>.
     /// </summary>
-    /// <remarks>Once created, the job is automatically scheduled by the <see cref="Server"/>.</remarks>
+    /// <remarks>Under the hood, the request will be forward to the graph endpoint.</remarks>
+    /// <param name="instructions"><see cref="Instructions"/> for the <see cref="Server"/>.</param>
     /// <returns>A <see cref="Job"/>.</returns>
     [POST]
     [Path("/")]
-    public async Task<Job> CreateJobAsync()
-    {
-        var graph = _compiler.Compile();
-
-        // ...
-
-        return await Task.FromResult(new Job {
-            // ...
-        });
-    }
-
+    public async Task<Job> CreateJobAsync([Body] Instructions instructions) => (await CreateGraphAsync([instructions])).Jobs.First();
+    
     /// <summary>
     /// Create a new <see cref="Graph"/>.
     /// </summary>
-    /// <remarks>Once created, the job is automatically scheduled by the <see cref="Server"/>.</remarks>
+    /// <param name="jobs"><see cref="Instructions"/> for each <see cref="Job"/> in the <see cref="Graph"/>.</param>
     /// <returns>A <see cref="Graph"/>.</returns>
     [POST]
     [Path("/graph")]
-    public async Task<Graph> CreateGraphAsync()
+    public async Task<Graph> CreateGraphAsync([Body] List<Instructions> jobs)
     {
         var graph = _compiler.Compile();
 
@@ -57,5 +49,5 @@ public class JobController : Controller
         return await Task.FromResult(new Graph {
             // ...
         });
-    }   
+    }
 }

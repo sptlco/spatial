@@ -47,6 +47,18 @@ public class InvalidParameters : SystemError
 }
 
 /// <summary>
+/// A <see cref="SystemError"/> that indicates a process took too long.
+/// </summary>
+public class Timeout : SystemError
+{
+    /// <summary>
+    /// Create a new <see cref="Timeout"/>.
+    /// </summary>
+    /// <param name="message">A message describing the <see cref="Timeout"/>.</param>
+    public Timeout(string message) : base(message) { }
+}
+
+/// <summary>
 /// An <see cref="Error"/> on behalf of the user.
 /// </summary>
 public class UserError : Error

@@ -126,18 +126,20 @@ internal class Agent : IDisposable
 
     private void Execute(CommandJob job)
     {
+        job.Started = Time.Now;
         job.Status = JobStatus.Running;
 
         try
         {
-            job.Execute();
+            new Driver(job).Run();
+
             job.Status = JobStatus.Complete;
         }
         catch (Exception e)
         {
             job.Status = JobStatus.Failed;
 
-            ERROR(e, "{job} failed", job.GetType().Name);
+            ERROR(e, "{job} failed.", job.GetType().Name);
         }
         finally
         {

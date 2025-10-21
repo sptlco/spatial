@@ -3,7 +3,7 @@
 namespace Spatial.Cloud.Services.Nodes;
 
 /// <summary>
-/// An integrated original differential equation (ODE) solver.
+/// An integrated ordinary differential equation (ODE) solver.
 /// </summary>
 public class Hypersolver
 {

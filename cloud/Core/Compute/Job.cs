@@ -23,6 +23,16 @@ public abstract partial class Job : IDisposable
     public string Id { get; internal set; } = Guid.NewGuid().ToString("N");
 
     /// <summary>
+    /// The maximum <see cref="Time"/> the <see cref="Job"/> is allowed to run before timing out.
+    /// </summary>
+    public Time Timeout { get; set; } = Time.FromMinutes(10);
+
+    /// <summary>
+    /// The <see cref="Time"/> the system started executing the <see cref="Job"/>.
+    /// </summary>
+    public Time Started { get; set; }
+
+    /// <summary>
     /// The <see cref="Compute.Graph"/> the <see cref="Job"/> belongs to.
     /// </summary>
     internal Graph Graph { get; set; } = default!;
@@ -54,10 +64,9 @@ public abstract partial class Job : IDisposable
     /// <param name="collection">A collection to enumerate.</param>
     /// <param name="function">The function to execute.</param>
     /// <param name="batchStrategy">The job's <see cref="BatchStrategy"/>.</param>
-    /// <param name="wait">Whether or not to wait for the job to complete.</param>
-    public static void ParallelFor<T>(IEnumerable<T> collection, Action<T> function, BatchStrategy batchStrategy = BatchStrategy.Auto, bool wait = true)
+    public static Handle ParallelFor<T>(IEnumerable<T> collection, Action<T> function, BatchStrategy batchStrategy = BatchStrategy.Auto)
     {
-        ParallelFor(collection.Count(), 0, (i) => function(collection.ElementAt(i)), batchStrategy, wait);
+        return ParallelFor(collection.Count(), 0, (i) => function(collection.ElementAt(i)), batchStrategy);
     }
 
     /// <summary>
@@ -66,10 +75,9 @@ public abstract partial class Job : IDisposable
     /// <param name="collection">A collection to enumerate.</param>
     /// <param name="function">The function to execute.</param>
     /// <param name="batchStrategy">The job's <see cref="BatchStrategy"/>.</param>
-    /// <param name="wait">Whether or not to wait for the job to complete.</param>
-    public static void ParallelFor<T>(IReadOnlyCollection<T> collection, Action<T> function, BatchStrategy batchStrategy = BatchStrategy.Auto, bool wait = true)
+    public static Handle ParallelFor<T>(IReadOnlyCollection<T> collection, Action<T> function, BatchStrategy batchStrategy = BatchStrategy.Auto)
     {
-        ParallelFor(collection.Count, 0, (i) => function(collection.ElementAt(i)), batchStrategy, wait);
+        return ParallelFor(collection.Count, 0, (i) => function(collection.ElementAt(i)), batchStrategy);
     }
 
     /// <summary>
@@ -78,13 +86,16 @@ public abstract partial class Job : IDisposable
     /// <param name="collection">A collection to enumerate.</param>
     /// <param name="function">The function to execute.</param>
     /// <param name="batchStrategy">The job's <see cref="BatchStrategy"/>.</param>
-    /// <param name="wait">Whether or not to wait for the job to complete.</param>
-    public static void ParallelFor<TKey, TValue>(IDictionary<TKey, TValue> collection, Action<TKey, TValue> function, BatchStrategy batchStrategy = BatchStrategy.Auto, bool wait = true)
+    public static Handle ParallelFor<TKey, TValue>(IDictionary<TKey, TValue> collection, Action<TKey, TValue> function, BatchStrategy batchStrategy = BatchStrategy.Auto)
     {
-        ParallelFor(collection.Count, 0, (i) => {
-            var (key, value) = collection.ElementAt(i);
-            function(key, value);
-        }, batchStrategy, wait);
+        return ParallelFor(
+            iterations: collection.Count,
+            batchSize: 0,
+            batchStrategy: batchStrategy,
+            function: (i) => {
+                var (key, value) = collection.ElementAt(i);
+                function(key, value);
+        });
     }
 
     /// <summary>
@@ -93,10 +104,9 @@ public abstract partial class Job : IDisposable
     /// <param name="count">The number of iterations to perform.</param>
     /// <param name="function">The function to execute.</param>
     /// <param name="batchStrategy">The job's <see cref="BatchStrategy"/>.</param>
-    /// <param name="wait">Whether or not to wait for the job to complete.</param>
-    public static void ParallelFor(int count, Action<int> function, BatchStrategy batchStrategy = BatchStrategy.Auto, bool wait = true)
+    public static Handle ParallelFor(int count, Action<int> function, BatchStrategy batchStrategy = BatchStrategy.Auto)
     {
-        ParallelFor(count, 0, function, batchStrategy, wait);
+        return ParallelFor(count, 0, function, batchStrategy);
     }
 
     /// <summary>
@@ -106,20 +116,9 @@ public abstract partial class Job : IDisposable
     /// <param name="batchSize">The number of iterations to process per job.</param>
     /// <param name="function">The function to execute.</param>
     /// <param name="batchStrategy">The job's <see cref="BatchStrategy"/>.</param>
-    /// <param name="wait">Whether or not to wait for the job to complete.</param>
-    public static void ParallelFor(int iterations, int batchSize, Action<int> function, BatchStrategy batchStrategy = BatchStrategy.Preferred, bool wait = true)
+    public static Handle ParallelFor(int iterations, int batchSize, Action<int> function, BatchStrategy batchStrategy = BatchStrategy.Preferred)
     {
-        if (iterations <= 0)
-        {
-            return;
-        }
-        
-        using var handle = Schedule(new ParallelForJob(iterations, batchSize, function, batchStrategy));
-
-        if (wait)
-        {
-            handle.Wait();
-        }
+        return Schedule(new ParallelForJob(iterations, batchSize, function, batchStrategy));
     }
 
     /// <summary>
@@ -129,10 +128,9 @@ public abstract partial class Job : IDisposable
     /// <param name="height">The size of the second dimension.</param>
     /// <param name="function">The function to execute.</param>
     /// <param name="batchStrategy">The job's <see cref="BatchStrategy"/>.</param>
-    /// <param name="wait">Whether or not to wait for the job to complete.</param>
-    public static void ParallelFor2D(int width, int height, Action<int, int> function, BatchStrategy batchStrategy = BatchStrategy.Auto, bool wait = true)
+    public static Handle ParallelFor2D(int width, int height, Action<int, int> function, BatchStrategy batchStrategy = BatchStrategy.Auto)
     {
-        ParallelFor2D(width, height, 0, 0, function, batchStrategy, wait);
+        return ParallelFor2D(width, height, 0, 0, function, batchStrategy);
     }
 
     /// <summary>
@@ -144,20 +142,9 @@ public abstract partial class Job : IDisposable
     /// <param name="batchSizeY">The number of iterations to perform per job in the second dimension.</param>
     /// <param name="function">The function to execute.</param>
     /// <param name="batchStrategy">The job's <see cref="BatchStrategy"/>.</param>
-    /// <param name="wait">Whether or not to wait for the job to complete.</param>
-    public static void ParallelFor2D(int width, int height, int batchSizeX, int batchSizeY, Action<int, int> function, BatchStrategy batchStrategy = BatchStrategy.Preferred, bool wait = true)
+    public static Handle ParallelFor2D(int width, int height, int batchSizeX, int batchSizeY, Action<int, int> function, BatchStrategy batchStrategy = BatchStrategy.Preferred)
     {
-        if (width <= 0 || height <= 0)
-        {
-            return;
-        }
-        
-        using var handle = Schedule(new ParallelFor2DJob(width, height, batchSizeX, batchSizeY, function, batchStrategy));
-
-        if (wait)
-        {
-            handle.Wait();
-        }
+        return Schedule(new ParallelFor2DJob(width, height, batchSizeX, batchSizeY, function, batchStrategy));
     }
 
     /// <summary>

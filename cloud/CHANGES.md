@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.7.0](https://github.com/sptlco/spatial/compare/spatial-cloud-1.6.0...spatial-cloud-1.7.0) (2025-10-22)
+
+
+### Features
+
+* support Stripe ([#49](https://github.com/sptlco/spatial/issues/49)) ([4933b84](https://github.com/sptlco/spatial/commit/4933b84bf6685140638fd8ef8887b1cdc90b8bcb))
+
 ## [1.6.0](https://github.com/sptlco/spatial/compare/spatial-cloud-1.5.0...spatial-cloud-1.6.0) (2025-10-21)
 
 

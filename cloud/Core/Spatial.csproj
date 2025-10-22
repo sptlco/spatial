@@ -34,5 +34,6 @@
       <PackageReference Include="Serilog.Sinks.File" Version="6.0.0" />
       <PackageReference Include="Serilog.Sinks.MongoDB" Version="7.0.0" />
       <PackageReference Include="StackExchange.Redis" Version="2.9.17" />
+      <PackageReference Include="Stripe.net" Version="49.0.0" />
     </ItemGroup>
 </Project>

@@ -1,6 +1,7 @@
 // Copyright © Spatial Corporation. All rights reserved.
 
 using Microsoft.Extensions.Options;
+using Spatial.Billing;
 using Spatial.Blockchain;
 using Spatial.Caching;
 using Spatial.Intelligence.ThirdParty;
@@ -52,6 +53,12 @@ public class Configuration
     /// </summary>
     [ValidateObjectMembers]
     public CacheConfiguration Cache { get; set; } = new CacheConfiguration();
+
+    /// <summary>
+    /// Configurable options for <see cref="Billing.Stripe"/>.
+    /// </summary>
+    [ValidateObjectMembers]
+    public StripeConfiguration Stripe { get; set; } = new StripeConfiguration();
 
     /// <summary>
     /// Configurable options for the system's <see cref="Blockchain.Ethereum"/> provider.

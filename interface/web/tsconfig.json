@@ -21,6 +21,7 @@
     ],
     "paths": {
       "@spatial/*": ["./*"],
+      "@spatial/matter": ["../design"],
       "@spatial/matter/*": ["../design/*"]
     }
   },

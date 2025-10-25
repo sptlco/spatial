@@ -1,5 +1,5 @@
 {
-  "name": "@spatial/matter",
+  "name": "@sptlco/matter",
   "version": "1.0.0",
   "description": "A design system for creating beautiful, accessible user interfaces.",
   "main": "index.ts",
@@ -9,7 +9,7 @@
   "license": "MIT",
   "type": "commonjs",
   "repository": {
-    "url": "https://github.com/sptlco/spatial"
+    "url": "git+https://github.com/sptlco/spatial.git"
   },
   "publishConfig": {
     "@sptlco:registry": "https://npm.pkg.github.com/"

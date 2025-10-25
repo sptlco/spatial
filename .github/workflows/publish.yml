@@ -67,7 +67,7 @@ jobs:
 
       - name: Publish (NPM)
         if: startsWith(github.ref_name, 'spatial-interface-design')
-        run: npm publish --access public
+        run: npm publish
         working-directory: interface/design
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

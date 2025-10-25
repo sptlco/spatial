@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.8.0](https://github.com/sptlco/spatial/compare/spatial-cloud-1.7.0...spatial-cloud-1.8.0) (2025-10-25)
+
+
+### Features
+
+* add neural components ([#49](https://github.com/sptlco/spatial/issues/49)) ([5017215](https://github.com/sptlco/spatial/commit/5017215e26997dd3911fee7a879c8dd65a444dcb))
+
 ## [1.7.0](https://github.com/sptlco/spatial/compare/spatial-cloud-1.6.0...spatial-cloud-1.7.0) (2025-10-22)
 
 

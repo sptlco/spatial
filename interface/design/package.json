@@ -8,9 +8,12 @@
   "author": "Spatial Corporation",
   "license": "MIT",
   "type": "commonjs",
+  "repository": {
+    "url": "https://github.com/sptlco/spatial"
+  },
   "publishConfig": {
-	  "registry": "https://npm.pkg.github.com/"
-	}
+	  "@sptlco:registry": "https://npm.pkg.github.com/"
+	},
   "dependencies": {
     "react": "^19.1.0",
     "react-dom": "^19.1.0"

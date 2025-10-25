@@ -54,7 +54,6 @@ jobs:
         with:
           node-version: '22.x'
           registry-url: 'https://npm.pkg.github.com/'
-          scope: '@spatial'
 
       - name: Install dependencies (NPM)
         if: startsWith(github.ref_name, 'spatial-interface-design')

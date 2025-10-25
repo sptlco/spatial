@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.6.0](https://github.com/sptlco/spatial/compare/spatial-interface-web-1.5.2...spatial-interface-web-1.6.0) (2025-10-25)
+
+
+### Features
+
+* add a design system ([#51](https://github.com/sptlco/spatial/issues/51)) ([0d36d6f](https://github.com/sptlco/spatial/commit/0d36d6f4ad58176c4b8b668d07f2efca60f0d4de))
+* add locale support ([#51](https://github.com/sptlco/spatial/issues/51)) ([7547157](https://github.com/sptlco/spatial/commit/754715769cebf6ee6e2e9368078af73eae36c19e))
+
 ## [1.5.2](https://github.com/sptlco/spatial/compare/spatial-interface-web-1.5.1...spatial-interface-web-1.5.2) (2025-10-03)
 
 

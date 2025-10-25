@@ -4,6 +4,8 @@ import type { Metadata } from "next";
 import { ThemeProvider } from "next-themes";
 import { Suspense } from "react";
 
+import "@spatial/matter"
+
 export const metadata: Metadata = {
   title: "Spatial",
   description: "Leading industrial research and development."

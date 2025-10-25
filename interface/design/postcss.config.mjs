@@ -1,3 +1,5 @@
 // Copyright © Spatial Corporation. All rights reserved.
 
-export const useSession = () => {};
+export default {
+  plugins: ["@tailwindcss/postcss"],
+};

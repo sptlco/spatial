@@ -4,6 +4,7 @@ on:
   push:
     tags:
       - 'spatial-cloud*'
+      - 'spatial-interface-design*'
 
 concurrency:
   group: publish
@@ -21,20 +22,53 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      # Cloud core library
+
       - name: Setup .NET
+        if: startsWith(github.ref_name, 'spatial-cloud')
         uses: actions/setup-dotnet@v3
         with:
           dotnet-version: '9.x'
 
-      - name: Restore
+      - name: Restore (.NET)
+        if: startsWith(github.ref_name, 'spatial-cloud')
         run: dotnet restore cloud/Core/Spatial.csproj
 
-      - name: Package
+      - name: Package (.NET)
+        if: startsWith(github.ref_name, 'spatial-cloud')
         run: dotnet pack cloud/Core/Spatial.csproj -c Release -o ./nupkg
 
-      - name: Publish
+      - name: Publish (.NET)
+        if: startsWith(github.ref_name, 'spatial-cloud')
         run: |
           dotnet nuget push ./nupkg/*.nupkg \
             --source "https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json" \
             --api-key ${{ secrets.GITHUB_TOKEN }} \
             --skip-duplicate
+
+      # Interface design system
+
+      - name: Setup Node.js
+        if: startsWith(github.ref_name, 'spatial-interface-design')
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22.x'
+          registry-url: 'https://npm.pkg.github.com/'
+          scope: '@spatial'
+
+      - name: Install dependencies (NPM)
+        if: startsWith(github.ref_name, 'spatial-interface-design')
+        run: npm ci
+        working-directory: interface/design
+
+      - name: Build (optional)
+        if: startsWith(github.ref_name, 'spatial-interface-design')
+        run: npm run build --if-present
+        working-directory: interface/design
+
+      - name: Publish (NPM)
+        if: startsWith(github.ref_name, 'spatial-interface-design')
+        run: npm publish --access public
+        working-directory: interface/design
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

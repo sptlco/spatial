@@ -1,3 +1,3 @@
 // Copyright © Spatial Corporation. All rights reserved.
 
-export * from "./ThemeSwitch";
+export {}

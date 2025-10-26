@@ -20,7 +20,8 @@
       }
     ],
     "paths": {
-      "@spatial/matter/*": ["./*"]
+      "@sptlco/matter": ["."],
+      "@sptlco/matter/*": ["./*"]
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],

@@ -4,10 +4,11 @@ WORKDIR /app
 
 COPY . .
 
-RUN npm install --workspace=@spatial/web
-RUN npm run build:web
+RUN npm install --workspace=web
 
 WORKDIR /app/web
+
+RUN npm run build
 
 EXPOSE 80
 

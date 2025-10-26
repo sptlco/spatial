@@ -2,6 +2,8 @@
 
 import type { NextConfig } from "next";
 
-const nextConfig: NextConfig = {};
+const nextConfig: NextConfig = {
+    transpilePackages: ["@sptlco/matter"]
+};
 
 export default nextConfig;

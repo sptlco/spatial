@@ -20,7 +20,9 @@
       }
     ],
     "paths": {
-      "@spatial/*": ["./*"]
+      "@spatial/*": ["./*"],
+      "@sptlco/matter": ["../design"],
+      "@sptlco/matter/*": ["../design/*"]
     }
   },
   "include": ["next-env.d.ts", ".next/types/**/*.ts", "**/*.ts", "**/*.tsx"],

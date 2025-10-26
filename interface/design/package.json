@@ -3,11 +3,8 @@
   "version": "1.0.1",
   "description": "A design system for creating beautiful, accessible user interfaces.",
   "main": "index.ts",
-  "scripts": {},
-  "keywords": [],
   "author": "Spatial Corporation",
   "license": "MIT",
-  "type": "commonjs",
   "repository": {
     "url": "git+https://github.com/sptlco/spatial.git"
   },

@@ -12,15 +12,15 @@
     "@sptlco:registry": "https://npm.pkg.github.com/"
   },
   "dependencies": {
-    "react": "^19.1.0",
-    "react-dom": "^19.1.0"
+    "react": "^19",
+    "react-dom": "^19"
   },
   "devDependencies": {
-    "@tailwindcss/postcss": "^4.1.16",
-    "@types/react": "^19.2.2",
-    "@types/react-dom": "^19.2.2",
+    "@tailwindcss/postcss": "^4",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
     "postcss": "^8.5.6",
-    "tailwindcss": "^4.1.16",
-    "typescript": "^5.9.3"
+    "tailwindcss": "^4",
+    "typescript": "^5"
   }
 }

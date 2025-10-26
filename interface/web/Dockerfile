@@ -5,10 +5,9 @@ WORKDIR /app
 COPY . .
 
 RUN npm install --workspace=web
+RUN npm run build:web
 
 WORKDIR /app/web
-
-RUN npm run build
 
 EXPOSE 80
 

@@ -1,5 +1,29 @@
 # Changelog
 
+## [1.6.2](https://github.com/sptlco/spatial/compare/spatial-interface-web-1.6.1...spatial-interface-web-1.6.2) (2025-10-26)
+
+
+### Bug Fixes
+
+* add .gitignore ([#51](https://github.com/sptlco/spatial/issues/51)) ([d1118b7](https://github.com/sptlco/spatial/commit/d1118b7746369287bdc50721479920d0aa49116a))
+* add context ([#51](https://github.com/sptlco/spatial/issues/51)) ([d608e44](https://github.com/sptlco/spatial/commit/d608e443ba501c6a0af91a47a821cb1f0a7e0f76))
+* add includes ([#51](https://github.com/sptlco/spatial/issues/51)) ([a727dfd](https://github.com/sptlco/spatial/commit/a727dfd3bf6466ae438ad24135560e17960706d1))
+* add paths ([#51](https://github.com/sptlco/spatial/issues/51)) ([e002c09](https://github.com/sptlco/spatial/commit/e002c091921be21efed1ce766fb5ecfcf6f98631))
+* add root path ([#51](https://github.com/sptlco/spatial/issues/51)) ([b4a567a](https://github.com/sptlco/spatial/commit/b4a567a3c356e75179404827af700e0e52481274))
+* move dependency ([#51](https://github.com/sptlco/spatial/issues/51)) ([0a6ad10](https://github.com/sptlco/spatial/commit/0a6ad10e7a1782fd90a9f106a95f08a844b74373))
+* remove transpile ([#51](https://github.com/sptlco/spatial/issues/51)) ([2661a86](https://github.com/sptlco/spatial/commit/2661a86da6e8209b2eb4ad0b629a9a4dfa26bbc8))
+* resolve paths ([#51](https://github.com/sptlco/spatial/issues/51)) ([2f7f155](https://github.com/sptlco/spatial/commit/2f7f155c84668e82b7fb98aed0950228e57edd4e))
+* specify workspace ([#51](https://github.com/sptlco/spatial/issues/51)) ([7a04e51](https://github.com/sptlco/spatial/commit/7a04e51bd201e8be11e269c66fd3a1bee902a797))
+* specify workspace name ([#51](https://github.com/sptlco/spatial/issues/51)) ([b2e6790](https://github.com/sptlco/spatial/commit/b2e6790adc56c82a43eac6adc06352e66d248230))
+* update build ([#51](https://github.com/sptlco/spatial/issues/51)) ([412674f](https://github.com/sptlco/spatial/commit/412674fa16c7c30801b20b0344aeeffcb81add91))
+* update build root ([#51](https://github.com/sptlco/spatial/issues/51)) ([0944ad4](https://github.com/sptlco/spatial/commit/0944ad41f5ae71d0e87dcf24465987b20e3c85f0))
+* update package versions ([#51](https://github.com/sptlco/spatial/issues/51)) ([05a4b12](https://github.com/sptlco/spatial/commit/05a4b12e93755f979f5f1a39680280302ddc7195))
+* update paths ([#51](https://github.com/sptlco/spatial/issues/51)) ([7a614f6](https://github.com/sptlco/spatial/commit/7a614f6019b3fd0ad30c6c427c6a1e4b96e00416))
+* update paths ([#51](https://github.com/sptlco/spatial/issues/51)) ([9aca31e](https://github.com/sptlco/spatial/commit/9aca31ec3481609252616f134f8e10ad8f62ba6d))
+* update workspaces ([#51](https://github.com/sptlco/spatial/issues/51)) ([456780e](https://github.com/sptlco/spatial/commit/456780e602bec9566c833d8cc073796e2882bf54))
+* use transpile ([#51](https://github.com/sptlco/spatial/issues/51)) ([d3adc44](https://github.com/sptlco/spatial/commit/d3adc44b63a99bda7e8f8da513c844893a3aac34))
+* use workspaces ([#51](https://github.com/sptlco/spatial/issues/51)) ([e773131](https://github.com/sptlco/spatial/commit/e773131a23040db6f50047c3958b44aaff831dbf))
+
 ## [1.6.1](https://github.com/sptlco/spatial/compare/spatial-interface-web-1.6.0...spatial-interface-web-1.6.1) (2025-10-25)
 
 

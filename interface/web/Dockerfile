@@ -2,13 +2,12 @@ FROM node:20-alpine
 
 WORKDIR /app
 
-COPY ./design ./design
-COPY ./web ./web
-
-WORKDIR /app/web
+COPY . .
 
 RUN npm install
-RUN npm run build
+RUN npm run build:web
+
+WORKDIR /app/web
 
 EXPOSE 80
 

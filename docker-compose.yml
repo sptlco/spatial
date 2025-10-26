@@ -17,7 +17,9 @@ services:
       - cloud
 
   web:
-    build: ./interface/web
+    build:
+      context: ./interface
+      dockerfile: web/Dockerfile
     restart: always
     expose:
       - "80"

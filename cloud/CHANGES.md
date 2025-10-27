@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.10.1](https://github.com/sptlco/spatial/compare/spatial-cloud-1.10.0...spatial-cloud-1.10.1) (2025-10-27)
+
+
+### Bug Fixes
+
+* update hypersolver ([#49](https://github.com/sptlco/spatial/issues/49)) ([d803e3b](https://github.com/sptlco/spatial/commit/d803e3b984f9db7483578321befdff2c31733ec7))
+
 ## [1.10.0](https://github.com/sptlco/spatial/compare/spatial-cloud-1.9.0...spatial-cloud-1.10.0) (2025-10-27)
 
 

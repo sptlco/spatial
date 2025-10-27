@@ -59,6 +59,9 @@ public class Hypersolver : System
         var nodes = Record<Node>.List();
         var connections = Record<Connection>.List();
 
+        space.Reserve(Signature.Combine<Neuron, Position, Rotation>(), (uint) nodes.Count);
+        space.Reserve(Signature.Combine<Synapse>(), (uint) connections.Count);
+
         for (var i = 0; i < nodes.Count; i++)
         {
             var record = nodes[i];

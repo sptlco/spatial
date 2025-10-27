@@ -1,5 +1,20 @@
 # Changelog
 
+## [1.9.0](https://github.com/sptlco/spatial/compare/spatial-cloud-1.8.0...spatial-cloud-1.9.0) (2025-10-27)
+
+
+### Features
+
+* implement hypersolver ([#49](https://github.com/sptlco/spatial/issues/49)) ([875c767](https://github.com/sptlco/spatial/commit/875c7672b6c3e43a279dfdb8e6ddf471006616b1))
+* replicate nodes ([#49](https://github.com/sptlco/spatial/issues/49)) ([e115f68](https://github.com/sptlco/spatial/commit/e115f689b6d80bc0b0d8b44245fce035f2803aec))
+
+
+### Bug Fixes
+
+* implement extractor ([#49](https://github.com/sptlco/spatial/issues/49)) ([30da0c3](https://github.com/sptlco/spatial/commit/30da0c38bae338626bbe8a16005b97f734a4df0e))
+* persist hypersolver ([#49](https://github.com/sptlco/spatial/issues/49)) ([37588fd](https://github.com/sptlco/spatial/commit/37588fdeed02a853b2ae3fe439d46abb58f29fbf))
+* reserve entities ([#49](https://github.com/sptlco/spatial/issues/49)) ([3191b4f](https://github.com/sptlco/spatial/commit/3191b4f6a69769eed234109d5c15ee2a6ebe8483))
+
 ## [1.8.0](https://github.com/sptlco/spatial/compare/spatial-cloud-1.7.0...spatial-cloud-1.8.0) (2025-10-25)
 
 

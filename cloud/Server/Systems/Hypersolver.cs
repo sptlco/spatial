@@ -12,7 +12,7 @@ namespace Spatial.Cloud.Systems;
 /// <summary>
 /// A neural network leveraging temporal dynamics for continuous state changes over time.
 /// </summary>
-[Dependency]
+[Dependency(1)]
 public class Hypersolver : System
 {
     private readonly HypersolverConfiguration _config;
@@ -45,6 +45,8 @@ public class Hypersolver : System
     /// </summary>
     public Hypersolver()
     {
+        Server.Current.Hypersolver = this;
+
         _config = ServerConfiguration.Current.Systems.Hypersolver;
 
         _nodes2Neurons = [];
@@ -77,7 +79,7 @@ public class Hypersolver : System
         {
             var record = nodes[i];
             var entity = space.Create(
-                new Neuron(record.Type, record.Value),
+                new Neuron(record.Type, record.Actuator, record.Channel, record.Value),
                 new Position(record.Position.X, record.Position.Y, record.Position.Z),
                 new Rotation(record.Rotation.X, record.Rotation.Y, record.Rotation.Z));
 
@@ -117,7 +119,8 @@ public class Hypersolver : System
             // Hebbian plasticity.
             // Neurons that fire together, wire together.
 
-            synapse.Strength += _config.Eta * pre.Value * post.Value * delta.Seconds;
+            synapse.Strength += _config.Eta * (1.0 - Math.Exp(-Math.Abs(pre.Value * post.Value) / _config.Kappa)) * (pre.Value * post.Value - post.Value * post.Value * synapse.Strength) * delta.Seconds;
+            synapse.Strength = Math.Clamp(synapse.Strength, -_config.Omax, _config.Omax);
 
         });
 
@@ -155,11 +158,9 @@ public class Hypersolver : System
                 case NeuronType.Motor:
 
                     // Behavior control, yeah! \o/
-                    // Route the motor neuron's output value to an actuator.
+                    // Route the motor neuron's output value to its actuator.
 
-                    var node = _neurons2Nodes[entity];
-
-                    Server.Current.Actuators.GetValueOrDefault(node.Actuator)?.Route(node.Channel, neuron.Value = Math.Tanh(input), delta);
+                    Server.Current.Actuators.GetValueOrDefault(neuron.Actuator)?.Apply(neuron.Channel, neuron.Value = Math.Tanh(input), delta);
 
                     break;
             }
@@ -220,6 +221,11 @@ public class Hypersolver : System
 public class HypersolverConfiguration
 {
     /// <summary>
+    /// The sensitivity or gain of plasticity.
+    /// </summary>
+    public double Kappa { get; set; } = 0.5D;
+
+    /// <summary>
     /// The learning rate of the <see cref="Hypersolver"/>.
     /// </summary>
     public double Eta { get; set; } = 0.001D;
@@ -233,4 +239,9 @@ public class HypersolverConfiguration
     /// A time-constant used for filtering, in seconds.
     /// </summary>
     public double Tauf { get; set; } = 0.05D;
+
+    /// <summary>
+    /// The maximum synaptic strength.
+    /// </summary>
+    public double Omax { get; set; } = 2.0D;
 }

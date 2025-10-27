@@ -11,7 +11,7 @@ namespace Spatial.Cloud;
 /// </summary>
 internal class Server : Application
 {
-    private readonly Dictionary<string, IActuator> _actuators;
+    private readonly Dictionary<int, IActuator> _actuators;
 
     /// <summary>
     /// Create a new <see cref="Server"/>.
@@ -23,7 +23,7 @@ internal class Server : Application
             .GetTypes()
             .Where(type => type.IsAssignableTo(typeof(IActuator)) && type.GetCustomAttribute<ActuatorAttribute>() != default)
             .ToDictionary(
-                keySelector: type => type.GetCustomAttribute<ActuatorAttribute>()!.Name,
+                keySelector: type => type.GetCustomAttribute<ActuatorAttribute>()!.Id,
                 elementSelector: type => (IActuator) Activator.CreateInstance(type)!);
     }
 
@@ -33,9 +33,19 @@ internal class Server : Application
     public static new Server Current => (Server) Application.Current;
 
     /// <summary>
+    /// The server's feature <see cref="Systems.Extractor"/>.
+    /// </summary>
+    public Extractor Extractor { get; internal set; }
+
+    /// <summary>
+    /// The server's <see cref="Systems.Hypersolver"/>.
+    /// </summary>
+    public Hypersolver Hypersolver { get; internal set; }
+
+    /// <summary>
     /// A list of actuators.
     /// </summary>
-    public Dictionary<string, IActuator> Actuators => _actuators;
+    public Dictionary<int, IActuator> Actuators => _actuators;
 
     /// <summary>
     /// Configure the <see cref="Server"/>.

@@ -26,10 +26,10 @@ public class Node : Record
     /// <summary>
     /// The <see cref="Systems.IActuator"/> the <see cref="Neuron"/> routes to.
     /// </summary>
-    public string Actuator { get; set; }
+    public int Actuator { get; set; }
 
     /// <summary>
-    /// For <see cref="NeuronType.Motor"/> neurons, the <see cref="Systems.IActuator"/> channel the neuron routes to.
+    /// For <see cref="NeuronType.Sensory"/> and <see cref="NeuronType.Motor"/> neurons, the channel the neuron maps to.
     /// </summary>
     public int Channel { get; set; }
 

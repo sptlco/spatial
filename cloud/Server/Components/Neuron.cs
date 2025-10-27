@@ -7,7 +7,7 @@ namespace Spatial.Cloud.Components;
 /// <summary>
 /// ...
 /// </summary>
-public record struct Neuron(NeuronType Type, double Value) : IComponent;
+public record struct Neuron(NeuronType Type, int Actuator, int Channel, double Value) : IComponent;
 
 /// <summary>
 /// Specifies the function of a <see cref="Neuron"/>.

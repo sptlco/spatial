@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.10.0](https://github.com/sptlco/spatial/compare/spatial-cloud-1.9.0...spatial-cloud-1.10.0) (2025-10-27)
+
+
+### Features
+
+* add actuators ([#49](https://github.com/sptlco/spatial/issues/49)) ([2ecb2a5](https://github.com/sptlco/spatial/commit/2ecb2a5e90a2b011c2125ee35739805e3d120bb1))
+
 ## [1.9.0](https://github.com/sptlco/spatial/compare/spatial-cloud-1.8.0...spatial-cloud-1.9.0) (2025-10-27)
 
 

@@ -1,5 +1,6 @@
 // Copyright © Spatial Corporation. All rights reserved.
 
+using Spatial.Cloud.Components;
 using Spatial.Mathematics;
 
 namespace Spatial.Cloud.Contracts.Nodes;
@@ -20,14 +21,24 @@ public class Node
     public double Created { get; set; }
 
     /// <summary>
-    /// The <see cref="User"/> that created the <see cref="Node"/>.
+    /// The <see cref="Users.User"/> that created the <see cref="Node"/>.
     /// </summary>
     public string Creator { get; set; }
+
+    /// <summary>
+    /// The node's <see cref="NeuronType"/>.
+    /// </summary>
+    public NeuronType Type { get; set; }
 
     /// <summary>
     /// The precise location of the <see cref="Node"/>.
     /// </summary>
     public Point3D Position { get; set; }
+
+    /// <summary>
+    /// The node's rotation.
+    /// </summary>
+    public Point3D Rotation { get; set; }
 
     /// <summary>
     /// The node's current value.

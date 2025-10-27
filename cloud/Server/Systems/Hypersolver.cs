@@ -10,11 +10,13 @@ using System.Collections.Concurrent;
 namespace Spatial.Cloud.Systems;
 
 /// <summary>
-/// ...
+/// A neural network leveraging temporal dynamics for continuous state changes over time.
 /// </summary>
 [Dependency]
 public class Hypersolver : System
 {
+    private readonly HypersolverConfiguration _config;
+
     // Maps: External -> Internal
     // Database records mapped to physical entities.
 
@@ -32,12 +34,19 @@ public class Hypersolver : System
 
     private readonly Query _neurons;
     private readonly Query _synapses;
+    
+    // Accumulated pre-synaptic charges.
+    // Keyed by post-synaptic neurons for integration later.
+
+    private readonly ConcurrentDictionary<Entity, double> _inputs;
 
     /// <summary>
     /// Create a new <see cref="Hypersolver"/>.
     /// </summary>
     public Hypersolver()
     {
+        _config = ServerConfiguration.Current.Systems.Hypersolver;
+
         _nodes2Neurons = [];
         _connections2Synapses = [];
         _neurons2Nodes = [];
@@ -45,6 +54,8 @@ public class Hypersolver : System
 
         _neurons = new Query().WithAll<Neuron>();
         _synapses = new Query().WithAll<Synapse>();
+
+        _inputs = [];
     }
 
     /// <summary>
@@ -66,7 +77,7 @@ public class Hypersolver : System
         {
             var record = nodes[i];
             var entity = space.Create(
-                new Neuron(record.Value),
+                new Neuron(record.Type, record.Value),
                 new Position(record.Position.X, record.Position.Y, record.Position.Z),
                 new Rotation(record.Rotation.X, record.Rotation.Y, record.Rotation.Z));
 
@@ -92,19 +103,76 @@ public class Hypersolver : System
     /// <param name="delta"><see cref="Time"/> since the last update.</param>
     public override void Update(Space space, Time delta)
     {
-        // ...
-
         space.Mutate(_synapses, (Future future, in Entity entity, ref Synapse synapse) => {
 
-            // ...
+            // Synaptic propagation.
+            // Accumulate pre-synaptic charges for integration.
+
+            var pre = space.Get<Neuron>(synapse.From);
+            var post = space.Get<Neuron>(synapse.To);
+            var contribution = pre.Value * synapse.Strength;
+
+            _inputs.AddOrUpdate(synapse.To, contribution, (entity, value) => value + contribution);
+
+            // Hebbian plasticity.
+            // Neurons that fire together, wire together.
+
+            synapse.Strength += _config.Eta * pre.Value * post.Value * delta.Seconds;
 
         });
 
         space.Mutate(_neurons, (Future future, in Entity entity, ref Neuron neuron) => {
 
-            // ...
+            var input = _inputs.GetValueOrDefault(entity);
 
+            switch (neuron.Type)
+            {
+                case NeuronType.Temporal:
+
+                    // Temporal state dynamics!
+                    // Using Runge-Kutta (RK4) integration, update the neuron.
+
+                    var k1 = (-neuron.Value + Math.Tanh(input)) / _config.Taun;
+                    var k2 = (-(neuron.Value + 0.5D * k1 * delta.Seconds) + Math.Tanh(input)) / _config.Taun;
+                    var k3 = (-(neuron.Value + 0.5D * k2 * delta.Seconds) + Math.Tanh(input)) / _config.Taun;
+                    var k4 = (-(neuron.Value + k3 * delta.Seconds) + Math.Tanh(input)) / _config.Taun;
+
+                    neuron.Value += delta.Seconds / 6.0D * (k1 + 2 * k2 + 2 * k3 + k4);
+
+                    break;
+
+                case NeuronType.Command:
+
+                    // Post-processing using a continuous-time exponential filter.
+                    // Smooth and combine temporal state into higher-level signals.
+
+                    var alpha = 1.0D - Math.Exp(-delta.Seconds / _config.Tauf);
+
+                    neuron.Value = (1.0D - alpha) * neuron.Value + alpha * input;
+
+                    break;
+
+                case NeuronType.Motor:
+
+                    // Behavior control, yeah! \o/
+                    // Route the motor neuron's output value to an actuator.
+
+                    var node = _neurons2Nodes[entity];
+
+                    Server.Current.Actuators.GetValueOrDefault(node.Actuator)?.Route(node.Channel, neuron.Value = Math.Tanh(input), delta);
+
+                    break;
+            }
         });
+    }
+
+    /// <summary>
+    /// Clean up the <see cref="Hypersolver"/> after updating.
+    /// </summary>
+    /// <param name="space">The current <see cref="Space"/>.</param>
+    public override void AfterUpdate(Space space)
+    {
+        _inputs.Clear();
     }
 
     /// <summary>
@@ -144,4 +212,25 @@ public class Hypersolver : System
     private void SaveConnection(Space space, Entity entity) => _synapses2Connections[entity].Update(record => {
         record.Strength = space.Get<Synapse>(entity).Strength;
     });
+}
+
+/// <summary>
+/// Configurable options for the <see cref="Hypersolver"/>.
+/// </summary>
+public class HypersolverConfiguration
+{
+    /// <summary>
+    /// The learning rate of the <see cref="Hypersolver"/>.
+    /// </summary>
+    public double Eta { get; set; } = 0.001D;
+
+    /// <summary>
+    /// A time-constant used for integration, in seconds.
+    /// </summary>
+    public double Taun { get; set; } = 0.08D;
+
+    /// <summary>
+    /// A time-constant used for filtering, in seconds.
+    /// </summary>
+    public double Tauf { get; set; } = 0.05D;
 }

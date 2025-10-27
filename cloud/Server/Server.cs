@@ -1,5 +1,9 @@
 // Copyright © Spatial Corporation. All rights reserved.
 
+using Microsoft.Extensions.Options;
+using Spatial.Cloud.Systems;
+using System.Reflection;
+
 namespace Spatial.Cloud;
 
 /// <summary>
@@ -7,6 +11,32 @@ namespace Spatial.Cloud;
 /// </summary>
 internal class Server : Application
 {
+    private readonly Dictionary<string, IActuator> _actuators;
+
+    /// <summary>
+    /// Create a new <see cref="Server"/>.
+    /// </summary>
+    public Server()
+    {
+        _actuators = Assembly
+            .GetEntryAssembly()!
+            .GetTypes()
+            .Where(type => type.IsAssignableTo(typeof(IActuator)) && type.GetCustomAttribute<ActuatorAttribute>() != default)
+            .ToDictionary(
+                keySelector: type => type.GetCustomAttribute<ActuatorAttribute>()!.Name,
+                elementSelector: type => (IActuator) Activator.CreateInstance(type)!);
+    }
+
+    /// <summary>
+    /// Get the current <see cref="Server"/>.
+    /// </summary>
+    public static new Server Current => (Server) Application.Current;
+
+    /// <summary>
+    /// A list of actuators.
+    /// </summary>
+    public Dictionary<string, IActuator> Actuators => _actuators;
+
     /// <summary>
     /// Configure the <see cref="Server"/>.
     /// </summary>
@@ -15,4 +45,21 @@ internal class Server : Application
     {
         AddOptions<ServerConfiguration>(builder);
     }
+}
+
+/// <summary>
+/// Configurable options for the <see cref="Server"/>.
+/// </summary>
+internal class ServerConfiguration : Configuration
+{
+    /// <summary>
+    /// Get the current <see cref="ServerConfiguration"/>.
+    /// </summary>
+    public new static ServerConfiguration Current => Application.Current.Services.GetRequiredService<ServerConfiguration>();
+
+    /// <summary>
+    /// Configurable options for systems.
+    /// </summary>
+    [ValidateObjectMembers]
+    public SystemConfiguration Systems { get; set; } = new SystemConfiguration();
 }

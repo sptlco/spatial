@@ -2,6 +2,7 @@
 
 using Spatial.Cloud.Components;
 using Spatial.Cloud.Models.Nodes;
+using Spatial.Extensions;
 using Spatial.Persistence;
 using Spatial.Simulation;
 using System.Collections.Concurrent;
@@ -14,8 +15,20 @@ namespace Spatial.Cloud.Systems;
 [Dependency]
 public class Hypersolver : System
 {
-    private readonly ConcurrentDictionary<string, (Node Record, Entity Entity)> _nodes;
-    private readonly ConcurrentDictionary<string, (Connection Record, Entity Entity)> _connections;
+    // Maps: External -> Internal
+    // Database records mapped to physical entities.
+
+    private readonly ConcurrentDictionary<string, Entity> _nodes2Neurons;
+    private readonly ConcurrentDictionary<string, Entity> _connections2Synapses;
+
+    // Maps: Internal -> External
+    // Physical entities mapped to database records.
+
+    private readonly ConcurrentDictionary<Entity, Node> _neurons2Nodes;
+    private readonly ConcurrentDictionary<Entity, Connection> _synapses2Connections;
+
+    // Spatial queries for selecting neurons and synapses at runtime.
+    // Used below for network updates, but also for bulk writes to the database.
 
     private readonly Query _neurons;
     private readonly Query _synapses;
@@ -25,8 +38,10 @@ public class Hypersolver : System
     /// </summary>
     public Hypersolver()
     {
-        _nodes = [];
-        _connections = [];
+        _nodes2Neurons = [];
+        _connections2Synapses = [];
+        _neurons2Nodes = [];
+        _synapses2Connections = [];
 
         _neurons = new Query().WithAll<Neuron>();
         _synapses = new Query().WithAll<Synapse>();
@@ -47,21 +62,23 @@ public class Hypersolver : System
         for (var i = 0; i < nodes.Count; i++)
         {
             var record = nodes[i];
-
-            _nodes[record.Id] = (record, space.Create(
+            var entity = space.Create(
                 new Neuron(record.Value),
                 new Position(record.Position.X, record.Position.Y, record.Position.Z),
-                new Rotation(record.Rotation.X, record.Rotation.Y, record.Rotation.Z)));
+                new Rotation(record.Rotation.X, record.Rotation.Y, record.Rotation.Z));
+
+            _nodes2Neurons[(_neurons2Nodes[entity] = record).Id] = entity;
         }
 
         for (var i = 0; i < connections.Count; i++)
         {
             var record = connections[i];
+            var entity = space.Create(new Synapse(
+                From: _nodes2Neurons[record.From],
+                To: _nodes2Neurons[record.To],
+                Strength: record.Strength));
 
-            _connections[record.Id] = (record, space.Create(new Synapse(
-                From: _nodes[record.From].Entity,
-                To: _nodes[record.To].Entity,
-                Strength: record.Strength)));
+            _connections2Synapses[(_synapses2Connections[entity] = record).Id] = entity;
         }
     }
 
@@ -93,8 +110,35 @@ public class Hypersolver : System
     /// <param name="space">The current <see cref="Space"/>.</param>
     public override void Destroy(Space space)
     {
-        space.Mutate(_neurons, (Future future, in Entity entity, ref Neuron neuron, ref Position position, ref Rotation rotation) => {
-            
-        });
+        // When the space is destroyed (e.g. on shutdown), persist the Hypersolver.
+        // Write each neuron and synapse back to the database.
+
+        Save(space);
     }
+
+    private void Save(Space space)
+    {
+        space.Mutate(_neurons, (Future future, in Entity entity) => SaveNode(space, entity));
+        space.Mutate(_synapses, (Future future, in Entity entity) => SaveConnection(space, entity));
+    }
+
+    private void SaveNode(Space space, Entity entity) => _neurons2Nodes[entity].Update(record => {
+        var neuron = space.Get<Neuron>(entity);
+        var position = space.Get<Position>(entity);
+        var rotation = space.Get<Rotation>(entity);
+
+        record.Position.X = position.X;
+        record.Position.Y = position.Y;
+        record.Position.Z = position.Z;
+
+        record.Rotation.X = rotation.X;
+        record.Rotation.Y = rotation.Y;
+        record.Rotation.Z = rotation.Z;
+
+        record.Value = neuron.Value;
+    });
+
+    private void SaveConnection(Space space, Entity entity) => _synapses2Connections[entity].Update(record => {
+        record.Strength = space.Get<Synapse>(entity).Strength;
+    });
 }

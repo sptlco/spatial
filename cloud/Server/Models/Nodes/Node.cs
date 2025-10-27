@@ -24,7 +24,7 @@ public class Node : Record
     public NeuronType Type { get; set; }
 
     /// <summary>
-    /// The <see cref="Systems.IActuator"/> the <see cref="Neuron"/> routes to.
+    /// The <see cref="Actuators.Control"/> the <see cref="Neuron"/> routes to.
     /// </summary>
     public int Actuator { get; set; }
 

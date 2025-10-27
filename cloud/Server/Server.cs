@@ -1,6 +1,7 @@
 // Copyright © Spatial Corporation. All rights reserved.
 
 using Microsoft.Extensions.Options;
+using Spatial.Cloud.Actuators;
 using Spatial.Cloud.Systems;
 using System.Reflection;
 
@@ -11,7 +12,7 @@ namespace Spatial.Cloud;
 /// </summary>
 internal class Server : Application
 {
-    private readonly Dictionary<int, IActuator> _actuators;
+    private readonly Dictionary<int, Control> _actuators;
 
     /// <summary>
     /// Create a new <see cref="Server"/>.
@@ -21,10 +22,10 @@ internal class Server : Application
         _actuators = Assembly
             .GetEntryAssembly()!
             .GetTypes()
-            .Where(type => type.IsAssignableTo(typeof(IActuator)) && type.GetCustomAttribute<ActuatorAttribute>() != default)
+            .Where(type => type.IsAssignableTo(typeof(Control)) && type.GetCustomAttribute<ActuatorAttribute>() != default)
             .ToDictionary(
                 keySelector: type => type.GetCustomAttribute<ActuatorAttribute>()!.Id,
-                elementSelector: type => (IActuator) Activator.CreateInstance(type)!);
+                elementSelector: type => (Control) Activator.CreateInstance(type)!);
     }
 
     /// <summary>
@@ -45,7 +46,7 @@ internal class Server : Application
     /// <summary>
     /// A list of actuators.
     /// </summary>
-    public Dictionary<int, IActuator> Actuators => _actuators;
+    public Dictionary<int, Control> Actuators => _actuators;
 
     /// <summary>
     /// Configure the <see cref="Server"/>.

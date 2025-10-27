@@ -1,5 +1,6 @@
 // Copyright © Spatial Corporation. All rights reserved.
 
+using Spatial.Cloud.Actuators;
 using Spatial.Cloud.Components;
 using Spatial.Compute;
 using Spatial.Simulation;
@@ -32,9 +33,9 @@ public class Extractor : System
     }
  
     /// <summary>
-    /// Set raw data for an <see cref="IActuator"/>.
+    /// Set raw data for an <see cref="Control"/>.
     /// </summary>
-    /// <param name="actuator">An <see cref="IActuator"/> identification number.</param>
+    /// <param name="actuator">An <see cref="Control"/> identification number.</param>
     /// <param name="data">Raw data from the input stream.</param>
     public void Set(int actuator, double[] data)
     {
@@ -50,9 +51,7 @@ public class Extractor : System
         // Feature extraction.
         // Pre-process the raw data from the input stream.
 
-        Job.ParallelFor(_inputs, (actuator, data) => {
-            _features[actuator] = Server.Current.Actuators[actuator].Extract(data);
-        });
+        Job.ParallelFor(_inputs, (actuator, data) => _features[actuator] = Server.Current.Actuators[actuator].Extract(data)).Wait();
 
         // Feature passing.
         // Use the extracted feature vector to update the sensory neurons.

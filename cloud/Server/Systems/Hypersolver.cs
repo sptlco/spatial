@@ -160,7 +160,7 @@ public class Hypersolver : System
                     // Behavior control, yeah! \o/
                     // Route the motor neuron's output value to its actuator.
 
-                    Server.Current.Actuators.GetValueOrDefault(neuron.Actuator)?.Apply(neuron.Channel, neuron.Value = Math.Tanh(input), delta);
+                    Server.Current.Actuators.GetValueOrDefault(neuron.Actuator)?.Apply(neuron.Channel, neuron.Value = Math.Tanh(input));
 
                     break;
             }

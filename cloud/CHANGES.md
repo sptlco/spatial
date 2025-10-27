@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.9.0](https://github.com/sptlco/spatial/compare/spatial-cloud-1.8.0...spatial-cloud-1.9.0) (2025-10-27)
+
+
+### Features
+
+* add hypersolver ([#49](https://github.com/sptlco/spatial/issues/49)) ([7f7b0df](https://github.com/sptlco/spatial/commit/7f7b0df421a3cfbc8970968d3f3c5276c0954ea1))
+
 ## [1.8.0](https://github.com/sptlco/spatial/compare/spatial-cloud-1.7.0...spatial-cloud-1.8.0) (2025-10-25)
 
 

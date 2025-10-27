@@ -41,7 +41,7 @@ public class NodeController : Controller
             Id = node.Id,
             Created = node.Created,
             Creator = node.Creator,
-            Location = node.Location,
+            Position = node.Position,
             Value = node.Value
         });
     }

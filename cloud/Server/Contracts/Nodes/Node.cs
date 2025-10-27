@@ -27,7 +27,7 @@ public class Node
     /// <summary>
     /// The precise location of the <see cref="Node"/>.
     /// </summary>
-    public Point3D Location { get; set; }
+    public Point3D Position { get; set; }
 
     /// <summary>
     /// The node's current value.

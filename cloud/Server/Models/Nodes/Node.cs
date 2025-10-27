@@ -20,7 +20,12 @@ public class Node : Record
     /// <summary>
     /// The precise location of the <see cref="Node"/>.
     /// </summary>
-    public Point3D Location { get; set; } = Point3D.Zero;
+    public Point3D Position { get; set; } = Point3D.Zero;
+
+    /// <summary>
+    /// The node's rotation.
+    /// </summary>
+    public Point3D Rotation { get; set; } = Point3D.Zero;
 
     /// <summary>
     /// The node's current value.

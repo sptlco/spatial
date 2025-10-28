@@ -1,8 +1,8 @@
 // Copyright © Spatial Corporation. All rights reserved.
 
 using Microsoft.Extensions.Options;
-using Spatial.Cloud.Agents;
 using Spatial.Cloud.Systems;
+using Spatial.Cloud.Transducers;
 using System.Reflection;
 
 namespace Spatial.Cloud;
@@ -12,20 +12,20 @@ namespace Spatial.Cloud;
 /// </summary>
 internal class Server : Application
 {
-    private readonly Dictionary<int, Agent> _agents;
+    private readonly Dictionary<int, Transducer> _transducers;
 
     /// <summary>
     /// Create a new <see cref="Server"/>.
     /// </summary>
     public Server()
     {
-        _agents = Assembly
+        _transducers = Assembly
             .GetEntryAssembly()!
             .GetTypes()
-            .Where(type => type.IsAssignableTo(typeof(Agent)) && type.GetCustomAttribute<ModuleAttribute>() != default)
+            .Where(type => type.IsAssignableTo(typeof(Transducer)) && type.GetCustomAttribute<ModuleAttribute>() != default)
             .ToDictionary(
                 keySelector: type => type.GetCustomAttribute<ModuleAttribute>()!.Id,
-                elementSelector: type => (Agent) Activator.CreateInstance(type)!);
+                elementSelector: type => (Transducer) Activator.CreateInstance(type)!);
     }
 
     /// <summary>
@@ -44,9 +44,9 @@ internal class Server : Application
     public Hypersolver Hypersolver { get; internal set; }
 
     /// <summary>
-    /// A list of neural agents.
+    /// The server's transducers, by their neural group.
     /// </summary>
-    public Dictionary<int, Agent> Agents => _agents;
+    public Dictionary<int, Transducer> Transducers => _transducers;
 
     /// <summary>
     /// Configure the <see cref="Server"/>.

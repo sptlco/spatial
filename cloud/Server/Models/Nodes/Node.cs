@@ -24,7 +24,7 @@ public class Node : Record
     public NeuronType Type { get; set; }
 
     /// <summary>
-    /// The <see cref="Agents.Agent"/> the <see cref="Neuron"/> belongs to.
+    /// The <see cref="Transducers.Transducer"/> the <see cref="Neuron"/> belongs to.
     /// </summary>
     public int Group { get; set; }
 

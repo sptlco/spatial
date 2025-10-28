@@ -6,18 +6,18 @@ using Spatial.Simulation;
 namespace Spatial.Cloud.Systems;
 
 /// <summary>
-/// Propagates updates to actuators.
+/// Propagates updates to transducers.
 /// </summary>
 [Dependency(2)]
 public class Updater : System
 {
     /// <summary>
-    /// Update the server's actuators.
+    /// Update the server's transducers.
     /// </summary>
     /// <param name="space">The current <see cref="Space"/>.</param>
     /// <param name="delta"><see cref="Time"/> since the last update.</param>
     public override void Update(Space space, Time delta)
     {
-        Server.Current.Agents.ForEach((_, agent) => agent.Update(delta));
+        Server.Current.Transducers.ForEach((_, transducer) => transducer.Update(delta));
     }
 }

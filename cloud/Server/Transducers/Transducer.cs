@@ -3,19 +3,19 @@
 using Spatial.Extensions;
 using System.Reflection;
 
-namespace Spatial.Cloud.Agents;
+namespace Spatial.Cloud.Transducers;
 
 /// <summary>
-/// An I/O unit for physical and virtual systems.
+/// A device that converts neural input signals to output values.
 /// </summary>
-public abstract class Agent
+public abstract class Transducer
 {
     private readonly Dictionary<int, Property> _outputs;
 
     /// <summary>
-    /// Create a new <see cref="Agent"/>.
+    /// Create a new <see cref="Transducer"/>.
     /// </summary>
-    public Agent()
+    public Transducer()
     {
         var outputs = GetType()
             .GetProperties(BindingFlags.Public | BindingFlags.Instance)
@@ -50,7 +50,7 @@ public abstract class Agent
     }
 
     /// <summary>
-    /// Update the <see cref="Agent"/>.
+    /// Update the <see cref="Transducer"/>.
     /// </summary>
     /// <param name="delta"><see cref="Time"/> since the last update.</param>
     public virtual void Update(Time delta) { }
@@ -126,7 +126,7 @@ public class OutputAttribute : Attribute
 }
 
 /// <summary>
-/// An adjustable <see cref="Agent"/> property.
+/// An adjustable <see cref="Transducer"/> property.
 /// </summary>
 public class Property
 {

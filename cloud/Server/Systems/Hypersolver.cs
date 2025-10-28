@@ -160,7 +160,7 @@ public class Hypersolver : System
                     // Behavior control, yeah! \o/
                     // Route the motor neuron's output value to its parent module.
 
-                    Server.Current.Agents.GetValueOrDefault(neuron.Group)?.Apply(neuron.Channel, neuron.Value = Math.Tanh(input));
+                    Server.Current.Transducers.GetValueOrDefault(neuron.Group)?.Apply(neuron.Channel, neuron.Value = Math.Tanh(input));
 
                     break;
             }

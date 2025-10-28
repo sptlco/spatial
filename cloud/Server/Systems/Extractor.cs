@@ -1,7 +1,7 @@
 // Copyright © Spatial Corporation. All rights reserved.
 
-using Spatial.Cloud.Agents;
 using Spatial.Cloud.Components;
+using Spatial.Cloud.Transducers;
 using Spatial.Compute;
 using Spatial.Simulation;
 using System.Collections.Concurrent;
@@ -33,9 +33,9 @@ public class Extractor : System
     }
  
     /// <summary>
-    /// Present raw data to an <see cref="Agent"/>.
+    /// Present raw data to a <see cref="Transducer"/>.
     /// </summary>
-    /// <param name="group">A group identification number.</param>
+    /// <param name="group">A neural group number.</param>
     /// <param name="data">Raw data from the input stream.</param>
     public void Set(int group, double[] data)
     {
@@ -51,7 +51,7 @@ public class Extractor : System
         // Feature extraction.
         // Pre-process the raw data from the input stream.
 
-        Job.ParallelFor(_inputs, (agent, data) => _features[agent] = Server.Current.Agents[agent].Extract(data)).Wait();
+        Job.ParallelFor(_inputs, (group, data) => _features[group] = Server.Current.Transducers[group].Extract(data)).Wait();
 
         // Feature passing.
         // Use the extracted feature vector to update the sensory neurons.

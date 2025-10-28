@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.10.2](https://github.com/sptlco/spatial/compare/spatial-cloud-1.10.1...spatial-cloud-1.10.2) (2025-10-28)
+
+
+### Bug Fixes
+
+* update terminology ([#49](https://github.com/sptlco/spatial/issues/49)) ([efc9001](https://github.com/sptlco/spatial/commit/efc90013170427a354c2a9d476092de5d3df036e))
+
 ## [1.10.1](https://github.com/sptlco/spatial/compare/spatial-cloud-1.10.0...spatial-cloud-1.10.1) (2025-10-27)
 
 

@@ -24,9 +24,9 @@ public class Node : Record
     public NeuronType Type { get; set; }
 
     /// <summary>
-    /// The <see cref="Actuators.Control"/> the <see cref="Neuron"/> routes to.
+    /// The <see cref="Agents.Agent"/> the <see cref="Neuron"/> belongs to.
     /// </summary>
-    public int Actuator { get; set; }
+    public int Group { get; set; }
 
     /// <summary>
     /// For <see cref="NeuronType.Sensory"/> and <see cref="NeuronType.Motor"/> neurons, the channel the neuron maps to.

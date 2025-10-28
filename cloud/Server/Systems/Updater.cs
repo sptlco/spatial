@@ -18,6 +18,6 @@ public class Updater : System
     /// <param name="delta"><see cref="Time"/> since the last update.</param>
     public override void Update(Space space, Time delta)
     {
-        Server.Current.Actuators.ForEach((_, actuator) => actuator.Update(delta));
+        Server.Current.Agents.ForEach((_, agent) => agent.Update(delta));
     }
 }

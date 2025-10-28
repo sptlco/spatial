@@ -1,6 +1,6 @@
 // Copyright © Spatial Corporation. All rights reserved.
 
-using Spatial.Cloud.Actuators;
+using Spatial.Cloud.Agents;
 using Spatial.Cloud.Components;
 using Spatial.Compute;
 using Spatial.Simulation;
@@ -33,13 +33,13 @@ public class Extractor : System
     }
  
     /// <summary>
-    /// Set raw data for an <see cref="Control"/>.
+    /// Present raw data to an <see cref="Agent"/>.
     /// </summary>
-    /// <param name="actuator">An <see cref="Control"/> identification number.</param>
+    /// <param name="group">A group identification number.</param>
     /// <param name="data">Raw data from the input stream.</param>
-    public void Set(int actuator, double[] data)
+    public void Set(int group, double[] data)
     {
-        _inputs[actuator] = data;
+        _inputs[group] = data;
     }
 
     /// <summary>
@@ -51,7 +51,7 @@ public class Extractor : System
         // Feature extraction.
         // Pre-process the raw data from the input stream.
 
-        Job.ParallelFor(_inputs, (actuator, data) => _features[actuator] = Server.Current.Actuators[actuator].Extract(data)).Wait();
+        Job.ParallelFor(_inputs, (agent, data) => _features[agent] = Server.Current.Agents[agent].Extract(data)).Wait();
 
         // Feature passing.
         // Use the extracted feature vector to update the sensory neurons.
@@ -60,7 +60,7 @@ public class Extractor : System
             query: _query,
             filter: (_, neuron) => neuron.Type == NeuronType.Sensory,
             function: (Future future, in Entity entity, ref Neuron neuron) => {
-                neuron.Value = Math.Tanh(_features.GetValueOrDefault(neuron.Actuator)?[neuron.Channel] ?? 0.0D);
+                neuron.Value = Math.Tanh(_features.GetValueOrDefault(neuron.Group)?[neuron.Channel] ?? 0.0D);
             });
     }
 

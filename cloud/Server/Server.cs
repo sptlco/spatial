@@ -1,7 +1,7 @@
 // Copyright © Spatial Corporation. All rights reserved.
 
 using Microsoft.Extensions.Options;
-using Spatial.Cloud.Actuators;
+using Spatial.Cloud.Agents;
 using Spatial.Cloud.Systems;
 using System.Reflection;
 
@@ -12,20 +12,20 @@ namespace Spatial.Cloud;
 /// </summary>
 internal class Server : Application
 {
-    private readonly Dictionary<int, Control> _actuators;
+    private readonly Dictionary<int, Agent> _agents;
 
     /// <summary>
     /// Create a new <see cref="Server"/>.
     /// </summary>
     public Server()
     {
-        _actuators = Assembly
+        _agents = Assembly
             .GetEntryAssembly()!
             .GetTypes()
-            .Where(type => type.IsAssignableTo(typeof(Control)) && type.GetCustomAttribute<ActuatorAttribute>() != default)
+            .Where(type => type.IsAssignableTo(typeof(Agent)) && type.GetCustomAttribute<ModuleAttribute>() != default)
             .ToDictionary(
-                keySelector: type => type.GetCustomAttribute<ActuatorAttribute>()!.Id,
-                elementSelector: type => (Control) Activator.CreateInstance(type)!);
+                keySelector: type => type.GetCustomAttribute<ModuleAttribute>()!.Id,
+                elementSelector: type => (Agent) Activator.CreateInstance(type)!);
     }
 
     /// <summary>
@@ -44,9 +44,9 @@ internal class Server : Application
     public Hypersolver Hypersolver { get; internal set; }
 
     /// <summary>
-    /// A list of actuators.
+    /// A list of neural agents.
     /// </summary>
-    public Dictionary<int, Control> Actuators => _actuators;
+    public Dictionary<int, Agent> Agents => _agents;
 
     /// <summary>
     /// Configure the <see cref="Server"/>.

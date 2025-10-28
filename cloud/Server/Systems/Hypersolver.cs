@@ -79,7 +79,7 @@ public class Hypersolver : System
         {
             var record = nodes[i];
             var entity = space.Create(
-                new Neuron(record.Type, record.Actuator, record.Channel, record.Value),
+                new Neuron(record.Type, record.Group, record.Channel, record.Value),
                 new Position(record.Position.X, record.Position.Y, record.Position.Z),
                 new Rotation(record.Rotation.X, record.Rotation.Y, record.Rotation.Z));
 
@@ -158,9 +158,9 @@ public class Hypersolver : System
                 case NeuronType.Motor:
 
                     // Behavior control, yeah! \o/
-                    // Route the motor neuron's output value to its actuator.
+                    // Route the motor neuron's output value to its parent module.
 
-                    Server.Current.Actuators.GetValueOrDefault(neuron.Actuator)?.Apply(neuron.Channel, neuron.Value = Math.Tanh(input));
+                    Server.Current.Agents.GetValueOrDefault(neuron.Group)?.Apply(neuron.Channel, neuron.Value = Math.Tanh(input));
 
                     break;
             }

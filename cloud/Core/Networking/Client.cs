@@ -10,11 +10,11 @@ using System.Net.Sockets;
 namespace Spatial.Networking;
 
 /// <summary>
-/// A device that communicates with the <see cref="Network"/>.
+/// A native device that communicates with the <see cref="Network"/>.
 /// </summary>
-public class StcpClient : IDisposable
+public class Client : IDisposable
 {
-    private readonly Dictionary<ushort, List<(Action<StcpClient, ProtocolBuffer> Handler, Type Prototype)>> _handlers;
+    private readonly Dictionary<ushort, List<(Action<Client, ProtocolBuffer> Handler, Type Prototype)>> _handlers;
     private readonly byte[] _buffer;
 
     private Socket _socket;
@@ -26,9 +26,9 @@ public class StcpClient : IDisposable
     private byte[] _keystream;
 
     /// <summary>
-    /// Create a new <see cref="StcpClient"/>.
+    /// Create a new <see cref="Client"/>.
     /// </summary>
-    internal StcpClient()
+    internal Client()
     {
         _handlers = [];
         _buffer = ArrayPool<byte>.Shared.Rent(Constants.ConnectionSize);
@@ -45,7 +45,7 @@ public class StcpClient : IDisposable
     }
 
     /// <summary>
-    /// Whether or not the <see cref="StcpClient"/> is connected.
+    /// Whether or not the <see cref="Client"/> is connected.
     /// </summary>
     public bool Connected => Interlocked.CompareExchange(ref _connected, 1, 1) == 1;
 
@@ -65,8 +65,8 @@ public class StcpClient : IDisposable
     /// <typeparam name="T">The type of data to bind the <see cref="NETCOMMAND"/> to.</typeparam>
     /// <param name="command">A <see cref="NETCOMMAND"/>.</param>
     /// <param name="handler">A handler.</param>
-    /// <returns>The <see cref="StcpClient"/>.</returns>
-    public StcpClient Handle<T>(ushort command, Action<StcpClient, T> handler) where T : ProtocolBuffer
+    /// <returns>The <see cref="Client"/>.</returns>
+    public Client Handle<T>(ushort command, Action<Client, T> handler) where T : ProtocolBuffer
     {
         if (!_handlers.TryGetValue(command, out var handlers))
         {
@@ -79,22 +79,22 @@ public class StcpClient : IDisposable
     }
 
     /// <summary>
-    /// Connect the <see cref="StcpClient"/>.
+    /// Connect the <see cref="Client"/>.
     /// </summary>
     /// <param name="endpoint">A <see cref="Network"/> endpoint.</param>
-    internal StcpClient Connect(string endpoint) => Connect(IPEndPoint.Parse(endpoint));
+    internal Client Connect(string endpoint) => Connect(IPEndPoint.Parse(endpoint));
 
     /// <summary>
-    /// Connect the <see cref="StcpClient"/>.
+    /// Connect the <see cref="Client"/>.
     /// </summary>
     /// <param name="port">A <see cref="Network"/> port.</param>
-    internal StcpClient Connect(int port) => Connect(new IPEndPoint(IPAddress.Loopback, port));
+    internal Client Connect(int port) => Connect(new IPEndPoint(IPAddress.Loopback, port));
 
     /// <summary>
-    /// Connect the <see cref="StcpClient"/>.
+    /// Connect the <see cref="Client"/>.
     /// </summary>
     /// <param name="endpoint">A <see cref="Network"/> endpoint.</param>
-    internal StcpClient Connect(IPEndPoint endpoint)
+    internal Client Connect(IPEndPoint endpoint)
     {
         _socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
         _socket.Connect(endpoint);
@@ -169,7 +169,7 @@ public class StcpClient : IDisposable
     }
 
     /// <summary>
-    /// Dispose of the <see cref="StcpClient"/>.
+    /// Dispose of the <see cref="Client"/>.
     /// </summary>
     /// <exception cref="NotImplementedException"></exception>
     public void Dispose()

@@ -18,6 +18,7 @@ public sealed class Connection : IDisposable
 
     private Network _network;
     private Socket _socket;
+    private Bridge? _bridge;
     private int _connected;
     private byte[] _buffer;
     private ushort _seed;
@@ -52,9 +53,19 @@ public sealed class Connection : IDisposable
     internal Socket Socket => _socket;
 
     /// <summary>
+    /// The connection's received data buffer.
+    /// </summary>
+    internal byte[] Buffer => _buffer;
+
+    /// <summary>
     /// The connection's current seed.
     /// </summary>
     public ushort Seed => _seed;
+
+    /// <summary>
+    /// The connection's <see cref="Networking.Bridge"/>.
+    /// </summary>
+    public Bridge? Bridge => _bridge;
 
     /// <summary>
     /// Properties attached to the <see cref="Connection"/>.
@@ -64,18 +75,20 @@ public sealed class Connection : IDisposable
     /// <summary>
     /// Allocate a <see cref="Connection"/>.
     /// </summary>
-    /// <param name="server">The <see cref="Network"/> that accepted the <see cref="Connection"/>.</param>
+    /// <param name="network">The <see cref="Network"/> that accepted the <see cref="Connection"/>.</param>
     /// <param name="socket">The connection's socket.</param>
+    /// <param name="bridge">An optional <see cref="Bridge"/>.</param>
     /// <returns>A <see cref="Connection"/>.</returns>
-    internal static Connection Allocate(Network server, Socket socket)
+    internal static Connection Allocate(Network network, Socket socket, Bridge? bridge = default)
     {
         if (!_pool.TryTake(out var connection))
         {
-            connection = new(server);
+            connection = new(network);
         }
 
-        connection._network = server;
+        connection._network = network;
         connection._socket = socket;
+        connection._bridge = bridge;
         connection._buffer = ArrayPool<byte>.Shared.Rent(Constants.ConnectionSize);
 
         return connection;
@@ -84,7 +97,7 @@ public sealed class Connection : IDisposable
     /// <summary>
     /// Connect the <see cref="Connection"/> to a <see cref="Network"/>.
     /// </summary>
-    internal void Connect()
+    internal Connection Connect()
     {
         _key1 = _key2 = 0;
         _keystream = Cipher.GenerateKeystream(_seed = Strong.UInt16());
@@ -93,6 +106,8 @@ public sealed class Connection : IDisposable
         _network.Queue.Enqueue(NetworkEvent.Create(this, NetworkEventCode.EVENT_CONNECT, null));
 
         BeginReceive();
+
+        return this;
     }
 
     /// <summary>
@@ -202,47 +217,52 @@ public sealed class Connection : IDisposable
             var offset = 0;
             var bytes = _socket.EndReceive(e);
 
-            if (bytes <= 0)
-            {
-                Disconnect();
-                return;
-            }
-
-            Log.Verbose("Received {size} KB packet from {connection}.", Math.Round(bytes / 1024D, 2), Id);
-
-            while (bytes > 0)
-            {
-                var size = (ushort) _buffer[offset];
-
-                offset += 1;
-                bytes -= 1;
-
-                if (size == 0)
-                {
-                    size = BitConverter.ToUInt16(_buffer, offset);
-
-                    offset += sizeof(ushort);
-                    bytes -= sizeof(ushort);
-                }
-
-                var buffer = ArrayPool<byte>.Shared.Rent(size);
-
-                Cipher.Transform(buffer, offset, size, _keystream, ref _key2);
-
-                _network.Queue.Enqueue(NetworkEvent.Create(
-                    connection: this, 
-                    code: NetworkEventCode.EVENT_MESSAGE,
-                    message: Message.Create(this, BitConverter.ToUInt16(buffer), buffer, size)));
-
-                offset += size;
-                bytes -= size;
-            }
-
+            Process(offset, bytes);
+            
             BeginReceive();
         }
         catch (SocketException exception) when (exception.SocketErrorCode == SocketError.ConnectionReset)
         {
             Disconnect();
+        }
+    }
+
+    internal void Process(int offset, int bytes)
+    {
+        if (bytes <= 0)
+        {
+            Disconnect();
+            return;
+        }
+
+        Log.Verbose("Received {size} KB packet from {connection}.", Math.Round(bytes / 1024D, 2), Id);
+
+        while (bytes > 0)
+        {
+            var size = (ushort) _buffer[offset];
+
+            offset += 1;
+            bytes -= 1;
+
+            if (size == 0)
+            {
+                size = BitConverter.ToUInt16(_buffer, offset);
+
+                offset += sizeof(ushort);
+                bytes -= sizeof(ushort);
+            }
+
+            var buffer = ArrayPool<byte>.Shared.Rent(size);
+
+            Cipher.Transform(buffer, offset, size, _keystream, ref _key2);
+
+            _network.Queue.Enqueue(NetworkEvent.Create(
+                connection: this,
+                code: NetworkEventCode.EVENT_MESSAGE,
+                message: Message.Create(this, BitConverter.ToUInt16(buffer), buffer, size)));
+
+            offset += size;
+            bytes -= size;
         }
     }
 }

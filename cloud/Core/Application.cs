@@ -14,6 +14,7 @@ using Serilog.Context;
 using Serilog.Events;
 using Spatial.Compute;
 using Spatial.Extensions;
+using Spatial.Intelligence;
 using Spatial.Networking;
 using Spatial.Simulation;
 using System.Net;
@@ -176,22 +177,22 @@ public class Application
     /// Connect to an <see cref="Application"/> via STCP.
     /// </summary>
     /// <param name="endpoint">The application's endpoint.</param>
-    public static StcpClient Connect(string endpoint) => Connect(IPEndPoint.Parse(endpoint));
+    public static Client Connect(string endpoint) => Connect(IPEndPoint.Parse(endpoint));
 
     /// <summary>
     /// Connect to an <see cref="Application"/> via STCP.
     /// </summary>
     /// <param name="port">The application's port.</param>
-    public static StcpClient Connect(int port) => Connect(new IPEndPoint(IPAddress.Loopback, port));
+    public static Client Connect(int port) => Connect(new IPEndPoint(IPAddress.Loopback, port));
 
     /// <summary>
     /// Connect to an <see cref="Application"/> via STCP.
     /// </summary>
     /// <param name="endpoint">The application's endpoint.</param>
-    /// <returns>A <see cref="StcpClient"/> connected to the <see cref="Application"/>.</returns>
-    public static StcpClient Connect(IPEndPoint endpoint)
+    /// <returns>A <see cref="Client"/> connected to the <see cref="Application"/>.</returns>
+    public static Client Connect(IPEndPoint endpoint)
     {
-        return new StcpClient().Connect(endpoint);
+        return new Client().Connect(endpoint);
     }
 
     /// <summary>
@@ -280,9 +281,9 @@ public class Application
                     _wapp.Urls.Add(url);
                     INFO("HTTPS supported, url: {Url}.", url);
                     break;
-                case Constants.UriSchemes.Spatial:
-                    _network.Listen(url.Replace($"{Constants.UriSchemes.Spatial}://", "").Replace("*", IPAddress.Any.ToString()));
-                    INFO("STCP supported, url: {Url}.", url);
+                case Constants.UriSchemes.Socket:
+                    _network.Listen(url.Replace($"{Constants.UriSchemes.Socket}://", "").Replace("*", IPAddress.Any.ToString()));
+                    INFO("TCP supported, url: {Url}.", url);
                     break;
             }
         }
@@ -335,12 +336,13 @@ public class Application
             .AddControllers();
 
         var application = builder.Build();
-       
+
 
         application
             .UseExceptionHandler()
             .UseStatusCodePages(ReportStatusCode)
             .UseHttpsRedirection()
+            .UseWebSockets()
             .UseStaticFiles(new StaticFileOptions {
                 FileProvider = new PhysicalFileProvider(path),
                 RequestPath = ""
@@ -348,6 +350,16 @@ public class Application
             .UseSerilogRequestLogging()
             .UseAuthorization()
             .UseHsts();
+
+        application.Map("/live", async context => {
+            if (!context.WebSockets.IsWebSocketRequest)
+            {
+                context.Response.StatusCode = 400;
+                return;
+            }
+
+            Bridge.StartNew(await context.WebSockets.AcceptWebSocketAsync());
+        });
 
         application.MapControllers();
 

@@ -11,6 +11,7 @@ using System.Collections.Concurrent;
 using System.Linq.Expressions;
 using System.Net;
 using System.Net.Sockets;
+using System.Net.WebSockets;
 using System.Reflection;
 
 namespace Spatial.Networking;
@@ -42,8 +43,7 @@ public partial class Network
             .SelectMany(type => type.GetMethods().Where(method => method.GetCustomAttribute<OperationAttribute>(true) != null))
             .ToDictionary(
                 keySelector: method => method.GetCustomAttribute<OperationAttribute>(true)!.Code,
-                elementSelector: method => 
-                {
+                elementSelector: method => {
                     var controller = GetOrCreateController(method.DeclaringType!);
                     var prototype = method.GetParameters()[0].ParameterType;
 
@@ -58,6 +58,11 @@ public partial class Network
         _events = new();
         _updates = new();
     }
+
+    /// <summary>
+    /// The network's public endpoints.
+    /// </summary>
+    public List<Socket> Endpoints => _endpoints;
 
     /// <summary>
     /// Active connections to the <see cref="Network"/>.
@@ -99,6 +104,18 @@ public partial class Network
         _events.Clear();
         _updates.Clear();
         _operations.Clear();
+    }
+
+    /// <summary>
+    /// Connect a <see cref="Socket"/> to the <see cref="Network"/>.
+    /// </summary>
+    /// <param name="socket">A <see cref="Socket"/>.</param>
+    /// <param name="bridge">An optional <see cref="Bridge"/>.</param>
+    internal Connection Connect(Socket socket, Bridge? bridge = default)
+    {
+        socket.NoDelay = true;
+
+        return Connection.Allocate(this, socket, bridge).Connect();
     }
 
     /// <summary>
@@ -163,7 +180,14 @@ public partial class Network
                     
                     try
                     {
-                        connection.Socket.Send(packet.AsSpan(0, packet.Count));
+                        if (connection.Bridge is not null)
+                        {
+                            connection.Bridge?.Socket.Web.SendAsync(packet, WebSocketMessageType.Binary, true, CancellationToken.None).GetAwaiter().GetResult();
+                        }
+                        else
+                        {
+                            connection.Socket.Send(packet);
+                        }
                     }
                     catch (SocketException exception) when (exception.SocketErrorCode == SocketError.ConnectionReset)
                     {
@@ -195,13 +219,6 @@ public partial class Network
             BeginAccept((Socket) e.AsyncState!);
         }
         catch (Exception) { }
-    }
-
-    private void Connect(Socket socket)
-    {
-        socket.NoDelay = true;
-
-        Connection.Allocate(this, socket).Connect();
     }
 
     private void Process(in NetworkEvent e)

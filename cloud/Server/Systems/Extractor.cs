@@ -1,7 +1,7 @@
 // Copyright © Spatial Corporation. All rights reserved.
 
+using Spatial.Cloud.Baymax;
 using Spatial.Cloud.Components;
-using Spatial.Cloud.Transducers;
 using Spatial.Compute;
 using Spatial.Simulation;
 using System.Collections.Concurrent;

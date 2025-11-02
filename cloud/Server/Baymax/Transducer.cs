@@ -3,7 +3,7 @@
 using Spatial.Extensions;
 using System.Reflection;
 
-namespace Spatial.Cloud.Transducers;
+namespace Spatial.Cloud.Baymax;
 
 /// <summary>
 /// A device that converts neural input signals to output values.
@@ -65,7 +65,7 @@ public class ModuleAttribute : Attribute
     /// <summary>
     /// Create a new <see cref="ModuleAttribute"/>.
     /// </summary>
-    /// <param name="name">The module's identification number.</param>
+    /// <param name="id">The module's identification number.</param>
     public ModuleAttribute(int id)
     {
         Id = id;

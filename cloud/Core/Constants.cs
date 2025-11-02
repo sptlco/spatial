@@ -65,7 +65,7 @@ internal class Constants
     /// <summary>
     /// The size of a cryptographic keystream table.
     /// </summary>
-    public const int KeystreamSize = 1024;
+    public const int KeystreamSize = 512;
 
     /// <summary>
     /// The name of the log database collection.
@@ -109,9 +109,9 @@ internal class Constants
         public const string Https = "https";
 
         /// <summary>
-        /// The STCP URI scheme.
+        /// The socket URI scheme.
         /// </summary>
-        public const string Spatial = "spatial";
+        public const string Socket = "socket";
     }
 
     /// <summary>

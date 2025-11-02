@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.11.0](https://github.com/sptlco/spatial/compare/spatial-cloud-1.10.2...spatial-cloud-1.11.0) (2025-11-02)
+
+
+### Features
+
+* add spatial modulation ([#49](https://github.com/sptlco/spatial/issues/49)) ([be5b5a4](https://github.com/sptlco/spatial/commit/be5b5a4abb8895231cb89084cb710fb57cba1078))
+* add streaming bridge ([#49](https://github.com/sptlco/spatial/issues/49)) ([a802865](https://github.com/sptlco/spatial/commit/a802865ceae022f9b3f1cbe902fab43a2bebc99a))
+
 ## [1.10.2](https://github.com/sptlco/spatial/compare/spatial-cloud-1.10.1...spatial-cloud-1.10.2) (2025-10-28)
 
 

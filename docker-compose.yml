@@ -43,7 +43,7 @@ services:
       - redis:/data
 
   nginx:
-    image: nginx:3
+    image: nginx:1
     restart: always
     ports:
       - "80:80"

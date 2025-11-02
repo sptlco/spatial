@@ -36,11 +36,6 @@ public class Node
     public Point3D Position { get; set; }
 
     /// <summary>
-    /// The node's rotation.
-    /// </summary>
-    public Point3D Rotation { get; set; }
-
-    /// <summary>
     /// The node's current value.
     /// </summary>
     public double Value { get; set; }

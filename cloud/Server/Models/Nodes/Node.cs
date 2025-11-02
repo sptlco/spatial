@@ -39,11 +39,6 @@ public class Node : Record
     public Point3D Position { get; set; } = Point3D.Zero;
 
     /// <summary>
-    /// The node's rotation.
-    /// </summary>
-    public Point3D Rotation { get; set; } = Point3D.Zero;
-
-    /// <summary>
     /// The node's current value.
     /// </summary>
     public double Value { get; set; } = 0.0D;

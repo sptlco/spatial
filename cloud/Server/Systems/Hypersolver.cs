@@ -72,7 +72,7 @@ public class Hypersolver : System
         var nodes = Record<Node>.List();
         var connections = Record<Connection>.List();
 
-        space.Reserve(Signature.Combine<Neuron, Position, Rotation>(), (uint) nodes.Count);
+        space.Reserve(Signature.Combine<Neuron, Position>(), (uint) nodes.Count);
         space.Reserve(Signature.Combine<Synapse>(), (uint) connections.Count);
 
         for (var i = 0; i < nodes.Count; i++)
@@ -80,8 +80,7 @@ public class Hypersolver : System
             var record = nodes[i];
             var entity = space.Create(
                 new Neuron(record.Type, record.Group, record.Channel, record.Value),
-                new Position(record.Position.X, record.Position.Y, record.Position.Z),
-                new Rotation(record.Rotation.X, record.Rotation.Y, record.Rotation.Z));
+                new Position(record.Position.X, record.Position.Y, record.Position.Z));
 
             _nodes2Neurons[(_neurons2Nodes[entity] = record).Id] = entity;
         }
@@ -115,11 +114,19 @@ public class Hypersolver : System
             var contribution = pre.Value * synapse.Strength;
 
             _inputs.AddOrUpdate(synapse.To, contribution, (entity, value) => value + contribution);
-
-            // Hebbian plasticity.
+            
+            // Hebbian plasticity with spatial modulation.
             // Neurons that fire together, wire together.
 
-            synapse.Strength += _config.Eta * (1.0 - Math.Exp(-Math.Abs(pre.Value * post.Value) / _config.Kappa)) * (pre.Value * post.Value - post.Value * post.Value * synapse.Strength) * delta.Seconds;
+            var a = space.Get<Position>(synapse.From);
+            var b = space.Get<Position>(synapse.To);
+            var d = (X: a.X - b.X, Y: a.Y - b.Y, Z: a.Z - b.Z);
+
+            var distance = Math.Sqrt(d.X * d.X + d.Y * d.Y + d.Z * d.Z);
+            var decay = Math.Exp(-distance * distance / (2.0 * _config.Sigma * _config.Sigma));
+            var hebbian = pre.Value * post.Value;
+
+            synapse.Strength += decay * _config.Eta * (1.0 - Math.Exp(-Math.Abs(hebbian) / _config.Kappa)) * (hebbian - post.Value * post.Value * synapse.Strength) * delta.Seconds;
             synapse.Strength = Math.Clamp(synapse.Strength, -_config.Omax, _config.Omax);
 
         });
@@ -197,15 +204,10 @@ public class Hypersolver : System
     private void SaveNode(Space space, Entity entity) => _neurons2Nodes[entity].Update(record => {
         var neuron = space.Get<Neuron>(entity);
         var position = space.Get<Position>(entity);
-        var rotation = space.Get<Rotation>(entity);
 
         record.Position.X = position.X;
         record.Position.Y = position.Y;
         record.Position.Z = position.Z;
-
-        record.Rotation.X = rotation.X;
-        record.Rotation.Y = rotation.Y;
-        record.Rotation.Z = rotation.Z;
 
         record.Value = neuron.Value;
     });
@@ -244,4 +246,9 @@ public class HypersolverConfiguration
     /// The maximum synaptic strength.
     /// </summary>
     public double Omax { get; set; } = 2.0D;
+
+    /// <summary>
+    /// The spatial falloff radius for synaptic plasticity.
+    /// </summary>
+    public double Sigma { get; set; } = 50.0D;
 }

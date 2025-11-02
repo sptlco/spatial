@@ -43,7 +43,6 @@ public class NodeController : Controller
             Creator = node.Creator,
             Type = node.Type,
             Position = node.Position,
-            Rotation = node.Rotation,
             Value = node.Value
         });
     }

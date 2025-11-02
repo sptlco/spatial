@@ -27,7 +27,7 @@ services:
       - api
 
   mongo:
-    image: mongo
+    image: mongo:8
     restart: always
     ports:
       - "27017:27017"
@@ -35,7 +35,7 @@ services:
       - mongo:/data/db
 
   redis:
-    image: redis
+    image: redis:8
     restart: always
     ports:
       - "6379:6379"
@@ -43,7 +43,7 @@ services:
       - redis:/data
 
   nginx:
-    image: nginx
+    image: nginx:3
     restart: always
     ports:
       - "80:80"

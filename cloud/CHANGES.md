@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.12.0](https://github.com/sptlco/spatial/compare/spatial-cloud-1.11.0...spatial-cloud-1.12.0) (2025-11-03)
+
+
+### Features
+
+* add reward modulation ([#49](https://github.com/sptlco/spatial/issues/49)) ([2d83153](https://github.com/sptlco/spatial/commit/2d8315302fa58414f172f89ad75c22ed74bb6f83))
+
 ## [1.11.0](https://github.com/sptlco/spatial/compare/spatial-cloud-1.10.2...spatial-cloud-1.11.0) (2025-11-02)
 
 

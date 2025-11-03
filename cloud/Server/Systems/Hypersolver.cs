@@ -39,6 +39,7 @@ public class Hypersolver : System
     // Keyed by post-synaptic neurons for integration later.
 
     private readonly ConcurrentDictionary<Entity, double> _inputs;
+    private readonly ConcurrentDictionary<Entity, double> _rewards;
 
     /// <summary>
     /// Create a new <see cref="Hypersolver"/>.
@@ -58,6 +59,24 @@ public class Hypersolver : System
         _synapses = new Query().WithAll<Synapse>();
 
         _inputs = [];
+        _rewards = [];
+    }
+
+    /// <summary>
+    /// Reward a <see cref="Neuron"/>.
+    /// </summary>
+    /// <param name="neuron">The <see cref="Neuron"/> to reward.</param>
+    /// <param name="signal">A reward signal.</param>
+    public void Reward(string neuron, double signal) => Reward(_nodes2Neurons[neuron], signal);
+
+    /// <summary>
+    /// Reward a <see cref="Neuron"/>.
+    /// </summary>
+    /// <param name="neuron">The <see cref="Neuron"/> to reward.</param>
+    /// <param name="signal">A reward signal.</param>
+    public void Reward(Entity neuron, double signal)
+    {
+        _rewards[neuron] += signal;
     }
 
     /// <summary>
@@ -123,10 +142,16 @@ public class Hypersolver : System
             var d = (X: a.X - b.X, Y: a.Y - b.Y, Z: a.Z - b.Z);
 
             var distance = Math.Sqrt(d.X * d.X + d.Y * d.Y + d.Z * d.Z);
-            var decay = Math.Exp(-distance * distance / (2.0 * _config.Sigma * _config.Sigma));
-            var hebbian = pre.Value * post.Value;
+            var activity = pre.Value * post.Value;
 
-            synapse.Strength += decay * _config.Eta * (1.0 - Math.Exp(-Math.Abs(hebbian) / _config.Kappa)) * (hebbian - post.Value * post.Value * synapse.Strength) * delta.Seconds;
+            synapse.Strength +=
+                _config.Eta * // Synaptic learning rate
+                (activity - post.Value * post.Value * synapse.Strength) * // Hebbian plasticity
+                (1.0 - Math.Exp(-Math.Abs(activity) / _config.Kappa)) * // Plastic sensitivity
+                (1.0 + Math.Clamp(_rewards.GetValueOrDefault(synapse.To), -1.0D, 1.0D)) * // Reward modulation
+                Math.Exp(-distance * distance / (2.0 * _config.Sigma * _config.Sigma)) * // Spatial modulation
+                delta.Seconds;
+
             synapse.Strength = Math.Clamp(synapse.Strength, -_config.Omax, _config.Omax);
 
         });
@@ -181,6 +206,7 @@ public class Hypersolver : System
     public override void AfterUpdate(Space space)
     {
         _inputs.Clear();
+        _rewards.Clear();
     }
 
     /// <summary>

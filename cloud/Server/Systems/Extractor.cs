@@ -1,6 +1,5 @@
 // Copyright © Spatial Corporation. All rights reserved.
 
-using Spatial.Cloud.Baymax;
 using Spatial.Cloud.Components;
 using Spatial.Compute;
 using Spatial.Simulation;
@@ -33,13 +32,13 @@ public class Extractor : System
     }
  
     /// <summary>
-    /// Present raw data to a <see cref="Transducer"/>.
+    /// Push data to the <see cref="Extractor"/>.
     /// </summary>
     /// <param name="group">A neural group number.</param>
-    /// <param name="data">Raw data from the input stream.</param>
-    public void Set(int group, double[] data)
+    /// <param name="signals">Input signals for sensory neurons.</param>
+    public void Push(int group, double[] signals)
     {
-        _inputs[group] = data;
+        _inputs.AddOrUpdate(group, signals, (_, value) => AddElementWise(value, signals));
     }
 
     /// <summary>
@@ -49,7 +48,7 @@ public class Extractor : System
     public override void BeforeUpdate(Space space)
     {
         // Feature extraction.
-        // Pre-process the raw data from the input stream.
+        // Pre-process the inputs.
 
         Job.ParallelFor(_inputs, (group, data) => _features[group] = Server.Current.Transducers[group].Extract(data)).Wait();
 
@@ -72,5 +71,20 @@ public class Extractor : System
     {
         _inputs.Clear();
         _features.Clear();
+    }
+
+    private double[] AddElementWise(double[] a, double[] b)
+    {
+        if (a.Length != b.Length)
+        {
+            throw new ArgumentException("The arrays must match in length.");
+        }
+
+        for (var i = 0; i < a.Length; i++)
+        {
+            a[i] += b[i];
+        }
+
+        return b;
     }
 }

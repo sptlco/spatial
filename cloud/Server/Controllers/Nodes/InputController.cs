@@ -17,6 +17,6 @@ public class InputController : Controller
     [Operation(0x0000)]
     public void Process(Input input)
     {
-        Server.Current.Extractor.Set(input.Actuator, input.Data);
+        Server.Current.Extractor.Push(input.Actuator, input.Data);
     }
 }

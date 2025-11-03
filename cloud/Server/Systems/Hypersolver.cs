@@ -76,7 +76,7 @@ public class Hypersolver : System
     /// <param name="signal">A reward signal.</param>
     public void Reward(Entity neuron, double signal)
     {
-        _rewards[neuron] += signal;
+        _rewards.AddOrUpdate(neuron, signal, (_, value) => value + signal);
     }
 
     /// <summary>

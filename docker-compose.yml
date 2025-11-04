@@ -48,6 +48,7 @@ services:
       - code
 
   code:
+    user: root
     build:
       context: .
       dockerfile: tools/code/Dockerfile
@@ -63,7 +64,7 @@ services:
       - ./config/code:/home/coder/.config/code-server
       - ./tools/code/data:/home/coder/.local/share/code-server
     environment:
-      - DOCKER_USER=coder
+      - DOCKER_USER=root
 
 volumes:
   mongo:

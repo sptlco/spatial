@@ -59,10 +59,10 @@ services:
       - "5000:5000"
       - "9010:9010"
     volumes:
-      - ./:/home/coder/project
-      - ~/.ssh:/home/coder/.ssh
-      - ./config/code:/home/coder/.config/code-server
-      - ./tools/code/data:/home/coder/.local/share/code-server
+      - ./:/root/project
+      - ~/.ssh:/root/.ssh
+      - ./config/code:/root/.config/code-server
+      - ./tools/code/data:/root/.local/share/code-server
     environment:
       - DOCKER_USER=root
 

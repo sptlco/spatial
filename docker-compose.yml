@@ -60,8 +60,8 @@ services:
       - DOCKER_USER=coder
 
   preview:
-    build: ./interface/web
-    command: npm run dev
+    build: ./interface
+    command: npm run dev:web
     restart: always
     expose:
       - "3000"

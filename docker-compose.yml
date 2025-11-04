@@ -59,6 +59,7 @@ services:
       - "9010:9010"
     volumes:
       - ./:/home/coder/project
+      - ~/.ssh:/home/coder/.ssh:ro
       - ./config/code:/home/coder/.config/code-server
       - ./tools/code/data:/home/coder/.local/share/code-server
     environment:

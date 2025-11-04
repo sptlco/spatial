@@ -62,7 +62,6 @@ services:
       - ./:/home/coder/project
       - ~/.ssh:/root/.ssh
       - ./config/code:/root/.config/code-server
-      - ./config/code/data:/usr/lib/code-server
       - ./tools/code/data:/root/.local/share/code-server
     environment:
       - DOCKER_USER=root

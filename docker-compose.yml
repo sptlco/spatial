@@ -46,32 +46,20 @@ services:
       - cloud
       - web
       - code
-      - preview
 
   code:
     image: codercom/code-server:latest
     restart: always
-    expose:
-      - "8080"
+    ports:
+      - "8080:8080"
+      - "3000:3000"
+      - "5000:5000"
+      - "9010:9010"
     volumes:
       - ./:/home/coder/project
       - ./config/code:/home/coder/.config/code-server
     environment:
       - DOCKER_USER=coder
-
-  preview:
-    build:
-      context: ./interface
-      dockerfile: web/Dockerfile.development
-    restart: always
-    expose:
-      - "3000"
-    environment:
-      - NODE_ENV=development
-    working_dir: /app
-    volumes:
-      - ./interface:/app
-      - /app/web/node_modules
 
 volumes:
   mongo:

@@ -48,7 +48,9 @@ services:
       - code
 
   code:
-    image: codercom/code-server:latest
+    build:
+      context: .
+      dockerfile: tools/code/Dockerfile
     restart: always
     ports:
       - "8080:8080"

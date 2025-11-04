@@ -60,7 +60,7 @@ services:
       - DOCKER_USER=coder
 
   preview:
-    build: ./interface
+    image: node:20
     command: npm run dev:web
     restart: always
     expose:

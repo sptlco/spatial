@@ -59,7 +59,7 @@ services:
       - "5000:5000"
       - "9010:9010"
     volumes:
-      - ./:/root/project
+      - ./:/home/coder/project
       - ~/.ssh:/root/.ssh
       - ./config/code:/root/.config/code-server
       - ./tools/code/data:/root/.local/share/code-server

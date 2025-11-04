@@ -67,9 +67,10 @@ services:
       - "3000"
     environment:
       - NODE_ENV=development
-    working_dir: /app
+    working_dir: /app/web
     volumes:
-      - ./interface/web:/app
+      - ./interface:/app
+      - /app/web/node_modules
 
 volumes:
   mongo:

@@ -8,14 +8,6 @@ services:
       - mongo
       - redis
 
-  api:
-    build: ./api
-    restart: always
-    expose:
-      - "80"
-    depends_on:
-      - cloud
-
   web:
     build:
       context: ./interface
@@ -23,8 +15,6 @@ services:
     restart: always
     expose:
       - "80"
-    depends_on:
-      - api
 
   mongo:
     image: mongo:8
@@ -53,9 +43,33 @@ services:
       - ./config/nginx/ssl/certs:/etc/ssl/certs/
       - ./config/nginx/ssl/private:/etc/ssl/private
     depends_on:
-      - api
       - cloud
       - web
+      - code
+      - preview
+
+  code:
+    image: codercom/code-server:latest
+    restart: always
+    expose:
+      - "8080"
+    volumes:
+      - ./:/home/coder/project
+      - ./config/code:/home/coder/.config/code-server
+    environment:
+      - DOCKER_USER=coder
+
+  preview:
+    build: ./interface/web
+    command: npm run dev
+    restart: always
+    expose:
+      - "3000"
+    environment:
+      - NODE_ENV=development
+    working_dir: /app
+    volumes:
+      - ./interface/web:/app
 
 volumes:
   mongo:

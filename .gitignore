@@ -4,6 +4,8 @@
 [Bb]uild
 [Cc]onfig
 
+[Tt]ools/code/data
+
 # Logs
 logs
 *.log

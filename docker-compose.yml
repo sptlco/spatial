@@ -60,8 +60,9 @@ services:
       - DOCKER_USER=coder
 
   preview:
-    image: node:20
-    command: npm run dev:web
+    build:
+      context: ./interface
+      dockerfile: web/Dockerfile.development
     restart: always
     expose:
       - "3000"

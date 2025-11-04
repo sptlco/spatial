@@ -1,0 +1,14 @@
+FROM node:20-alpine
+
+WORKDIR /app
+
+COPY . .
+
+RUN npm install --workspace=web
+
+WORKDIR /app/web
+
+EXPOSE 3000
+
+CMD ["npm", "run", "dev:web"]
+

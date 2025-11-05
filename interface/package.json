@@ -1,15 +1,15 @@
 {
-    "name": "spatial",
-    "private": true,
-    "version": "1.0.0",
-    "workspaces": [
-        "./design",
-        "./mobile",
-        "./web"
-    ],
-    "scripts": {
-        "dev:mobile": "npm run dev --workspace @spatial/mobile",
-        "build:web": "npm run build --workspace @spatial/web",
-        "dev:web": "npm run dev --workspace @spatial/web"
-    }
+  "name": "spatial",
+  "private": true,
+  "version": "1.0.0",
+  "workspaces": [
+    "./design",
+    "./mobile",
+    "./web"
+  ],
+  "scripts": {
+    "dev:mobile": "npm run dev --workspace @spatial/mobile",
+    "build:web": "npm run build --workspace @spatial/web",
+    "dev:web": "npm run dev --workspace @spatial/web"
+  }
 }

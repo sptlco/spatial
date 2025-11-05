@@ -3,9 +3,10 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-    experimental: {
-        externalDir: true
-    }
+  basePath: process.env.NEXT_PUBLIC_BASE_URL,
+  experimental: {
+    externalDir: true
+  }
 };
 
 export default nextConfig;

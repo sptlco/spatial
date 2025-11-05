@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.3](https://github.com/sptlco/spatial/compare/spatial-interface-design-1.0.2...spatial-interface-design-1.0.3) (2025-11-05)
+
+
+### Bug Fixes
+
+* support base path ([7cb951f](https://github.com/sptlco/spatial/commit/7cb951f15e28d7434e0e9ed1a40870c90961af91))
+
 ## [1.0.2](https://github.com/sptlco/spatial/compare/spatial-interface-design-1.0.1...spatial-interface-design-1.0.2) (2025-10-26)
 
 

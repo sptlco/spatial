@@ -1,6 +1,6 @@
 {
   "name": "@sptlco/matter",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "A design system for creating beautiful, accessible user interfaces.",
   "main": "index.ts",
   "author": "Spatial Corporation",

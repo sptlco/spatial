@@ -300,52 +300,49 @@ public class Application
 
             builder.WebHost.ConfigureKestrel(options => {
 
-                if (configuration is not null)
+                foreach (var endpoint in Regex.Replace(configuration.Endpoints, @"\s+", "").Split(","))
                 {
-                    foreach (var endpoint in Regex.Replace(configuration.Endpoints, @"\s+", "").Split(","))
+                    var uri = new Uri(endpoint
+                        .Replace("*", IPAddress.Any.ToString())
+                        .Replace("localhost", IPAddress.Loopback.ToString()));
+
+                    switch (uri.Scheme.ToLowerInvariant())
                     {
-                        var uri = new Uri(endpoint
-                            .Replace("*", IPAddress.Any.ToString())
-                            .Replace("localhost", IPAddress.Loopback.ToString()));
+                        case Constants.UriSchemes.Http:
 
-                        switch (uri.Scheme.ToLowerInvariant())
-                        {
-                            case Constants.UriSchemes.Http:
-
-                                options.Listen(IPAddress.Parse(uri.Host), uri.Port);
+                            options.Listen(IPAddress.Parse(uri.Host), uri.Port);
+                        
+                            INFO("HTTP supported, endpoint: {Endpoint}.", endpoint);
+                        
+                            break;
+                        case Constants.UriSchemes.Https:
                             
-                                INFO("HTTP supported, endpoint: {Endpoint}.", endpoint);
+                            try
+                            {
+                                using var store = new X509Store(StoreLocation.LocalMachine);
+
+                                store.Open(OpenFlags.ReadOnly);
+
+                                var certificate = store.Certificates
+                                    .OfType<X509Certificate2>()
+                                    .Where(c => c.HasPrivateKey && c.NotAfter > DateTime.Now)
+                                    .OrderByDescending(c => c.NotBefore)
+                                    .FirstOrDefault();
+
+                                if (certificate is not null)
+                                {
+                                    options.Listen(IPAddress.Parse(uri.Host), uri.Port, listener => listener.UseHttps(certificate));
+                                }
+
+                                INFO("HTTPS supported, endpoint: {Endpoint}.", endpoint);
+                            }
+                            catch (Exception exception)
+                            {
+                                WARN(exception, "Failed to locate a valid SSL certificate for HTTPS endpoint {Endpoint}.", endpoint);   
+                            }
                             
-                                break;
-                            case Constants.UriSchemes.Https:
-                                
-                                try
-                                {
-                                    using var store = new X509Store(StoreLocation.LocalMachine);
-
-                                    store.Open(OpenFlags.ReadOnly);
-
-                                    var certificate = store.Certificates
-                                        .OfType<X509Certificate2>()
-                                        .Where(c => c.HasPrivateKey && c.NotAfter > DateTime.Now)
-                                        .OrderByDescending(c => c.NotBefore)
-                                        .FirstOrDefault();
-
-                                    if (certificate is not null)
-                                    {
-                                        options.Listen(IPAddress.Parse(uri.Host), uri.Port, listener => listener.UseHttps(certificate));
-                                    }
-
-                                    INFO("HTTPS supported, endpoint: {Endpoint}.", endpoint);
-                                }
-                                catch (Exception exception)
-                                {
-                                    WARN(exception, "Failed to locate a valid SSL certificate for HTTPS endpoint {Endpoint}.", endpoint);   
-                                }
-                                
-                                break;
-                        }
-                    }   
+                            break;
+                    }
                 }
             });
         }

@@ -35,7 +35,12 @@ public class Configuration
     /// <summary>
     /// The application's public endpoints.
     /// </summary>
-    public string[] Endpoints { get; set; } = [];
+    public string Endpoints { get; set; } = string.Empty;
+
+    /// <summary>
+    /// The base path for ASP.NET routes.
+    /// </summary>
+    public string? BasePath { get; set; }
 
     /// <summary>
     /// The system's tick rate.

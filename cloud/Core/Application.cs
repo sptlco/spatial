@@ -20,6 +20,7 @@ using Spatial.Simulation;
 using System.Net;
 using System.Reflection;
 using System.Security.Cryptography.X509Certificates;
+using System.Text.RegularExpressions;
 
 namespace Spatial;
 
@@ -115,15 +116,13 @@ public class Application
             var application = new T();
             var tickRate = (Time) (application.Configuration.TickRate / 60);
 
-            ConfigureTelemetry();
-
             try
             {
                 INFO("Time: {Time} ms.", Time.Now.Milliseconds);
                 INFO("Environment: {Environment}.", application._wapp.Environment.EnvironmentName);
                 INFO("Starting {Application} {Version}.", application.Name, application.Version);
 
-                application.ConfigureConnectivity();
+                application.Listen();
 
                 application.Start();
                 application._wapp.Start();
@@ -231,30 +230,6 @@ public class Application
     /// </summary>
     public virtual void Shutdown() { }
 
-    private static void ConfigureTelemetry()
-    {
-        var config = new LoggerConfiguration()
-            .Enrich.FromLogContext()
-            .MinimumLevel.Override("Microsoft", LogEventLevel.Fatal)
-            .WriteTo.Console()
-            .WriteTo.File(
-                path: Constants.LogFilePath,
-                rollingInterval: RollingInterval.Infinite,
-                rollOnFileSizeLimit: true);
-
-        try
-        {
-            config.WriteTo.MongoDBCapped(Current.Configuration.Database.ConnectionString, collectionName: Constants.LogCollectionName);
-        }
-        catch (OptionsValidationException) { }
-
-#if DEBUG
-        config.MinimumLevel.Is(LogEventLevel.Debug);
-#endif
-
-        Log.Logger = config.CreateLogger();
-    }
-
     private void ConfigureSystems()
     {
         AppDomain.CurrentDomain
@@ -267,32 +242,27 @@ public class Application
         _space.Initialize();
     }
 
-    private void ConfigureConnectivity()
+    private void Listen()
     {
-        foreach (var url in Configuration.Endpoints)
+        foreach (var endpoint in Regex.Replace(Configuration.Endpoints, @"\s+", "").Split(","))
         {
-            switch (new Uri(url.Replace("*", "localhost")).Scheme.ToLowerInvariant())
+            var uri = new Uri(endpoint
+                .Replace("*", IPAddress.Any.ToString())
+                .Replace("localhost", IPAddress.Loopback.ToString()));
+
+            if (uri.Scheme.ToLowerInvariant().Equals(Constants.UriSchemes.Socket))
             {
-                case Constants.UriSchemes.Http:
-                    _wapp.Urls.Add(url);
-                    INFO("HTTP supported, url: {Url}.", url);
-                    break;
-                case Constants.UriSchemes.Https:
-                    _wapp.Urls.Add(url);
-                    INFO("HTTPS supported, url: {Url}.", url);
-                    break;
-                case Constants.UriSchemes.Socket:
-                    _network.Listen(url.Replace($"{Constants.UriSchemes.Socket}://", "").Replace("*", IPAddress.Any.ToString()));
-                    INFO("TCP supported, url: {Url}.", url);
-                    break;
+                _network.Listen(new IPEndPoint(IPAddress.Parse(uri.Host), uri.Port).ToString());
+
+                INFO("TCP supported, endpoint: {Endpoint}.", endpoint);
             }
         }
     }
 
     private WebApplication CreateWebApplication()
     {
-        var path = Directory.CreateDirectory("wwwroot").FullName;
-        var builder = WebApplication.CreateBuilder();
+        var path = Path.Combine(AppContext.BaseDirectory, "wwwroot");
+        var builder = WebApplication.CreateBuilder(); 
 
         Configure(builder);
 
@@ -303,31 +273,82 @@ public class Application
 
         AddOptions<Configuration>(builder);
 
-        builder.WebHost.ConfigureKestrel(options => {
-            options.ListenAnyIP(80);
+        var configuration = builder.Configuration.Get<Configuration>();
+        
+        if (configuration is not null)
+        {
+            var logger = new LoggerConfiguration()
+                .Enrich.FromLogContext()
+                .MinimumLevel.Override("Microsoft", LogEventLevel.Fatal)
+                .WriteTo.Console()
+                .WriteTo.File(
+                    path: Constants.LogFilePath,
+                    rollingInterval: RollingInterval.Infinite,
+                    rollOnFileSizeLimit: true);
 
             try
             {
-                using var store = new X509Store(StoreLocation.LocalMachine);
+                logger.WriteTo.MongoDBCapped(configuration.Database.ConnectionString, collectionName: Constants.LogCollectionName);
+            }
+            catch (OptionsValidationException) { }
 
-                store.Open(OpenFlags.ReadOnly);
+    #if DEBUG
+            logger.MinimumLevel.Is(LogEventLevel.Debug);
+    #endif
 
-                var certificate = store.Certificates
-                    .OfType<X509Certificate2>()
-                    .Where(c => c.HasPrivateKey && c.NotAfter > DateTime.Now)
-                    .OrderByDescending(c => c.NotBefore)
-                    .FirstOrDefault();
+            Log.Logger = logger.CreateLogger();
 
-                if (certificate is not null)
+            builder.WebHost.ConfigureKestrel(options => {
+
+                if (configuration is not null)
                 {
-                    options.ListenAnyIP(443, listener => listener.UseHttps(certificate));
+                    foreach (var endpoint in Regex.Replace(configuration.Endpoints, @"\s+", "").Split(","))
+                    {
+                        var uri = new Uri(endpoint
+                            .Replace("*", IPAddress.Any.ToString())
+                            .Replace("localhost", IPAddress.Loopback.ToString()));
+
+                        switch (uri.Scheme.ToLowerInvariant())
+                        {
+                            case Constants.UriSchemes.Http:
+
+                                options.Listen(IPAddress.Parse(uri.Host), uri.Port);
+                            
+                                INFO("HTTP supported, endpoint: {Endpoint}.", endpoint);
+                            
+                                break;
+                            case Constants.UriSchemes.Https:
+                                
+                                try
+                                {
+                                    using var store = new X509Store(StoreLocation.LocalMachine);
+
+                                    store.Open(OpenFlags.ReadOnly);
+
+                                    var certificate = store.Certificates
+                                        .OfType<X509Certificate2>()
+                                        .Where(c => c.HasPrivateKey && c.NotAfter > DateTime.Now)
+                                        .OrderByDescending(c => c.NotBefore)
+                                        .FirstOrDefault();
+
+                                    if (certificate is not null)
+                                    {
+                                        options.Listen(IPAddress.Parse(uri.Host), uri.Port, listener => listener.UseHttps(certificate));
+                                    }
+
+                                    INFO("HTTPS supported, endpoint: {Endpoint}.", endpoint);
+                                }
+                                catch (Exception exception)
+                                {
+                                    WARN(exception, "Failed to locate a valid SSL certificate for HTTPS endpoint {Endpoint}.", endpoint);   
+                                }
+                                
+                                break;
+                        }
+                    }   
                 }
-            }
-            catch (Exception exception)
-            {
-                WARN(exception, "Failed to locate a valid SSL certificate, HTTPS unsupported.");   
-            }
-        });
+            });
+        }
 
         builder.Services
             .AddSerilog()
@@ -337,15 +358,17 @@ public class Application
 
         var application = builder.Build();
 
-
         application
+            .UsePathBase(configuration?.BasePath)
             .UseExceptionHandler()
             .UseStatusCodePages(ReportStatusCode)
             .UseHttpsRedirection()
             .UseWebSockets()
-            .UseStaticFiles(new StaticFileOptions {
+            .UseFileServer(new FileServerOptions
+            {
                 FileProvider = new PhysicalFileProvider(path),
-                RequestPath = ""
+                RequestPath = PathString.Empty,
+                EnableDefaultFiles = true
             })
             .UseSerilogRequestLogging()
             .UseAuthorization()

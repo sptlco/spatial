@@ -85,6 +85,6 @@ public class Extractor : System
             a[i] += b[i];
         }
 
-        return b;
+        return a;
     }
 }

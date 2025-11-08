@@ -6,7 +6,7 @@
     ".": {
       "package-name": "spatial",
       "changelog-path": "CHANGES.md",
-      "release-type": "simple"
+      "release-type": "none"
     },
     "cloud": {
       "package-name": "spatial-cloud",

@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.12.4](https://github.com/sptlco/spatial/compare/spatial-cloud-1.12.3...spatial-cloud-1.12.4) (2025-11-08)
+
+
+### Bug Fixes
+
+* use asset directory ([#49](https://github.com/sptlco/spatial/issues/49)) ([3a94f49](https://github.com/sptlco/spatial/commit/3a94f49be0f1d98c7672660cf7310b1c9ac94a21))
+
 ## [1.12.3](https://github.com/sptlco/spatial/compare/spatial-cloud-1.12.2...spatial-cloud-1.12.3) (2025-11-08)
 
 

@@ -261,7 +261,7 @@ public class Application
 
     private WebApplication CreateWebApplication()
     {
-        var path = Path.Combine(AppContext.BaseDirectory, "wwwroot");
+        var path = Path.Combine(AppContext.BaseDirectory, Constants.StaticFilePath);
         var builder = WebApplication.CreateBuilder(); 
 
         Configure(builder);
@@ -273,79 +273,78 @@ public class Application
 
         AddOptions<Configuration>(builder);
 
-        var configuration = builder.Configuration.Get<Configuration>();
+        var configuration = builder.Services
+            .BuildServiceProvider()
+            .GetRequiredService<IOptionsMonitor<Configuration>>().CurrentValue;
         
-        if (configuration is not null)
+        var logger = new LoggerConfiguration()
+            .Enrich.FromLogContext()
+            .MinimumLevel.Override("Microsoft", LogEventLevel.Fatal)
+            .WriteTo.Console()
+            .WriteTo.File(
+                path: Path.Combine(AppContext.BaseDirectory, Constants.LogFilePath),
+                rollingInterval: RollingInterval.Day,
+                rollOnFileSizeLimit: true);
+
+        try
         {
-            var logger = new LoggerConfiguration()
-                .Enrich.FromLogContext()
-                .MinimumLevel.Override("Microsoft", LogEventLevel.Fatal)
-                .WriteTo.Console()
-                .WriteTo.File(
-                    path: Constants.LogFilePath,
-                    rollingInterval: RollingInterval.Infinite,
-                    rollOnFileSizeLimit: true);
-
-            try
-            {
-                logger.WriteTo.MongoDBCapped(configuration.Database.ConnectionString, collectionName: Constants.LogCollectionName);
-            }
-            catch (OptionsValidationException) { }
-
-    #if DEBUG
-            logger.MinimumLevel.Is(LogEventLevel.Debug);
-    #endif
-
-            Log.Logger = logger.CreateLogger();
-
-            builder.WebHost.ConfigureKestrel(options => {
-
-                foreach (var endpoint in Regex.Replace(configuration.Endpoints, @"\s+", "").Split(","))
-                {
-                    var uri = new Uri(endpoint
-                        .Replace("*", IPAddress.Any.ToString())
-                        .Replace("localhost", IPAddress.Loopback.ToString()));
-
-                    switch (uri.Scheme.ToLowerInvariant())
-                    {
-                        case Constants.UriSchemes.Http:
-
-                            options.Listen(IPAddress.Parse(uri.Host), uri.Port);
-                        
-                            INFO("HTTP supported, endpoint: {Endpoint}.", endpoint);
-                        
-                            break;
-                        case Constants.UriSchemes.Https:
-                            
-                            try
-                            {
-                                using var store = new X509Store(StoreLocation.LocalMachine);
-
-                                store.Open(OpenFlags.ReadOnly);
-
-                                var certificate = store.Certificates
-                                    .OfType<X509Certificate2>()
-                                    .Where(c => c.HasPrivateKey && c.NotAfter > DateTime.Now)
-                                    .OrderByDescending(c => c.NotBefore)
-                                    .FirstOrDefault();
-
-                                if (certificate is not null)
-                                {
-                                    options.Listen(IPAddress.Parse(uri.Host), uri.Port, listener => listener.UseHttps(certificate));
-
-                                    INFO("HTTPS supported, endpoint: {Endpoint}.", endpoint);
-                                }
-                            }
-                            catch (Exception exception)
-                            {
-                                WARN(exception, "Failed to locate a valid SSL certificate for HTTPS endpoint {Endpoint}.", endpoint);   
-                            }
-                            
-                            break;
-                    }
-                }
-            });
+            logger.WriteTo.MongoDBCapped(configuration.Database.ConnectionString, collectionName: Constants.LogCollectionName);
         }
+        catch (OptionsValidationException) { }
+
+#if DEBUG
+        logger.MinimumLevel.Is(LogEventLevel.Debug);
+#endif
+
+        Log.Logger = logger.CreateLogger();
+
+        builder.WebHost.ConfigureKestrel(options => {
+
+            foreach (var endpoint in Regex.Replace(configuration.Endpoints, @"\s+", "").Split(","))
+            {
+                var uri = new Uri(endpoint
+                    .Replace("*", IPAddress.Any.ToString())
+                    .Replace("localhost", IPAddress.Loopback.ToString()));
+
+                switch (uri.Scheme.ToLowerInvariant())
+                {
+                    case Constants.UriSchemes.Http:
+
+                        options.Listen(IPAddress.Parse(uri.Host), uri.Port);
+                    
+                        INFO("HTTP supported, endpoint: {Endpoint}.", endpoint);
+                    
+                        break;
+                    case Constants.UriSchemes.Https:
+                        
+                        try
+                        {
+                            using var store = new X509Store(StoreLocation.LocalMachine);
+
+                            store.Open(OpenFlags.ReadOnly);
+
+                            var certificate = store.Certificates
+                                .OfType<X509Certificate2>()
+                                .Where(c => c.HasPrivateKey && c.NotAfter > DateTime.Now)
+                                .OrderByDescending(c => c.NotBefore)
+                                .FirstOrDefault();
+
+                            if (certificate is not null)
+                            {
+                                options.Listen(IPAddress.Parse(uri.Host), uri.Port, listener => listener.UseHttps(certificate));
+
+                                INFO("HTTPS supported, endpoint: {Endpoint}.", endpoint);
+                            }
+                        }
+                        catch (Exception exception)
+                        {
+                            WARN(exception, "Failed to locate a valid SSL certificate for HTTPS endpoint {Endpoint}.", endpoint);   
+                        }
+                        
+                        break;
+                }
+            }
+        });
 
         builder.Services
             .AddSerilog()
@@ -356,7 +355,7 @@ public class Application
         var application = builder.Build();
 
         application
-            .UsePathBase(configuration?.BasePath)
+            .UsePathBase(configuration.BasePath)
             .UseExceptionHandler()
             .UseStatusCodePages(ReportStatusCode)
             .UseHttpsRedirection()

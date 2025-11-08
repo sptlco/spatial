@@ -83,6 +83,11 @@ internal class Constants
     public const string Intervals = "Intervals";
 
     /// <summary>
+    /// The directory containing static files.
+    /// </summary>
+    public const string StaticFilePath = "wwwroot";
+
+    /// <summary>
     /// Log property names.
     /// </summary>
     public static class Properties

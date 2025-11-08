@@ -12,4 +12,10 @@
   <ItemGroup>
     <ProjectReference Include="..\Core\Spatial.csproj" />
   </ItemGroup>
+  <ItemGroup>
+    <Content Include="Assets\**\*.*">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <TargetPath>wwwroot\%(RecursiveDir)%(Filename)%(Extension)</TargetPath>
+    </Content>
+  </ItemGroup>
 </Project>

@@ -10,10 +10,6 @@
         <None Update="appsettings.*.json">
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </None>
-        <Content Include="*.ico">
-            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-            <TargetPath>wwwroot\%(Filename)%(Extension)</TargetPath>
-        </Content>
     </ItemGroup>
     <ItemGroup>
         <Using Include="Spatial.Telemetry.Logger" Static="true" />

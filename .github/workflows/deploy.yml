@@ -2,8 +2,10 @@ name: Deploy
 
 on:
   push:
-    branches: [main]
-    
+    tags:
+      - "spatial-cloud*"
+      - "spatial-interface*"
+
 concurrency:
   group: deploy
   cancel-in-progress: false
@@ -29,7 +31,7 @@ jobs:
             set -e
             cd .spatial
             git pull
-            
+
             docker compose -p spatial pull
             docker compose -p spatial up -d --build
             docker compose -p spatial restart nginx

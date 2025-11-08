@@ -332,9 +332,9 @@ public class Application
                                 if (certificate is not null)
                                 {
                                     options.Listen(IPAddress.Parse(uri.Host), uri.Port, listener => listener.UseHttps(certificate));
-                                }
 
-                                INFO("HTTPS supported, endpoint: {Endpoint}.", endpoint);
+                                    INFO("HTTPS supported, endpoint: {Endpoint}.", endpoint);
+                                }
                             }
                             catch (Exception exception)
                             {

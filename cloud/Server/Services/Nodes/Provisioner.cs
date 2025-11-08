@@ -1,5 +1,6 @@
 // Copyright © Spatial Corporation. All rights reserved.
 
+using Spatial.Cloud.Components;
 using Spatial.Cloud.Models.Nodes;
 using Spatial.Cloud.Models.Users;
 
@@ -15,8 +16,8 @@ public class Provisioner
     /// </summary>
     /// <param name="creator">The <see cref="User"/> provisioning the <see cref="Node"/>.</param>
     /// <returns>A <see cref="Node"/>.</returns>
-    public Node Provision(string creator)
+    public Node Provision(string creator, NeuronType type)
     {
-        return new Node() { Creator = creator };
+        return new Node() { Creator = creator, Type = type };
     }
 }

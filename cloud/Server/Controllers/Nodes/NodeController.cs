@@ -33,7 +33,7 @@ public class NodeController : Controller
     [Path("/")]
     public async Task<Node> CreateNodeAsync()
     {
-        var node = _provisioner.Provision(string.Empty);
+        var node = _provisioner.Provision(string.Empty, Components.NeuronType.Temporal);
 
         // ...
 

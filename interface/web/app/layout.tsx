@@ -3,6 +3,7 @@
 import type { Metadata } from "next";
 import { ThemeProvider } from "next-themes";
 import { Suspense } from "react";
+
 import { Favicon } from "@spatial/components";
 
 import "@sptlco/matter";

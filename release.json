@@ -3,11 +3,6 @@
   "pull-request-header": "Release Notes",
   "pull-request-footer": "This pull request was automatically generated due to code changes.\nPlease review and merge to publish the release.",
   "packages": {
-    ".": {
-      "package-name": "spatial",
-      "changelog-path": "CHANGES.md",
-      "skip-github-release": true
-    },
     "cloud": {
       "package-name": "spatial-cloud",
       "changelog-path": "CHANGES.md",

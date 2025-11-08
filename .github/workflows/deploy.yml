@@ -3,8 +3,7 @@ name: Deploy
 on:
   push:
     tags:
-      - "spatial-cloud*"
-      - "spatial-interface*"
+      - "spatial"
 
 concurrency:
   group: deploy

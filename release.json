@@ -3,11 +3,16 @@
   "pull-request-header": "Release Notes",
   "pull-request-footer": "This pull request was automatically generated due to code changes.\nPlease review and merge to publish the release.",
   "packages": {
+    ".": {
+      "package-name": "spatial",
+      "changelog-path": "CHANGES.md",
+      "release-type": "simple"
+    },
     "cloud": {
       "package-name": "spatial-cloud",
       "changelog-path": "CHANGES.md",
       "release-type": "simple",
-      "extra-files": [ 
+      "extra-files": [
         "Core/Spatial.csproj",
         {
           "type": "json",
@@ -20,14 +25,14 @@
       "package-name": "spatial-interface-design",
       "changelog-path": "CHANGES.md",
       "release-type": "simple",
-      "extra-files": [ "package.json" ]
+      "extra-files": ["package.json"]
     },
     "interface/mobile": {
       "package-name": "spatial-interface-mobile",
       "changelog-path": "CHANGES.md",
       "release-type": "simple",
-      "extra-files": [ 
-        "package.json", 
+      "extra-files": [
+        "package.json",
         {
           "type": "json",
           "path": "app.json",
@@ -39,7 +44,7 @@
       "package-name": "spatial-interface-web",
       "changelog-path": "CHANGES.md",
       "release-type": "simple",
-      "extra-files": [ "package.json" ]
+      "extra-files": ["package.json"]
     }
   }
 }

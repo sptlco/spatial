@@ -3,8 +3,8 @@ name: Publish
 on:
   push:
     tags:
-      - 'spatial-cloud*'
-      - 'spatial-interface-design*'
+      - "spatial-cloud*"
+      - "spatial-interface-design*"
 
 concurrency:
   group: publish
@@ -28,7 +28,7 @@ jobs:
         if: startsWith(github.ref_name, 'spatial-cloud')
         uses: actions/setup-dotnet@v3
         with:
-          dotnet-version: '9.x'
+          dotnet-version: "9.x"
 
       - name: Restore (.NET)
         if: startsWith(github.ref_name, 'spatial-cloud')
@@ -52,8 +52,8 @@ jobs:
         if: startsWith(github.ref_name, 'spatial-interface-design')
         uses: actions/setup-node@v4
         with:
-          node-version: '22.x'
-          registry-url: 'https://npm.pkg.github.com/'
+          node-version: "22.x"
+          registry-url: "https://npm.pkg.github.com/"
 
       - name: Install dependencies (NPM)
         if: startsWith(github.ref_name, 'spatial-interface-design')

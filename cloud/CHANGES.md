@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.12.3](https://github.com/sptlco/spatial/compare/spatial-cloud-1.12.2...spatial-cloud-1.12.3) (2025-11-08)
+
+
+### Bug Fixes
+
+* correct element wise addition ([#49](https://github.com/sptlco/spatial/issues/49)) ([6e97c5c](https://github.com/sptlco/spatial/commit/6e97c5ca42e60f6fbaaeb05d568081d93570d7e7))
+* remove duplicate check ([#49](https://github.com/sptlco/spatial/issues/49)) ([151d427](https://github.com/sptlco/spatial/commit/151d427af26039ffc0cd28b11667cf6c83f5d88e))
+
 ## [1.12.2](https://github.com/sptlco/spatial/compare/spatial-cloud-1.12.1...spatial-cloud-1.12.2) (2025-11-06)
 
 

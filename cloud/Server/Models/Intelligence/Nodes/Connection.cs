@@ -2,7 +2,7 @@
 
 using Spatial.Persistence;
 
-namespace Spatial.Cloud.Models.Nodes;
+namespace Spatial.Cloud.Models.Intelligence.Nodes;
 
 /// <summary>
 /// A weighted connection between two nodes.

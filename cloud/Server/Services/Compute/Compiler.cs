@@ -1,8 +1,8 @@
 // Copyright © Spatial Corporation. All rights reserved.
 
-using Spatial.Cloud.Models.Jobs;
+using Spatial.Cloud.Models.Compute.Jobs;
 
-namespace Spatial.Cloud.Services.Jobs;
+namespace Spatial.Cloud.Services.Compute;
 
 /// <summary>
 /// A factory for <see cref="Job"/> compilation.

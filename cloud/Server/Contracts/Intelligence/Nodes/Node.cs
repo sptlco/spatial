@@ -3,7 +3,7 @@
 using Spatial.Cloud.Components;
 using Spatial.Mathematics;
 
-namespace Spatial.Cloud.Contracts.Nodes;
+namespace Spatial.Cloud.Contracts.Intelligence.Nodes;
 
 /// <summary>
 /// ...

@@ -1,16 +1,16 @@
 // Copyright © Spatial Corporation. All rights reserved.
 
-using Spatial.Cloud.Contracts.Jobs;
-using Spatial.Cloud.Services.Jobs;
+using Spatial.Cloud.Contracts.Compute.Jobs;
+using Spatial.Cloud.Services.Compute;
 using Spatial.Networking;
 
-namespace Spatial.Cloud.Controllers.Jobs;
+namespace Spatial.Cloud.Controllers.Compute.Jobs;
 
 /// <summary>
 /// A <see cref="Controller"/> for <see cref="Job"/>.
 /// </summary>
 [Module]
-[Path("jobs")]
+[Path("compute/jobs")]
 public class JobController : Controller
 {
     private readonly Compiler _compiler;

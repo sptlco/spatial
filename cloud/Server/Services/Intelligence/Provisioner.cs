@@ -1,10 +1,10 @@
 // Copyright © Spatial Corporation. All rights reserved.
 
 using Spatial.Cloud.Components;
-using Spatial.Cloud.Models.Nodes;
+using Spatial.Cloud.Models.Intelligence.Nodes;
 using Spatial.Cloud.Models.Users;
 
-namespace Spatial.Cloud.Services.Nodes;
+namespace Spatial.Cloud.Services.Intelligence;
 
 /// <summary>
 /// A factory for <see cref="Node"/> provisioning.

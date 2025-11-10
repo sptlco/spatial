@@ -1,9 +1,9 @@
 // Copyright © Spatial Corporation. All rights reserved.
 
-using Spatial.Cloud.Contracts.Nodes;
+using Spatial.Cloud.Contracts.Intelligence.Nodes;
 using Spatial.Networking;
 
-namespace Spatial.Cloud.Controllers.Nodes;
+namespace Spatial.Cloud.Controllers.Intelligence.Nodes;
 
 /// <summary>
 /// A <see cref="Controller"/> for <see cref="Input"/>.

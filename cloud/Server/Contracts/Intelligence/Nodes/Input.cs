@@ -2,7 +2,7 @@
 
 using Spatial.Networking;
 
-namespace Spatial.Cloud.Contracts.Nodes;
+namespace Spatial.Cloud.Contracts.Intelligence.Nodes;
 
 /// <summary>
 /// Raw input data sent to the server.

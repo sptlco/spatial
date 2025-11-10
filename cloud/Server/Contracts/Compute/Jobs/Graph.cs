@@ -1,6 +1,6 @@
 // Copyright © Spatial Corporation. All rights reserved.
 
-namespace Spatial.Cloud.Contracts.Jobs;
+namespace Spatial.Cloud.Contracts.Compute.Jobs;
 
 /// <summary>
 /// A <see cref="Job"/> execution graph.

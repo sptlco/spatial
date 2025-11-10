@@ -5,7 +5,7 @@ using Spatial.Cloud.Models.Users;
 using Spatial.Mathematics;
 using Spatial.Persistence;
 
-namespace Spatial.Cloud.Models.Nodes;
+namespace Spatial.Cloud.Models.Intelligence.Nodes;
 
 /// <summary>
 /// ...

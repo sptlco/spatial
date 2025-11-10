@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.6.4](https://github.com/sptlco/spatial/compare/spatial-interface-web-1.6.3...spatial-interface-web-1.6.4) (2025-11-10)
+
+
+### Bug Fixes
+
+* small changes ([c647722](https://github.com/sptlco/spatial/commit/c64772287badf2982b40498f37e67382e6d3cc7d))
+
 ## [1.6.3](https://github.com/sptlco/spatial/compare/spatial-interface-web-1.6.2...spatial-interface-web-1.6.3) (2025-11-05)
 
 

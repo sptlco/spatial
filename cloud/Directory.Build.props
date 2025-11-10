@@ -2,6 +2,9 @@
     <PropertyGroup>
         <RootNamespace>Spatial</RootNamespace>
         <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+        <BaseOutputPath>Build\</BaseOutputPath>
+        <BaseIntermediateOutputPath>Intermediates\</BaseIntermediateOutputPath>
+        <MSBUildProjectExtensionsPath>Intermediates\</MSBUildProjectExtensionsPath>
     </PropertyGroup>
     <PropertyGroup>
         <DefaultItemExcludes>$(DefaultItemExcludes);Directory.*.props;BenchmarkDotNet.Artifacts\**\*;*.log</DefaultItemExcludes>

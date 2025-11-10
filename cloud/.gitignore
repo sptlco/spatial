@@ -27,6 +27,7 @@ wwwroot
 
 # Build results
 [Bb]uild/
+[Ii]ntermediates/
 [Dd]ebug/
 [Dd]ebugPublic/
 [Rr]elease/

@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
@@ -352,6 +353,8 @@ public class Application
             .AddProblemDetails()
             .AddControllers();
 
+        builder.Services.AddSignalR();
+
         var application = builder.Build();
 
         application
@@ -381,6 +384,24 @@ public class Application
         });
 
         application.MapControllers();
+        
+        var hubs = Assembly
+            .GetEntryAssembly()!
+            .GetTypes()
+            .Where(type => type.IsAssignableTo(typeof(Hub)));
+
+        foreach (var hub in hubs)
+        {
+            if (hub.GetCustomAttribute<PathAttribute>() is not PathAttribute attribute)
+            {
+                throw new Exception($"No path specified for SignalR hub {hub.Name}.");
+            }
+
+            typeof(WebApplication)
+                .GetMethod("MapHub")!
+                .MakeGenericMethod(hub)
+                .Invoke(application, [attribute.Template]);
+        }
 
         return application;
     }

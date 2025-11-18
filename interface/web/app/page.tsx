@@ -1,6 +1,6 @@
 // Copyright © Spatial Corporation. All rights reserved.
 
-import { Image } from "@spatial/components";
+import { Image } from "@sptlco/matter";
 
 /**
  * Create a new landing page component.
@@ -9,7 +9,7 @@ import { Image } from "@spatial/components";
 export default function Page() {
   return (
     <div className="flex w-full h-screen items-center justify-center">
-      <Image className="dark:invert" src="/symbol.svg" alt="Spatial Symbol" priority />
+      <Image src="/symbol.svg" alt="Spatial Symbol" />
     </div>
   );
 }

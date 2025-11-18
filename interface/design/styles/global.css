@@ -1,3 +1,5 @@
 /* Copyright © Spatial Corporation. All rights reserved. */
 
 @import "tailwindcss";
+
+@source "../../node_modules/@sptlco/matter";

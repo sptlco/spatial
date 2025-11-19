@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.13.0](https://github.com/sptlco/spatial/compare/spatial-cloud-1.12.5...spatial-cloud-1.13.0) (2025-11-19)
+
+
+### Features
+
+* use SignalR ([#49](https://github.com/sptlco/spatial/issues/49)) ([a476681](https://github.com/sptlco/spatial/commit/a47668137f9334c43f0bbe92f171f159b9cdc1b5))
+
 ## [1.12.5](https://github.com/sptlco/spatial/compare/spatial-cloud-1.12.4...spatial-cloud-1.12.5) (2025-11-10)
 
 

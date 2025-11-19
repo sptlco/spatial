@@ -396,11 +396,6 @@ public class Application
             {
                 throw new Exception($"No path specified for SignalR hub {hub.Name}.");
             }
-
-            typeof(WebApplication)
-                .GetMethod("MapHub")!
-                .MakeGenericMethod(hub)
-                .Invoke(application, [attribute.Template]);
         }
 
         return application;

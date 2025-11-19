@@ -29,7 +29,6 @@ jobs:
           command_timeout: 6h
           script: |
             set -e
-            cd .spatial
             git pull
 
             docker compose -p spatial pull

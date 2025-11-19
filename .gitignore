@@ -1,5 +1,24 @@
+.bash_history
+.bashrc
+.config
+.docker
+.dotnet
+.gitconfig
+.launchpadlib
+.lesshst
+.local
+.nuget
+.omnisharp
+.profile
+.ssh
+.vim
+.viminfo
+.vimrc
 .vs
 .vscode
+.wget-hsts
+
+*.code-workspace
 
 [Bb]uild
 [Cc]onfig

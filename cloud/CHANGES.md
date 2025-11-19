@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.13.1](https://github.com/sptlco/spatial/compare/spatial-cloud-1.13.0...spatial-cloud-1.13.1) (2025-11-19)
+
+
+### Bug Fixes
+
+* remove SignalR mapping ([#49](https://github.com/sptlco/spatial/issues/49)) ([05cb714](https://github.com/sptlco/spatial/commit/05cb714061e87a84e59083cd314e71e0ddbac661))
+
 ## [1.13.0](https://github.com/sptlco/spatial/compare/spatial-cloud-1.12.5...spatial-cloud-1.13.0) (2025-11-19)
 
 

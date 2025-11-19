@@ -1,3 +1,3 @@
 // Copyright © Spatial Corporation. All rights reserved.
 
-import "./global.css";
+import "./index.css";

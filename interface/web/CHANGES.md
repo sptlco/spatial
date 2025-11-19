@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.7.0](https://github.com/sptlco/spatial/compare/spatial-interface-web-1.6.4...spatial-interface-web-1.7.0) (2025-11-19)
+
+
+### Features
+
+* add elements ([#51](https://github.com/sptlco/spatial/issues/51)) ([75f8558](https://github.com/sptlco/spatial/commit/75f85583a1ebf91be4da056e6178be85c3e4a415))
+* consume matter ([#51](https://github.com/sptlco/spatial/issues/51)) ([e4d9c50](https://github.com/sptlco/spatial/commit/e4d9c50f3ecddf30fadae225aa6883bde5e46d6d))
+
 ## [1.6.4](https://github.com/sptlco/spatial/compare/spatial-interface-web-1.6.3...spatial-interface-web-1.6.4) (2025-11-10)
 
 

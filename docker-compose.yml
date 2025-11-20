@@ -53,8 +53,6 @@ services:
       context: .
       dockerfile: tools/code/Dockerfile
     restart: always
-    profiles:
-      - development
     ports:
       - "8080:8080"
       - "3000:3000"

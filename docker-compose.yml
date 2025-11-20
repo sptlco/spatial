@@ -42,10 +42,6 @@ services:
       - ./config/nginx:/etc/nginx/conf.d
       - ./config/nginx/ssl/certs:/etc/ssl/certs/
       - ./config/nginx/ssl/private:/etc/ssl/private
-    depends_on:
-      - cloud
-      - web
-      - code
 
   code:
     user: root
@@ -53,6 +49,8 @@ services:
       context: .
       dockerfile: tools/code/Dockerfile
     restart: always
+    profiles:
+      - development
     ports:
       - "8080:8080"
       - "3000:3000"

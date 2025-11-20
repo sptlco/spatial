@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.1.1](https://github.com/sptlco/spatial/compare/spatial-interface-design-1.1.0...spatial-interface-design-1.1.1) (2025-11-20)
+
+
+### Bug Fixes
+
+* add overloads ([#51](https://github.com/sptlco/spatial/issues/51)) ([3b615ec](https://github.com/sptlco/spatial/commit/3b615eceda08452b175f9c6b3d77b1d29f3317fa))
+* require type spec ([#51](https://github.com/sptlco/spatial/issues/51)) ([588437f](https://github.com/sptlco/spatial/commit/588437f0395c8270e394a682cf5773dab80036d6))
+
 ## [1.1.0](https://github.com/sptlco/spatial/compare/spatial-interface-design-1.0.3...spatial-interface-design-1.1.0) (2025-11-19)
 
 

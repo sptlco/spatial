@@ -42,6 +42,10 @@ services:
       - ./config/nginx:/etc/nginx/conf.d
       - ./config/nginx/ssl/certs:/etc/ssl/certs/
       - ./config/nginx/ssl/private:/etc/ssl/private
+    depends_on:
+      - cloud
+      - web
+      - code
 
   code:
     user: root

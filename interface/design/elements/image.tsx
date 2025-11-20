@@ -15,6 +15,6 @@ export type ImageProps = {
 /**
  * A graphical element that displays visual content, such as a photo, icon, or illustration.
  */
-export const Image = createElement<ImageProps, "img">((props, ref) => {
+export const Image = createElement<"img", ImageProps>((props, ref) => {
   return <img {...props} ref={ref} src={resolve(props.src)} />;
 });

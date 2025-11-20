@@ -16,7 +16,7 @@ export type FaviconProps = {
  * A small icon associated with a website, web page, or web application that helps users
  * visually identify it within browser tabs, bookmarks, shortcuts, and address bars.
  */
-export const Favicon = createElement<FaviconProps, "link">((props, _) => {
+export const Favicon = createElement<"link", FaviconProps>((props, _) => {
   const href = resolve(props.href);
 
   return (

@@ -12,7 +12,7 @@ export type LogoProps = {
   mode: "symbol" | "wordmark";
 };
 
-export const Logo = createElement<LogoProps, "svg">((props, ref) => {
+export const Logo = createElement<"svg", LogoProps>((props, ref) => {
   switch (props.mode) {
     case "symbol":
       return (

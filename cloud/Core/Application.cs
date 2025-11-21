@@ -265,6 +265,8 @@ public class Application
         var path = Path.Combine(AppContext.BaseDirectory, Constants.StaticFilePath);
         var builder = WebApplication.CreateBuilder(); 
 
+        Directory.CreateDirectory(path);
+
         Configure(builder);
 
         builder.Configuration.AddJsonFile(

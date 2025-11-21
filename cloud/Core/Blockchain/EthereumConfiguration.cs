@@ -12,12 +12,10 @@ public class EthereumConfiguration
     /// <summary>
     /// An Ethereum network's RPC endpoint.
     /// </summary>
-    [Required]
     public string Endpoint { get; set; }
 
     /// <summary>
     /// The system's private key.
     /// </summary>
-    [Required]
     public string Key { get; set; }
 }

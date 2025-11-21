@@ -12,6 +12,5 @@ public class StripeConfiguration
     /// <summary>
     /// A <see cref="Stripe"/> API key.
     /// </summary>
-    [Required]
     public string Key { get; set; }
 }

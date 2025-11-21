@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.13.3](https://github.com/sptlco/spatial/compare/spatial-cloud-1.13.2...spatial-cloud-1.13.3) (2025-11-21)
+
+
+### Bug Fixes
+
+* create static file path ([#49](https://github.com/sptlco/spatial/issues/49)) ([1835e65](https://github.com/sptlco/spatial/commit/1835e65a649bbd8cd462333c41b7efdb2d2c1c4b))
+
 ## [1.13.2](https://github.com/sptlco/spatial/compare/spatial-cloud-1.13.1...spatial-cloud-1.13.2) (2025-11-21)
 
 

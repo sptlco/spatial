@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.13.2](https://github.com/sptlco/spatial/compare/spatial-cloud-1.13.1...spatial-cloud-1.13.2) (2025-11-21)
+
+
+### Bug Fixes
+
+* optional configuration ([#49](https://github.com/sptlco/spatial/issues/49)) ([e61f9ed](https://github.com/sptlco/spatial/commit/e61f9ed4b9fed033475c030b608682c6facf69eb))
+
 ## [1.13.1](https://github.com/sptlco/spatial/compare/spatial-cloud-1.13.0...spatial-cloud-1.13.1) (2025-11-19)
 
 

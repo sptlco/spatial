@@ -10,7 +10,7 @@ namespace Spatial.Cloud.Systems;
 /// <summary>
 /// A proprietary feature extractor.
 /// </summary>
-[Dependency(0)]
+[Run(0)]
 public class Extractor : System
 {
     private readonly Query _query;

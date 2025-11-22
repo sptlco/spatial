@@ -52,7 +52,7 @@ public class Application
         _network = new Network(_wapp.Services);
         _ticks = (_time = Time.Now).Ticks;
 
-        ConfigureSystems();
+        Initialize();
     }
 
     /// <summary>
@@ -231,13 +231,13 @@ public class Application
     /// </summary>
     public virtual void Shutdown() { }
 
-    private void ConfigureSystems()
+    private void Initialize()
     {
         AppDomain.CurrentDomain
             .GetAssemblies()
             .SelectMany(asm => asm.GetTypes())
-            .Where(type => type.GetCustomAttribute<DependencyAttribute>() is not null)
-            .OrderBy(type => type.GetCustomAttribute<DependencyAttribute>()!.Layer)
+            .Where(type => type.GetCustomAttribute<RunAttribute>() is not null)
+            .OrderBy(type => type.GetCustomAttribute<RunAttribute>()!.Layer)
             .ForEach(Use);
 
         _space.Initialize();

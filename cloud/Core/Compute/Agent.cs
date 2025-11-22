@@ -79,7 +79,15 @@ internal class Agent : IDisposable
                 continue;
             }
 
-            _signal.Wait(_cts.Token);
+            try
+            {
+                _signal.Wait(_cts.Token);
+            }
+            catch (OperationCanceledException)
+            {
+                break;
+            }
+            
             _signal.Reset();
         }
     }

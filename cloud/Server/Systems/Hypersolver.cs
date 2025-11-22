@@ -12,7 +12,7 @@ namespace Spatial.Cloud.Systems;
 /// <summary>
 /// A neural network leveraging temporal dynamics for continuous state changes over time.
 /// </summary>
-[Dependency(1)]
+[Run(1)]
 public class Hypersolver : System
 {
     private readonly HypersolverConfiguration _config;

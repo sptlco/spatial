@@ -8,7 +8,7 @@ namespace Spatial.Cloud.Systems;
 /// <summary>
 /// Propagates updates to transducers.
 /// </summary>
-[Dependency(2)]
+[Run(2)]
 public class Updater : System
 {
     /// <summary>

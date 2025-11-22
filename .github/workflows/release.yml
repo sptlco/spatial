@@ -26,5 +26,5 @@ jobs:
         with:
           config-file: release.json
           manifest-file: manifest.json
-          target-branch: main
+          target-branch: ${{ github.ref_name }}
           token: ${{ secrets.SPATIAL_USER }}

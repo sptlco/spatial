@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.13.5](https://github.com/sptlco/spatial/compare/spatial-cloud-1.13.4...spatial-cloud-1.13.5) (2025-11-23)
+
+
+### Bug Fixes
+
+* update app name ([#49](https://github.com/sptlco/spatial/issues/49)) ([c250c33](https://github.com/sptlco/spatial/commit/c250c33a5a79e2edab3764cd0c0b131dd2045ed0))
+
 ## [1.13.4](https://github.com/sptlco/spatial/compare/spatial-cloud-1.13.3...spatial-cloud-1.13.4) (2025-11-22)
 
 

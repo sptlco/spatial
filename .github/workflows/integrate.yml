@@ -1,4 +1,4 @@
-name: Release
+name: Integrate
 
 on:
   push:
@@ -8,7 +8,7 @@ on:
       - "*"
 
 concurrency:
-  group: release
+  group: integrate
   cancel-in-progress: false
 
 permissions:
@@ -19,7 +19,11 @@ permissions:
 
 jobs:
   release:
+    name: Release
+    needs: test
     runs-on: ubuntu-latest
+    outputs:
+      deploy: ${{ steps.release.outputs.releases_created }}
     steps:
       - name: Release
         id: release
@@ -27,12 +31,26 @@ jobs:
         with:
           config-file: release.json
           manifest-file: manifest.json
-          target-branch: main
           token: ${{ secrets.SPATIAL_USER }}
 
+  test:
+    name: Integration Tests
+    needs: release
+    runs-on: ubuntu-latest
+    if: ${{ needs.release.outputs.deploy == 'true' }}
+    steps:
+      - name: Echo
+        run: echo "Hello, world!"
+
+  deployment:
+    name: West US
+    environment: West US
+    needs: [release, test]
+    runs-on: ubuntu-latest
+    if: ${{ needs.release.outputs.deploy == 'true' }}
+    steps:
       - name: Deploy
         uses: appleboy/ssh-action@v1.2.2
-        if: ${{ steps.release.outputs.releases_created == 'true' }}
         with:
           host: ${{ secrets.SERVER_HOST }}
           username: ${{ secrets.SERVER_USER }}

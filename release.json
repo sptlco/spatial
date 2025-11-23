@@ -7,8 +7,7 @@
     ".": {
       "package-name": "spatial",
       "changelog-path": "CHANGES.md",
-      "release-type": "simple",
-      "skip-github-release": true
+      "release-type": "simple"
     },
     "cloud": {
       "package-name": "spatial-cloud",

@@ -20,7 +20,6 @@ permissions:
 jobs:
   release:
     name: Release
-    needs: test
     runs-on: ubuntu-latest
     outputs:
       deploy: ${{ steps.release.outputs.releases_created }}

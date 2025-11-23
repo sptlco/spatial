@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.13.6](https://github.com/sptlco/spatial/compare/spatial-cloud-1.13.5...spatial-cloud-1.13.6) (2025-11-23)
+
+
+### Bug Fixes
+
+* Rename application file ([a8bd0aa](https://github.com/sptlco/spatial/commit/a8bd0aaeb461f36f12a2e9780b4e257d240bd418))
+
 ## [1.13.5](https://github.com/sptlco/spatial/compare/spatial-cloud-1.13.4...spatial-cloud-1.13.5) (2025-11-23)
 
 

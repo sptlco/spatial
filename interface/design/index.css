@@ -64,8 +64,8 @@
 
   --color-input: --alpha(var(--color-white) / 10%);
 
-  --color-overlay-base: rgba(var(--color-black), 0.7);
-  --color-overlay-hover: rgba(var(--color-blue), 0.2);
+  --color-overlay-base: --alpha(var(--color-black) / 70%);
+  --color-overlay-hover: --alpha(var(--color-blue) / 20%);
 
   --color-state-success: var(--color-lime);
   --color-state-error: var(--color-red);
@@ -84,7 +84,7 @@
   --text-display--line-height: 1;
 
   --shadow-base: 0 4px 20px rgba(0, 0, 0, 0.4);
-  --shadow-accent: 0 0 0 2px rgba(var(--color-blue), 0.6);
+  --shadow-accent: 0 0 0 2px --alpha(var(--color-blue) / 60%);
 }
 
 @layer base {

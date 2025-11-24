@@ -8,7 +8,7 @@ import { Button, Field, Form, Icon, Main, Span } from "@sptlco/matter";
  */
 export default function Authentication() {
   return (
-    <Main className="flex items-center justify-center h-screen bg-background-surface">
+    <Main className="flex items-center justify-center h-screen">
       <Form className="flex flex-col w-full max-w-md space-y-12">
         <Field type="text" label="Email Address" placeholder="you@sptlco.com" description="This is your account's email address." />
         <Field type="password" label="Passphrase" placeholder="This is my passphrase" description="This is your account's email address." />

@@ -57,13 +57,13 @@
   --color-button-secondary-hover: var(--color-gray-7);
   --color-button-secondary-active: var(--color-gray-6);
 
-  --color-button-destructive: var(--color-red);
-  --color-button-destructive-hover: #e63e1e;
-  --color-button-destructuve-active: #cc2e10;
-
   --color-button-ghost: transparent;
   --color-button-ghost-hover: var(--color-gray-8);
   --color-button-ghost-active: var(--color-gray-7);
+
+  --color-button-destructive: var(--color-red);
+  --color-button-destructive-hover: #e63e1e;
+  --color-button-destructive-active: #cc2e10;
 
   --color-input: var(--color-gray-8);
 
@@ -90,10 +90,9 @@
   --shadow-accent: 0 0 0 2px rgba(var(--color-blue), 0.6);
 }
 
-* {
-  outline: none;
-  box-shadow: none;
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
+@layer base {
+  * {
+    outline: none;
+    box-shadow: none;
+  }
 }

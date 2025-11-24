@@ -1,5 +1,4 @@
 /* Copyright © Spatial Corporation. All rights reserved. */
 
-@import "@sptlco/matter/styles";
-
+@import "../../node_modules/@sptlco/matter/index.css";
 @source "../../node_modules/@sptlco/matter";

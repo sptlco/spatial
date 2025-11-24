@@ -1,11 +1,17 @@
 // Copyright © Spatial Corporation. All rights reserved.
 
-import { Div } from "@sptlco/matter";
+import { Button, Form, Main } from "@sptlco/matter";
 
 /**
  * A page that authenticates the current user.
  * @returns A user authentication page.
  */
 export default function Authentication() {
-  return <Div className="size-full flex items-center justify-center"></Div>;
+  return (
+    <Main className="flex items-center justify-center h-screen">
+      <Form className="flex flex-col">
+        <Button intent="primary">Sign in</Button>
+      </Form>
+    </Main>
+  );
 }

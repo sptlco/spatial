@@ -68,9 +68,7 @@ export const Field = createElement<typeof Fragment, FieldProps>((props, _) => {
 
   return (
     <Container className="group flex flex-col space-y-4 w-full">
-      {props.label && (
-        <Label className="px-4 text-sm font-bold uppercase transition-all group-focus-within:text-line-input-focus">{props.label}</Label>
-      )}
+      {props.label && <Label className="px-4 font-medium transition-all group-focus-within:text-line-input-focus">{props.label}</Label>}
       <Control />
       {props.description && <Paragraph className="px-4 text-sm text-foreground-secondary">{props.description}</Paragraph>}
     </Container>

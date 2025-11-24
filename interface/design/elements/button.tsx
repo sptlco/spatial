@@ -20,7 +20,7 @@ export type ButtonProps = {
 };
 
 const styles = cva({
-  base: "flex items-center rounded-full transition-all cursor-pointer",
+  base: "flex items-center rounded-full transition-all cursor-pointer truncate",
   variants: {
     intent: {
       primary: "bg-button-primary hover:bg-button-primary-hover active:bg-button-primary-active",
@@ -30,7 +30,7 @@ const styles = cva({
     },
     size: {
       small: "",
-      medium: "px-8 py-2 text-base"
+      medium: "px-8 py-2 space-x-2 text-base"
     }
   }
 });

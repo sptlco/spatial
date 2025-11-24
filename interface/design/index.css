@@ -1,8 +1,5 @@
 /* Copyright © Spatial Corporation. All rights reserved. */
 
-@import url("https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&display=swap");
-@import url("https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@200&display=swap");
-
 @import "tailwindcss";
 @import "tw-animate-css";
 
@@ -41,13 +38,13 @@
   --color-foreground-inverse: var(--color-black);
   --color-foreground-accent: var(--color-blue);
 
-  --color-placeholder: var(--color-gray-4);
+  --color-hint: var(--color-gray-4);
 
-  --color-border-subtle: var(--color-gray-8);
-  --color-border-base: var(--color-gray-7);
-  --color-border-strong: var(--color-gray-3);
-  --color-border-accent: var(--color-blue);
-  --color-border-input-focus: var(--color-blue);
+  --color-line-subtle: var(--color-gray-8);
+  --color-line-base: var(--color-gray-7);
+  --color-line-strong: var(--color-gray-3);
+  --color-line-accent: var(--color-blue);
+  --color-line-input-focus: var(--color-blue);
 
   --color-button-primary: var(--color-blue);
   --color-button-primary-hover: #0055e0;
@@ -81,7 +78,7 @@
   --color-status-busy: var(--color-red);
   --color-status-idle: var(--color-yellow);
 
-  --font-sans: "Manrope", sans-serif;
+  --font-sans: "Manrope Variable", sans-serif;
 
   --text-display: 16rem;
   --text-display--line-height: 1;
@@ -94,5 +91,22 @@
   * {
     outline: none;
     box-shadow: none;
+  }
+
+  .material-symbols-outlined {
+    font-family: "Material Symbols Outlined Variable";
+    font-weight: 200;
+    font-style: normal;
+    display: inline-block;
+    line-height: 1;
+    text-transform: none;
+    letter-spacing: normal;
+    word-wrap: normal;
+    white-space: nowrap;
+    direction: ltr;
+  }
+
+  .material-symbols-outlined.fill {
+    font-variation-settings: "FILL" 1;
   }
 }

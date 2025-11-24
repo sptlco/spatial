@@ -16,6 +16,8 @@
     "react-dom": "^19"
   },
   "devDependencies": {
+    "@fontsource-variable/manrope": "^5.2.8",
+    "@fontsource-variable/material-symbols-outlined": "^5.2.30",
     "@tailwindcss/postcss": "^4",
     "@types/react": "^19",
     "@types/react-dom": "^19",

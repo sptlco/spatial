@@ -1,6 +1,6 @@
 // Copyright © Spatial Corporation. All rights reserved.
 
-import { Favicon } from "@sptlco/matter";
+import { Body, Favicon, Head, Html } from "@sptlco/matter";
 import type { Metadata } from "next";
 
 import "./global.css";
@@ -20,11 +20,11 @@ export const metadata: Metadata = {
  */
 export default function Layout(props: { children: React.ReactNode }) {
   return (
-    <html className="h-full bg-black" suppressHydrationWarning>
-      <head>
+    <Html className="h-full bg-black" suppressHydrationWarning>
+      <Head>
         <Favicon href="/assets/favicon.ico" />
-      </head>
-      <body className="h-full text-base font-regular">{props.children}</body>
-    </html>
+      </Head>
+      <Body className="h-full text-base font-regular">{props.children}</Body>
+    </Html>
   );
 }

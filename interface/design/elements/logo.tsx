@@ -12,6 +12,9 @@ export type LogoProps = {
   mode: "symbol" | "wordmark";
 };
 
+/**
+ * A graphical element displaying the brand logo.
+ */
 export const Logo = createElement<"svg", LogoProps>((props, ref) => {
   switch (props.mode) {
     case "symbol":

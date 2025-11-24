@@ -1,6 +1,6 @@
 // Copyright © Spatial Corporation. All rights reserved.
 
-import { Logo } from "@sptlco/matter";
+import { Div, Logo } from "@sptlco/matter";
 
 /**
  * Create a new landing page component.
@@ -8,8 +8,8 @@ import { Logo } from "@sptlco/matter";
  */
 export default function Page() {
   return (
-    <div className="flex w-full h-screen items-center justify-center">
+    <Div className="flex w-full h-screen items-center justify-center">
       <Logo mode="wordmark" className="h-6 md:h-12 fill-white" />
-    </div>
+    </Div>
   );
 }

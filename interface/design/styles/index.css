@@ -1,3 +1,97 @@
 /* Copyright © Spatial Corporation. All rights reserved. */
 
+@import url("https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&display=swap");
+
+@import url("https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@200&display=swap");
+
 @import "tailwindcss";
+@import "tw-animate-css";
+
+@theme inline {
+  --color-*: initial;
+
+  --color-black: #000000;
+  --color-smoke: #d9d9d9;
+  --color-white: #ffffff;
+
+  --color-gray-1: #e6e6e6;
+  --color-gray-2: #cccccc;
+  --color-gray-3: #a3a3a3;
+  --color-gray-4: #808080;
+  --color-gray-5: #666666;
+  --color-gray-6: #4d4d4d;
+  --color-gray-7: #333333;
+  --color-gray-8: #1a1a1a;
+  --color-gray-9: #0d0d0d;
+
+  --color-blue: #0364ff;
+  --color-lime: #bbe022;
+  --color-red: #ff4f2c;
+  --color-cyan: #00d6c6;
+  --color-yellow: #fcc924;
+  --color-magenta: #e16ef9;
+
+  --color-background-base: var(--color-black);
+  --color-background-surface: var(--color-gray-8);
+  --color-background-subtle: var(--color-gray-9);
+  --color-background-highlight: var(--color-gray-7);
+
+  --color-foreground-primary: var(--color-white);
+  --color-foreground-secondary: var(--color-gray-3);
+  --color-foreground-tertiary: var(--color-gray-5);
+  --color-foreground-inverse: var(--color-black);
+  --color-foreground-accent: var(--color-blue);
+
+  --color-placeholder: var(--color-gray-4);
+
+  --color-border-subtle: var(--color-gray-8);
+  --color-border-base: var(--color-gray-7);
+  --color-border-strong: var(--color-gray-3);
+  --color-border-accent: var(--color-blue);
+  --color-border-input-focus: var(--color-blue);
+
+  --color-button-primary: var(--color-blue);
+  --color-button-primary-hover: #0055e0;
+  --color-button-primary-active: #0045c0;
+
+  --color-button-secondary: var(--color-gray-8);
+  --color-button-secondary-hover: var(--color-gray-7);
+  --color-button-secondary-active: var(--color-gray-6);
+
+  --color-button-destructive: var(--color-red);
+  --color-button-destructive-hover: #e63e1e;
+  --color-button-destructuve-active: #cc2e10;
+
+  --color-button-ghost: transparent;
+  --color-button-ghost-hover: var(--color-gray-8);
+  --color-button-ghost-active: var(--color-gray-7);
+
+  --color-input: var(--color-gray-8);
+
+  --color-overlay-base: rgba(var(--color-black), 0.7);
+  --color-overlay-hover: rgba(var(--color-blue), 0.2);
+
+  --color-state-success: var(--color-lime);
+  --color-state-error: var(--color-red);
+  --color-state-warning: var(--color-yellow);
+  --color-state-information: var(--color-cyan);
+  --color-state-accent: var(--color-blue);
+
+  --color-status-online: var(--color-lime);
+  --color-status-offline: var(--color-gray-5);
+  --color-status-busy: var(--color-red);
+  --color-status-idle: var(--color-yellow);
+
+  --font-sans: "Manrope", sans-serif;
+
+  --text-display: 16rem;
+  --text-display--line-height: 1;
+
+  --shadow-base: 0 4px 20px rgba(0, 0, 0, 0.4);
+  --shadow-accent: 0 0 0 2px rgba(var(--color-blue), 0.6);
+}
+
+* {
+  outline: none;
+  box-shadow: none;
+}

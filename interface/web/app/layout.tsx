@@ -20,11 +20,11 @@ export const metadata: Metadata = {
  */
 export default function Layout(props: { children: React.ReactNode }) {
   return (
-    <Html className="h-full bg-black" suppressHydrationWarning>
+    <Html>
       <Head>
         <Favicon href="/assets/favicon.ico" />
       </Head>
-      <Body className="h-full text-base font-regular">{props.children}</Body>
+      <Body>{props.children}</Body>
     </Html>
   );
 }

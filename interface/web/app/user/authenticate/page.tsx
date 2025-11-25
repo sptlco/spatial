@@ -1,6 +1,6 @@
 // Copyright © Spatial Corporation. All rights reserved.
 
-import { Button, Field, Form, Icon, Main, Span } from "@sptlco/matter";
+import { Button, Field, Form, Icon, Logo, Main, Span } from "@sptlco/matter";
 
 /**
  * A page that authenticates the current user.
@@ -8,13 +8,13 @@ import { Button, Field, Form, Icon, Main, Span } from "@sptlco/matter";
  */
 export default function Authentication() {
   return (
-    <Main className="flex items-center justify-center h-screen">
-      <Form className="flex flex-col w-full max-w-md space-y-12">
-        <Field type="text" label="Email Address" placeholder="you@sptlco.com" description="This is your account's email address." />
-        <Field type="password" label="Passphrase" placeholder="This is my passphrase" description="This is your account's email address." />
-        <Field type="text" label="Sigma" placeholder="Enter a sigma value" description="This is your account's email address." />
-        <Button className="w-full" intent="secondary" shape="pill">
-          <Span>Continue</Span>
+    <Main className="flex flex-col px-10 items-center justify-center h-screen space-y-20">
+      <Logo className="fill-current h-8" mode="symbol" />
+      <Form className="flex flex-col w-full max-w-md space-y-8">
+        <Field type="text" label="User ID" placeholder="you@sptlco.com" />
+        <Field type="password" label="Passphrase" placeholder="Your passphrase" />
+        <Button className="w-full mt-8" intent="secondary" shape="pill">
+          <Span>Sign in</Span>
           <Icon symbol="arrow_right_alt" />
         </Button>
       </Form>

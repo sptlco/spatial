@@ -25,7 +25,7 @@ export type IconProps = {
 };
 
 const styles = cva({
-  base: "material-symbols-outlined transition-all duration-300",
+  base: "material-symbols-rounded",
   variants: {
     fill: {
       false: null,

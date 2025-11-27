@@ -19,4 +19,5 @@ export * from "./main";
 export * from "./paragraph";
 export * from "./path";
 export * from "./span";
+export * from "./spinner";
 export * from "./svg";

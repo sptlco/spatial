@@ -62,7 +62,7 @@
   --color-button-destructive-hover: #e63e1e;
   --color-button-destructive-active: #cc2e10;
 
-  --color-input: --alpha(var(--color-white) / 5%);
+  --color-input: --alpha(var(--color-white) / 7.5%);
 
   --color-overlay-base: --alpha(var(--color-black) / 70%);
   --color-overlay-hover: --alpha(var(--color-blue) / 20%);
@@ -85,6 +85,40 @@
 
   --shadow-base: 0 4px 20px rgba(0, 0, 0, 0.4);
   --shadow-accent: 0 0 0 2px --alpha(var(--color-blue) / 60%);
+
+  --animate-fill: fill 0.1s ease forwards;
+  --animate-outline: outline 0.1s ease forwards;
+  --animate-caret: caret 1.25s ease-out infinite;
+
+  @keyframes fill {
+    0% {
+      font-variation-settings: "FILL" 0;
+    }
+    100% {
+      font-variation-settings: "FILL" 1;
+    }
+  }
+
+  @keyframes outline {
+    0% {
+      font-variation-settings: "FILL" 1;
+    }
+    100% {
+      font-variation-settings: "FILL" 0;
+    }
+  }
+
+  @keyframes caret {
+    0%,
+    70%,
+    to {
+      opacity: 1;
+    }
+    20%,
+    50% {
+      opacity: 0;
+    }
+  }
 }
 
 @layer base {
@@ -93,8 +127,8 @@
     box-shadow: none;
   }
 
-  .material-symbols-outlined {
-    font-family: "Material Symbols Outlined Variable";
+  .material-symbols-rounded {
+    font-family: "Material Symbols Rounded Variable";
     font-weight: 200;
     font-style: normal;
     display: inline-block;
@@ -106,7 +140,7 @@
     direction: ltr;
   }
 
-  .material-symbols-outlined.fill {
+  .material-symbols-rounded.fill {
     font-variation-settings: "FILL" 1;
   }
 }

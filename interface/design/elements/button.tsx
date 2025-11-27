@@ -25,7 +25,7 @@ export type ButtonProps = {
 };
 
 const styles = cva({
-  base: "w-fit flex items-center justify-center transition-all cursor-pointer truncate",
+  base: "w-fit flex items-center justify-center transition-all cursor-pointer truncate disabled:opacity-50 disabled:pointer-events-none",
   variants: {
     intent: {
       primary: "bg-button-primary hover:bg-button-primary-hover active:bg-button-primary-active",
@@ -47,6 +47,8 @@ const styles = cva({
 /**
  * An interactive element that prompts a user action.
  */
-export const Button = createElement<"button", ButtonProps>(({ intent = "primary", shape = "round", size = "medium", ...props }, ref) => (
-  <button {...props} className={clsx(styles({ intent, shape, size }), props.className)} ref={ref} />
-));
+export const Button = createElement<"button", ButtonProps>(
+  ({ intent = "primary", shape = "round", size = "medium", type = "button", ...props }, ref) => (
+    <button {...props} type={type} className={clsx(styles({ intent, shape, size }), props.className)} ref={ref} />
+  )
+);

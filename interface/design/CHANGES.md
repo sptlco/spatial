@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.1](https://github.com/sptlco/spatial/compare/spatial-interface-design-1.2.0...spatial-interface-design-1.2.1) (2025-11-30)
+
+
+### Bug Fixes
+
+* Updated animation durations ([#51](https://github.com/sptlco/spatial/issues/51)) ([ac68832](https://github.com/sptlco/spatial/commit/ac688320c6d0f415cf26e16b31a6149dd5c0bb43))
+
 ## [1.2.0](https://github.com/sptlco/spatial/compare/spatial-interface-design-1.1.1...spatial-interface-design-1.2.0) (2025-11-30)
 
 

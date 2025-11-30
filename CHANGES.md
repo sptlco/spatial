@@ -1,5 +1,15 @@
 # Changelog
 
+## [1.4.1](https://github.com/sptlco/spatial/compare/spatial-1.4.0...spatial-1.4.1) (2025-11-30)
+
+
+### Bug Fixes
+
+* Added server workspace ([2ce474c](https://github.com/sptlco/spatial/commit/2ce474c04ae2d32eb56d7dd75a8c7612cbbc79c7))
+* Updated  concurrency ([34dfbd9](https://github.com/sptlco/spatial/commit/34dfbd948ce37ee4cb2bdbc7c98f405d7a524a4a))
+* Updated animation durations ([#51](https://github.com/sptlco/spatial/issues/51)) ([ac68832](https://github.com/sptlco/spatial/commit/ac688320c6d0f415cf26e16b31a6149dd5c0bb43))
+* Updated server exports ([#51](https://github.com/sptlco/spatial/issues/51)) ([4936063](https://github.com/sptlco/spatial/commit/49360633ee257860097d745386b6448d11cb63fa))
+
 ## [1.4.0](https://github.com/sptlco/spatial/compare/spatial-1.3.0...spatial-1.4.0) (2025-11-30)
 
 

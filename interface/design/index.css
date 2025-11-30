@@ -86,8 +86,8 @@
   --shadow-base: 0 4px 20px rgba(0, 0, 0, 0.4);
   --shadow-accent: 0 0 0 2px --alpha(var(--color-blue) / 60%);
 
-  --animate-fill: fill 0.15s ease forwards;
-  --animate-outline: outline 0.15s ease forwards;
+  --animate-fill: fill 0.1s ease forwards;
+  --animate-outline: outline 0.1s ease forwards;
   --animate-caret: caret 1.25s ease-out infinite;
 
   @keyframes fill {

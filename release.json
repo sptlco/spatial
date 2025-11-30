@@ -41,6 +41,12 @@
         }
       ]
     },
+    "interface/server": {
+      "package-name": "spatial-interface-server",
+      "changelog-path": "CHANGES.md",
+      "release-type": "simple",
+      "extra-files": ["package.json"]
+    },
     "interface/web": {
       "package-name": "spatial-interface-web",
       "changelog-path": "CHANGES.md",

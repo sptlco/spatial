@@ -3,7 +3,7 @@
 using Spatial.Cloud.Contracts.Users;
 using Spatial.Networking;
 
-namespace Spatial.Cloud.Controllers.Users;
+namespace Spatial.Cloud.Controllers;
 
 /// <summary>
 /// A controller for <see cref="User"/>.

@@ -5,7 +5,7 @@ using Spatial.Cloud.Services.Intelligence;
 using Spatial.Mathematics;
 using Spatial.Networking;
 
-namespace Spatial.Cloud.Controllers.Intelligence.Nodes;
+namespace Spatial.Cloud.Controllers;
 
 /// <summary>
 /// A <see cref="Controller"/> for <see cref="Node"/>.

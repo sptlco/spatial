@@ -1,6 +1,6 @@
 // Copyright © Spatial Corporation. All rights reserved.
 
-import { Logo, Main } from "@sptlco/matter";
+import { Logo, Main } from "@sptlco/design";
 
 /**
  * Create a new landing page component.

@@ -2,7 +2,7 @@
 
 "use client";
 
-import { Button, Field, Form, Icon, Logo, Main, OTP, Span, Spinner } from "@sptlco/matter";
+import { Button, Field, Form, Icon, Logo, Main, OTP, Span, Spinner } from "@sptlco/design";
 import { useState } from "react";
 
 /**

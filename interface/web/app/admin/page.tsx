@@ -1,6 +1,6 @@
 // Copyright © Spatial Corporation. All rights reserved.
 
-import { Div } from "@sptlco/matter";
+import { Div } from "@sptlco/design";
 
 /**
  * An interface for administrative operations.

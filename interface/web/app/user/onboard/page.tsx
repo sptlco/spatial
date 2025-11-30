@@ -1,6 +1,6 @@
 // Copyright © Spatial Corporation. All rights reserved.
 
-import { Button, Field, Form, Icon, Logo, Main, Span } from "@sptlco/matter";
+import { Button, Field, Form, Icon, Logo, Main, Span } from "@sptlco/design";
 
 /**
  * A page that onboards the current user.

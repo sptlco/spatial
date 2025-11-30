@@ -4,7 +4,7 @@ using Spatial.Cloud.Contracts.Compute.Jobs;
 using Spatial.Cloud.Services.Compute;
 using Spatial.Networking;
 
-namespace Spatial.Cloud.Controllers.Compute.Jobs;
+namespace Spatial.Cloud.Controllers;
 
 /// <summary>
 /// A <see cref="Controller"/> for <see cref="Job"/>.

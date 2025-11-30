@@ -3,7 +3,7 @@
 using Spatial.Cloud.Contracts.Users;
 using Spatial.Networking;
 
-namespace Spatial.Cloud.Controllers.Users;
+namespace Spatial.Cloud.Controllers;
 
 /// <summary>
 /// A <see cref="Controller"/> for <see cref="Session"/>.
@@ -16,13 +16,13 @@ public class SessionController : Controller
     /// Create a new <see cref="Session"/>.
     /// </summary>
     /// <param name="credentials">The user's <see cref="Credentials"/>.</param>
-    /// <returns>A <see cref="Session"/>.</returns>
+    /// <returns>An authentication token.</returns>
     [POST]
     [Path("/")]
-    public async Task<Session> CreateSessionAsync([Body] Credentials credentials)
+    public async Task<string> CreateSessionAsync([Body] Credentials credentials)
     {
         // ...
 
-        return await Task.FromResult(new Session());
+        return await Task.FromResult(string.Empty);
     }
 }

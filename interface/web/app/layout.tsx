@@ -1,6 +1,6 @@
 // Copyright © Spatial Corporation. All rights reserved.
 
-import { Body, Favicon, Head, Html } from "@sptlco/matter";
+import { Body, Favicon, Head, Html } from "@sptlco/design";
 import type { Metadata } from "next";
 
 import "./global.css";

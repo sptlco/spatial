@@ -5,6 +5,7 @@ on:
     tags:
       - "spatial-cloud*"
       - "spatial-interface-design*"
+      - "spatial-interface-server"
 
 concurrency:
   group: publish
@@ -17,57 +18,84 @@ permissions:
   packages: write
 
 jobs:
-  publish:
+  core:
+    name: Core
     runs-on: ubuntu-latest
+    if: startsWith(github.ref_name, 'spatial-cloud')
     steps:
-      - uses: actions/checkout@v4
-
-      # Cloud core library
+      - name: Checkout
+        uses: actions/checkout@v4
 
       - name: Setup .NET
-        if: startsWith(github.ref_name, 'spatial-cloud')
         uses: actions/setup-dotnet@v3
         with:
           dotnet-version: "9.x"
 
-      - name: Restore (.NET)
-        if: startsWith(github.ref_name, 'spatial-cloud')
+      - name: Restore
         run: dotnet restore cloud/Core/Spatial.csproj
 
-      - name: Package (.NET)
-        if: startsWith(github.ref_name, 'spatial-cloud')
+      - name: Package
         run: dotnet pack cloud/Core/Spatial.csproj -c Release -o ./nupkg
 
-      - name: Publish (.NET)
-        if: startsWith(github.ref_name, 'spatial-cloud')
+      - name: Publish
         run: |
           dotnet nuget push ./nupkg/*.nupkg \
             --source "https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json" \
             --api-key ${{ secrets.GITHUB_TOKEN }} \
             --skip-duplicate
 
-      # Interface design system
+  design:
+    name: Design
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref_name, 'spatial-interface-design')
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
 
       - name: Setup Node.js
-        if: startsWith(github.ref_name, 'spatial-interface-design')
         uses: actions/setup-node@v4
         with:
           node-version: "22.x"
           registry-url: "https://npm.pkg.github.com/"
 
-      - name: Install dependencies (NPM)
-        if: startsWith(github.ref_name, 'spatial-interface-design')
+      - name: Install dependencies
         run: npm ci
         working-directory: interface/design
 
-      - name: Build (optional)
-        if: startsWith(github.ref_name, 'spatial-interface-design')
+      - name: Build
         run: npm run build --if-present
         working-directory: interface/design
 
-      - name: Publish (NPM)
-        if: startsWith(github.ref_name, 'spatial-interface-design')
+      - name: Publish
         run: npm publish
         working-directory: interface/design
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  server:
+    name: TypeScript Server Abstractions
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref_name, 'spatial-interface-server')
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22.x"
+          registry-url: "https://npm.pkg.github.com/"
+
+      - name: Install dependencies
+        run: npm ci
+        working-directory: interface/server
+
+      - name: Build
+        run: npm run build --if-present
+        working-directory: interface/server
+
+      - name: Publish
+        run: npm publish
+        working-directory: interface/server
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

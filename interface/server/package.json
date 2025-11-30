@@ -1,6 +1,6 @@
 {
   "name": "@sptlco/server",
-  "version": "1.1.1",
+  "version": "1.0.0",
   "description": "Cloud server abstractions.",
   "main": "index.ts",
   "author": "Spatial Corporation",

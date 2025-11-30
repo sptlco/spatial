@@ -1,5 +1,25 @@
 # Changelog
 
+## [1.8.0](https://github.com/sptlco/spatial/compare/spatial-interface-web-1.7.0...spatial-interface-web-1.8.0) (2025-11-30)
+
+
+### Features
+
+* Added a OTP field ([#51](https://github.com/sptlco/spatial/issues/51)) ([dd5670f](https://github.com/sptlco/spatial/commit/dd5670f7b1e6a3f564cf0004ed14f0e5bf6d6761))
+* Added additional button shapes ([#51](https://github.com/sptlco/spatial/issues/51)) ([5ae15e9](https://github.com/sptlco/spatial/commit/5ae15e9caf5eb1201c8309fd26e81a4790dac251))
+* Added an authentication page ([#51](https://github.com/sptlco/spatial/issues/51)) ([7afa9ae](https://github.com/sptlco/spatial/commit/7afa9aef207b5878444e6fd185e9577c8f70dec5))
+* Added form design elements ([#51](https://github.com/sptlco/spatial/issues/51)) ([331a587](https://github.com/sptlco/spatial/commit/331a587d547237a8dbb134c9f441e6fd3159f0e1))
+* Added support for design element variance ([#51](https://github.com/sptlco/spatial/issues/51)) ([3ad64c0](https://github.com/sptlco/spatial/commit/3ad64c08a82a573fabceff6212efd1946b0fc9c6))
+* Added TypeScript server abstractions ([#51](https://github.com/sptlco/spatial/issues/51)) ([173b7e4](https://github.com/sptlco/spatial/commit/173b7e46c1430efecf49dbea552aac34928fe5d0))
+
+
+### Bug Fixes
+
+* Fixed an issue where web UI would override design configuration ([#51](https://github.com/sptlco/spatial/issues/51)) ([2f5f7c0](https://github.com/sptlco/spatial/commit/2f5f7c0f1ecb7721c5b10a92968ad59ed0bfaaf3))
+* Updated shadows to use alpha ([#51](https://github.com/sptlco/spatial/issues/51)) ([b6607ef](https://github.com/sptlco/spatial/commit/b6607efaf96859034e6b2482d12a3a7221d9ecce))
+* Updated style references ([d8933b9](https://github.com/sptlco/spatial/commit/d8933b9ed55373504647d0b43fefbf0ddfb6a62a))
+* Use alpha for design elements ([#51](https://github.com/sptlco/spatial/issues/51)) ([1ee6166](https://github.com/sptlco/spatial/commit/1ee616634e21b0da2af28f40d3bd2663974107e0))
+
 ## [1.7.0](https://github.com/sptlco/spatial/compare/spatial-interface-web-1.6.4...spatial-interface-web-1.7.0) (2025-11-19)
 
 

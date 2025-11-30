@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.14.0](https://github.com/sptlco/spatial/compare/spatial-cloud-1.13.6...spatial-cloud-1.14.0) (2025-11-30)
+
+
+### Features
+
+* Added TypeScript server abstractions ([#51](https://github.com/sptlco/spatial/issues/51)) ([173b7e4](https://github.com/sptlco/spatial/commit/173b7e46c1430efecf49dbea552aac34928fe5d0))
+
 ## [1.13.6](https://github.com/sptlco/spatial/compare/spatial-cloud-1.13.5...spatial-cloud-1.13.6) (2025-11-23)
 
 

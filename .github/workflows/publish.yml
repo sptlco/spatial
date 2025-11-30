@@ -8,7 +8,7 @@ on:
       - "spatial-interface-server*"
 
 concurrency:
-  group: publish
+  group: ${{ github.job }}-${{ github.ref }}
   cancel-in-progress: false
 
 permissions:
@@ -19,7 +19,7 @@ permissions:
 
 jobs:
   core:
-    name: Core
+    name: Spatial
     runs-on: ubuntu-latest
     if: startsWith(github.ref_name, 'spatial-cloud')
     steps:
@@ -45,7 +45,7 @@ jobs:
             --skip-duplicate
 
   design:
-    name: Design
+    name: "@sptlco/design"
     runs-on: ubuntu-latest
     if: startsWith(github.ref_name, 'spatial-interface-design')
     steps:
@@ -73,7 +73,7 @@ jobs:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   server:
-    name: TypeScript Server Abstractions
+    name: "@sptlco/server"
     runs-on: ubuntu-latest
     if: startsWith(github.ref_name, 'spatial-interface-server')
     steps:

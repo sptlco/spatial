@@ -5,7 +5,7 @@ on:
     tags:
       - "spatial-cloud*"
       - "spatial-interface-design*"
-      - "spatial-interface-server"
+      - "spatial-interface-server*"
 
 concurrency:
   group: publish

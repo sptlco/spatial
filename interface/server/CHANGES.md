@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.2](https://github.com/sptlco/spatial/compare/spatial-interface-server-1.0.1...spatial-interface-server-1.0.2) (2025-11-30)
+
+
+### Bug Fixes
+
+* Updated interface packages ([#51](https://github.com/sptlco/spatial/issues/51)) ([8affd97](https://github.com/sptlco/spatial/commit/8affd9750110bbe47003ddafc65ce06b253a3409))
+
 ## [1.0.1](https://github.com/sptlco/spatial/compare/spatial-interface-server-1.0.0...spatial-interface-server-1.0.1) (2025-11-30)
 
 

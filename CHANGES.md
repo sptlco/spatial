@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.4.2](https://github.com/sptlco/spatial/compare/spatial-1.4.1...spatial-1.4.2) (2025-11-30)
+
+
+### Bug Fixes
+
+* Updated interface packages ([#51](https://github.com/sptlco/spatial/issues/51)) ([8affd97](https://github.com/sptlco/spatial/commit/8affd9750110bbe47003ddafc65ce06b253a3409))
+* Updated renamed import ([#51](https://github.com/sptlco/spatial/issues/51)) ([5de6257](https://github.com/sptlco/spatial/commit/5de6257d1a86494ec61e624fd698cc2802f51d5a))
+
 ## [1.4.1](https://github.com/sptlco/spatial/compare/spatial-1.4.0...spatial-1.4.1) (2025-11-30)
 
 

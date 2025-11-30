@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.8.1](https://github.com/sptlco/spatial/compare/spatial-interface-web-1.8.0...spatial-interface-web-1.8.1) (2025-11-30)
+
+
+### Bug Fixes
+
+* Updated renamed import ([#51](https://github.com/sptlco/spatial/issues/51)) ([5de6257](https://github.com/sptlco/spatial/commit/5de6257d1a86494ec61e624fd698cc2802f51d5a))
+
 ## [1.8.0](https://github.com/sptlco/spatial/compare/spatial-interface-web-1.7.0...spatial-interface-web-1.8.0) (2025-11-30)
 
 

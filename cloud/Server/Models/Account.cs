@@ -1,0 +1,14 @@
+// Copyright © Spatial Corporation. All rights reserved.
+
+using Spatial.Persistence;
+
+namespace Spatial.Cloud.Models;
+
+/// <summary>
+/// ...
+/// </summary>
+[Collection("accounts")]
+public class Account : Resource
+{
+    // ...
+}

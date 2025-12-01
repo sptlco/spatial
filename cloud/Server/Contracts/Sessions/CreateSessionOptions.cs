@@ -3,7 +3,7 @@
 namespace Spatial.Cloud.Contracts.Sessions;
 
 /// <summary>
-/// Configurable options sent to the server when creating a session.
+/// Configurable options for a new session.
 /// </summary>
 public class CreateSessionOptions
 {

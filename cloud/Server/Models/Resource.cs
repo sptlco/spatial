@@ -10,6 +10,11 @@ namespace Spatial.Cloud.Models;
 public abstract class Resource : Record
 {
     /// <summary>
+    /// The name of the <see cref="Resource"/>.
+    /// </summary>
+    public string Name { get; set; }
+    
+    /// <summary>
     /// ...
     /// </summary>
     public Dictionary<string, string> Metadata { get; set; } = [];

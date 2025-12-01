@@ -23,7 +23,7 @@ export default function Authentication() {
     e.preventDefault();
 
     switch (step) {
-      case 1:
+      case 1: {
         // Generate a one-time password (OTP), and send it to the
         // email that the user provided.
 
@@ -33,7 +33,7 @@ export default function Authentication() {
 
         setProcessing(true);
 
-        const response = await Spatial.sessions.create({ user: userId });
+        const response = await Spatial.keys.create({ subject: "MyAccount" });
 
         setProcessing(false);
 
@@ -44,7 +44,8 @@ export default function Authentication() {
         setStep(2);
 
         break;
-      case 2:
+      }
+      case 2: {
         // Check the code against the server, and authenticate the user
         // if the code matches.
 
@@ -54,9 +55,16 @@ export default function Authentication() {
 
         setProcessing(true);
 
+        const response = await Spatial.sessions.create({ user: userId });
+
+        if (response.error) {
+          // ...
+        }
+
         // ...
 
         break;
+      }
     }
   };
 

@@ -5,11 +5,11 @@ using Spatial.Networking;
 namespace Spatial.Cloud.Controllers;
 
 /// <summary>
-/// A <see cref="Controller"/> for <see cref="Server"/>.
+/// A root <see cref="Controller"/>.
 /// </summary>
 [Module]
 [Path("/")]
-public class ServerController : Controller
+public class IndexController : Controller
 {
     /// <summary>
     /// Get the server's name.

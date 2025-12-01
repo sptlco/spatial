@@ -1,7 +1,7 @@
 // Copyright © Spatial Corporation. All rights reserved.
 
 using Spatial.Cloud.Components;
-using Spatial.Cloud.Models.Intelligence.Nodes;
+using Spatial.Cloud.Models;
 using Spatial.Extensions;
 using Spatial.Persistence;
 using Spatial.Simulation;

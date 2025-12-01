@@ -350,6 +350,7 @@ public class Application
         });
 
         builder.Services
+            .AddCors()
             .AddSerilog()
             .AddExceptionHandler<FaultIndicator>()
             .AddProblemDetails()
@@ -360,6 +361,11 @@ public class Application
         var application = builder.Build();
 
         application
+            .UseCors(builder => {
+                builder.AllowAnyHeader();
+                builder.AllowAnyMethod();
+                builder.AllowAnyOrigin();
+            })
             .UsePathBase(configuration.BasePath)
             .UseExceptionHandler()
             .UseStatusCodePages(ReportStatusCode)

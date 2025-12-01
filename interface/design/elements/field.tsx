@@ -40,6 +40,11 @@ export type TextFieldProps = {
    * An optional placeholder for the field.
    */
   placeholder?: string;
+
+  /**
+   * Optional classes for the field's container.
+   */
+  containerClassName?: string;
 };
 
 /**
@@ -50,6 +55,12 @@ export type OTPFieldProps = OTPInputProps & {
    * The field's data type.
    */
   type: "otp";
+
+  /**
+   * An optional change event handler.
+   * @param value An updated value.
+   */
+  onValueChange?: (value: string) => void;
 };
 
 /**
@@ -61,7 +72,7 @@ export type FieldProps = SharedFieldProps & FieldTypeProps;
  * Part of a form collecting user data.
  */
 export const Field = createElement<"input", FieldProps>((props, ref) => {
-  const Control = (): ReactNode => {
+  const render = () => {
     switch (props.type) {
       case "text":
       case "email":
@@ -72,6 +83,7 @@ export const Field = createElement<"input", FieldProps>((props, ref) => {
             ref={ref}
             type={props.type}
             placeholder={props.placeholder}
+            autoComplete="off"
             className={clsx(
               "disabled:opacity-50",
               "w-full px-4 py-2 bg-input placeholder-hint rounded-lg transition-all",
@@ -80,10 +92,13 @@ export const Field = createElement<"input", FieldProps>((props, ref) => {
           />
         );
       case "otp":
+        const { onValueChange, ...rest } = props;
+
         return (
           <OTPInput
-            {...props}
-            containerClassName={clsx("disabled:opacity-50", "w-full flex flex-wrap items-center justify-center gap-4")}
+            {...rest}
+            onChange={onValueChange}
+            containerClassName={clsx("has-disabled:opacity-50", "w-full flex flex-wrap items-center gap-4", props.className)}
             data-slot="input-otp"
           />
         );
@@ -91,9 +106,13 @@ export const Field = createElement<"input", FieldProps>((props, ref) => {
   };
 
   return (
-    <Container className="group flex flex-col space-y-4 w-full">
-      {props.label && <Label className="px-4 font-medium transition-all">{props.label}</Label>}
-      <Control />
+    <Container className={clsx("group flex flex-col space-y-4 w-full", props.containerClassName)}>
+      {props.label && (
+        <Label className="px-4 font-medium transition-all" htmlFor={props.id}>
+          {props.label}
+        </Label>
+      )}
+      {render()}
       {props.description && <Paragraph className="px-4 text-sm transition-all text-foreground-secondary">{props.description}</Paragraph>}
     </Container>
   );
@@ -111,7 +130,7 @@ export const OTP = {
       {...props}
       ref={ref}
       data-slot="input-otp-group"
-      className={clsx("flex shrink-0 flex-wrap justify-center items-center gap-4", props.className)}
+      className={clsx("inline-flex max-w-full shrink-0 flex-wrap items-center gap-4", props.className)}
     />
   )),
 

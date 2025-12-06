@@ -1,7 +1,7 @@
 {
   "name": "@sptlco/client",
   "version": "1.0.2",
-  "description": "Client module for HTTP in the cloud.",
+  "description": "Client module for cloud communication.",
   "main": "index.ts",
   "author": "Spatial Corporation",
   "license": "MIT",

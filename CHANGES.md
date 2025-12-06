@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.5.1](https://github.com/sptlco/spatial/compare/spatial-1.5.0...spatial-1.5.1) (2025-12-06)
+
+
+### Bug Fixes
+
+* Updated client description ([#51](https://github.com/sptlco/spatial/issues/51)) ([fc491ce](https://github.com/sptlco/spatial/commit/fc491cea73cdcad2f3dc21d4ae2e79e29eb31b37))
+* Updated client package in workflows ([#51](https://github.com/sptlco/spatial/issues/51)) ([1bee970](https://github.com/sptlco/spatial/commit/1bee9701ff561f8695baefb034f4f9109eda3b38))
+
 ## [1.5.0](https://github.com/sptlco/spatial/compare/spatial-1.4.2...spatial-1.5.0) (2025-12-06)
 
 

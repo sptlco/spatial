@@ -1,5 +1,19 @@
 # Changelog
 
+## [1.15.0](https://github.com/sptlco/spatial/compare/spatial-cloud-1.14.0...spatial-cloud-1.15.0) (2025-12-06)
+
+
+### Features
+
+* Enabled server connectivity ([#49](https://github.com/sptlco/spatial/issues/49), [#51](https://github.com/sptlco/spatial/issues/51)) ([882b09c](https://github.com/sptlco/spatial/commit/882b09c69a9c4cb77761c68e50c63d3414a7092c))
+
+
+### Bug Fixes
+
+* Added neural models ([#49](https://github.com/sptlco/spatial/issues/49)) ([9a6a4f5](https://github.com/sptlco/spatial/commit/9a6a4f5afefa758d78cd5d1b2313919c8792cee6))
+* Created a separate controller file ([#51](https://github.com/sptlco/spatial/issues/51)) ([414d112](https://github.com/sptlco/spatial/commit/414d112339899aab98cebdea1e70504179f1efbc))
+* Renamed @sptlco/server to @sptlco/client ([#51](https://github.com/sptlco/spatial/issues/51)) ([14e1ee4](https://github.com/sptlco/spatial/commit/14e1ee42d4c9e20fd87821d7b5efad48abc55395))
+
 ## [1.14.0](https://github.com/sptlco/spatial/compare/spatial-cloud-1.13.6...spatial-cloud-1.14.0) (2025-11-30)
 
 

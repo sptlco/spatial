@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.3.0](https://github.com/sptlco/spatial/compare/spatial-interface-design-1.2.2...spatial-interface-design-1.3.0) (2025-12-06)
+
+
+### Features
+
+* Enabled server connectivity ([#49](https://github.com/sptlco/spatial/issues/49), [#51](https://github.com/sptlco/spatial/issues/51)) ([882b09c](https://github.com/sptlco/spatial/commit/882b09c69a9c4cb77761c68e50c63d3414a7092c))
+
+
+### Bug Fixes
+
+* Renamed @sptlco/server to @sptlco/client ([#51](https://github.com/sptlco/spatial/issues/51)) ([14e1ee4](https://github.com/sptlco/spatial/commit/14e1ee42d4c9e20fd87821d7b5efad48abc55395))
+
 ## [1.2.2](https://github.com/sptlco/spatial/compare/spatial-interface-design-1.2.1...spatial-interface-design-1.2.2) (2025-11-30)
 
 

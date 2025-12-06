@@ -13,27 +13,24 @@ internal static class Constants
     public const string Spatial = "spatial";
 
     /// <summary>
-    /// The name of the native asset.
+    /// Numerical digits.
     /// </summary>
-    public const string Ethereum = "ethereum";
+    public const string Digits = "0123456789";
 
     /// <summary>
-    /// The wrapped Ethereum (WETH) contract address.
+    /// The length of a key.
     /// </summary>
-    public const string WETH = "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2";
+    public const int KeyLength = 4;
+}
 
-    /// <summary>
-    /// The Uniswap Router's contract address.
-    /// </summary>
-    public const string UniswapV2Router02 = "0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D";
+/// <summary>
+/// Constant property names.
+/// </summary>
+internal static class Properties
+{
+    public const string Subject = "Subject";
 
-    /// <summary>
-    /// The coin volume at which the coin is considered liquid.
-    /// </summary>
-    public const decimal vL = 1000000;
+    public const string Code = "Code";
 
-    /// <summary>
-    /// The minimum number of hours between trades executed by the <see cref="Systems.Trading.Trader"/>.
-    /// </summary>
-    public const double MinTradeIntervalHours = 0.5;
+    public const string Expires = "Expires";
 }

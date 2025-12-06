@@ -1,7 +1,7 @@
 {
-  "name": "@sptlco/server",
+  "name": "@sptlco/client",
   "version": "1.0.2",
-  "description": "Cloud server abstractions.",
+  "description": "Client module for HTTP in the cloud.",
   "main": "index.ts",
   "author": "Spatial Corporation",
   "license": "MIT",

@@ -3,7 +3,7 @@
 "use client";
 
 import { Button, Container, Field, Form, Icon, Logo, Main, OTP, Span, Spinner } from "@sptlco/design";
-import { Spatial } from "@sptlco/server";
+import { Spatial } from "@sptlco/client";
 import { FormEvent, useRef, useState } from "react";
 
 /**

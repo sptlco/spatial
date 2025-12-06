@@ -73,7 +73,7 @@ jobs:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   server:
-    name: "@sptlco/server"
+    name: "@sptlco/client"
     runs-on: ubuntu-latest
     if: startsWith(github.ref_name, 'spatial-interface-server')
     steps:

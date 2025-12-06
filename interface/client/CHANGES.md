@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.0.0 (2025-12-06)
+
+
+### Bug Fixes
+
+* Renamed @sptlco/server to @sptlco/client ([#51](https://github.com/sptlco/spatial/issues/51)) ([14e1ee4](https://github.com/sptlco/spatial/commit/14e1ee42d4c9e20fd87821d7b5efad48abc55395))
+* Updated client description ([#51](https://github.com/sptlco/spatial/issues/51)) ([fc491ce](https://github.com/sptlco/spatial/commit/fc491cea73cdcad2f3dc21d4ae2e79e29eb31b37))
+
 ## [1.0.2](https://github.com/sptlco/spatial/compare/spatial-interface-server-1.0.1...spatial-interface-server-1.0.2) (2025-11-30)
 
 

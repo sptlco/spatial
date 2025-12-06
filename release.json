@@ -22,6 +22,12 @@
         }
       ]
     },
+    "interface/client": {
+      "package-name": "spatial-interface-client",
+      "changelog-path": "CHANGES.md",
+      "release-type": "simple",
+      "extra-files": ["package.json"]
+    },
     "interface/design": {
       "package-name": "spatial-interface-design",
       "changelog-path": "CHANGES.md",
@@ -40,12 +46,6 @@
           "jsonpath": "$.expo.version"
         }
       ]
-    },
-    "interface/server": {
-      "package-name": "spatial-interface-server",
-      "changelog-path": "CHANGES.md",
-      "release-type": "simple",
-      "extra-files": ["package.json"]
     },
     "interface/web": {
       "package-name": "spatial-interface-web",

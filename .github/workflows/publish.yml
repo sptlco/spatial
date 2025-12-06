@@ -5,7 +5,7 @@ on:
     tags:
       - "spatial-cloud*"
       - "spatial-interface-design*"
-      - "spatial-interface-server*"
+      - "spatial-interface-client*"
 
 concurrency:
   group: ${{ github.job }}-${{ github.ref }}
@@ -75,7 +75,7 @@ jobs:
   server:
     name: "@sptlco/client"
     runs-on: ubuntu-latest
-    if: startsWith(github.ref_name, 'spatial-interface-server')
+    if: startsWith(github.ref_name, 'spatial-interface-client')
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -88,14 +88,14 @@ jobs:
 
       - name: Install dependencies
         run: npm ci
-        working-directory: interface/server
+        working-directory: interface/client
 
       - name: Build
         run: npm run build --if-present
-        working-directory: interface/server
+        working-directory: interface/client
 
       - name: Publish
         run: npm publish
-        working-directory: interface/server
+        working-directory: interface/client
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

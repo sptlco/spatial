@@ -15,7 +15,7 @@ internal static class Constants
     /// <summary>
     /// Numerical digits.
     /// </summary>
-    public const string Digits = "0123456789";
+    public const string Alphanumerics = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
 
     /// <summary>
     /// The length of a key.

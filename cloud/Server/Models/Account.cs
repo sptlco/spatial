@@ -8,7 +8,10 @@ namespace Spatial.Cloud.Models;
 /// ...
 /// </summary>
 [Collection("accounts")]
-public class Account : Resource
+public class Account : Record
 {
-    // ...
+    /// <summary>
+    /// The user's email address.
+    /// </summary>
+    public string Email { get; set; }
 }

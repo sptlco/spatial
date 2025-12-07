@@ -8,17 +8,7 @@ namespace Spatial.Cloud.Contracts.Keys;
 public class CreateKeyOptions
 {
     /// <summary>
-    /// A <see cref="Models.Resource"/> identifier.
+    /// The account the <see cref="Models.Key"/> provides access to.
     /// </summary>
-    public string Subject { get; set; }
-
-    /// <summary>
-    /// The number of milliseconds the <see cref="Models.Key"/> is valid for.
-    /// </summary>
-    public double TTL { get; set; }
-
-    /// <summary>
-    /// The reason the <see cref="Models.Key"/> is being created.
-    /// </summary>
-    public string Reason { get; set; }
+    public string UID { get; set; }
 }

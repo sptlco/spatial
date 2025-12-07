@@ -93,3 +93,14 @@ public class Misconfiguration : UserError
     /// <param name="message"></param>
     public Misconfiguration(string message) : base(message) { }
 }
+
+/// <summary>
+/// A <see cref="UserError"/> indicating invalid credentials.
+/// </summary>
+public class Unauthorized : UserError
+{
+    /// <summary>
+    /// Create a new <see cref="Unauthorized"/>.
+    /// </summary>
+    public Unauthorized() : base("The request lacks valid authentication credentials for the requested resource.") { }
+}

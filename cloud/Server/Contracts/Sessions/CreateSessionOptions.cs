@@ -10,5 +10,10 @@ public class CreateSessionOptions
     /// <summary>
     /// The user creating the session.
     /// </summary>
-    public string User { get; set; }
+    public string UID { get; set; }
+
+    /// <summary>
+    /// A valid key code.
+    /// </summary>
+    public string Key { get; set; }
 }

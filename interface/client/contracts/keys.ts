@@ -5,4 +5,6 @@
  */
 export type CreateKeyOptions = {
   subject: string;
+  ttl: number;
+  reason: string;
 };

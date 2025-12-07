@@ -33,17 +33,23 @@ export default function Authentication() {
 
         setProcessing(true);
 
-        const response = await Spatial.keys.create({ subject: "MyAccount" });
+        const response = await Spatial.keys.create({ subject: "MyAccount", ttl: 1000, reason: "User Authentication" });
 
         setProcessing(false);
 
         if (response.error) {
           // ...
+
+          return;
         }
+
+        alert(response.data);
+
+        console.log(response);
 
         setStep(2);
 
-        break;
+        return;
       }
       case 2: {
         // Check the code against the server, and authenticate the user
@@ -63,7 +69,7 @@ export default function Authentication() {
 
         // ...
 
-        break;
+        return;
       }
     }
   };

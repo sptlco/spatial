@@ -103,13 +103,13 @@ export class Controller {
 
   private fetch = async <T>(path: string, method: string, body?: any): Promise<Response<T>> => {
     try {
-      return {
-        data: await client({
-          url: path,
-          method: method,
-          data: body
-        })
-      };
+      const response = await client({
+        url: path,
+        method: method,
+        data: body
+      });
+
+      return { data: response.data };
     } catch (error: any) {
       if (axios.isAxiosError(error) && error.response) {
         return { error: error.response.data };

@@ -18,6 +18,8 @@
   "devDependencies": {
     "@fontsource-variable/manrope": "^5.2.8",
     "@fontsource-variable/material-symbols-rounded": "^5.2.30",
+    "@radix-ui/react-dialog": "^1.1.15",
+    "@radix-ui/react-visually-hidden": "^1.2.4",
     "@tailwindcss/postcss": "^4",
     "@types/react": "^19",
     "@types/react-dom": "^19",

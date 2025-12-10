@@ -3,6 +3,7 @@
 using Spatial.Cloud.Contracts.Keys;
 using Spatial.Cloud.Models;
 using Spatial.Extensions;
+using Spatial.Helpers;
 using Spatial.Networking;
 
 namespace Spatial.Cloud.Controllers;
@@ -21,14 +22,14 @@ public class KeyController : Controller
     /// <returns>A key identifier.</returns>
     [POST]
     [Path("create")]
-    public async Task CreateKeyAsync([Body] CreateKeyOptions options)
+    public Task CreateKeyAsync([Body] CreateKeyOptions options)
     {
-        var key = new Key { Owner = options.UID };
+        var key = new Key { Owner = options.User };
 
-        key.Save();
+        key.Store();
 
-        // ...
+        Smtp.GetOrCreateClient().Send(Server.Current.Configuration.SMTP.Username, key.Owner, $"Your key code is {key.Code}", key.Code);
 
-        await Task.CompletedTask;
+        return Task.CompletedTask;
     }
 }

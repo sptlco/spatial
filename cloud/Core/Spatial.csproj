@@ -25,6 +25,7 @@
     <ItemGroup>
       <PackageReference Include="ILGPU" Version="1.5.2" />
       <FrameworkReference Include="Microsoft.AspNetCore.App" Version="2.2.8" />
+      <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="9.0.11" />
       <PackageReference Include="MongoDB.Driver" Version="3.2.1" />
       <PackageReference Include="Nethereum.Web3" Version="5.0.0" />
       <PackageReference Include="OpenAI" Version="2.4.0" />

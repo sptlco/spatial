@@ -1,5 +1,7 @@
 // Copyright © Spatial Corporation. All rights reserved.
 
+using Microsoft.AspNetCore.Authentication.BearerToken;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Hosting;
@@ -10,6 +12,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Tokens;
 using Serilog;
 using Serilog.Context;
 using Serilog.Events;
@@ -21,6 +24,7 @@ using Spatial.Simulation;
 using System.Net;
 using System.Reflection;
 using System.Security.Cryptography.X509Certificates;
+using System.Text;
 using System.Text.RegularExpressions;
 
 namespace Spatial;
@@ -350,6 +354,20 @@ public class Application
         });
 
         builder.Services
+            .AddAuthentication(options => 
+            {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
+            .AddJwtBearer(options => {
+                options.TokenValidationParameters.ValidIssuer = configuration.JWT.Issuer;
+                options.TokenValidationParameters.ValidAudience = configuration.JWT.Audience;
+                options.TokenValidationParameters.IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration.JWT.Secret));
+            });
+
+        builder.Services.AddAuthorization();
+
+        builder.Services
             .AddCors()
             .AddSerilog()
             .AddExceptionHandler<FaultIndicator>()
@@ -378,6 +396,7 @@ public class Application
                 EnableDefaultFiles = true
             })
             .UseSerilogRequestLogging()
+            .UseAuthentication()
             .UseAuthorization()
             .UseHsts();
 

@@ -4,6 +4,8 @@ using Microsoft.Extensions.Options;
 using Spatial.Billing;
 using Spatial.Blockchain;
 using Spatial.Caching;
+using Spatial.Communication;
+using Spatial.Identity;
 using Spatial.Intelligence.ThirdParty;
 using Spatial.Persistence;
 using System.ComponentModel.DataAnnotations;
@@ -76,4 +78,16 @@ public class Configuration
     /// </summary>
     [ValidateObjectMembers]
     public OpenAIConfiguration OpenAI { get; set; } = new OpenAIConfiguration();
+
+    /// <summary>
+    /// Configurable options for SMTP.
+    /// </summary>
+    [ValidateObjectMembers]
+    public SmtpConfiguration SMTP { get; set; } = new SmtpConfiguration();
+
+    /// <summary>
+    /// Configurable options for JWT.
+    /// </summary>
+    [ValidateObjectMembers]
+    public JwtConfiguration JWT { get; set; } = new JwtConfiguration();
 }

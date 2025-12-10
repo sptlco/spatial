@@ -10,5 +10,5 @@ public class CreateKeyOptions
     /// <summary>
     /// The account the <see cref="Models.Key"/> provides access to.
     /// </summary>
-    public string UID { get; set; }
+    public string User { get; set; }
 }

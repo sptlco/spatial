@@ -10,7 +10,7 @@ namespace Spatial.Cloud.Models;
 /// ...
 /// </summary>
 [Collection("nodes")]
-public class Node : Resource
+public class Node : Record
 {
     /// <summary>
     /// The <see cref="User"/> that created the <see cref="Node"/>.

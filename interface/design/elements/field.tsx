@@ -98,7 +98,7 @@ export const Field = createElement<"input", FieldProps>((props, ref) => {
           <OTPInput
             {...rest}
             onChange={onValueChange}
-            containerClassName={clsx("has-disabled:opacity-50", "w-full flex flex-wrap items-center gap-4", props.className)}
+            containerClassName={clsx("has-disabled:opacity-50", "max-w-full flex flex-wrap items-center gap-4", props.className)}
             data-slot="input-otp"
           />
         );

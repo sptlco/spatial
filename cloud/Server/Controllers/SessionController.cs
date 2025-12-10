@@ -3,6 +3,7 @@
 using Spatial.Cloud.Contracts.Sessions;
 using Spatial.Cloud.Models;
 using Spatial.Extensions;
+using Spatial.Identity;
 using Spatial.Networking;
 using Spatial.Persistence;
 
@@ -22,34 +23,31 @@ public class SessionController : Controller
     /// <returns>A session identifier.</returns>
     [POST]
     [Path("create")]
-    public async Task<string> CreateSessionAsync([Body] CreateSessionOptions options)
+    public Task<string> CreateSessionAsync([Body] CreateSessionOptions options)
     {
         var key = Record<Key>.FirstOrDefault(key => 
-            key.Owner == options.UID && 
-            key.Code == options.Key &&
-            key.Expires > Time.Now);
-
-        if (key is null)
-        {
-            throw new Unauthorized();
-        }
+            key.Owner == options.User && 
+            key.Code.Equals(options.Key, StringComparison.CurrentCultureIgnoreCase) &&
+            key.Expires > Time.Now) ?? throw new Unauthorized();
 
         key.Remove();
 
-        var account = Record<Account>.FirstOrDefault(account => account.Email == options.UID);
+        var account = Record<Account>.FirstOrDefault(account => account.Email == options.User);
 
         if (account is null)
         {
             // This is the user's first time connecting.
             // ...
 
-            account = new Account { Email = options.UID };
+            account = new Account { Email = options.User };
 
-            account.Save();
+            account.Store();
 
             // ...
         }
 
-        return await Task.FromResult(string.Empty);
+        // ...
+
+        return Task.FromResult(Token.Create(account.Id, account.Email));
     }
 }

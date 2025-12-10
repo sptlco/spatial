@@ -8,4 +8,9 @@ export type CreateSessionOptions = {
    * A user identifier.
    */
   user: string;
+
+  /**
+   * A valid key code.
+   */
+  key: string;
 };

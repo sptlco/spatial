@@ -8,7 +8,7 @@ namespace Spatial.Cloud.Models;
 /// A weighted connection between two nodes.
 /// </summary>
 [Collection("connections")]
-public class Connection : Resource
+public class Connection : Record
 {
     /// <summary>
     /// The <see cref="Node"/> the <see cref="Connection"/> extends from.

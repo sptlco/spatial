@@ -11,15 +11,6 @@ namespace Spatial.Cloud.Models;
 public class Key : Record
 {
     /// <summary>
-    /// Create a new <see cref="Key"/>.
-    /// </summary>
-    public Key()
-    {
-        Code = GenerateCode();
-        Expires = Time.Now + Time.FromSeconds(30);
-    }
-
-    /// <summary>
     /// The <see cref="Account"/> that owns the <see cref="Key"/>.
     /// </summary>
     public string Owner { get; set; }
@@ -27,14 +18,14 @@ public class Key : Record
     /// <summary>
     /// The key's alphanumeric code.
     /// </summary>
-    public string Code { get; set; }
+    public string Code { get; set; } = GenerateCode();
 
     /// <summary>
     /// The time the <see cref="Key"/> expires.
     /// </summary>
-    public double Expires { get; set; }
+    public double Expires { get; set; } = Time.Now + Time.FromSeconds(30);
 
-    private string GenerateCode()
+    private static string GenerateCode()
     {
         var random = new Random();
         var characters = Constants.Alphanumerics;

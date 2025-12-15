@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.1](https://github.com/sptlco/spatial/compare/spatial-interface-client-1.1.0...spatial-interface-client-1.1.1) (2025-12-15)
+
+
+### Bug Fixes
+
+* Updated authentication ([#49](https://github.com/sptlco/spatial/issues/49), [#51](https://github.com/sptlco/spatial/issues/51)) ([7fed5c3](https://github.com/sptlco/spatial/commit/7fed5c3363fc3a0019488e1679ea402f4cd55af5))
+
 ## [1.1.0](https://github.com/sptlco/spatial/compare/spatial-interface-client-1.0.0...spatial-interface-client-1.1.0) (2025-12-15)
 
 

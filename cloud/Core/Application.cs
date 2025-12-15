@@ -414,10 +414,13 @@ public class Application
 
         var application = builder.Build();
 
+        ConfigureApplication(application);
+
         application
+            .UseRouting()
             .UseCors(builder => {
                 builder
-                    .WithOrigins(configuration.Origins)
+                    .AllowAnyOrigin()
                     .AllowAnyHeader()
                     .AllowAnyMethod()
                     .AllowCredentials();
@@ -436,21 +439,29 @@ public class Application
             .UseSerilogRequestLogging()
             .UseAuthentication()
             .UseAuthorization()
+            .UseEndpoints(endpoints => {
+                endpoints.MapControllers();
+                endpoints.Map("/live", async context => {
+                    if (!context.WebSockets.IsWebSocketRequest)
+                    {
+                        context.Response.StatusCode = 400;
+                        return;
+                    }
+
+                    Bridge.StartNew(await context.WebSockets.AcceptWebSocketAsync());
+                });
+            })
             .UseHsts();
 
-        application.Map("/live", async context => {
-            if (!context.WebSockets.IsWebSocketRequest)
+        application.Use(async (context, next) => {
+            if (context.Request.Method == HttpMethods.Options)
             {
-                context.Response.StatusCode = 400;
+                context.Response.StatusCode = StatusCodes.Status204NoContent;
                 return;
             }
 
-            Bridge.StartNew(await context.WebSockets.AcceptWebSocketAsync());
+            await next();
         });
-
-        ConfigureApplication(application);
-
-        application.MapControllers();
         
         var hubs = Assembly
             .GetEntryAssembly()!
@@ -463,6 +474,8 @@ public class Application
             {
                 throw new Exception($"No path specified for SignalR hub {hub.Name}.");
             }
+
+            // ...
         }
 
         return application;

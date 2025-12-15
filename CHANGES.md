@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.6.2](https://github.com/sptlco/spatial/compare/spatial-1.6.1...spatial-1.6.2) (2025-12-15)
+
+
+### Bug Fixes
+
+* Removed credentials from CORS ([#49](https://github.com/sptlco/spatial/issues/49)) ([56999f8](https://github.com/sptlco/spatial/commit/56999f8a6585e8028b5f304f40211e29c4655091))
+
 ## [1.6.1](https://github.com/sptlco/spatial/compare/spatial-1.6.0...spatial-1.6.1) (2025-12-15)
 
 

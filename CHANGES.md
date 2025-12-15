@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.6.1](https://github.com/sptlco/spatial/compare/spatial-1.6.0...spatial-1.6.1) (2025-12-15)
+
+
+### Bug Fixes
+
+* Allowed all origins ([#49](https://github.com/sptlco/spatial/issues/49)) ([5e62f4f](https://github.com/sptlco/spatial/commit/5e62f4f442cbe38b055bc6a8f5cd4c3197b20176))
+
 ## [1.6.0](https://github.com/sptlco/spatial/compare/spatial-1.5.1...spatial-1.6.0) (2025-12-15)
 
 

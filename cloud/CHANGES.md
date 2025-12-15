@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.16.1](https://github.com/sptlco/spatial/compare/spatial-cloud-1.16.0...spatial-cloud-1.16.1) (2025-12-15)
+
+
+### Bug Fixes
+
+* Allowed all origins ([#49](https://github.com/sptlco/spatial/issues/49)) ([5e62f4f](https://github.com/sptlco/spatial/commit/5e62f4f442cbe38b055bc6a8f5cd4c3197b20176))
+
 ## [1.16.0](https://github.com/sptlco/spatial/compare/spatial-cloud-1.15.0...spatial-cloud-1.16.0) (2025-12-15)
 
 

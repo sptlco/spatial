@@ -2,6 +2,7 @@
 
 using Microsoft.AspNetCore.Authentication.BearerToken;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Hosting;
@@ -18,6 +19,8 @@ using Serilog.Context;
 using Serilog.Events;
 using Spatial.Compute;
 using Spatial.Extensions;
+using Spatial.Identity;
+using Spatial.Identity.Authorization;
 using Spatial.Intelligence;
 using Spatial.Networking;
 using Spatial.Simulation;
@@ -214,10 +217,16 @@ public class Application
     }
 
     /// <summary>
-    /// Configure the <see cref="Application"/>.
+    /// Configure the <see cref="IHostApplicationBuilder"/>.
     /// </summary>
-    /// <param name="builder">The builder configuring the <see cref="Application"/>.</param>
-    public virtual void Configure(IHostApplicationBuilder builder) { }
+    /// <param name="builder">The <see cref="IHostApplicationBuilder"/> to configure.</param>
+    public virtual void ConfigureBuilder(IHostApplicationBuilder builder) { }
+
+    /// <summary>
+    /// Configure the <see cref="WebApplication"/>.
+    /// </summary>
+    /// <param name="application">The <see cref="WebApplication"/> to configure.</param>
+    public virtual void ConfigureApplication(WebApplication application) { }
 
     /// <summary>
     /// Start the <see cref="Application"/>.
@@ -271,7 +280,7 @@ public class Application
 
         Directory.CreateDirectory(path);
 
-        Configure(builder);
+        ConfigureBuilder(builder);
 
         builder.Configuration.AddJsonFile(
             path: Constants.OverridePath,
@@ -357,15 +366,40 @@ public class Application
             .AddAuthentication(options => 
             {
                 options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
                 options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
             })
             .AddJwtBearer(options => {
                 options.TokenValidationParameters.ValidIssuer = configuration.JWT.Issuer;
                 options.TokenValidationParameters.ValidAudience = configuration.JWT.Audience;
                 options.TokenValidationParameters.IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration.JWT.Secret));
+                options.TokenValidationParameters.ClockSkew = TimeSpan.Zero;
+
+                options.Events = new JwtBearerEvents
+                {
+                    OnMessageReceived = context => {
+                        
+                        var header = context.Request.Headers.Authorization.FirstOrDefault();
+
+                        if (!string.IsNullOrEmpty(header) && header.StartsWith("Bearer ", StringComparison.OrdinalIgnoreCase))
+                        {
+                            context.Token = header["Bearer ".Length..];
+                            return Task.CompletedTask;
+                        }
+
+                        if (context.Request.Cookies.TryGetValue(Cookies.Token, out var token))
+                        {
+                            context.Token = token;
+                        }
+
+                        return Task.CompletedTask;
+                    }
+                };
             });
 
-        builder.Services.AddAuthorization();
+        builder.Services
+            .AddAuthorizationBuilder()
+            .AddPolicy(Constants.Policies.RBAC, policy => policy.AddRequirements(new PermissionRequirement()));
 
         builder.Services
             .AddCors()
@@ -376,13 +410,17 @@ public class Application
 
         builder.Services.AddSignalR();
 
+        builder.Services.AddSingleton<IAuthorizationHandler, PermissionHandler>();
+
         var application = builder.Build();
 
         application
             .UseCors(builder => {
-                builder.AllowAnyHeader();
-                builder.AllowAnyMethod();
-                builder.AllowAnyOrigin();
+                builder
+                    .WithOrigins(configuration.Origins)
+                    .AllowAnyHeader()
+                    .AllowAnyMethod()
+                    .AllowCredentials();
             })
             .UsePathBase(configuration.BasePath)
             .UseExceptionHandler()
@@ -410,6 +448,8 @@ public class Application
             Bridge.StartNew(await context.WebSockets.AcceptWebSocketAsync());
         });
 
+        ConfigureApplication(application);
+
         application.MapControllers();
         
         var hubs = Assembly
@@ -419,7 +459,7 @@ public class Application
 
         foreach (var hub in hubs)
         {
-            if (hub.GetCustomAttribute<PathAttribute>() is not PathAttribute attribute)
+            if (hub.GetCustomAttribute<Controller.PathAttribute>() is not Controller.PathAttribute attribute)
             {
                 throw new Exception($"No path specified for SignalR hub {hub.Name}.");
             }
@@ -454,6 +494,9 @@ public class Application
         {
             case HttpStatusCode.NotFound:
                 await context.Response.WriteAsJsonAsync(new NotFound().ToFault().ToResponse(traceId));
+                break;
+            case HttpStatusCode.Unauthorized:
+                await context.Response.WriteAsJsonAsync(new Unauthorized().ToFault().ToResponse(traceId));
                 break;
         }
     }

@@ -2,6 +2,7 @@
 
 using Microsoft.Extensions.Options;
 using Spatial.Cloud.Baymax;
+using Spatial.Cloud.Middleware;
 using Spatial.Cloud.Systems;
 using System.Reflection;
 
@@ -49,12 +50,21 @@ internal class Server : Application
     public Dictionary<int, Transducer> Transducers => _transducers;
 
     /// <summary>
-    /// Configure the <see cref="Server"/>.
+    /// Configure the server's <see cref="IHostApplicationBuilder"/>.
     /// </summary>
-    /// <param name="builder">The server's <see cref="IHostApplicationBuilder"/>.</param>
-    public override void Configure(IHostApplicationBuilder builder)
+    /// <param name="builder">The <see cref="IHostApplicationBuilder"/> to configure.</param>
+    public override void ConfigureBuilder(IHostApplicationBuilder builder)
     {
         AddOptions<ServerConfiguration>(builder);
+    }
+
+    /// <summary>
+    /// Configure the server's <see cref="WebApplication"/>.
+    /// </summary>
+    /// <param name="application">The <see cref="WebApplication"/> to configure.</param>
+    public override void ConfigureApplication(WebApplication application)
+    {
+        application.UseMiddleware<AccountResolver>();
     }
 }
 

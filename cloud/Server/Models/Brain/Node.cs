@@ -4,7 +4,7 @@ using Spatial.Cloud.Components;
 using Spatial.Mathematics;
 using Spatial.Persistence;
 
-namespace Spatial.Cloud.Models;
+namespace Spatial.Cloud.Models.Brain;
 
 /// <summary>
 /// ...

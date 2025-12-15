@@ -4,7 +4,7 @@
 
 import { Spatial } from "@sptlco/client";
 import { Button, Container, Dialog, Field, Form, Hidden, Icon, Logo, Main, OTP, Span, Spinner } from "@sptlco/design";
-import { FormEvent, useRef, useState } from "react";
+import { FormEvent, useState } from "react";
 
 type AuthenticationStep = "idle" | "requesting" | "confirming" | "verifying" | "authenticated";
 

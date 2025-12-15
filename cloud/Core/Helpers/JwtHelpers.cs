@@ -5,28 +5,22 @@ using Microsoft.IdentityModel.Tokens;
 using System.Security.Claims;
 using System.Text;
 
-namespace Spatial.Identity;
+namespace Spatial.Helpers;
 
 /// <summary>
-/// A secure token used for authentication purposes.
+/// Helper methods for JSON web tokens (JWT).
 /// </summary>
-public class Token
+public static class JWT
 {
     /// <summary>
     /// Create a new security token.
     /// </summary>
-    /// <param name="subject">The token's subject.</param>
-    /// <param name="email">The token bearer's email address.</param>
+    /// <param name="claims">A list of security claims.</param>
     /// <returns>The security token that was created.</returns>
-    public static string Create(string subject, string email)
+    public static string Create(List<Claim> claims)
     {
         var config = Application.Current.Configuration;
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config.JWT.Secret));
-
-        var claims = new List<Claim> {
-          new(JwtRegisteredClaimNames.Sub, subject),
-          new(JwtRegisteredClaimNames.Email, email)  
-        };
 
         var descriptor = new SecurityTokenDescriptor {
             Subject = new ClaimsIdentity(claims),

@@ -1,13 +1,10 @@
 // Copyright © Spatial Corporation. All rights reserved.
 
-using Spatial.Networking;
-
 namespace Spatial.Cloud.Controllers;
 
 /// <summary>
 /// A root <see cref="Controller"/>.
 /// </summary>
-[Module]
 [Path("/")]
 public class IndexController : Controller
 {

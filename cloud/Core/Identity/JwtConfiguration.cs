@@ -25,5 +25,5 @@ public class JwtConfiguration
     /// <summary>
     /// Determines how long an authentication token lasts for.
     /// </summary>
-    public TimeSpan TTL { get; set; }
+    public TimeSpan TTL { get; set; } = TimeSpan.FromDays(7);
 }

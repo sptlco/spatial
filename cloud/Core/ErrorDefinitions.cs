@@ -102,5 +102,5 @@ public class Unauthorized : UserError
     /// <summary>
     /// Create a new <see cref="Unauthorized"/>.
     /// </summary>
-    public Unauthorized() : base("The request lacks valid authentication credentials for the requested resource.") { }
+    public Unauthorized() : base("The request lacks valid authentication credentials for the requested resource.", 401) { }
 }

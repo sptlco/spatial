@@ -1,6 +1,5 @@
 // Copyright © Spatial Corporation. All rights reserved.
 
-using Serilog;
 using Spatial.Compute;
 using System.Collections.Concurrent;
 using System.Runtime.CompilerServices;
@@ -227,7 +226,7 @@ public sealed partial class Space : IDisposable
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void Add<T>(in Entity entity, in T component) where T : unmanaged, IComponent
     {
-        Log.Verbose("Adding {component} to {entity}", typeof(T).Name, entity);
+        TRACE("Adding {component} to {entity}", typeof(T).Name, entity);
 
         ref var handle = ref _entities[entity];
 
@@ -254,7 +253,7 @@ public sealed partial class Space : IDisposable
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public void Remove<T>(in Entity entity) where T : unmanaged, IComponent
     {
-        Log.Verbose("Removing {component} from {entity}", typeof(T).Name, entity);
+        TRACE("Removing {component} from {entity}", typeof(T).Name, entity);
 
         ref var handle = ref _entities[entity];
 
@@ -375,7 +374,7 @@ public sealed partial class Space : IDisposable
 
         archetype.Chunks[handle.Chunk].Set(handle.Index, component);
 
-        Log.Verbose("Set {component} {entity} to {value}", typeof(T).Name, entity, component);
+        TRACE("Set {component} {entity} to {value}", typeof(T).Name, entity, component);
     }
 
     /// <summary>
@@ -425,7 +424,7 @@ public sealed partial class Space : IDisposable
 
                         if (query == default || query(component))
                         {
-                            count += 1;
+                            count++;
                         }
                     }
                 }
@@ -695,7 +694,7 @@ public sealed partial class Space : IDisposable
 
     private unsafe void CopyToArchetype(ref Entity entity, Archetype source, Archetype destination)
     {        
-        Log.Verbose("Copying {entity} from {archetype} ({source}, {chunk}, {index}) to {destination}.", entity.Id, source.Id, entity.Archetype, entity.Chunk, entity.Index, destination.Id);
+        TRACE("Copying {entity} from {archetype} ({source}, {chunk}, {index}) to {destination}.", entity.Id, source.Id, entity.Archetype, entity.Chunk, entity.Index, destination.Id);
 
         var copy = entity;
 
@@ -737,7 +736,7 @@ public sealed partial class Space : IDisposable
 
         if (archetype > 0 && arch.Count == 0)
         {
-            Log.Verbose("Disposing of archetype {archetype}", arch.Id);
+            TRACE("Disposing of archetype {archetype}", arch.Id);
 
             arch.Dispose();
             arch = null;

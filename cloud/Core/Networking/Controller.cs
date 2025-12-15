@@ -1,14 +1,21 @@
 // Copyright © Spatial Corporation. All rights reserved.
 
 using Microsoft.AspNetCore.Mvc;
+using Spatial.Identity;
 
 namespace Spatial.Networking;
 
 /// <summary>
 /// A device through which a client communicates with the <see cref="Network"/>.
 /// </summary>
+[ApiController]
 public abstract class Controller : Microsoft.AspNetCore.Mvc.Controller
 {
+    /// <summary>
+    /// The current <see cref="Session"/>.
+    /// </summary>
+    protected Session Session => (HttpContext.Items["Session"] as Session)!;
+
     /// <summary>
     /// The active <see cref="Networking.Connection"/>.
     /// </summary>
@@ -38,4 +45,46 @@ public abstract class Controller : Microsoft.AspNetCore.Mvc.Controller
     /// Identifies a route that supports HTTP DELETE.
     /// </summary>
     public class DELETEAttribute : HttpDeleteAttribute { }
+
+    /// <summary>
+    /// Defines a path on an HTTP endpoint.
+    /// </summary>
+    public class PathAttribute : Microsoft.AspNetCore.Mvc.RouteAttribute
+    {
+        /// <summary>
+        /// Create a new <see cref="PathAttribute"/>.
+        /// </summary>
+        /// <param name="template">The path's template.</param>
+        public PathAttribute(string template) : base(template)
+        {
+        }
+    }
+
+    /// <summary>
+    /// Indicates that a <see cref="Controller"/> endpoint parameter is read from a JSON message body.
+    /// </summary>
+    public class BodyAttribute : FromBodyAttribute
+    {
+    }
+
+    /// <summary>
+    /// A command issued over the private network.
+    /// </summary>
+    [AttributeUsage(AttributeTargets.Method)]
+    public class OperationAttribute : Attribute
+    {
+        /// <summary>
+        /// Create a new <see cref="OperationAttribute"/>.
+        /// </summary>
+        /// <param name="code">The operation's code number.</param>
+        public OperationAttribute(ushort code)
+        {
+            Code = code;
+        }
+
+        /// <summary>
+        /// The operation's code number.
+        /// </summary>
+        public ushort Code { get; }
+    }
 }

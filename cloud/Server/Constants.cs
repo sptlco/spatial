@@ -24,13 +24,12 @@ internal static class Constants
 }
 
 /// <summary>
-/// Constant property names.
+/// Constant permissions used for authorization.
 /// </summary>
-internal static class Properties
+internal static class Permissions
 {
-    public const string Subject = "Subject";
-
-    public const string Code = "Code";
-
-    public const string Expires = "Expires";
+    public class Users
+    {
+        public const string Read = "users.read";
+    }
 }

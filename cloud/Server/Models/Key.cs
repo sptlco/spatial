@@ -1,5 +1,6 @@
 // Copyright © Spatial Corporation. All rights reserved.
 
+using Spatial.Cloud.Models.Users;
 using Spatial.Persistence;
 
 namespace Spatial.Cloud.Models;

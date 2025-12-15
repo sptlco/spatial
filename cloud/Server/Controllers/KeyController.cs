@@ -4,14 +4,12 @@ using Spatial.Cloud.Contracts.Keys;
 using Spatial.Cloud.Models;
 using Spatial.Extensions;
 using Spatial.Helpers;
-using Spatial.Networking;
 
 namespace Spatial.Cloud.Controllers;
 
 /// <summary>
 /// A <see cref="Controller"/> for keys.
 /// </summary>
-[Module]
 [Path("keys")]
 public class KeyController : Controller
 {

@@ -40,6 +40,11 @@ public class Configuration
     public string Endpoints { get; set; } = string.Empty;
 
     /// <summary>
+    /// Allowed origin endpoints.
+    /// </summary>
+    public string[] Origins { get; set; } = [];
+
+    /// <summary>
     /// The base path for ASP.NET routes.
     /// </summary>
     public string? BasePath { get; set; }

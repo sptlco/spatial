@@ -216,4 +216,26 @@ internal class Constants
         /// </summary>
         public const string GetAmountsOut = "getAmountsOut";
     }
+
+    /// <summary>
+    /// Authorization policy names.
+    /// </summary>
+    public static class Policies
+    {
+        /// <summary>
+        /// The default RBAC policy.
+        /// </summary>
+        public const string RBAC = "RBAC";
+    }
+}
+
+/// <summary>
+/// Constant cookie names.
+/// </summary>
+public static class Cookies
+{
+    /// <summary>
+    /// The name of the authorization token cookie.
+    /// </summary>
+    public const string Token = "spatial.token";
 }

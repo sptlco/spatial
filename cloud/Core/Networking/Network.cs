@@ -40,9 +40,9 @@ public partial class Network
         _operations = AppDomain.CurrentDomain
             .GetAssemblies()
             .SelectMany(asm => asm.GetTypes().Where(type => type.IsAssignableTo(typeof(Controller))))
-            .SelectMany(type => type.GetMethods().Where(method => method.GetCustomAttribute<OperationAttribute>(true) != null))
+            .SelectMany(type => type.GetMethods().Where(method => method.GetCustomAttribute<Controller.OperationAttribute>(true) != null))
             .ToDictionary(
-                keySelector: method => method.GetCustomAttribute<OperationAttribute>(true)!.Code,
+                keySelector: method => method.GetCustomAttribute<Controller.OperationAttribute>(true)!.Code,
                 elementSelector: method => {
                     var controller = GetOrCreateController(method.DeclaringType!);
                     var prototype = method.GetParameters()[0].ParameterType;

@@ -422,8 +422,7 @@ public class Application
                 builder
                     .AllowAnyOrigin()
                     .AllowAnyHeader()
-                    .AllowAnyMethod()
-                    .AllowCredentials();
+                    .AllowAnyMethod();
             })
             .UsePathBase(configuration.BasePath)
             .UseExceptionHandler()

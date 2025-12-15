@@ -1,5 +1,14 @@
 # Changelog
 
+## [1.6.0](https://github.com/sptlco/spatial/compare/spatial-1.5.1...spatial-1.6.0) (2025-12-15)
+
+
+### Features
+
+* Added authentication ([#49](https://github.com/sptlco/spatial/issues/49)) ([3ff6af6](https://github.com/sptlco/spatial/commit/3ff6af6c3335ef7dc2da446001610b9889fb3dab))
+* Added authentication support ([#49](https://github.com/sptlco/spatial/issues/49)) ([84a95d4](https://github.com/sptlco/spatial/commit/84a95d46dfaa28335f82b0e3b7445c6a4eb77c34))
+* Added RBAC ([#49](https://github.com/sptlco/spatial/issues/49)) ([5cc345f](https://github.com/sptlco/spatial/commit/5cc345f1e6cf2b84a6ea32121b0b4f32ff87c67b))
+
 ## [1.5.1](https://github.com/sptlco/spatial/compare/spatial-1.5.0...spatial-1.5.1) (2025-12-06)
 
 

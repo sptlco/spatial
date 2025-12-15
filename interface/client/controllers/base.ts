@@ -1,10 +1,10 @@
 // Copyright © Spatial Corporation. All rights reserved.
 
-import axios from "axios";
+import axios, { AxiosRequestConfig } from "axios";
+import cookies from "js-cookie";
 
 const client = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_SERVER_ENDPOINT,
-  withCredentials: true
+  baseURL: process.env.NEXT_PUBLIC_SERVER_ENDPOINT
 });
 
 /**
@@ -104,11 +104,24 @@ export class Controller {
 
   private fetch = async <T>(path: string, method: string, body?: any): Promise<Response<T>> => {
     try {
-      const response = await client({
+      let config: AxiosRequestConfig = {
         url: path,
         method: method,
         data: body
-      });
+      };
+
+      const session = cookies.get("spatial.session");
+
+      if (session) {
+        config = {
+          ...config,
+          headers: {
+            Authorization: `Bearer ${session}`
+          }
+        };
+      }
+
+      const response = await client(config);
 
       return { data: response.data };
     } catch (error: any) {

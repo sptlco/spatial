@@ -4,6 +4,7 @@
 
 import { Spatial } from "@sptlco/client";
 import { Button, Container, Dialog, Field, Form, Hidden, Icon, Logo, Main, OTP, Span, Spinner } from "@sptlco/design";
+import cookies from "js-cookie";
 import { FormEvent, useState } from "react";
 
 type AuthenticationStep = "idle" | "requesting" | "confirming" | "verifying" | "authenticated";
@@ -59,7 +60,11 @@ export default function Authentication() {
       return;
     }
 
-    // ...
+    cookies.set("spatial.session", response.data, {
+      path: "/",
+      secure: true,
+      expires: 365
+    });
 
     setStep("authenticated");
   };

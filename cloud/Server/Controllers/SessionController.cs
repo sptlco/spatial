@@ -22,7 +22,7 @@ public class SessionController : Controller
     /// <returns>A session identifier.</returns>
     [POST]
     [Path("create")]
-    public async Task CreateSessionAsync([Body] CreateSessionOptions options)
+    public async Task<string> CreateSessionAsync([Body] CreateSessionOptions options)
     {
         (Record<Key>.FirstOrDefault(key => 
             key.Owner == options.User && 
@@ -45,17 +45,6 @@ public class SessionController : Controller
 
         session.Store();
 
-        Response.Cookies.Append(
-            Cookies.Token,
-            session.Token,
-            new CookieOptions {
-                HttpOnly = true,
-                Secure = true,
-                SameSite = SameSiteMode.None,
-                Path = "/",
-                Expires = DateTimeOffset.UtcNow.Add(Application.Current.Configuration.JWT.TTL)
-            });
-
-        await Task.CompletedTask;
+        return session.Token;
     }
 }

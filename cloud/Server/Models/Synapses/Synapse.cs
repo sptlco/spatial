@@ -1,27 +1,28 @@
 // Copyright © Spatial Corporation. All rights reserved.
 
+using Spatial.Cloud.Models.Neurons;
 using Spatial.Persistence;
 
-namespace Spatial.Cloud.Models.Brain;
+namespace Spatial.Cloud.Models.Synapses;
 
 /// <summary>
 /// A weighted connection between two nodes.
 /// </summary>
-[Collection("connections")]
-public class Connection : Record
+[Collection("synapses")]
+public class Synapse : Record
 {
     /// <summary>
-    /// The <see cref="Node"/> the <see cref="Connection"/> extends from.
+    /// The <see cref="Neuron"/> the <see cref="Synapse"/> extends from.
     /// </summary>
     public string From { get; set; }
 
     /// <summary>
-    /// The <see cref="Node"/> the <see cref="Connection"/> extends to.
+    /// The <see cref="Neuron"/> the <see cref="Synapse"/> extends to.
     /// </summary>
     public string To { get; set; }
 
     /// <summary>
-    /// The strength of the <see cref="Connection"/>.
+    /// The strength of the <see cref="Synapse"/>.
     /// </summary>
     public double Strength { get; set; }
 }

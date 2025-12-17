@@ -2,9 +2,7 @@
 
 using Microsoft.IdentityModel.JsonWebTokens;
 using Spatial.Helpers;
-using Spatial.Identity.Authorization;
 using Spatial.Persistence;
-using System.Security.Claims;
 
 namespace Spatial.Identity;
 
@@ -36,31 +34,11 @@ public class Session : Record
     /// <returns>A <see cref="Session"/> token.</returns>
     public static Session Create(string userId)
     {
-        // Load the user's role assignments from the database.
-        // For each assignment, load role metadata.
-
-        var roles = Record<Assignment>
-            .List(assignment => assignment.User == userId)
-            .Select(assignment => Record<Role>.Read(assignment.Role));
-
-        // For each role the user is assigned to, get the role's permissions.
-        // Attach these to the user's authorization token.
-
-        var permissions = roles
-            .SelectMany(role => Record<Permission>
-                .List(permission => permission.Role == role.Id)
-                .Select(permission => permission.Value))
-            .Distinct();
-
         var session = new Session {
             User = userId
         };
 
-        session.Token = JWT.Create([
-            new(JwtRegisteredClaimNames.Sid, session.Id),
-            ..roles.Select(role => new Claim(ClaimsIdentity.DefaultRoleClaimType, role.Name)),
-            ..permissions.Select(permission => new Claim(Claims.Permission, permission))
-        ]);
+        session.Token = JWT.Create([new(JwtRegisteredClaimNames.Sid, session.Id)]);
 
         return session;
     }

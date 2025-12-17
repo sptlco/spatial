@@ -1,7 +1,7 @@
 // Copyright © Spatial Corporation. All rights reserved.
 
 using Spatial.Cloud.Contracts.Keys;
-using Spatial.Cloud.Models;
+using Spatial.Cloud.Models.Keys;
 using Spatial.Communication;
 using Spatial.Extensions;
 
@@ -19,7 +19,6 @@ public class KeyController : Controller
     /// <param name="options">Configurable options for the key.</param>
     /// <returns>A key identifier.</returns>
     [POST]
-    [Path("create")]
     public Task CreateKeyAsync([Body] CreateKeyOptions options)
     {
         var key = new Key { Owner = options.User };

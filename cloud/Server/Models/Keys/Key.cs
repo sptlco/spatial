@@ -1,9 +1,9 @@
 // Copyright © Spatial Corporation. All rights reserved.
 
-using Spatial.Cloud.Models.Users;
+using Spatial.Cloud.Models.Accounts;
 using Spatial.Persistence;
 
-namespace Spatial.Cloud.Models;
+namespace Spatial.Cloud.Models.Keys;
 
 /// <summary>
 /// An alphanumeric code used for authorization.
@@ -24,7 +24,7 @@ public class Key : Record
     /// <summary>
     /// The time the <see cref="Key"/> expires.
     /// </summary>
-    public double Expires { get; set; } = Time.Now + Time.FromSeconds(30);
+    public double Expires { get; set; } = Time.Now + Time.FromMinutes(10);
 
     private static string GenerateCode()
     {

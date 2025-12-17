@@ -1,7 +1,7 @@
 // Copyright © Spatial Corporation. All rights reserved.
 
 using Spatial.Cloud.Components;
-using Spatial.Cloud.Models.Brain;
+using Spatial.Cloud.Models.Neurons;
 using Spatial.Extensions;
 using Spatial.Persistence;
 using Spatial.Simulation;
@@ -20,14 +20,14 @@ public class Hypersolver : System
     // Maps: External -> Internal
     // Database records mapped to physical entities.
 
-    private readonly ConcurrentDictionary<string, Entity> _nodes2Neurons;
-    private readonly ConcurrentDictionary<string, Entity> _connections2Synapses;
+    private readonly ConcurrentDictionary<string, Entity> _neuronsById;
+    private readonly ConcurrentDictionary<string, Entity> _synapsesById;
 
     // Maps: Internal -> External
     // Physical entities mapped to database records.
 
-    private readonly ConcurrentDictionary<Entity, Node> _neurons2Nodes;
-    private readonly ConcurrentDictionary<Entity, Connection> _synapses2Connections;
+    private readonly ConcurrentDictionary<Entity, Models.Neurons.Neuron> _neuronsByEntity;
+    private readonly ConcurrentDictionary<Entity, Models.Synapses.Synapse> _synapsesByEntity;
 
     // Spatial queries for selecting neurons and synapses at runtime.
     // Used below for network updates, but also for bulk writes to the database.
@@ -50,12 +50,12 @@ public class Hypersolver : System
 
         _config = ServerConfiguration.Current.Systems.Hypersolver;
 
-        _nodes2Neurons = [];
-        _connections2Synapses = [];
-        _neurons2Nodes = [];
-        _synapses2Connections = [];
+        _neuronsById = [];
+        _synapsesById = [];
+        _neuronsByEntity = [];
+        _synapsesByEntity = [];
 
-        _neurons = new Query().WithAll<Neuron>();
+        _neurons = new Query().WithAll<Components.Neuron>();
         _synapses = new Query().WithAll<Synapse>();
 
         _inputs = [];
@@ -63,16 +63,16 @@ public class Hypersolver : System
     }
 
     /// <summary>
-    /// Reward a <see cref="Neuron"/>.
+    /// Reward a <see cref="Components.Neuron"/>.
     /// </summary>
-    /// <param name="neuron">The <see cref="Neuron"/> to reward.</param>
+    /// <param name="neuron">The <see cref="Components.Neuron"/> to reward.</param>
     /// <param name="signal">A reward signal.</param>
-    public void Reward(string neuron, double signal) => Reward(_nodes2Neurons[neuron], signal);
+    public void Reward(string neuron, double signal) => Reward(_neuronsById[neuron], signal);
 
     /// <summary>
-    /// Reward a <see cref="Neuron"/>.
+    /// Reward a <see cref="Components.Neuron"/>.
     /// </summary>
-    /// <param name="neuron">The <see cref="Neuron"/> to reward.</param>
+    /// <param name="neuron">The <see cref="Components.Neuron"/> to reward.</param>
     /// <param name="signal">A reward signal.</param>
     public void Reward(Entity neuron, double signal)
     {
@@ -88,31 +88,31 @@ public class Hypersolver : System
         // When the Hypersolver is created, reconstruct the brain.
         // Load neural records from the database and replicate in space.
 
-        var nodes = Record<Node>.List();
-        var connections = Record<Connection>.List();
+        var neurons = Record<Models.Neurons.Neuron>.List();
+        var synapses = Record<Models.Synapses.Synapse>.List();
 
-        space.Reserve(Signature.Combine<Neuron, Position>(), (uint) nodes.Count);
-        space.Reserve(Signature.Combine<Synapse>(), (uint) connections.Count);
+        space.Reserve(Signature.Combine<Components.Neuron, Position>(), (uint) neurons.Count);
+        space.Reserve(Signature.Combine<Synapse>(), (uint) synapses.Count);
 
-        for (var i = 0; i < nodes.Count; i++)
+        for (var i = 0; i < neurons.Count; i++)
         {
-            var record = nodes[i];
+            var record = neurons[i];
             var entity = space.Create(
-                new Neuron(record.Type, record.Group, record.Channel, record.Value),
+                new Components.Neuron(record.Type, record.Group, record.Channel, record.Value),
                 new Position(record.Position.X, record.Position.Y, record.Position.Z));
 
-            _nodes2Neurons[(_neurons2Nodes[entity] = record).Id] = entity;
+            _neuronsById[(_neuronsByEntity[entity] = record).Id] = entity;
         }
 
-        for (var i = 0; i < connections.Count; i++)
+        for (var i = 0; i < synapses.Count; i++)
         {
-            var record = connections[i];
+            var record = synapses[i];
             var entity = space.Create(new Synapse(
-                From: _nodes2Neurons[record.From],
-                To: _nodes2Neurons[record.To],
+                From: _neuronsById[record.From],
+                To: _neuronsById[record.To],
                 Strength: record.Strength));
 
-            _connections2Synapses[(_synapses2Connections[entity] = record).Id] = entity;
+            _synapsesById[(_synapsesByEntity[entity] = record).Id] = entity;
         }
     }
 
@@ -128,8 +128,8 @@ public class Hypersolver : System
             // Synaptic propagation.
             // Accumulate pre-synaptic charges for integration.
 
-            var pre = space.Get<Neuron>(synapse.From);
-            var post = space.Get<Neuron>(synapse.To);
+            var pre = space.Get<Components.Neuron>(synapse.From);
+            var post = space.Get<Components.Neuron>(synapse.To);
             var contribution = pre.Value * synapse.Strength;
 
             _inputs.AddOrUpdate(synapse.To, contribution, (entity, value) => value + contribution);
@@ -156,7 +156,7 @@ public class Hypersolver : System
 
         });
 
-        space.Mutate(_neurons, (Future future, in Entity entity, ref Neuron neuron) => {
+        space.Mutate(_neurons, (Future future, in Entity entity, ref Components.Neuron neuron) => {
 
             var input = _inputs.GetValueOrDefault(entity);
 
@@ -223,12 +223,12 @@ public class Hypersolver : System
 
     private void Save(Space space)
     {
-        space.Mutate(_neurons, (Future future, in Entity entity) => SaveNode(space, entity));
-        space.Mutate(_synapses, (Future future, in Entity entity) => SaveConnection(space, entity));
+        space.Mutate(_neurons, (Future future, in Entity entity) => SaveNeuron(space, entity));
+        space.Mutate(_synapses, (Future future, in Entity entity) => SaveSynapse(space, entity));
     }
 
-    private void SaveNode(Space space, Entity entity) => _neurons2Nodes[entity].Update(record => {
-        var neuron = space.Get<Neuron>(entity);
+    private void SaveNeuron(Space space, Entity entity) => _neuronsByEntity[entity].Update(record => {
+        var neuron = space.Get<Components.Neuron>(entity);
         var position = space.Get<Position>(entity);
 
         record.Position.X = position.X;
@@ -238,7 +238,7 @@ public class Hypersolver : System
         record.Value = neuron.Value;
     });
 
-    private void SaveConnection(Space space, Entity entity) => _synapses2Connections[entity].Update(record => {
+    private void SaveSynapse(Space space, Entity entity) => _synapsesByEntity[entity].Update(record => {
         record.Strength = space.Get<Synapse>(entity).Strength;
     });
 }

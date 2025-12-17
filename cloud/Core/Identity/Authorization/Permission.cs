@@ -5,7 +5,7 @@ using Spatial.Persistence;
 namespace Spatial.Identity.Authorization;
 
 /// <summary>
-/// ...
+/// Scoped access granted to a <see cref="Role"/>.
 /// </summary>
 [Collection("permissions")]
 public class Permission : Record
@@ -16,12 +16,7 @@ public class Permission : Record
     public string Role { get; set; }
 
     /// <summary>
-    /// The permission's value (e.g. users.create).
+    /// The scope accessible by the <see cref="Role"/> (e.g. users.create).
     /// </summary>
-    public string Value { get; set; }
-
-    /// <summary>
-    /// A message describing the <see cref="Permission"/>.
-    /// </summary>
-    public string Description { get; set; }
+    public string Scope { get; set; }
 }

@@ -8,7 +8,7 @@ namespace Spatial.Cloud.Contracts.Keys;
 public class CreateKeyOptions
 {
     /// <summary>
-    /// The account the <see cref="Models.Key"/> provides access to.
+    /// The account the <see cref="Models.Keys.Key"/> provides access to.
     /// </summary>
     public string User { get; set; }
 }

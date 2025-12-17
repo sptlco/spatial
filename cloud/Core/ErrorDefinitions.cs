@@ -104,3 +104,14 @@ public class Unauthorized : UserError
     /// </summary>
     public Unauthorized() : base("The request lacks valid authentication credentials for the requested resource.", 401) { }
 }
+
+/// <summary>
+/// A <see cref="UserError"/> indicating insufficient permissions.
+/// </summary>
+public class Forbidden : UserError
+{
+    /// <summary>
+    /// Create a new <see cref="Forbidden"/>.
+    /// </summary>
+    public Forbidden() : base("Access to the requested resource is forbidden.", 403) { }
+}

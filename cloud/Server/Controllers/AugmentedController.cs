@@ -1,6 +1,6 @@
 // Copyright © Spatial Corporation. All rights reserved.
 
-using Spatial.Cloud.Models.Users;
+using Spatial.Cloud.Models.Accounts;
 
 namespace Spatial.Cloud.Controllers;
 
@@ -10,7 +10,7 @@ namespace Spatial.Cloud.Controllers;
 public class Controller : Networking.Controller
 {
     /// <summary>
-    /// The user's <see cref="Account"/>.
+    /// The user's <see cref="_account"/>.
     /// </summary>
-    protected Account Account => (HttpContext.Items["Account"] as Account)!;
+    protected Account _account => HttpContext.Items["Account"] as Account ?? throw new NullReference();
 }

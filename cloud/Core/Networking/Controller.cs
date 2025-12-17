@@ -12,9 +12,9 @@ namespace Spatial.Networking;
 public abstract class Controller : Microsoft.AspNetCore.Mvc.Controller
 {
     /// <summary>
-    /// The current <see cref="Session"/>.
+    /// The current <see cref="_session"/>.
     /// </summary>
-    protected Session Session => (HttpContext.Items["Session"] as Session)!;
+    protected Session _session => HttpContext.Items["Session"] as Session ?? throw new NullReference();
 
     /// <summary>
     /// The active <see cref="Networking.Connection"/>.

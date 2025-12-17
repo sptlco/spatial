@@ -1,22 +1,16 @@
 // Copyright © Spatial Corporation. All rights reserved.
 
-using Spatial.Cloud.Components;
 using Spatial.Mathematics;
 using Spatial.Persistence;
 
-namespace Spatial.Cloud.Models.Brain;
+namespace Spatial.Cloud.Models.Neurons;
 
 /// <summary>
 /// ...
 /// </summary>
-[Collection("nodes")]
-public class Node : Record
+[Collection("neurons")]
+public class Neuron : Record
 {
-    /// <summary>
-    /// The <see cref="User"/> that created the <see cref="Node"/>.
-    /// </summary>
-    public string Creator { get; set; }
-
     /// <summary>
     /// The node's <see cref="NeuronType"/>.
     /// </summary>
@@ -33,7 +27,7 @@ public class Node : Record
     public int Channel { get; set; }
 
     /// <summary>
-    /// The precise location of the <see cref="Node"/>.
+    /// The precise location of the <see cref="Neuron"/>.
     /// </summary>
     public Point3D Position { get; set; } = Point3D.Zero;
 

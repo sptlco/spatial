@@ -1,6 +1,5 @@
 // Copyright © Spatial Corporation. All rights reserved.
 
-using Microsoft.AspNetCore.Authentication.BearerToken;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
@@ -19,9 +18,7 @@ using Serilog.Context;
 using Serilog.Events;
 using Spatial.Compute;
 using Spatial.Extensions;
-using Spatial.Identity;
 using Spatial.Identity.Authorization;
-using Spatial.Intelligence;
 using Spatial.Networking;
 using Spatial.Simulation;
 using System.Net;
@@ -414,43 +411,41 @@ public class Application
 
         var application = builder.Build();
 
-        ConfigureApplication(application);
-
         application
             .UseRouting()
-            .UseCors(builder => {
-                builder
-                    .AllowAnyOrigin()
-                    .AllowAnyHeader()
-                    .AllowAnyMethod();
-            })
+            .UseCors(builder => builder
+                .AllowAnyOrigin()
+                .AllowAnyHeader()
+                .AllowAnyMethod())
             .UsePathBase(configuration.BasePath)
             .UseExceptionHandler()
             .UseStatusCodePages(ReportStatusCode)
             .UseHttpsRedirection()
             .UseWebSockets()
-            .UseFileServer(new FileServerOptions
-            {
+            .UseFileServer(new FileServerOptions {
                 FileProvider = new PhysicalFileProvider(path),
                 RequestPath = PathString.Empty,
                 EnableDefaultFiles = true
             })
             .UseSerilogRequestLogging()
             .UseAuthentication()
+            .UseMiddleware<Enricher>()
             .UseAuthorization()
-            .UseEndpoints(endpoints => {
-                endpoints.MapControllers();
-                endpoints.Map("/live", async context => {
-                    if (!context.WebSockets.IsWebSocketRequest)
-                    {
-                        context.Response.StatusCode = 400;
-                        return;
-                    }
-
-                    Bridge.StartNew(await context.WebSockets.AcceptWebSocketAsync());
-                });
-            })
             .UseHsts();
+
+        ConfigureApplication(application);
+
+        application.MapControllers();
+
+        application.Map("/live", async context => {
+            if (!context.WebSockets.IsWebSocketRequest)
+            {
+                context.Response.StatusCode = 400;
+                return;
+            }
+
+            Bridge.StartNew(await context.WebSockets.AcceptWebSocketAsync());
+        });
 
         application.Use(async (context, next) => {
             if (context.Request.Method == HttpMethods.Options)
@@ -509,6 +504,9 @@ public class Application
                 break;
             case HttpStatusCode.Unauthorized:
                 await context.Response.WriteAsJsonAsync(new Unauthorized().ToFault().ToResponse(traceId));
+                break;
+            case HttpStatusCode.Forbidden:
+                await context.Response.WriteAsJsonAsync(new Forbidden().ToFault().ToResponse(traceId));
                 break;
         }
     }

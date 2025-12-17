@@ -2,7 +2,7 @@
 
 using Microsoft.Extensions.Options;
 using Spatial.Cloud.Baymax;
-using Spatial.Cloud.Middleware;
+using Spatial.Cloud.Services;
 using Spatial.Cloud.Systems;
 using System.Reflection;
 
@@ -64,7 +64,7 @@ internal class Server : Application
     /// <param name="application">The <see cref="WebApplication"/> to configure.</param>
     public override void ConfigureApplication(WebApplication application)
     {
-        application.UseMiddleware<AccountResolver>();
+        application.UseMiddleware<Enricher>();
     }
 }
 

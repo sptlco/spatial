@@ -1,8 +1,8 @@
 // Copyright © Spatial Corporation. All rights reserved.
 
 using Spatial.Cloud.Contracts.Sessions;
-using Spatial.Cloud.Models;
-using Spatial.Cloud.Models.Users;
+using Spatial.Cloud.Models.Accounts;
+using Spatial.Cloud.Models.Keys;
 using Spatial.Communication;
 using Spatial.Extensions;
 using Spatial.Identity;
@@ -17,13 +17,12 @@ namespace Spatial.Cloud.Controllers;
 public class SessionController : Controller
 {
     /// <summary>
-    /// Create a new session.
+    /// Create a new <see cref="Session"/>.
     /// </summary>
-    /// <param name="options">Configurable options for the session.</param>
-    /// <returns>A session identifier.</returns>
+    /// <param name="options">Configurable options for the request.</param>
+    /// <returns>A <see cref="Session"/>.</returns>
     [POST]
-    [Path("create")]
-    public async Task<string> CreateSessionAsync([Body] CreateSessionOptions options)
+    public async Task<Session> CreateSessionAsync([Body] CreateSessionOptions options)
     {
         (Record<Key>.FirstOrDefault(key => 
             key.Owner == options.User && 
@@ -49,6 +48,6 @@ public class SessionController : Controller
 
         session.Store();
 
-        return await Task.FromResult(session.Token);
+        return await Task.FromResult(session);
     }
 }

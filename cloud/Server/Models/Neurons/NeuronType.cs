@@ -1,0 +1,29 @@
+// Copyright © Spatial Corporation. All rights reserved.
+
+namespace Spatial.Cloud.Models.Neurons;
+
+/// <summary>
+/// Specifies the function of a <see cref="Neuron"/>.
+/// </summary>
+public enum NeuronType
+{
+    /// <summary>
+    /// A <see cref="Neuron"/> that receives and feeds the current sensory information into the network.
+    /// </summary>
+    Sensory,
+
+    /// <summary>
+    /// A <see cref="Neuron"/> whose internal state is time-dependent.
+    /// </summary>
+    Temporal,
+
+    /// <summary>
+    /// A <see cref="Neuron"/> that converts complex temporal neural dynamics into control signals.
+    /// </summary>
+    Command,
+
+    /// <summary>
+    /// A <see cref="Neuron"/> that directly controls the system's actuator.
+    /// </summary>
+    Motor
+}

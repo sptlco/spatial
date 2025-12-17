@@ -2,7 +2,7 @@
 
 using Spatial.Persistence;
 
-namespace Spatial.Cloud.Models.Users;
+namespace Spatial.Cloud.Models.Accounts;
 
 /// <summary>
 /// ...

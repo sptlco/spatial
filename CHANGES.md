@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.6.6](https://github.com/sptlco/spatial/compare/spatial-1.6.5...spatial-1.6.6) (2025-12-17)
+
+
+### Bug Fixes
+
+* Added internal MongoDB binding ([fadcc09](https://github.com/sptlco/spatial/commit/fadcc09581b985153b62ef2f69ece6e5f06ab102))
+
 ## [1.6.5](https://github.com/sptlco/spatial/compare/spatial-1.6.4...spatial-1.6.5) (2025-12-17)
 
 

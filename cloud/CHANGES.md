@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.16.5](https://github.com/sptlco/spatial/compare/spatial-cloud-1.16.4...spatial-cloud-1.16.5) (2025-12-17)
+
+
+### Bug Fixes
+
+* Blocked access to internal ports ([#49](https://github.com/sptlco/spatial/issues/49)) ([a5b49f8](https://github.com/sptlco/spatial/commit/a5b49f87f4c41380df3f3bc0920ffc74ded8aeac))
+
 ## [1.16.4](https://github.com/sptlco/spatial/compare/spatial-cloud-1.16.3...spatial-cloud-1.16.4) (2025-12-17)
 
 

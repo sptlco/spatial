@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.6.5](https://github.com/sptlco/spatial/compare/spatial-1.6.4...spatial-1.6.5) (2025-12-17)
+
+
+### Bug Fixes
+
+* Blocked access to internal ports ([#49](https://github.com/sptlco/spatial/issues/49)) ([a5b49f8](https://github.com/sptlco/spatial/commit/a5b49f87f4c41380df3f3bc0920ffc74ded8aeac))
+* Increased security ([#49](https://github.com/sptlco/spatial/issues/49)) ([25e48e4](https://github.com/sptlco/spatial/commit/25e48e451d5ad617713cc538cb1102f7f0928678))
+
 ## [1.6.4](https://github.com/sptlco/spatial/compare/spatial-1.6.3...spatial-1.6.4) (2025-12-17)
 
 

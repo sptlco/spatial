@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.16.4](https://github.com/sptlco/spatial/compare/spatial-cloud-1.16.3...spatial-cloud-1.16.4) (2025-12-17)
+
+
+### Bug Fixes
+
+* Added retries for mail ([#49](https://github.com/sptlco/spatial/issues/49)) ([a9e35bf](https://github.com/sptlco/spatial/commit/a9e35bfb66902b528829014ff44a19013465c394))
+
 ## [1.16.3](https://github.com/sptlco/spatial/compare/spatial-cloud-1.16.2...spatial-cloud-1.16.3) (2025-12-15)
 
 

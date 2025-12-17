@@ -2,8 +2,6 @@ services:
   cloud:
     build: ./cloud
     restart: always
-    expose:
-      - "80"
     depends_on:
       - mongo
       - redis
@@ -13,8 +11,6 @@ services:
       context: ./interface
       dockerfile: web/Dockerfile
     restart: always
-    expose:
-      - "80"
 
   mongo:
     image: mongo:8
@@ -49,11 +45,6 @@ services:
       context: .
       dockerfile: tools/code/Dockerfile
     restart: always
-    ports:
-      - "8080:8080"
-      - "3000:3000"
-      - "5000:5000"
-      - "9010:9010"
     volumes:
       - ./:/home/coder/project
       - ~/.ssh:/root/.ssh

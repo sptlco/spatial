@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.16.6](https://github.com/sptlco/spatial/compare/spatial-cloud-1.16.5...spatial-cloud-1.16.6) (2025-12-17)
+
+
+### Bug Fixes
+
+* Secured endpoints with RBAC ([#49](https://github.com/sptlco/spatial/issues/49)) ([da3bad6](https://github.com/sptlco/spatial/commit/da3bad631d939e1c3e61e21e4ebac5c465f5dbdf))
+
 ## [1.16.5](https://github.com/sptlco/spatial/compare/spatial-cloud-1.16.4...spatial-cloud-1.16.5) (2025-12-17)
 
 

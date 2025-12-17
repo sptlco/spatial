@@ -10,7 +10,7 @@ public class CacheConfiguration
     /// <summary>
     /// A Redis database URL.
     /// </summary>
-    public string Url = "redis:6379";
+    public string Url = "redis://redis:6379";
 
     /// <summary>
     /// A Redis database identification number.

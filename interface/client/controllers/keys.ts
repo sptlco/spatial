@@ -12,6 +12,6 @@ export class KeyController extends Controller {
    * @returns A key identifier.
    */
   public create = async (options: CreateKeyOptions) => {
-    return this.post<string>("keys/create", options);
+    return this.post<string>("keys", options);
   };
 }

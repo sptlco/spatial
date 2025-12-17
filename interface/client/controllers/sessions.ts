@@ -12,6 +12,6 @@ export class SessionController extends Controller {
    * @returns An authorization token.
    */
   public create = async (options: CreateSessionOptions) => {
-    return this.post<string>("sessions/create", options);
+    return this.post<string>("sessions", options);
   };
 }

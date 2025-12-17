@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.6.8](https://github.com/sptlco/spatial/compare/spatial-1.6.7...spatial-1.6.8) (2025-12-17)
+
+
+### Bug Fixes
+
+* Added session expiration ([#49](https://github.com/sptlco/spatial/issues/49)) ([28af9c6](https://github.com/sptlco/spatial/commit/28af9c621ca9c2df30557df46714537b3392f01d))
+* Corrected controller endpoints ([#51](https://github.com/sptlco/spatial/issues/51)) ([03f9bf4](https://github.com/sptlco/spatial/commit/03f9bf449fb5a9ad3341dbcb61f94455efd01ec1))
+
 ## [1.6.7](https://github.com/sptlco/spatial/compare/spatial-1.6.6...spatial-1.6.7) (2025-12-17)
 
 

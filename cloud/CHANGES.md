@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.16.7](https://github.com/sptlco/spatial/compare/spatial-cloud-1.16.6...spatial-cloud-1.16.7) (2025-12-17)
+
+
+### Bug Fixes
+
+* Added session expiration ([#49](https://github.com/sptlco/spatial/issues/49)) ([28af9c6](https://github.com/sptlco/spatial/commit/28af9c621ca9c2df30557df46714537b3392f01d))
+
 ## [1.16.6](https://github.com/sptlco/spatial/compare/spatial-cloud-1.16.5...spatial-cloud-1.16.6) (2025-12-17)
 
 

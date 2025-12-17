@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.2](https://github.com/sptlco/spatial/compare/spatial-interface-client-1.1.1...spatial-interface-client-1.1.2) (2025-12-17)
+
+
+### Bug Fixes
+
+* Corrected controller endpoints ([#51](https://github.com/sptlco/spatial/issues/51)) ([03f9bf4](https://github.com/sptlco/spatial/commit/03f9bf449fb5a9ad3341dbcb61f94455efd01ec1))
+
 ## [1.1.1](https://github.com/sptlco/spatial/compare/spatial-interface-client-1.1.0...spatial-interface-client-1.1.1) (2025-12-15)
 
 

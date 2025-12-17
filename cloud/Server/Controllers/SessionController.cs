@@ -3,6 +3,7 @@
 using Spatial.Cloud.Contracts.Sessions;
 using Spatial.Cloud.Models;
 using Spatial.Cloud.Models.Users;
+using Spatial.Communication;
 using Spatial.Extensions;
 using Spatial.Identity;
 using Spatial.Persistence;
@@ -36,7 +37,10 @@ public class SessionController : Controller
 
             (account = new Account { Email = options.User }).Store();
 
-            // ...
+            Mail.Send(
+                subject: "Welcome to Spatial",
+                body: "Welcome to Spatial",
+                recipients: account.Email);
         }
 
         var session = Session.Create(account.Id);
@@ -45,6 +49,6 @@ public class SessionController : Controller
 
         session.Store();
 
-        return session.Token;
+        return await Task.FromResult(session.Token);
     }
 }

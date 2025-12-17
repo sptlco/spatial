@@ -2,8 +2,8 @@
 
 using Spatial.Cloud.Contracts.Keys;
 using Spatial.Cloud.Models;
+using Spatial.Communication;
 using Spatial.Extensions;
-using Spatial.Helpers;
 
 namespace Spatial.Cloud.Controllers;
 
@@ -26,7 +26,10 @@ public class KeyController : Controller
 
         key.Store();
 
-        Smtp.GetOrCreateClient().Send(Server.Current.Configuration.SMTP.Username, key.Owner, $"Your key code is {key.Code}", key.Code);
+        Mail.Send(
+            subject: $"Your key code is {key.Code}", 
+            body: key.Code,
+            recipients: key.Owner);
 
         return Task.CompletedTask;
     }

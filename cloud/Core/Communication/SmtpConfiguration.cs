@@ -18,6 +18,11 @@ public class SmtpConfiguration
     public int Port { get; set; }
 
     /// <summary>
+    /// The system's display name for email.
+    /// </summary>
+    public string Name { get; set; }
+
+    /// <summary>
     /// The SMTP account username.
     /// </summary>
     public string Username { get; set; }

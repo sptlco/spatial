@@ -70,7 +70,7 @@ internal class Constants
     /// <summary>
     /// The name of the log database collection.
     /// </summary>
-    public const string LogCollectionName = "Logs";
+    public const string LogCollectionName = "logs";
 
     /// <summary>
     /// The path to the system's configuration override file.

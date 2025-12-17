@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.6.7](https://github.com/sptlco/spatial/compare/spatial-1.6.6...spatial-1.6.7) (2025-12-17)
+
+
+### Bug Fixes
+
+* Secured endpoints with RBAC ([#49](https://github.com/sptlco/spatial/issues/49)) ([da3bad6](https://github.com/sptlco/spatial/commit/da3bad631d939e1c3e61e21e4ebac5c465f5dbdf))
+
 ## [1.6.6](https://github.com/sptlco/spatial/compare/spatial-1.6.5...spatial-1.6.6) (2025-12-17)
 
 

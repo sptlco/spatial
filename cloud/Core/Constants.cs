@@ -230,12 +230,12 @@ internal class Constants
 }
 
 /// <summary>
-/// Constant cookie names.
+/// Constant variable names.
 /// </summary>
-public static class Cookies
+public static partial class Variables
 {
     /// <summary>
-    /// The name of the authorization token cookie.
+    /// The name of the session variable.
     /// </summary>
-    public const string Token = "spatial.token";
+    public const string Session = "Session";
 }

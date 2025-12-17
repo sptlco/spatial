@@ -3,6 +3,7 @@
 using Microsoft.IdentityModel.JsonWebTokens;
 using Spatial.Helpers;
 using Spatial.Persistence;
+using System.Security.Claims;
 
 namespace Spatial.Identity;
 
@@ -28,17 +29,24 @@ public class Session : Record
     public string Token { get; set; }
 
     /// <summary>
+    /// The time the <see cref="Session"/> expires.
+    /// </summary>
+    public double Expires { get; set; }
+
+    /// <summary>
     /// Create a new <see cref="Session"/>.
     /// </summary>
     /// <param name="userId">A user identifier.</param>
     /// <returns>A <see cref="Session"/> token.</returns>
     public static Session Create(string userId)
     {
+        var expires = DateTime.UtcNow.Add(Application.Current.Configuration.JWT.TTL);
         var session = new Session {
-            User = userId
+            User = userId,
+            Expires = Time.FromDateTime(expires)
         };
 
-        session.Token = JWT.Create([new(JwtRegisteredClaimNames.Sid, session.Id)]);
+        session.Token = JWT.Create(expires, new Claim(JwtRegisteredClaimNames.Sid, session.Id));
 
         return session;
     }

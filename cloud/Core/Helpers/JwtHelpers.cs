@@ -15,16 +15,17 @@ public static class JWT
     /// <summary>
     /// Create a new security token.
     /// </summary>
+    /// <param name="expires">The time the token expires.</param>
     /// <param name="claims">A list of security claims.</param>
     /// <returns>The security token that was created.</returns>
-    public static string Create(List<Claim> claims)
+    public static string Create( DateTime expires, params Claim[] claims)
     {
         var config = Application.Current.Configuration;
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config.JWT.Secret));
 
         var descriptor = new SecurityTokenDescriptor {
             Subject = new ClaimsIdentity(claims),
-            Expires = DateTime.UtcNow.Add(config.JWT.TTL),
+            Expires = expires,
             SigningCredentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256),
             Issuer = config.JWT.Issuer,
             Audience = config.JWT.Audience

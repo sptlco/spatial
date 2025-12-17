@@ -12,14 +12,17 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.JsonWebTokens;
 using Microsoft.IdentityModel.Tokens;
 using Serilog;
 using Serilog.Context;
 using Serilog.Events;
 using Spatial.Compute;
 using Spatial.Extensions;
+using Spatial.Identity;
 using Spatial.Identity.Authorization;
 using Spatial.Networking;
+using Spatial.Persistence;
 using Spatial.Simulation;
 using System.Net;
 using System.Reflection;
@@ -374,20 +377,23 @@ public class Application
 
                 options.Events = new JwtBearerEvents
                 {
-                    OnMessageReceived = context => {
-                        
-                        var header = context.Request.Headers.Authorization.FirstOrDefault();
+                    OnTokenValidated = context =>
+                    {
+                        var sid = context.Principal?.FindFirst(JwtRegisteredClaimNames.Sid)?.Value;
 
-                        if (!string.IsNullOrEmpty(header) && header.StartsWith("Bearer ", StringComparison.OrdinalIgnoreCase))
+                        if (string.IsNullOrEmpty(sid))
                         {
-                            context.Token = header["Bearer ".Length..];
+                            context.Fail("The access token is missing a valid session identifier.");
                             return Task.CompletedTask;
                         }
 
-                        if (context.Request.Cookies.TryGetValue(Cookies.Token, out var token))
+                        if (Record<Session>.FirstOrDefault(sesh => sesh.Id == sid && sesh.Expires > Time.Now) is not Session session)
                         {
-                            context.Token = token;
+                            context.Fail("The user's session does not exist.");
+                            return Task.CompletedTask;
                         }
+
+                        context.HttpContext.Items[Variables.Session] = session;
 
                         return Task.CompletedTask;
                     }

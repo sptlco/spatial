@@ -14,7 +14,7 @@ public abstract class Controller : Microsoft.AspNetCore.Mvc.Controller
     /// <summary>
     /// The current <see cref="_session"/>.
     /// </summary>
-    protected Session _session => HttpContext.Items["Session"] as Session ?? throw new NullReference();
+    protected Session _session => HttpContext.Items[Variables.Session] as Session ?? throw new NullReference();
 
     /// <summary>
     /// The active <see cref="Networking.Connection"/>.
@@ -49,7 +49,7 @@ public abstract class Controller : Microsoft.AspNetCore.Mvc.Controller
     /// <summary>
     /// Defines a path on an HTTP endpoint.
     /// </summary>
-    public class PathAttribute : Microsoft.AspNetCore.Mvc.RouteAttribute
+    public class PathAttribute : RouteAttribute
     {
         /// <summary>
         /// Create a new <see cref="PathAttribute"/>.

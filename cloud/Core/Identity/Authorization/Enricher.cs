@@ -1,7 +1,6 @@
 // Copyright © Spatial Corporation. All rights reserved.
 
 using Microsoft.AspNetCore.Http;
-using Microsoft.IdentityModel.JsonWebTokens;
 using Spatial.Persistence;
 using System.Security.Claims;
 
@@ -29,12 +28,8 @@ public class Enricher
     /// <param name="context">The current <see cref="HttpContext"/>.</param>
     public async Task InvokeAsync(HttpContext context)
     {
-        var sessionId = context.User.FindFirstValue(JwtRegisteredClaimNames.Sid);
-                
-        if (!string.IsNullOrEmpty(sessionId))
+        if (context.Items.TryGetValue(Variables.Session, out var sesh) && sesh is Session session)
         {
-            var session = (Session) (context.Items["Session"] = Record<Session>.Read(sessionId));
-
             var roles = Record<Assignment>
                 .List(a => a.User == session.User)
                 .Select(a => Record<Role>.Read(a.Role));

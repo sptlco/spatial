@@ -17,7 +17,7 @@ public class PermissionHandler : AuthorizationHandler<PermissionRequirement>
     /// <param name="requirement">The <see cref="PermissionRequirement"/> to handle.</param>
     protected override Task HandleRequirementAsync(AuthorizationHandlerContext context, PermissionRequirement requirement)
     {
-        if (context.Resource is HttpContext http && http.User?.Identity?.IsAuthenticated == true)
+        if (context.Resource is HttpContext http)
         {
             var endpoint = http.GetEndpoint();
 

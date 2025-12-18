@@ -28,13 +28,11 @@ public class Key : Record
 
     private static string GenerateCode()
     {
-        var random = new Random();
-        var characters = Constants.Alphanumerics;
         var code = string.Empty;
 
         for (var i = 0; i < Constants.KeyLength; i++)
         {
-            code += characters[random.Next(characters.Length)];
+            code += Strong.Int32(10).ToString();
         }
 
         return code;

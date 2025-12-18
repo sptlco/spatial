@@ -13,11 +13,6 @@ internal static class Constants
     public const string Spatial = "spatial";
 
     /// <summary>
-    /// Numerical digits.
-    /// </summary>
-    public const string Alphanumerics = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-
-    /// <summary>
     /// The length of a key.
     /// </summary>
     public const int KeyLength = 4;

@@ -1,6 +1,6 @@
 // Copyright © Spatial Corporation. All rights reserved.
 
-namespace Spatial.Cloud.Contracts.Roles;
+namespace Spatial.Cloud.Data.Roles;
 
 /// <summary>
 /// Configurable options for a new role.

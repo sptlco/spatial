@@ -1,8 +1,8 @@
 // Copyright © Spatial Corporation. All rights reserved.
 
-using Spatial.Cloud.Contracts.Sessions;
-using Spatial.Cloud.Models.Accounts;
-using Spatial.Cloud.Models.Keys;
+using Spatial.Cloud.Data.Accounts;
+using Spatial.Cloud.Data.Keys;
+using Spatial.Cloud.Data.Sessions;
 using Spatial.Communication;
 using Spatial.Extensions;
 using Spatial.Identity;

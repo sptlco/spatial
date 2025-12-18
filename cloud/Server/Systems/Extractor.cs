@@ -1,6 +1,6 @@
 // Copyright © Spatial Corporation. All rights reserved.
 
-using Spatial.Cloud.Models.Neurons;
+using Spatial.Cloud.Data.Neurons;
 using Spatial.Compute;
 using Spatial.Simulation;
 using System.Collections.Concurrent;

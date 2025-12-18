@@ -1,9 +1,9 @@
 // Copyright © Spatial Corporation. All rights reserved.
 
-using Spatial.Cloud.Models.Neurons;
+using Spatial.Cloud.Data.Neurons;
 using Spatial.Persistence;
 
-namespace Spatial.Cloud.Models.Synapses;
+namespace Spatial.Cloud.Data.Synapses;
 
 /// <summary>
 /// A weighted connection between two nodes.

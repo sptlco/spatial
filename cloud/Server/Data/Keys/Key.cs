@@ -1,9 +1,9 @@
 // Copyright © Spatial Corporation. All rights reserved.
 
-using Spatial.Cloud.Models.Accounts;
+using Spatial.Cloud.Data.Accounts;
 using Spatial.Persistence;
 
-namespace Spatial.Cloud.Models.Keys;
+namespace Spatial.Cloud.Data.Keys;
 
 /// <summary>
 /// An alphanumeric code used for authorization.

@@ -1,6 +1,6 @@
 // Copyright © Spatial Corporation. All rights reserved.
 
-namespace Spatial.Cloud.Models.Neurons;
+namespace Spatial.Cloud.Data.Neurons;
 
 /// <summary>
 /// Specifies the function of a <see cref="Neuron"/>.

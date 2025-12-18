@@ -1,6 +1,6 @@
 // Copyright © Spatial Corporation. All rights reserved.
 
-using Spatial.Cloud.Contracts.Assignments;
+using Spatial.Cloud.Data.Assignments;
 using Spatial.Extensions;
 using Spatial.Identity.Authorization;
 

@@ -1,7 +1,8 @@
 // Copyright © Spatial Corporation. All rights reserved.
 
 using Spatial.Cloud.Components;
-using Spatial.Cloud.Models.Neurons;
+using Spatial.Cloud.Data.Neurons;
+using Spatial.Cloud.Data.Synapses;
 using Spatial.Extensions;
 using Spatial.Persistence;
 using Spatial.Simulation;
@@ -26,8 +27,8 @@ public class Hypersolver : System
     // Maps: Internal -> External
     // Physical entities mapped to database records.
 
-    private readonly ConcurrentDictionary<Entity, Models.Neurons.Neuron> _neuronsByEntity;
-    private readonly ConcurrentDictionary<Entity, Models.Synapses.Synapse> _synapsesByEntity;
+    private readonly ConcurrentDictionary<Entity, Data.Neurons.Neuron> _neuronsByEntity;
+    private readonly ConcurrentDictionary<Entity, Data.Synapses.Synapse> _synapsesByEntity;
 
     // Spatial queries for selecting neurons and synapses at runtime.
     // Used below for network updates, but also for bulk writes to the database.
@@ -88,8 +89,8 @@ public class Hypersolver : System
         // When the Hypersolver is created, reconstruct the brain.
         // Load neural records from the database and replicate in space.
 
-        var neurons = Record<Models.Neurons.Neuron>.List();
-        var synapses = Record<Models.Synapses.Synapse>.List();
+        var neurons = Record<Data.Neurons.Neuron>.List();
+        var synapses = Record<Data.Synapses.Synapse>.List();
 
         space.Reserve(Signature.Combine<Components.Neuron, Position>(), (uint) neurons.Count);
         space.Reserve(Signature.Combine<Synapse>(), (uint) synapses.Count);

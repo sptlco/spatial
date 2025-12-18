@@ -1,6 +1,6 @@
 // Copyright © Spatial Corporation. All rights reserved.
 
-namespace Spatial.Cloud.Contracts.Permissions;
+namespace Spatial.Cloud.Data.Permissions;
 
 /// <summary>
 /// Configurable options for a permission.

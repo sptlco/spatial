@@ -1,6 +1,6 @@
 // Copyright © Spatial Corporation. All rights reserved.
 
-namespace Spatial.Cloud.Contracts.Keys;
+namespace Spatial.Cloud.Data.Keys;
 
 /// <summary>
 /// Configurable options for a new key.
@@ -8,7 +8,7 @@ namespace Spatial.Cloud.Contracts.Keys;
 public class CreateKeyOptions
 {
     /// <summary>
-    /// The account the <see cref="Models.Keys.Key"/> provides access to.
+    /// The account the <see cref="Keys.Key"/> provides access to.
     /// </summary>
     public string User { get; set; }
 }

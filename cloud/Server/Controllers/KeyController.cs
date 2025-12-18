@@ -1,6 +1,6 @@
 // Copyright © Spatial Corporation. All rights reserved.
 
-using Spatial.Cloud.Contracts.Keys;
+using Spatial.Cloud.Data.Keys;
 using Spatial.Cloud.Models.Keys;
 using Spatial.Communication;
 using Spatial.Extensions;

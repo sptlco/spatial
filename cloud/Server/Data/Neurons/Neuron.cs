@@ -3,7 +3,7 @@
 using Spatial.Mathematics;
 using Spatial.Persistence;
 
-namespace Spatial.Cloud.Models.Neurons;
+namespace Spatial.Cloud.Data.Neurons;
 
 /// <summary>
 /// ...

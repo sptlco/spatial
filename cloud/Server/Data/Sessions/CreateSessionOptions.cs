@@ -1,6 +1,6 @@
 // Copyright © Spatial Corporation. All rights reserved.
 
-namespace Spatial.Cloud.Contracts.Sessions;
+namespace Spatial.Cloud.Data.Sessions;
 
 /// <summary>
 /// Configurable options for a new session.

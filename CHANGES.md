@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.6.10](https://github.com/sptlco/spatial/compare/spatial-1.6.9...spatial-1.6.10) (2025-12-20)
+
+
+### Bug Fixes
+
+* Used inline middleware ([#49](https://github.com/sptlco/spatial/issues/49)) ([4a68966](https://github.com/sptlco/spatial/commit/4a689660dfbf5b880c78b8c81f4f0fbec6a03767))
+
 ## [1.6.9](https://github.com/sptlco/spatial/compare/spatial-1.6.8...spatial-1.6.9) (2025-12-20)
 
 

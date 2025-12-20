@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.16.9](https://github.com/sptlco/spatial/compare/spatial-cloud-1.16.8...spatial-cloud-1.16.9) (2025-12-20)
+
+
+### Bug Fixes
+
+* Used inline middleware ([#49](https://github.com/sptlco/spatial/issues/49)) ([4a68966](https://github.com/sptlco/spatial/commit/4a689660dfbf5b880c78b8c81f4f0fbec6a03767))
+
 ## [1.16.8](https://github.com/sptlco/spatial/compare/spatial-cloud-1.16.7...spatial-cloud-1.16.8) (2025-12-20)
 
 

@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.10.3](https://github.com/sptlco/spatial/compare/spatial-interface-web-1.10.2...spatial-interface-web-1.10.3) (2025-12-20)
+
+
+### Bug Fixes
+
+* Migrated contracts to data package ([#51](https://github.com/sptlco/spatial/issues/51)) ([2f40145](https://github.com/sptlco/spatial/commit/2f401450f0a659352038d13f7749bd45f8d020e6))
+* Removed unused imports ([#51](https://github.com/sptlco/spatial/issues/51)) ([ddcddb4](https://github.com/sptlco/spatial/commit/ddcddb45fbb74cd83e0a6c49e97c15860df776c8))
+
 ## [1.10.2](https://github.com/sptlco/spatial/compare/spatial-interface-web-1.10.1...spatial-interface-web-1.10.2) (2025-12-17)
 
 

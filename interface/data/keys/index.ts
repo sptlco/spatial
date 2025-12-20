@@ -1,4 +1,3 @@
 // Copyright © Spatial Corporation. All rights reserved.
 
-export * from "./keys";
-export * from "./sessions";
+export * from "./CreateKeyOptions";

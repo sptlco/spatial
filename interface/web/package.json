@@ -9,6 +9,7 @@
   },
   "dependencies": {
     "@sptlco/client": "*",
+    "@sptlco/data": "*",
     "@sptlco/design": "*",
     "babel-plugin-react-compiler": "^1.0.0",
     "i18next": "^25.6.0",

@@ -28,6 +28,12 @@
       "release-type": "simple",
       "extra-files": ["package.json"]
     },
+    "interface/data": {
+      "package-name": "spatial-interface-data",
+      "changelog-path": "CHANGES.md",
+      "release-type": "simple",
+      "extra-files": ["package.json"]
+    },
     "interface/design": {
       "package-name": "spatial-interface-design",
       "changelog-path": "CHANGES.md",

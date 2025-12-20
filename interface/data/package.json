@@ -1,5 +1,5 @@
 {
-  "name": "@sptlco/client",
+  "name": "@sptlco/data",
   "version": "1.1.2",
   "description": "Client module for cloud communication.",
   "main": "index.ts",
@@ -11,14 +11,7 @@
   "publishConfig": {
     "@sptlco:registry": "https://npm.pkg.github.com/"
   },
-  "dependencies": {
-    "@sptlco/data": "*"
-  },
   "devDependencies": {
-    "@types/js-cookie": "^3.0.6",
-    "@types/node": "^24.10.1",
-    "axios": "^1.13.2",
-    "js-cookie": "^3.0.5",
     "typescript": "^5"
   }
 }

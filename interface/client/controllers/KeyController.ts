@@ -1,6 +1,7 @@
 // Copyright © Spatial Corporation. All rights reserved.
 
-import { Controller, CreateKeyOptions } from "..";
+import { CreateKeyOptions } from "@sptlco/data";
+import { Controller } from "..";
 
 /**
  * A controller for keys.

@@ -2,7 +2,7 @@
 
 "use client";
 
-import { Spatial } from "@sptlco/client";
+import { KeyController, SessionController, Spatial } from "@sptlco/client";
 import { Button, Container, Dialog, Field, Form, Hidden, Icon, Logo, Main, OTP, Span, Spinner } from "@sptlco/design";
 import cookies from "js-cookie";
 import { FormEvent, useState } from "react";
@@ -60,7 +60,7 @@ export default function Authentication() {
       return;
     }
 
-    cookies.set("spatial.session", response.data, {
+    cookies.set("spatial.session", response.data.token, {
       path: "/",
       secure: true,
       expires: 365

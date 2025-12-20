@@ -1,6 +1,7 @@
 // Copyright © Spatial Corporation. All rights reserved.
 
-import { Controller, CreateSessionOptions } from "..";
+import { CreateSessionOptions, Session } from "@sptlco/data";
+import { Controller } from "..";
 
 /**
  * A controller for sessions.
@@ -12,6 +13,6 @@ export class SessionController extends Controller {
    * @returns An authorization token.
    */
   public create = async (options: CreateSessionOptions) => {
-    return this.post<string>("sessions", options);
+    return this.post<Session>("sessions", options);
   };
 }

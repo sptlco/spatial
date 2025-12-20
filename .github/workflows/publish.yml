@@ -44,6 +44,62 @@ jobs:
             --api-key ${{ secrets.GITHUB_TOKEN }} \
             --skip-duplicate
 
+  client:
+    name: "@sptlco/client"
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref_name, 'spatial-interface-client')
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22.x"
+          registry-url: "https://npm.pkg.github.com/"
+
+      - name: Install dependencies
+        run: npm ci
+        working-directory: interface/client
+
+      - name: Build
+        run: npm run build --if-present
+        working-directory: interface/client
+
+      - name: Publish
+        run: npm publish
+        working-directory: interface/client
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  data:
+    name: "@sptlco/data"
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref_name, 'spatial-interface-data')
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22.x"
+          registry-url: "https://npm.pkg.github.com/"
+
+      - name: Install dependencies
+        run: npm ci
+        working-directory: interface/data
+
+      - name: Build
+        run: npm run build --if-present
+        working-directory: interface/data
+
+      - name: Publish
+        run: npm publish
+        working-directory: interface/data
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
   design:
     name: "@sptlco/design"
     runs-on: ubuntu-latest
@@ -69,33 +125,5 @@ jobs:
       - name: Publish
         run: npm publish
         working-directory: interface/design
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-  server:
-    name: "@sptlco/client"
-    runs-on: ubuntu-latest
-    if: startsWith(github.ref_name, 'spatial-interface-client')
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: "22.x"
-          registry-url: "https://npm.pkg.github.com/"
-
-      - name: Install dependencies
-        run: npm ci
-        working-directory: interface/client
-
-      - name: Build
-        run: npm run build --if-present
-        working-directory: interface/client
-
-      - name: Publish
-        run: npm publish
-        working-directory: interface/client
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

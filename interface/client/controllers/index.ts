@@ -1,5 +1,12 @@
 // Copyright © Spatial Corporation. All rights reserved.
 
-export * from "./base";
-export * from "./keys";
-export * from "./sessions";
+import { KeyController } from "./KeyController";
+import { SessionController } from "./SessionController";
+
+export * from "./KeyController";
+export * from "./SessionController";
+
+export const Spatial = {
+  keys: new KeyController(),
+  sessions: new SessionController()
+};

@@ -1,71 +1,12 @@
 // Copyright © Spatial Corporation. All rights reserved.
 
+import { Response } from ".";
 import axios, { AxiosRequestConfig } from "axios";
 import cookies from "js-cookie";
 
 const client = axios.create({
   baseURL: process.env.NEXT_PUBLIC_SERVER_ENDPOINT
 });
-
-/**
- * A response from the server.
- */
-export type Response<T> = Payload<T> | ErrorResponse;
-
-/**
- * A response that contains a message payload.
- */
-export type Payload<T> = {
-  /**
-   * The error that occurred.
-   */
-  error?: never;
-
-  /**
-   * The requested payload.
-   */
-  data: T;
-};
-
-/**
- * A response that indicates failure due to an error.
- */
-export type ErrorResponse = {
-  /**
-   * The error that occurred.
-   */
-  error: Error;
-};
-
-/**
- * An error that occurred during a request.
- */
-export type Error = {
-  /**
-   * The time the error occurred.
-   */
-  time: number;
-
-  /**
-   * A trace identifier.
-   */
-  traceId: string;
-
-  /**
-   * The response's status code.
-   */
-  status: number;
-
-  /**
-   * A classifying error code.
-   */
-  code: string;
-
-  /**
-   * A message describing the error that occurred.
-   */
-  message: string;
-};
 
 /**
  * A mechanism that enables HTTP communication with the server.

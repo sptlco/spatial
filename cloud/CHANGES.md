@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.16.8](https://github.com/sptlco/spatial/compare/spatial-cloud-1.16.7...spatial-cloud-1.16.8) (2025-12-20)
+
+
+### Bug Fixes
+
+* Use numeric key codes ([#49](https://github.com/sptlco/spatial/issues/49)) ([98c4c87](https://github.com/sptlco/spatial/commit/98c4c876971789be1c475304cbdf48bf3badfa37))
+
 ## [1.16.7](https://github.com/sptlco/spatial/compare/spatial-cloud-1.16.6...spatial-cloud-1.16.7) (2025-12-17)
 
 

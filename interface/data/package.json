@@ -1,7 +1,7 @@
 {
   "name": "@sptlco/data",
   "version": "1.0.0",
-  "description": "Client module for cloud communication.",
+  "description": "Data types and contract definitions.",
   "main": "index.ts",
   "author": "Spatial Corporation",
   "license": "MIT",

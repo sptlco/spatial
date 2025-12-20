@@ -4,6 +4,7 @@ on:
   push:
     tags:
       - "spatial-cloud*"
+      - "spatial-interface-data*"
       - "spatial-interface-design*"
       - "spatial-interface-client*"
 

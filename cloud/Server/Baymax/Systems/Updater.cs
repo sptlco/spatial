@@ -3,7 +3,7 @@
 using Spatial.Extensions;
 using Spatial.Simulation;
 
-namespace Spatial.Cloud.Systems;
+namespace Spatial.Cloud.Baymax.Systems;
 
 /// <summary>
 /// Propagates updates to transducers.

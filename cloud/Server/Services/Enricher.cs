@@ -4,6 +4,8 @@ using Spatial.Cloud.Data.Accounts;
 using Spatial.Identity;
 using Spatial.Persistence;
 
+using V = Spatial.Variables;
+
 namespace Spatial.Cloud.Services;
 
 /// <summary>
@@ -28,7 +30,7 @@ public class Enricher
     /// <param name="context">The current <see cref="HttpContext"/>.</param>
     public async Task InvokeAsync(HttpContext context)
     {
-        if (context.Items.TryGetValue(Spatial.Variables.Session, out var sesh) && sesh is Session session)
+        if (context.Items.TryGetValue(V.Session, out var sesh) && sesh is Session session)
         {
             context.Items[Variables.Account] = Record<Account>.Read(session.User);
         }

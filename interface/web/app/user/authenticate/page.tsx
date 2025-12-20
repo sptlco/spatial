@@ -101,11 +101,12 @@ export default function Authentication() {
           <Dialog.Overlay>
             <Dialog.Close />
           </Dialog.Overlay>
-          <Dialog.Content>
+          <Dialog.Content className="flex flex-col px-10 items-center space-y-20">
             <Hidden>
               <Dialog.Title>Enter your code</Dialog.Title>
               <Dialog.Description>We just emailed you a 4-digit code.</Dialog.Description>
             </Hidden>
+            <Logo className="fill-current h-8" mode="symbol" />
             <Field
               type="otp"
               maxLength={4}

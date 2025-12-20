@@ -3,7 +3,7 @@
 using Spatial.Cloud.Data.Neurons;
 using Spatial.Simulation;
 
-namespace Spatial.Cloud.Components;
+namespace Spatial.Cloud.Baymax.Components;
 
 /// <summary>
 /// ...

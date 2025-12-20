@@ -1,9 +1,7 @@
 // Copyright © Spatial Corporation. All rights reserved.
 
-using Microsoft.Extensions.Options;
-using Spatial.Cloud.Baymax;
+using Spatial.Cloud.Baymax.Systems;
 using Spatial.Cloud.Services;
-using Spatial.Cloud.Systems;
 using System.Reflection;
 
 namespace Spatial.Cloud;
@@ -35,12 +33,12 @@ internal class Server : Application
     public static new Server Current => (Server) Application.Current;
 
     /// <summary>
-    /// The server's feature <see cref="Systems.Extractor"/>.
+    /// The server's feature <see cref="Baymax.Systems.Extractor"/>.
     /// </summary>
     public Extractor Extractor { get; internal set; }
 
     /// <summary>
-    /// The server's <see cref="Systems.Hypersolver"/>.
+    /// The server's <see cref="Baymax.Systems.Hypersolver"/>.
     /// </summary>
     public Hypersolver Hypersolver { get; internal set; }
 
@@ -66,21 +64,4 @@ internal class Server : Application
     {
         application.UseMiddleware<Enricher>();
     }
-}
-
-/// <summary>
-/// Configurable options for the <see cref="Server"/>.
-/// </summary>
-internal class ServerConfiguration : Configuration
-{
-    /// <summary>
-    /// Get the current <see cref="ServerConfiguration"/>.
-    /// </summary>
-    public new static ServerConfiguration Current => Application.Current.Services.GetRequiredService<ServerConfiguration>();
-
-    /// <summary>
-    /// Configurable options for systems.
-    /// </summary>
-    [ValidateObjectMembers]
-    public SystemConfiguration Systems { get; set; } = new SystemConfiguration();
 }

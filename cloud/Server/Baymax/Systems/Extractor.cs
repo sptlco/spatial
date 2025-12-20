@@ -5,9 +5,9 @@ using Spatial.Compute;
 using Spatial.Simulation;
 using System.Collections.Concurrent;
 
-using Neuron = Spatial.Cloud.Components.Neuron;
+using Neuron = Spatial.Cloud.Baymax.Components.Neuron;
 
-namespace Spatial.Cloud.Systems;
+namespace Spatial.Cloud.Baymax.Systems;
 
 /// <summary>
 /// A proprietary feature extractor.

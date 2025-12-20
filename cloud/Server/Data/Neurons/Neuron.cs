@@ -17,7 +17,7 @@ public class Neuron : Record
     public NeuronType Type { get; set; }
 
     /// <summary>
-    /// The <see cref="Baymax.Transducer"/> the <see cref="Neuron"/> belongs to.
+    /// The <see cref="Baymax.Systems.Transducer"/> the <see cref="Neuron"/> belongs to.
     /// </summary>
     public int Group { get; set; }
 

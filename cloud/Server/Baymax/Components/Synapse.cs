@@ -2,7 +2,7 @@
 
 using Spatial.Simulation;
 
-namespace Spatial.Cloud.Components;
+namespace Spatial.Cloud.Baymax.Components;
 
 /// <summary>
 /// A weighted connection between two neurons.

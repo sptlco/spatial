@@ -1,14 +1,13 @@
 // Copyright © Spatial Corporation. All rights reserved.
 
-using Spatial.Cloud.Components;
+using Spatial.Cloud.Baymax.Components;
 using Spatial.Cloud.Data.Neurons;
-using Spatial.Cloud.Data.Synapses;
 using Spatial.Extensions;
 using Spatial.Persistence;
 using Spatial.Simulation;
 using System.Collections.Concurrent;
 
-namespace Spatial.Cloud.Systems;
+namespace Spatial.Cloud.Baymax.Systems;
 
 /// <summary>
 /// A neural network leveraging temporal dynamics for continuous state changes over time.
@@ -49,7 +48,7 @@ public class Hypersolver : System
     {
         Server.Current.Hypersolver = this;
 
-        _config = ServerConfiguration.Current.Systems.Hypersolver;
+        _config = ServerConfiguration.Current.Baymax.Hypersolver;
 
         _neuronsById = [];
         _synapsesById = [];
@@ -57,7 +56,7 @@ public class Hypersolver : System
         _synapsesByEntity = [];
 
         _neurons = new Query().WithAll<Components.Neuron>();
-        _synapses = new Query().WithAll<Synapse>();
+        _synapses = new Query().WithAll<Components.Synapse>();
 
         _inputs = [];
         _rewards = [];
@@ -108,7 +107,7 @@ public class Hypersolver : System
         for (var i = 0; i < synapses.Count; i++)
         {
             var record = synapses[i];
-            var entity = space.Create(new Synapse(
+            var entity = space.Create(new Components.Synapse(
                 From: _neuronsById[record.From],
                 To: _neuronsById[record.To],
                 Strength: record.Strength));

@@ -3,4 +3,4 @@
 using Spatial;
 using Spatial.Cloud;
 
-Application.Run<Server>();
+Application.Run<Spatial.Cloud.Server>();

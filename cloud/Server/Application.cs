@@ -1,7 +1,9 @@
 // Copyright © Spatial Corporation. All rights reserved.
 
 using Spatial.Cloud.Baymax.Systems;
-using Spatial.Cloud.Services;
+using Spatial.Cloud.Data.Accounts;
+using Spatial.Identity;
+using Spatial.Persistence;
 using System.Reflection;
 
 namespace Spatial.Cloud;
@@ -62,6 +64,13 @@ internal class Server : Application
     /// <param name="application">The <see cref="WebApplication"/> to configure.</param>
     public override void ConfigureApplication(WebApplication application)
     {
-        application.UseMiddleware<Enricher>();
+        application.Use(async (context, next) => {
+            if (context.Items.TryGetValue(Spatial.Variables.Session, out var sesh) && sesh is Session session)
+            {
+                context.Items[Variables.Account] = Record<Account>.Read(session.User);
+            }
+
+            await next(context);
+        });
     }
 }

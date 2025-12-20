@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.6.12](https://github.com/sptlco/spatial/compare/spatial-1.6.11...spatial-1.6.12) (2025-12-20)
+
+
+### Bug Fixes
+
+* Updated package description ([#51](https://github.com/sptlco/spatial/issues/51)) ([3060d10](https://github.com/sptlco/spatial/commit/3060d1086a0f58d4ab42781f6cda38aaf74db340))
+* Updated publishing workflow ([09d8110](https://github.com/sptlco/spatial/commit/09d81106642754bbe1747cdc3c188d90257be237))
+
 ## [1.6.11](https://github.com/sptlco/spatial/compare/spatial-1.6.10...spatial-1.6.11) (2025-12-20)
 
 

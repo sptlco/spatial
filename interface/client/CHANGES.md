@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.1.3](https://github.com/sptlco/spatial/compare/spatial-interface-client-1.1.2...spatial-interface-client-1.1.3) (2025-12-20)
+
+
+### Bug Fixes
+
+* Corrected return type ([#51](https://github.com/sptlco/spatial/issues/51)) ([9ac5a78](https://github.com/sptlco/spatial/commit/9ac5a78a890adbf74e6a811d1a9fe42c31386bf4))
+* Migrated contracts to data package ([#51](https://github.com/sptlco/spatial/issues/51)) ([2f40145](https://github.com/sptlco/spatial/commit/2f401450f0a659352038d13f7749bd45f8d020e6))
+
 ## [1.1.2](https://github.com/sptlco/spatial/compare/spatial-interface-client-1.1.1...spatial-interface-client-1.1.2) (2025-12-17)
 
 

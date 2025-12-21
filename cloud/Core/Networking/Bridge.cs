@@ -66,7 +66,7 @@ public class Bridge
                     break;
                 }
 
-                _connection.Process(0, result.Count);
+                _connection.Process(result.Count);
             }
         }
         catch { }

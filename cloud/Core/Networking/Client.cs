@@ -21,9 +21,8 @@ public class Client : IDisposable
     private byte _connected;
     private byte _secure;
     private ushort _seed;
-    private int _key1;
-    private int _key2;
-    private byte[] _keystream;
+    private int _encoder;
+    private int _decoder;
 
     /// <summary>
     /// Create a new <see cref="Client"/>.
@@ -37,10 +36,9 @@ public class Client : IDisposable
             command: (ushort) NETCOMMAND.NC_MISC_SEED_CMD, 
             handler: (_, data) => {
                 Interlocked.Exchange(ref _secure, 1);
-                Interlocked.Exchange(ref _key1, 0);
-                Interlocked.Exchange(ref _key2, 0);
+                Interlocked.Exchange(ref _encoder, data.Seed);
+                Interlocked.Exchange(ref _decoder, data.Seed);
                 Interlocked.Exchange(ref _seed, data.Seed);
-                Interlocked.Exchange(ref _keystream, Cipher.GenerateKeystream(data.Seed));
             });
     }
 
@@ -53,6 +51,11 @@ public class Client : IDisposable
     /// The client's current seed.
     /// </summary>
     public ushort Seed => Interlocked.CompareExchange(ref _seed, 1, 1);
+
+    /// <summary>
+    /// The client's <see cref="KeyPair"/>.
+    /// </summary>
+    public KeyPair Keys => new(ref _encoder, ref _decoder);
 
     /// <summary>
     /// The client's remote endpoint.
@@ -128,7 +131,7 @@ public class Client : IDisposable
             data.Dispose();
         }
 
-        Cipher.Transform(array, 0, array.Length, _keystream, ref _key1);
+        Network.Transformer.Encode(array, 0, array.Length, Keys);
 
         byte[] buffer;
 
@@ -181,7 +184,7 @@ public class Client : IDisposable
         _socket.Dispose();
     }
 
-    private void Encode(ArraySegment<byte> data) => Cipher.Transform(data.Array!, data.Offset, data.Count, _keystream, ref _key1);
+    private void Encode(ArraySegment<byte> data) => Network.Transformer.Encode(data.Array!, data.Offset, data.Count, Keys);
 
     private void Receive()
     {
@@ -251,7 +254,7 @@ public class Client : IDisposable
         {
             if (Interlocked.CompareExchange(ref _secure, 1, 1) == 1)
             {
-                Cipher.Transform(buffer.Array!, 2, buffer.Count - 2, _keystream, ref _key2);
+                Network.Transformer.Decode(buffer.Array!, 2, buffer.Count - 2, Keys);
             }
 
             handler(this, ProtocolBuffer.FromSpan(prototype, buffer.AsSpan(2, buffer.Count - 2)));

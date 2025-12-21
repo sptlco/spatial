@@ -21,10 +21,11 @@ namespace Spatial.Networking;
 /// </summary>
 public partial class Network
 {
+    private static Transformer _transformer = new NativeTransformer();
+
     private readonly IServiceProvider _services;
     private readonly Dictionary<Type, Controller> _controllers;
     private readonly Dictionary<ushort, (Controller Controller, Command Command, Type Prototype)> _operations;
-
     private readonly List<Socket> _endpoints;
     private readonly ConcurrentDictionary<long, Connection> _connections;
     private readonly InterlockedQueue<NetworkEvent> _events;
@@ -57,6 +58,14 @@ public partial class Network
         _connections = [];
         _events = new();
         _updates = new();
+    }
+
+    /// <summary>
+    /// The network's <see cref="Transformer"/>.
+    /// </summary>
+    public static Transformer Transformer { 
+        get => _transformer; 
+        set => _transformer = value; 
     }
 
     /// <summary>
@@ -176,7 +185,7 @@ public partial class Network
 
                 if (connection.Connected)
                 {
-                    Log.Verbose("Delivering {size} KB packet to {connection}.", Math.Round(packet.Count / 1024D, 2), connection.Id);
+                    TRACE("Delivering {size} KB packet to {connection}.", Math.Round(packet.Count / 1024D, 2), connection.Id);
                     
                     try
                     {
@@ -229,7 +238,7 @@ public partial class Network
         {
             case NetworkEventCode.EVENT_CONNECT:
                 {
-                    Log.Verbose("Client {connection} connected to the server.", connection);
+                    TRACE("Client {connection} connected to the server.", connection);
 
                     _connections[connection.Id] = connection;
 
@@ -243,7 +252,7 @@ public partial class Network
                 }
             case NetworkEventCode.EVENT_DISCONNECT:
                 {
-                    Log.Verbose("Client {connection} disconnected from the server.", connection);
+                    TRACE("Client {connection} disconnected from the server.", connection);
 
                     _connections.TryRemove(connection.Id, out _);
 
@@ -257,7 +266,7 @@ public partial class Network
 
                     if (_operations.TryGetValue(message.Command, out var command))
                     {
-                        Log.Verbose("Invoking operation 0x{command:X4} on behalf of {connection}.", message.Command, connection.Id);
+                        TRACE("Invoking operation 0x{command:X4} on behalf of {connection}.", message.Command, connection.Id);
 
                         try
                         {
@@ -270,7 +279,7 @@ public partial class Network
                         }
                         catch (Exception exception)
                         {
-                            Log.Error(exception, "Failed to invoke operation 0x{command:X4} on behalf of {connection}.", message.Command, connection.Id);
+                            ERROR(exception, "Failed to invoke operation 0x{command:X4} on behalf of {connection}.", message.Command, connection.Id);
                         }
                         finally
                         {
@@ -350,7 +359,7 @@ public partial class Network
             size += 3;
         }
 
-        Log.Verbose("Issuing 0x{command:X4} to {connection}.", command, connection.Id);
+        TRACE("Issuing 0x{command:X4} to {connection}.", command, connection.Id);
 
         _updates.Enqueue(Message.Create(connection, command, buffer, size));
     }

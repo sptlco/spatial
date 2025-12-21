@@ -22,9 +22,8 @@ public sealed class Connection : IDisposable
     private int _connected;
     private byte[] _buffer;
     private ushort _seed;
-    private int _key1;
-    private int _key2;
-    private byte[] _keystream;
+    private int _encoder;
+    private int _decoder;
     private readonly Dictionary<string, object?> _metadata;
 
     /// <summary>
@@ -58,9 +57,14 @@ public sealed class Connection : IDisposable
     internal byte[] Buffer => _buffer;
 
     /// <summary>
-    /// The connection's current seed.
+    /// The connection's seed.
     /// </summary>
     public ushort Seed => _seed;
+
+    /// <summary>
+    /// The connection's <see cref="KeyPair"/>.
+    /// </summary>
+    public KeyPair Keys => new(ref _encoder, ref _decoder);
 
     /// <summary>
     /// The connection's <see cref="Networking.Bridge"/>.
@@ -99,8 +103,7 @@ public sealed class Connection : IDisposable
     /// </summary>
     internal Connection Connect()
     {
-        _key1 = _key2 = 0;
-        _keystream = Cipher.GenerateKeystream(_seed = Strong.UInt16());
+        _encoder = _decoder = _seed = Strong.UInt16((ushort) Network.Transformer.Keystream.Length);
         _connected = 1;
 
         _network.Queue.Enqueue(NetworkEvent.Create(this, NetworkEventCode.EVENT_CONNECT, null));
@@ -165,7 +168,7 @@ public sealed class Connection : IDisposable
     /// Encrypt <paramref name="data"/>.
     /// </summary>
     /// <param name="data">Binary data to encrypt.</param>
-    public void Encrypt(ArraySegment<byte> data) => Cipher.Transform(data.Array!, data.Offset, data.Count, _keystream, ref _key1);
+    public void Encrypt(ArraySegment<byte> data) => Network.Transformer.Encode(data.Array!, data.Offset, data.Count, Keys);
 
     /// <summary>
     /// Send a message to the <see cref="Connection"/>.
@@ -214,11 +217,7 @@ public sealed class Connection : IDisposable
 
         try
         {
-            var offset = 0;
-            var bytes = _socket.EndReceive(e);
-
-            Process(offset, bytes);
-            
+            Process(_socket.EndReceive(e));
             BeginReceive();
         }
         catch (SocketException exception) when (exception.SocketErrorCode == SocketError.ConnectionReset)
@@ -227,7 +226,7 @@ public sealed class Connection : IDisposable
         }
     }
 
-    internal void Process(int offset, int bytes)
+    internal void Process(int bytes)
     {
         if (bytes <= 0)
         {
@@ -235,7 +234,9 @@ public sealed class Connection : IDisposable
             return;
         }
 
-        Log.Verbose("Received {size} KB packet from {connection}.", Math.Round(bytes / 1024D, 2), Id);
+        TRACE("Received {size} KB packet from {connection}.", Math.Round(bytes / 1024D, 2), Id);
+
+        var offset = 0;
 
         while (bytes > 0)
         {
@@ -254,7 +255,8 @@ public sealed class Connection : IDisposable
 
             var buffer = ArrayPool<byte>.Shared.Rent(size);
 
-            Cipher.Transform(buffer, offset, size, _keystream, ref _key2);
+            Array.Copy(_buffer, offset, buffer, 0, size);
+            Network.Transformer.Decode(buffer, 0, size, Keys);
 
             _network.Queue.Enqueue(NetworkEvent.Create(
                 connection: this,

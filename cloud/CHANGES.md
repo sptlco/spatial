@@ -1,5 +1,14 @@
 # Changelog
 
+## [1.16.10](https://github.com/sptlco/spatial/compare/spatial-cloud-1.16.9...spatial-cloud-1.16.10) (2025-12-21)
+
+
+### Bug Fixes
+
+* Fixed several issues with network security ([#49](https://github.com/sptlco/spatial/issues/49)) ([4c3c2c2](https://github.com/sptlco/spatial/commit/4c3c2c2894d8b4d074a81f47fe6277646d69f279))
+* Updated client security ([#49](https://github.com/sptlco/spatial/issues/49)) ([414b091](https://github.com/sptlco/spatial/commit/414b0917f6df52ff00271ea83ca7d2a4a5c5995a))
+* Updated process call in bridge ([#49](https://github.com/sptlco/spatial/issues/49)) ([288e65e](https://github.com/sptlco/spatial/commit/288e65e242e62f20936b14d1515a0051df4ee1c7))
+
 ## [1.16.9](https://github.com/sptlco/spatial/compare/spatial-cloud-1.16.8...spatial-cloud-1.16.9) (2025-12-20)
 
 

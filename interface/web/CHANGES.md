@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.10.5](https://github.com/sptlco/spatial/compare/spatial-interface-web-1.10.4...spatial-interface-web-1.10.5) (2025-12-22)
+
+
+### Bug Fixes
+
+* Added a suspense boundary ([#51](https://github.com/sptlco/spatial/issues/51)) ([338fe4d](https://github.com/sptlco/spatial/commit/338fe4df0e5353230de99e80118fb6a128828b7d))
+
 ## [1.10.4](https://github.com/sptlco/spatial/compare/spatial-interface-web-1.10.3...spatial-interface-web-1.10.4) (2025-12-22)
 
 

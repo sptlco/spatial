@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.6.15](https://github.com/sptlco/spatial/compare/spatial-1.6.14...spatial-1.6.15) (2025-12-22)
+
+
+### Bug Fixes
+
+* Added a suspense boundary ([#51](https://github.com/sptlco/spatial/issues/51)) ([338fe4d](https://github.com/sptlco/spatial/commit/338fe4df0e5353230de99e80118fb6a128828b7d))
+
 ## [1.6.14](https://github.com/sptlco/spatial/compare/spatial-1.6.13...spatial-1.6.14) (2025-12-22)
 
 

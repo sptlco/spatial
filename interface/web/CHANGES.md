@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.11.0](https://github.com/sptlco/spatial/compare/spatial-interface-web-1.10.5...spatial-interface-web-1.11.0) (2025-12-22)
+
+
+### Features
+
+* Added a  link component ([#51](https://github.com/sptlco/spatial/issues/51)) ([8d0bd0d](https://github.com/sptlco/spatial/commit/8d0bd0d0a2f048addedcea640bfbba89371492b4))
+
 ## [1.10.5](https://github.com/sptlco/spatial/compare/spatial-interface-web-1.10.4...spatial-interface-web-1.10.5) (2025-12-22)
 
 

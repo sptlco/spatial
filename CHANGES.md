@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.7.0](https://github.com/sptlco/spatial/compare/spatial-1.6.15...spatial-1.7.0) (2025-12-22)
+
+
+### Features
+
+* Added a  link component ([#51](https://github.com/sptlco/spatial/issues/51)) ([8d0bd0d](https://github.com/sptlco/spatial/commit/8d0bd0d0a2f048addedcea640bfbba89371492b4))
+
+
+### Bug Fixes
+
+* Matched icon size to line height ([#51](https://github.com/sptlco/spatial/issues/51)) ([cfd9f1d](https://github.com/sptlco/spatial/commit/cfd9f1d84ff3d2a88d4ffcedceceb24a997f6462))
+
 ## [1.6.15](https://github.com/sptlco/spatial/compare/spatial-1.6.14...spatial-1.6.15) (2025-12-22)
 
 

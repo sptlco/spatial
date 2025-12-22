@@ -3,52 +3,57 @@
 "use client";
 
 import { Spatial } from "@sptlco/client";
-import { Button, Container, Dialog, Field, Form, Hidden, Icon, Logo, Main, OTP, Span, Spinner } from "@sptlco/design";
+import { Button, Container, Dialog, Field, Form, H1, Hidden, Icon, Logo, Main, OTP, Paragraph, resolve, Span, Spinner } from "@sptlco/design";
 import cookies from "js-cookie";
-import { FormEvent, useState } from "react";
+import { useSearchParams } from "next/navigation";
+import { FormEvent, useEffect, useState } from "react";
 
-type AuthenticationStep = "idle" | "requesting" | "confirming" | "verifying" | "authenticated";
+const KEY_LENGTH = 4;
+
+type AuthenticationState = "idle" | "requesting" | "confirming" | "verifying" | "authenticated";
 
 /**
  * A page that authenticates the current user.
  * @returns A user authentication page.
  */
 export default function Authentication() {
-  const [step, setStep] = useState<AuthenticationStep>("idle");
+  const params = useSearchParams();
+
+  const [state, setState] = useState<AuthenticationState>("idle");
 
   const [userId, setUserId] = useState("");
   const [code, setCode] = useState("");
 
-  const loading = step === "requesting" || step === "verifying";
-  const open = step === "confirming" || step === "verifying";
+  const loading = state === "requesting" || state === "verifying";
+  const open = state === "confirming" || state === "verifying";
 
   const request = async (e: FormEvent) => {
     e.preventDefault();
 
-    if (step !== "idle") {
+    if (state !== "idle") {
       return;
     }
 
-    setStep("requesting");
+    setState("requesting");
 
     const response = await Spatial.keys.create({ user: userId });
 
     if (response.error) {
       // ...
 
-      setStep("idle");
+      setState("idle");
       return;
     }
 
-    setStep("confirming");
+    setState("confirming");
   };
 
   const verify = async () => {
-    if (step !== "confirming") {
+    if (state !== "confirming") {
       return;
     }
 
-    setStep("verifying");
+    setState("verifying");
 
     const response = await Spatial.sessions.create({ user: userId, key: code });
 
@@ -56,7 +61,7 @@ export default function Authentication() {
       // ...
 
       setCode("");
-      setStep("confirming");
+      setState("confirming");
       return;
     }
 
@@ -66,24 +71,50 @@ export default function Authentication() {
       expires: 365
     });
 
-    setStep("authenticated");
+    setState("authenticated");
   };
 
+  const next = () => {
+    let href = resolve("/");
+    let param = params.get("next");
+
+    if (param) {
+      href = atob(param);
+    }
+
+    window.location.href = href;
+  };
+
+  useEffect(() => {
+    switch (state) {
+      case "authenticated":
+        next();
+        break;
+    }
+  }, [state]);
+
   return (
-    <Main className="flex flex-col px-10 items-center justify-center h-screen space-y-20">
-      <Logo className="fill-current h-8" mode="symbol" />
-      <Form className="flex flex-col w-full max-w-sm space-y-8" onSubmit={request}>
+    <Main className="flex px-10 items-center justify-center h-screen">
+      <Form className="flex flex-col items-center w-full max-w-sm space-y-10" onSubmit={request}>
+        <Container className="flex flex-col w-full items-center space-y-10">
+          <Logo className="fill-current h-8" mode="symbol" />
+          <Container className="w-full flex flex-col text-center">
+            <H1 className="font-medium">Secure Access</H1>
+            <Paragraph className="text-foreground-secondary">Sign in to continue to Spatial.</Paragraph>
+          </Container>
+        </Container>
         <Field
           type="text"
-          label="User ID"
+          label="Email Address"
           name="userId"
           id="userId"
-          placeholder="email@address.com"
-          disabled={step !== "idle"}
+          placeholder="name@company.com"
+          description={<>Learn about our approach to secure, passwordless authentication in the documentation.</>}
+          disabled={state !== "idle"}
           value={userId}
           onChange={(e) => setUserId(e.target.value)}
         />
-        <Button type="submit" className="w-full mt-8" intent="ghost" shape="pill">
+        <Button type="submit" className="w-full" intent="secondary">
           <Span>Continue</Span>
           {loading ? <Spinner className="size-4 m-1 text-foreground-tertiary" /> : <Icon symbol="arrow_right_alt" />}
         </Button>
@@ -92,7 +123,7 @@ export default function Authentication() {
         open={open}
         onOpenChange={(open) => {
           if (!open) {
-            setStep("idle");
+            setState("idle");
             setCode("");
           }
         }}
@@ -101,40 +132,33 @@ export default function Authentication() {
           <Dialog.Overlay>
             <Dialog.Close />
           </Dialog.Overlay>
-          <Dialog.Content className="flex flex-col px-10 items-center space-y-20">
+          <Dialog.Content className="flex flex-col px-10 items-center space-y-10">
             <Hidden>
-              <Dialog.Title>Enter your code</Dialog.Title>
-              <Dialog.Description>We just emailed you a 4-digit code.</Dialog.Description>
+              <Dialog.Title>Verify your identity</Dialog.Title>
+              <Dialog.Description>We&apos;ve sent a one-time verification code to your email address.</Dialog.Description>
             </Hidden>
             <Logo className="fill-current h-8" mode="symbol" />
             <Field
               type="otp"
-              maxLength={4}
-              label="Authorization code"
+              maxLength={KEY_LENGTH}
+              label="Verification Code"
               value={code}
               onValueChange={(value) => setCode(value.toUpperCase())}
               onComplete={verify}
-              disabled={step === "verifying"}
+              disabled={state === "verifying"}
               autoFocus
-              description={
-                <>
-                  You received an authorization code.
-                  <br />
-                  To continue, enter it above.
-                </>
-              }
+              description={<>A one-time verification code has been sent to your email address. You may request a new code if necessary.</>}
               containerClassName="items-center text-center"
               className="justify-center"
             >
               <OTP.Group className="justify-center">
-                <OTP.Slot index={0} />
-                <OTP.Slot index={1} />
-                <OTP.Slot index={2} />
-                <OTP.Slot index={3} />
+                {[...Array(KEY_LENGTH)].map((_, index) => (
+                  <OTP.Slot key={index} index={index} />
+                ))}
               </OTP.Group>
             </Field>
             <Container className="inline-flex w-full h-6 items-center justify-center">
-              {step === "verifying" && <Spinner className="size-6 text-foreground-tertiary" />}
+              {state === "verifying" && <Spinner className="size-6 text-foreground-tertiary" />}
             </Container>
           </Dialog.Content>
         </Dialog.Portal>

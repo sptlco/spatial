@@ -1,7 +1,5 @@
 // Copyright © Spatial Corporation. All rights reserved.
 
-using Serilog;
-using Spatial.Helpers;
 using System.Buffers;
 using System.Collections.Concurrent;
 using System.Net.Sockets;
@@ -18,7 +16,6 @@ public sealed class Connection : IDisposable
 
     private Network _network;
     private Socket _socket;
-    private Bridge? _bridge;
     private int _connected;
     private byte[] _buffer;
     private ushort _seed;
@@ -67,11 +64,6 @@ public sealed class Connection : IDisposable
     public KeyPair Keys => new(ref _encoder, ref _decoder);
 
     /// <summary>
-    /// The connection's <see cref="Networking.Bridge"/>.
-    /// </summary>
-    public Bridge? Bridge => _bridge;
-
-    /// <summary>
     /// Properties attached to the <see cref="Connection"/>.
     /// </summary>
     public Dictionary<string, object?> Metadata => _metadata;
@@ -81,9 +73,8 @@ public sealed class Connection : IDisposable
     /// </summary>
     /// <param name="network">The <see cref="Network"/> that accepted the <see cref="Connection"/>.</param>
     /// <param name="socket">The connection's socket.</param>
-    /// <param name="bridge">An optional <see cref="Bridge"/>.</param>
     /// <returns>A <see cref="Connection"/>.</returns>
-    internal static Connection Allocate(Network network, Socket socket, Bridge? bridge = default)
+    internal static Connection Allocate(Network network, Socket socket)
     {
         if (!_pool.TryTake(out var connection))
         {
@@ -92,7 +83,6 @@ public sealed class Connection : IDisposable
 
         connection._network = network;
         connection._socket = socket;
-        connection._bridge = bridge;
         connection._buffer = ArrayPool<byte>.Shared.Rent(Constants.ConnectionSize);
 
         return connection;

@@ -411,8 +411,6 @@ public class Application
             .AddProblemDetails()
             .AddControllers();
 
-        builder.Services.AddSignalR();
-
         builder.Services.AddSingleton<IAuthorizationHandler, PermissionHandler>();
 
         var application = builder.Build();
@@ -427,7 +425,6 @@ public class Application
             .UseExceptionHandler()
             .UseStatusCodePages(ReportStatusCode)
             .UseHttpsRedirection()
-            .UseWebSockets()
             .UseFileServer(new FileServerOptions {
                 FileProvider = new PhysicalFileProvider(path),
                 RequestPath = PathString.Empty,
@@ -443,16 +440,6 @@ public class Application
 
         application.MapControllers();
 
-        application.Map("/live", async context => {
-            if (!context.WebSockets.IsWebSocketRequest)
-            {
-                context.Response.StatusCode = 400;
-                return;
-            }
-
-            Bridge.StartNew(await context.WebSockets.AcceptWebSocketAsync());
-        });
-
         application.Use(async (context, next) => {
             if (context.Request.Method == HttpMethods.Options)
             {
@@ -462,21 +449,6 @@ public class Application
 
             await next();
         });
-        
-        var hubs = Assembly
-            .GetEntryAssembly()!
-            .GetTypes()
-            .Where(type => type.IsAssignableTo(typeof(Hub)));
-
-        foreach (var hub in hubs)
-        {
-            if (hub.GetCustomAttribute<Controller.PathAttribute>() is not Controller.PathAttribute attribute)
-            {
-                throw new Exception($"No path specified for SignalR hub {hub.Name}.");
-            }
-
-            // ...
-        }
 
         return application;
     }

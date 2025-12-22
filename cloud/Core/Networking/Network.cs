@@ -1,7 +1,6 @@
 // Copyright © Spatial Corporation. All rights reserved.
 
 using Microsoft.Extensions.DependencyInjection;
-using Serilog;
 using Spatial.Compute;
 using Spatial.Networking.Contracts;
 using Spatial.Networking.Contracts.Miscellaneous;
@@ -119,12 +118,11 @@ public partial class Network
     /// Connect a <see cref="Socket"/> to the <see cref="Network"/>.
     /// </summary>
     /// <param name="socket">A <see cref="Socket"/>.</param>
-    /// <param name="bridge">An optional <see cref="Bridge"/>.</param>
-    internal Connection Connect(Socket socket, Bridge? bridge = default)
+    internal Connection Connect(Socket socket)
     {
         socket.NoDelay = true;
 
-        return Connection.Allocate(this, socket, bridge).Connect();
+        return Connection.Allocate(this, socket).Connect();
     }
 
     /// <summary>
@@ -189,14 +187,7 @@ public partial class Network
                     
                     try
                     {
-                        if (connection.Bridge is not null)
-                        {
-                            connection.Bridge?.Socket.Web.SendAsync(packet, WebSocketMessageType.Binary, true, CancellationToken.None).GetAwaiter().GetResult();
-                        }
-                        else
-                        {
-                            connection.Socket.Send(packet);
-                        }
+                        connection.Socket.Send(packet);
                     }
                     catch (SocketException exception) when (exception.SocketErrorCode == SocketError.ConnectionReset)
                     {

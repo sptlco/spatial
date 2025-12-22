@@ -6,7 +6,7 @@ import { Spatial } from "@sptlco/client";
 import { Button, Container, Dialog, Field, Form, H1, Hidden, Icon, Logo, Main, OTP, Paragraph, resolve, Span, Spinner } from "@sptlco/design";
 import cookies from "js-cookie";
 import { useSearchParams } from "next/navigation";
-import { FormEvent, useEffect, useState } from "react";
+import { FormEvent, Suspense, useEffect, useState } from "react";
 
 const KEY_LENGTH = 4;
 
@@ -16,7 +16,15 @@ type AuthenticationState = "idle" | "requesting" | "confirming" | "verifying" | 
  * A page that authenticates the current user.
  * @returns A user authentication page.
  */
-export default function Authentication() {
+export default function Page() {
+  return (
+    <Suspense>
+      <Authentication />
+    </Suspense>
+  );
+}
+
+const Authentication = () => {
   const params = useSearchParams();
 
   const [state, setState] = useState<AuthenticationState>("idle");
@@ -165,4 +173,4 @@ export default function Authentication() {
       </Dialog.Root>
     </Main>
   );
-}
+};

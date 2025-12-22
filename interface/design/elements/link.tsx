@@ -22,7 +22,7 @@ export const Link = createElement<"a">((props, ref) => (
       <Span>{props.children}</Span>
       {props.target == "_blank" && (
         <Span className="inline-flex items-center align-middle">
-          <Icon className="ml-0.5 font-medium" size={16} symbol="arrow_outward" />
+          <Icon className="ml-0.5 font-medium text-[1em]!" symbol="arrow_outward" />
         </Span>
       )}
     </a>

@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.5.0](https://github.com/sptlco/spatial/compare/spatial-interface-design-1.4.0...spatial-interface-design-1.5.0) (2025-12-22)
+
+
+### Features
+
+* Added a  link component ([#51](https://github.com/sptlco/spatial/issues/51)) ([8d0bd0d](https://github.com/sptlco/spatial/commit/8d0bd0d0a2f048addedcea640bfbba89371492b4))
+
+
+### Bug Fixes
+
+* Matched icon size to line height ([#51](https://github.com/sptlco/spatial/issues/51)) ([cfd9f1d](https://github.com/sptlco/spatial/commit/cfd9f1d84ff3d2a88d4ffcedceceb24a997f6462))
+
 ## [1.4.0](https://github.com/sptlco/spatial/compare/spatial-interface-design-1.3.0...spatial-interface-design-1.4.0) (2025-12-15)
 
 

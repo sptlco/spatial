@@ -3,7 +3,7 @@
 "use client";
 
 import { Spatial } from "@sptlco/client";
-import { Button, Container, Dialog, Field, Form, H1, Hidden, Icon, Logo, Main, OTP, Paragraph, resolve, Span, Spinner } from "@sptlco/design";
+import { Button, Container, Dialog, Field, Form, H1, Hidden, Icon, Link, Logo, Main, OTP, Paragraph, resolve, Span, Spinner } from "@sptlco/design";
 import cookies from "js-cookie";
 import { useSearchParams } from "next/navigation";
 import { FormEvent, Suspense, useEffect, useState } from "react";
@@ -102,8 +102,9 @@ const Authentication = () => {
   }, [state]);
 
   return (
-    <Main className="flex px-10 items-center justify-center h-screen">
-      <Form className="flex flex-col items-center w-full max-w-sm space-y-10" onSubmit={request}>
+    <Main className="grid grid-cols-[1fr_auto_1fr] grid-rows-[auto_1fr_auto] gap-10 p-10 min-h-screen">
+      <Container className="col-start-3 row-start-1 justify-self-end">Change locales</Container>
+      <Form className="row-start-2 col-span-3 place-self-center flex flex-col items-center w-full max-w-sm space-y-10" onSubmit={request}>
         <Container className="flex flex-col w-full items-center space-y-10">
           <Logo className="fill-current h-8" mode="symbol" />
           <Container className="w-full flex flex-col text-center">
@@ -117,7 +118,15 @@ const Authentication = () => {
           name="userId"
           id="userId"
           placeholder="name@company.com"
-          description={<>Learn about our approach to secure, passwordless authentication in the documentation.</>}
+          description={
+            <>
+              Learn about our approach to secure,{" "}
+              <Link href="/docs" target="_blank">
+                passwordless authentication
+              </Link>{" "}
+              in the public documentation.
+            </>
+          }
           disabled={state !== "idle"}
           value={userId}
           onChange={(e) => setUserId(e.target.value)}
@@ -155,7 +164,11 @@ const Authentication = () => {
               onComplete={verify}
               disabled={state === "verifying"}
               autoFocus
-              description={<>A one-time verification code has been sent to your email address. You may request a new code if necessary.</>}
+              description={
+                <>
+                  A one-time verification code has been sent to your email address. You may <Link>request a new code</Link> if necessary.
+                </>
+              }
               containerClassName="items-center text-center"
               className="justify-center"
             >

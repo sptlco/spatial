@@ -16,6 +16,7 @@ export * from "./icon";
 export * from "./image";
 export * from "./input";
 export * from "./label";
+export * from "./link";
 export * from "./logo";
 export * from "./main";
 export * from "./paragraph";

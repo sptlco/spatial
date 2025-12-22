@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.10.4](https://github.com/sptlco/spatial/compare/spatial-interface-web-1.10.3...spatial-interface-web-1.10.4) (2025-12-22)
+
+
+### Bug Fixes
+
+* Added authentication language ([#51](https://github.com/sptlco/spatial/issues/51)) ([46b6d00](https://github.com/sptlco/spatial/commit/46b6d00be97316a6df5ccff6906a75cf46506167))
+
 ## [1.10.3](https://github.com/sptlco/spatial/compare/spatial-interface-web-1.10.2...spatial-interface-web-1.10.3) (2025-12-20)
 
 

@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.6.14](https://github.com/sptlco/spatial/compare/spatial-1.6.13...spatial-1.6.14) (2025-12-22)
+
+
+### Bug Fixes
+
+* Added authentication language ([#51](https://github.com/sptlco/spatial/issues/51)) ([46b6d00](https://github.com/sptlco/spatial/commit/46b6d00be97316a6df5ccff6906a75cf46506167))
+
 ## [1.6.13](https://github.com/sptlco/spatial/compare/spatial-1.6.12...spatial-1.6.13) (2025-12-21)
 
 

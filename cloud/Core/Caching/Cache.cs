@@ -38,7 +38,7 @@ public class Cache
     /// <returns>An <see cref="object"/> of type <typeparamref name="T"/>.</returns>
     public T Get<T>(string key)
     {
-        return JsonSerializer.Deserialize<T>(GetValue(key)!)!;
+        return JsonSerializer.Deserialize<T>((string) GetValue(key)!)!;
     }
 
     /// <summary>
@@ -69,7 +69,7 @@ public class Cache
             return false;
         }
 
-        value = JsonSerializer.Deserialize<T>(json!)!;
+        value = JsonSerializer.Deserialize<T>((string) json!)!;
 
         return true;
     }

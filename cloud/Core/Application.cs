@@ -276,7 +276,7 @@ public class Application
     private WebApplication CreateWebApplication()
     {
         var path = Path.Combine(AppContext.BaseDirectory, Constants.StaticFilePath);
-        var builder = WebApplication.CreateBuilder(); 
+        var builder = WebApplication.CreateSlimBuilder(); 
 
         Directory.CreateDirectory(path);
 

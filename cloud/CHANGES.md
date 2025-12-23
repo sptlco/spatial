@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.17.0](https://github.com/sptlco/spatial/compare/spatial-cloud-1.16.10...spatial-cloud-1.17.0) (2025-12-23)
+
+
+### Features
+
+* Upgraded to .NET 10 ([#49](https://github.com/sptlco/spatial/issues/49)) ([91eb43b](https://github.com/sptlco/spatial/commit/91eb43b68abb83d1a2e278d36abec5ba970af3de))
+
+
+### Bug Fixes
+
+* Removed bridges ([#49](https://github.com/sptlco/spatial/issues/49)) ([702af6f](https://github.com/sptlco/spatial/commit/702af6f2cd4810b55746ea1e90904df660a3ee9f))
+
 ## [1.16.10](https://github.com/sptlco/spatial/compare/spatial-cloud-1.16.9...spatial-cloud-1.16.10) (2025-12-21)
 
 

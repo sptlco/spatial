@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.6.1](https://github.com/sptlco/spatial/compare/spatial-interface-design-1.6.0...spatial-interface-design-1.6.1) (2025-12-24)
+
+
+### Bug Fixes
+
+* Increased dialog animation duration ([#51](https://github.com/sptlco/spatial/issues/51)) ([8b71a19](https://github.com/sptlco/spatial/commit/8b71a190091071012aaee0e79ecb69bf2a778703))
+* Reduced dialog overlay opacity ([#51](https://github.com/sptlco/spatial/issues/51)) ([62912a5](https://github.com/sptlco/spatial/commit/62912a5b9ccb96f36e9c255f8155a38554e2660c))
+
 ## [1.6.0](https://github.com/sptlco/spatial/compare/spatial-interface-design-1.5.0...spatial-interface-design-1.6.0) (2025-12-24)
 
 

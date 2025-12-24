@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.12.1](https://github.com/sptlco/spatial/compare/spatial-interface-web-1.12.0...spatial-interface-web-1.12.1) (2025-12-24)
+
+
+### Bug Fixes
+
+* Updated translations ([#51](https://github.com/sptlco/spatial/issues/51)) ([c744aab](https://github.com/sptlco/spatial/commit/c744aaba6b3bbb804d78eb21832737dfbf35c9c9))
+
 ## [1.12.0](https://github.com/sptlco/spatial/compare/spatial-interface-web-1.11.0...spatial-interface-web-1.12.0) (2025-12-24)
 
 

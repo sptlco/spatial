@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.9.3](https://github.com/sptlco/spatial/compare/spatial-1.9.2...spatial-1.9.3) (2025-12-24)
+
+
+### Bug Fixes
+
+* Updated translations ([#51](https://github.com/sptlco/spatial/issues/51)) ([c744aab](https://github.com/sptlco/spatial/commit/c744aaba6b3bbb804d78eb21832737dfbf35c9c9))
+
 ## [1.9.2](https://github.com/sptlco/spatial/compare/spatial-1.9.1...spatial-1.9.2) (2025-12-24)
 
 

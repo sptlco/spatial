@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.9.0](https://github.com/sptlco/spatial/compare/spatial-1.8.0...spatial-1.9.0) (2025-12-24)
+
+
+### Features
+
+* Added localized authentication ([#51](https://github.com/sptlco/spatial/issues/51)) ([f180785](https://github.com/sptlco/spatial/commit/f1807857c082c0215f918ae8a4981d68779bb0f2))
+
 ## [1.8.0](https://github.com/sptlco/spatial/compare/spatial-1.7.0...spatial-1.8.0) (2025-12-23)
 
 

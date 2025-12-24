@@ -1,6 +1,9 @@
 // Copyright © Spatial Corporation. All rights reserved.
 
 import type { NextConfig } from "next";
+import createNextIntlPlugin from "next-intl/plugin";
+
+const withNextIntl = createNextIntlPlugin();
 
 const nextConfig: NextConfig = {
   basePath: process.env.NEXT_PUBLIC_BASE_URL,
@@ -11,4 +14,4 @@ const nextConfig: NextConfig = {
   }
 };
 
-export default nextConfig;
+export default withNextIntl(nextConfig);

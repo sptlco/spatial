@@ -1,0 +1,40 @@
+{
+  "Authentication": {
+    "title": "Secure Access",
+    "description": "Sign in to continue to Spatial.",
+
+    "email": {
+      "label": "Email Address",
+      "placeholder": "name@company.com",
+      "description": {
+        "prefix": "Learn about our approach to secure,",
+        "link": "passwordless authentication",
+        "suffix": "in the public documentation."
+      }
+    },
+
+    "continue": "Continue",
+
+    "legal": {
+      "users": "User Agreement",
+      "privacy": "Privacy Policy"
+    },
+
+    "verification": {
+      "title": "Check your inbox",
+      "description": "We sent you a verification code.",
+      "label": "Verification Code",
+      "help": {
+        "prefix": "A one-time verification code has been sent to your email address. You may",
+        "link": "request a new code",
+        "suffix": "if necessary."
+      }
+    }
+  },
+
+  "LocaleSwitcher": {
+    "label": "English",
+    "name": "{locale, select, en_US {English} sw {Kiswahili} other {Unknown}}",
+    "origin": "{locale, select, en_US {English} sw {Swahili} other {Unknown}}"
+  }
+}

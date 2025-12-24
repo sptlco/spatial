@@ -2,6 +2,7 @@
 
 import { Body, Favicon, Head, Html } from "@sptlco/design";
 import type { Metadata } from "next";
+import { NextIntlClientProvider } from "next-intl";
 
 import "./global.css";
 
@@ -18,13 +19,17 @@ export const metadata: Metadata = {
  * @param props Configurable options for the layout.
  * @returns A layout element.
  */
-export default function Layout(props: { children: React.ReactNode }) {
+export default async function Layout(props: { children: React.ReactNode; params: Promise<{ locale: string }> }) {
+  const { locale } = await props.params;
+
   return (
-    <Html>
+    <Html lang={locale}>
       <Head>
         <Favicon href="/assets/favicon.ico" />
       </Head>
-      <Body>{props.children}</Body>
+      <Body>
+        <NextIntlClientProvider>{props.children}</NextIntlClientProvider>
+      </Body>
     </Html>
   );
 }

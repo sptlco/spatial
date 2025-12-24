@@ -1,0 +1,40 @@
+{
+  "Authentication": {
+    "title": "Ufikiaji Salama",
+    "description": "Ingia ili kuendelea kwenye Spatial.",
+
+    "email": {
+      "label": "Anwani ya Barua Pepe",
+      "placeholder": "jina@kampuni.com",
+      "description": {
+        "prefix": "Jifunze kuhusu mbinu yetu ya usalama wa",
+        "link": "uthibitishaji bila nenosiri",
+        "suffix": "katika nyaraka za umma."
+      }
+    },
+
+    "continue": "Endelea",
+
+    "legal": {
+      "users": "Makubaliano ya Mtumiaji",
+      "privacy": "Sera ya Faragha"
+    },
+
+    "verification": {
+      "title": "Angalia kikasha chako",
+      "description": "Tumekutumia msimbo wa uthibitishaji.",
+      "label": "Msimbo wa Uthibitishaji",
+      "help": {
+        "prefix": "Msimbo wa uthibitishaji wa mara moja umetumwa kwenye anwani yako ya barua pepe. Unaweza",
+        "link": "kuomba msimbo mpya",
+        "suffix": "ikiwa ni lazima."
+      }
+    }
+  },
+
+  "LocaleSwitcher": {
+    "label": "Kiswahili",
+    "name": "{locale, select, en_US {Kiingereza} sw {Kiswahili} other {Haijulikani}}",
+    "origin": "{locale, select, en_US {Kiingereza} sw {Kiswahili} other {Haijulikani}}"
+  }
+}

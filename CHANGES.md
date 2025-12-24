@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.9.2](https://github.com/sptlco/spatial/compare/spatial-1.9.1...spatial-1.9.2) (2025-12-24)
+
+
+### Bug Fixes
+
+* Corrected dialog overlay position ([#51](https://github.com/sptlco/spatial/issues/51)) ([60a4742](https://github.com/sptlco/spatial/commit/60a47423e340ffeef8f820f21e9d0e9ba7829e18))
+
 ## [1.9.1](https://github.com/sptlco/spatial/compare/spatial-1.9.0...spatial-1.9.1) (2025-12-24)
 
 

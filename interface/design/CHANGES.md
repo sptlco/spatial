@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.6.2](https://github.com/sptlco/spatial/compare/spatial-interface-design-1.6.1...spatial-interface-design-1.6.2) (2025-12-24)
+
+
+### Bug Fixes
+
+* Corrected dialog overlay position ([#51](https://github.com/sptlco/spatial/issues/51)) ([60a4742](https://github.com/sptlco/spatial/commit/60a47423e340ffeef8f820f21e9d0e9ba7829e18))
+
 ## [1.6.1](https://github.com/sptlco/spatial/compare/spatial-interface-design-1.6.0...spatial-interface-design-1.6.1) (2025-12-24)
 
 

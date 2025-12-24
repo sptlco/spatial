@@ -38,7 +38,7 @@ export const Dialog = {
             data-slot="dialog-overlay"
             className={clsx(
               "fixed z-51 size-full bg-background-base/30 backdrop-blur",
-              "data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0"
+              "data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 duration-500"
             )}
           />
           <Container className="flex pointer-events-auto z-52 flex-col col-start-1 row-start-1 col-span-2">

@@ -28,7 +28,7 @@ export default function Page() {
 
 const Authentication = () => {
   const searchParams = useSearchParams();
-  const t = useTranslations("Authentication");
+  const t = useTranslations("authentication");
 
   const [state, setState] = useState<AuthenticationState>("idle");
   const [email, setEmail] = useState("");
@@ -125,15 +125,13 @@ const Authentication = () => {
           name="email"
           id="email"
           placeholder={t("email.placeholder")}
-          description={
-            <>
-              {t("email.description.prefix")}{" "}
+          description={t.rich("email.description", {
+            link: (chunks) => (
               <Link href="/docs" target="_blank">
-                {t("email.description.link")}
-              </Link>{" "}
-              {t("email.description.suffix")}
-            </>
-          }
+                {chunks}
+              </Link>
+            )
+          })}
           disabled={state !== "idle"}
           value={email}
           onChange={(e) => setEmail(e.target.value)}
@@ -175,11 +173,7 @@ const Authentication = () => {
             onComplete={verify}
             disabled={state === "verifying" || state === "authenticated"}
             autoFocus
-            description={
-              <>
-                {t("verification.help.prefix")} <Link>{t("verification.help.link")}</Link> {t("verification.help.suffix")}
-              </>
-            }
+            description={t.rich("verification.help", { link: (chunks) => <Link>{chunks}</Link> })}
             containerClassName="items-center text-center"
             className="justify-center"
           >

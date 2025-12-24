@@ -1,16 +1,12 @@
 {
-  "Authentication": {
+  "authentication": {
     "title": "Ufikiaji Salama",
     "description": "Ingia ili kuendelea kwenye Spatial.",
 
     "email": {
       "label": "Anwani ya Barua Pepe",
       "placeholder": "jina@kampuni.com",
-      "description": {
-        "prefix": "Jifunze kuhusu mbinu yetu ya usalama wa",
-        "link": "uthibitishaji bila nenosiri",
-        "suffix": "katika nyaraka za umma."
-      }
+      "description": "Jifunze kuhusu mbinu yetu ya uthibitishaji salama, <link>bila nenosiri</link> katika nyaraka za umma."
     },
 
     "continue": "Endelea",
@@ -24,17 +20,13 @@
       "title": "Angalia kikasha chako",
       "description": "Tumekutumia msimbo wa uthibitishaji.",
       "label": "Msimbo wa Uthibitishaji",
-      "help": {
-        "prefix": "Msimbo wa uthibitishaji wa mara moja umetumwa kwenye anwani yako ya barua pepe. Unaweza",
-        "link": "kuomba msimbo mpya",
-        "suffix": "ikiwa ni lazima."
-      }
+      "help": "Msimbo wa uthibitishaji wa mara moja umetumwa kwenye anwani yako ya barua pepe. Unaweza <link>kuomba msimbo mpya</link> ikiwa ni lazima."
     }
   },
 
-  "LocaleSwitcher": {
+  "locale": {
     "label": "Kiswahili",
-    "name": "{locale, select, en_US {Kiingereza} sw {Kiswahili} other {Haijulikani}}",
-    "origin": "{locale, select, en_US {Kiingereza} sw {Kiswahili} other {Haijulikani}}"
+    "name": "{locale, select, en_US {Kiingereza} sw {Kiswahili} fr {Kifaransa} es {Kihispania} de {Kijerumani} pt_BR {Kireno (Brazili)} it {Kiitaliano} ja {Kijapani} other {Haijulikani}}",
+    "origin": "{locale, select, en_US {English} sw {Swahili} fr {French} es {Spanish} de {German} pt_BR {Brazilian Portuguese} it {Italian} ja {Japanese} other {Unknown}}"
   }
 }

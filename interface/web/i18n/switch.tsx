@@ -21,7 +21,7 @@ export const LocaleSwitcher = () => {
 
   const [pending, startTransition] = useTransition();
 
-  const t = useTranslations("LocaleSwitcher");
+  const t = useTranslations("locale");
 
   const change = (next: string) => {
     startTransition(() => {

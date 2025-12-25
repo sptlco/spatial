@@ -24,19 +24,20 @@ export const useUserStore = create<UserStore>()(
         const response = await Spatial.me();
 
         if (response.error) {
-          set({ loading: false, authenticated: false, user: undefined });
-          return;
+          set({
+            loading: false,
+            authenticated: false,
+            user: undefined
+          });
+        } else {
+          set({
+            loading: false,
+            authenticated: true,
+            user: response.data
+          });
         }
-
-        set({
-          loading: false,
-          authenticated: true,
-          user: response.data
-        });
       }
     }),
-    {
-      name: "user"
-    }
+    { name: "user" }
   )
 );

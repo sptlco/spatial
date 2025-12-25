@@ -1,6 +1,6 @@
 // Copyright © Spatial Corporation. All rights reserved.
 
-import { Response } from ".";
+import { Response, SESSION_COOKIE_NAME } from ".";
 import axios, { AxiosRequestConfig } from "axios";
 import cookies from "js-cookie";
 
@@ -51,7 +51,7 @@ export class Controller {
         data: body
       };
 
-      const session = cookies.get("spatial.session");
+      const session = cookies.get(SESSION_COOKIE_NAME);
 
       if (session) {
         config = {

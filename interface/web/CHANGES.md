@@ -1,5 +1,14 @@
 # Changelog
 
+## [1.13.1](https://github.com/sptlco/spatial/compare/spatial-interface-web-1.13.0...spatial-interface-web-1.13.1) (2025-12-25)
+
+
+### Bug Fixes
+
+* Cleaned the user store ([#51](https://github.com/sptlco/spatial/issues/51)) ([b72a02e](https://github.com/sptlco/spatial/commit/b72a02e3d7532933cd36194e87b74cc420e611de))
+* Renamed user store hook ([#51](https://github.com/sptlco/spatial/issues/51)) ([34f7481](https://github.com/sptlco/spatial/commit/34f74813c1342174ba50c6903c066484cf9005d2))
+* Updated authentication URL ([#51](https://github.com/sptlco/spatial/issues/51)) ([da7c2fe](https://github.com/sptlco/spatial/commit/da7c2fe04b7e6bdb05f57658c47fd6e62e5d59d8))
+
 ## [1.13.0](https://github.com/sptlco/spatial/compare/spatial-interface-web-1.12.1...spatial-interface-web-1.13.0) (2025-12-25)
 
 

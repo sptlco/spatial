@@ -2,7 +2,7 @@
 
 "use client";
 
-import { LocaleSwitcher } from "@/i18n/switch";
+import { LocaleSwitcher } from "@/locales/switch";
 import { Spatial } from "@sptlco/client";
 import { Button, Container, Dialog, Field, Form, H1, Icon, Link, Logo, Main, OTP, Paragraph, resolve, Span, Spinner } from "@sptlco/design";
 import cookies from "js-cookie";

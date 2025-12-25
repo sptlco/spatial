@@ -1,7 +1,7 @@
 // Copyright © Spatial Corporation. All rights reserved.
 
 import createMiddleware from "next-intl/middleware";
-import { routing } from "./i18n/routing";
+import { routing } from "./locales/routing";
 
 export default createMiddleware(routing);
 

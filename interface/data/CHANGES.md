@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.0](https://github.com/sptlco/spatial/compare/spatial-interface-data-1.0.1...spatial-interface-data-1.1.0) (2025-12-25)
+
+
+### Features
+
+* Added state with zustand ([#51](https://github.com/sptlco/spatial/issues/51)) ([e16c333](https://github.com/sptlco/spatial/commit/e16c3335ba72745ba9a71887f04d597dc7f6517b))
+
 ## [1.0.1](https://github.com/sptlco/spatial/compare/spatial-interface-data-1.0.0...spatial-interface-data-1.0.1) (2025-12-20)
 
 

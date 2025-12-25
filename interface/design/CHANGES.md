@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.6.3](https://github.com/sptlco/spatial/compare/spatial-interface-design-1.6.2...spatial-interface-design-1.6.3) (2025-12-25)
+
+
+### Bug Fixes
+
+* Updated dialog layers ([#51](https://github.com/sptlco/spatial/issues/51)) ([373bb53](https://github.com/sptlco/spatial/commit/373bb53837605ea9a15b2c763fb0fb3ad575f5a5))
+
 ## [1.6.2](https://github.com/sptlco/spatial/compare/spatial-interface-design-1.6.1...spatial-interface-design-1.6.2) (2025-12-24)
 
 

@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.13.0](https://github.com/sptlco/spatial/compare/spatial-interface-web-1.12.1...spatial-interface-web-1.13.0) (2025-12-25)
+
+
+### Features
+
+* Added state with zustand ([#51](https://github.com/sptlco/spatial/issues/51)) ([e16c333](https://github.com/sptlco/spatial/commit/e16c3335ba72745ba9a71887f04d597dc7f6517b))
+
+
+### Bug Fixes
+
+* Migrated locales ([#51](https://github.com/sptlco/spatial/issues/51)) ([b8ea7d2](https://github.com/sptlco/spatial/commit/b8ea7d288adc66c5ffbea07eb70076687fc668d4))
+
 ## [1.12.1](https://github.com/sptlco/spatial/compare/spatial-interface-web-1.12.0...spatial-interface-web-1.12.1) (2025-12-24)
 
 

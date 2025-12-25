@@ -1,5 +1,18 @@
 # Changelog
 
+## [1.10.0](https://github.com/sptlco/spatial/compare/spatial-1.9.3...spatial-1.10.0) (2025-12-25)
+
+
+### Features
+
+* Added state with zustand ([#51](https://github.com/sptlco/spatial/issues/51)) ([e16c333](https://github.com/sptlco/spatial/commit/e16c3335ba72745ba9a71887f04d597dc7f6517b))
+
+
+### Bug Fixes
+
+* Migrated locales ([#51](https://github.com/sptlco/spatial/issues/51)) ([b8ea7d2](https://github.com/sptlco/spatial/commit/b8ea7d288adc66c5ffbea07eb70076687fc668d4))
+* Updated dialog layers ([#51](https://github.com/sptlco/spatial/issues/51)) ([373bb53](https://github.com/sptlco/spatial/commit/373bb53837605ea9a15b2c763fb0fb3ad575f5a5))
+
 ## [1.9.3](https://github.com/sptlco/spatial/compare/spatial-1.9.2...spatial-1.9.3) (2025-12-24)
 
 

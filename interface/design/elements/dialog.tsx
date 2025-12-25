@@ -33,15 +33,28 @@ export const Dialog = {
 
     return (
       <Primitive.Portal>
-        <Container className="fixed z-50 inset-0 grid grid-cols-[1fr_auto_auto] grid-rows-[auto_1fr_auto] gap-10 p-10 min-h-screen">
-          <Primitive.Overlay
-            data-slot="dialog-overlay"
-            className={clsx(
-              "fixed inset-0 z-51 size-full bg-background-base/30 backdrop-blur",
-              "data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 duration-500"
-            )}
-          />
-          <Container className="flex pointer-events-auto z-52 flex-col col-start-1 row-start-1 col-span-2">
+        <Primitive.Overlay
+          data-slot="dialog-overlay"
+          className={clsx(
+            "fixed inset-0 z-50 size-full bg-background-base/30 backdrop-blur",
+            "data-[state=open]:animate-in data-[state=open]:fade-in",
+            "data-[state=closed]:animate-out data-[state=closed]:fade-out",
+            "duration-500"
+          )}
+        />
+        <Primitive.Content
+          {...props}
+          ref={ref}
+          data-slot="dialog-content"
+          className={clsx(
+            "fixed inset-0 z-51",
+            "grid grid-cols-[1fr_auto_auto] grid-rows-[auto_1fr_auto] gap-10 p-10 w-full min-h-screen",
+            "data-[state=open]:animate-in data-[state=open]:fade-in data-[state=open]:zoom-in-95",
+            "data-[state=closed]:animate-out data-[state=closed]:fade-out data-[state=closed]:zoom-out-95",
+            "duration-500"
+          )}
+        >
+          <Container className="flex z-52 flex-col col-start-1 row-start-1 col-span-2">
             <Optional value={props.title}>
               <Primitive.Title className="font-bold text-lg">{props.title}</Primitive.Title>
             </Optional>
@@ -49,25 +62,11 @@ export const Dialog = {
               <Primitive.Description className="text-foreground-secondary">{props.description}</Primitive.Description>
             </Optional>
           </Container>
-          <Primitive.Close
-            data-slot="dialog-close"
-            className={clsx("cursor-pointer pointer-events-auto flex z-52 col-start-3 row-start-1 h-fit justify-self-end")}
-          >
+          <Primitive.Close data-slot="dialog-close" className={clsx("cursor-pointer flex z-52 col-start-3 row-start-1 h-fit justify-self-end")}>
             <Icon symbol="close" />
           </Primitive.Close>
-          <Primitive.Content
-            {...props}
-            ref={ref}
-            data-slot="dialog-content"
-            className={clsx(
-              "relative z-52 row-start-2 col-span-3 place-self-center",
-              "data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95",
-              props.className
-            )}
-          >
-            {props.children}
-          </Primitive.Content>
-        </Container>
+          <Container className={clsx("col-span-3 row-start-2 place-self-center", props.className)}>{props.children}</Container>
+        </Primitive.Content>
       </Primitive.Portal>
     );
   })

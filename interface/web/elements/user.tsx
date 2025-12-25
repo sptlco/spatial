@@ -2,7 +2,7 @@
 
 "use client";
 
-import { useUserStore } from "@/stores";
+import { useUser } from "@/stores";
 import { FC, useEffect } from "react";
 
 /**
@@ -10,7 +10,7 @@ import { FC, useEffect } from "react";
  * @returns Nothing.
  */
 export const User: FC = () => {
-  const authenticate = useUserStore((state) => state.authenticate);
+  const authenticate = useUser((state) => state.authenticate);
 
   useEffect(() => {
     authenticate();

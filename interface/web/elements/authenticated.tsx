@@ -3,7 +3,7 @@
 "use client";
 
 import { useRouter } from "@/locales/navigation";
-import { useUserStore } from "@/stores";
+import { useUser } from "@/stores";
 import { Container, Spinner } from "@sptlco/design";
 import { clsx } from "clsx";
 import { FC, PropsWithChildren, useEffect } from "react";
@@ -31,7 +31,7 @@ export type AuthenticatedProps = PropsWithChildren & {
 export const Authenticated: FC<AuthenticatedProps> = ({ animate = true, ...props }) => {
   const router = useRouter();
 
-  const { loading, authenticated } = useUserStore(
+  const { loading, authenticated } = useUser(
     useShallow((state) => ({
       loading: state.loading,
       authenticated: state.authenticated

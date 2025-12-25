@@ -15,7 +15,7 @@ type UserStore = {
 /**
  * Get access to the user store.
  */
-export const useUserStore = create<UserStore>()(
+export const useUser = create<UserStore>()(
   devtools(
     (set) => ({
       loading: true,

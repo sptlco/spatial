@@ -4,7 +4,7 @@
 
 import { Unauthenticated } from "@/elements";
 import { LocaleSwitcher } from "@/locales/switch";
-import { useUserStore } from "@/stores";
+import { useUser } from "@/stores";
 import { SESSION_COOKIE_NAME, Spatial } from "@sptlco/client";
 import { Button, Container, Dialog, Field, Form, H1, Icon, Link, Logo, Main, OTP, Paragraph, resolve, Span, Spinner } from "@sptlco/design";
 import cookies from "js-cookie";
@@ -29,7 +29,7 @@ export default function Page() {
 }
 
 const Authentication = () => {
-  const authenticate = useUserStore((state) => state.authenticate);
+  const authenticate = useUser((state) => state.authenticate);
 
   const searchParams = useSearchParams();
   const t = useTranslations("authentication");

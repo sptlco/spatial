@@ -6,9 +6,8 @@ import createNextIntlPlugin from "next-intl/plugin";
 const withNextIntl = createNextIntlPlugin("./locales/request.ts");
 
 const nextConfig: NextConfig = {
-  basePath: process.env.NEXT_PUBLIC_BASE_URL,
   reactCompiler: true,
-  allowedDevOrigins: ["dev.sptlco.com", "*.dev.sptlco.com"],
+  allowedDevOrigins: ["s1.sptlco.com"],
   experimental: {
     externalDir: true
   }

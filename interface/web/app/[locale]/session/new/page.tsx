@@ -42,7 +42,7 @@ const Authentication = () => {
   const open = state === "confirming" || state === "verifying";
 
   const next = () => {
-    let href = resolve("/");
+    let href = "/";
     let param = searchParams.get("next");
 
     if (param) {

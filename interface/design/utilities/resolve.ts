@@ -6,6 +6,5 @@
  * @returns A resolved file path.
  */
 export const resolve = (path: string): string => {
-  let base = process.env.NEXT_PUBLIC_BASE_URL;
-  return base ? `${base.replace(/\/$/, "")}/${path.replace(/^\//, "")}` : path;
+  return path;
 };

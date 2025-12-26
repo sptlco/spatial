@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.10.2](https://github.com/sptlco/spatial/compare/spatial-1.10.1...spatial-1.10.2) (2025-12-26)
+
+
+### Bug Fixes
+
+* Removed base URL support ([#51](https://github.com/sptlco/spatial/issues/51)) ([2f32932](https://github.com/sptlco/spatial/commit/2f329320ab0fb2c92781677cb61af7b64c6d5cfa))
+
 ## [1.10.1](https://github.com/sptlco/spatial/compare/spatial-1.10.0...spatial-1.10.1) (2025-12-25)
 
 

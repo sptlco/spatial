@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.13.2](https://github.com/sptlco/spatial/compare/spatial-interface-web-1.13.1...spatial-interface-web-1.13.2) (2025-12-26)
+
+
+### Bug Fixes
+
+* Removed base URL support ([#51](https://github.com/sptlco/spatial/issues/51)) ([2f32932](https://github.com/sptlco/spatial/commit/2f329320ab0fb2c92781677cb61af7b64c6d5cfa))
+
 ## [1.13.1](https://github.com/sptlco/spatial/compare/spatial-interface-web-1.13.0...spatial-interface-web-1.13.1) (2025-12-25)
 
 

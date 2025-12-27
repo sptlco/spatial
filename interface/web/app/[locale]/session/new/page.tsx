@@ -87,7 +87,6 @@ const Authentication = () => {
 
     if (response.error) {
       toast.error("Invalid verification code", {
-        closeButton: true,
         description: "The code you entered is incorrect or has expired. Please check it and try again."
       });
 

@@ -46,6 +46,7 @@ export const Dialog = {
           {...props}
           ref={ref}
           data-slot="dialog-content"
+          onInteractOutside={(e) => e.preventDefault()}
           className={clsx(
             "fixed inset-0 z-51",
             "grid grid-cols-[1fr_auto_auto] grid-rows-[auto_1fr_auto] gap-10 p-10 w-full min-h-screen",

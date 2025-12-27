@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.3.0](https://github.com/sptlco/spatial/compare/spatial-interface-client-1.2.0...spatial-interface-client-1.3.0) (2025-12-27)
+
+
+### Features
+
+* Added toast notifications ([#51](https://github.com/sptlco/spatial/issues/51)) ([30691f6](https://github.com/sptlco/spatial/commit/30691f6b2d2093e4477d82442e371e805372799d))
+
 ## [1.2.0](https://github.com/sptlco/spatial/compare/spatial-interface-client-1.1.3...spatial-interface-client-1.2.0) (2025-12-25)
 
 

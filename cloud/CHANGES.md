@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.19.0](https://github.com/sptlco/spatial/compare/spatial-cloud-1.18.0...spatial-cloud-1.19.0) (2025-12-27)
+
+
+### Features
+
+* Added toast notifications ([#51](https://github.com/sptlco/spatial/issues/51)) ([30691f6](https://github.com/sptlco/spatial/commit/30691f6b2d2093e4477d82442e371e805372799d))
+
 ## [1.18.0](https://github.com/sptlco/spatial/compare/spatial-cloud-1.17.0...spatial-cloud-1.18.0) (2025-12-25)
 
 

@@ -21,6 +21,17 @@
       "description": "We sent you a verification code.",
       "label": "Verification Code",
       "help": "A one-time verification code has been sent to your email address. You may <link>request a new code</link> if necessary."
+    },
+
+    "errors": {
+      "request": {
+        "title": "Something went wrong",
+        "description": "We ran into a rare issue while preparing your verification code. Please try again shortly."
+      },
+      "verify": {
+        "title": "Invalid verification code",
+        "description": "The code you entered is incorrect or has expired. Please check it and try again."
+      }
     }
   },
 

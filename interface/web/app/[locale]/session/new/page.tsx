@@ -64,9 +64,9 @@ const Authentication = () => {
     const response = await Spatial.keys.create({ user: email });
 
     if (response.error) {
-      toast.error("Something went wrong", {
+      toast.error(t("errors.request.title"), {
         closeButton: true,
-        description: "We ran into a rare issue while preparing your verification code. Please try again shortly."
+        description: t("errors.request.description")
       });
 
       setState("idle");
@@ -86,8 +86,8 @@ const Authentication = () => {
     const response = await Spatial.sessions.create({ user: email, key: code });
 
     if (response.error) {
-      toast.error("Invalid verification code", {
-        description: "The code you entered is incorrect or has expired. Please check it and try again."
+      toast.error(t("errors.verify.title"), {
+        description: t("errors.verify.description")
       });
 
       setCode("");

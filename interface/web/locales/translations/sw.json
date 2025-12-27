@@ -21,6 +21,17 @@
       "description": "Tumekutumia msimbo wa uthibitishaji.",
       "label": "Msimbo wa Uthibitishaji",
       "help": "Msimbo wa uthibitishaji wa mara moja umetumwa kwenye anwani yako ya barua pepe. Unaweza <link>kuomba msimbo mpya</link> ikiwa ni lazima."
+    },
+
+    "errors": {
+      "request": {
+        "title": "Hitilafu imetokea",
+        "description": "Tumekutana na tatizo lisilo la kawaida wakati wa kuandaa msimbo wako wa uthibitishaji. Tafadhali jaribu tena baada ya muda mfupi."
+      },
+      "verify": {
+        "title": "Msimbo wa uthibitishaji si sahihi",
+        "description": "Msimbo ulioweka si sahihi au muda wake umeisha. Tafadhali hakikisha na ujaribu tena."
+      }
     }
   },
 

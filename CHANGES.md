@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.11.1](https://github.com/sptlco/spatial/compare/spatial-1.11.0...spatial-1.11.1) (2025-12-27)
+
+
+### Bug Fixes
+
+* Suppressed dialog event ([#51](https://github.com/sptlco/spatial/issues/51)) ([15c50eb](https://github.com/sptlco/spatial/commit/15c50ebeeaf39a58fff89faed5c27b9e2d3f2c65))
+
 ## [1.11.0](https://github.com/sptlco/spatial/compare/spatial-1.10.2...spatial-1.11.0) (2025-12-27)
 
 

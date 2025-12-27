@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.7.1](https://github.com/sptlco/spatial/compare/spatial-interface-design-1.7.0...spatial-interface-design-1.7.1) (2025-12-27)
+
+
+### Bug Fixes
+
+* Suppressed dialog event ([#51](https://github.com/sptlco/spatial/issues/51)) ([15c50eb](https://github.com/sptlco/spatial/commit/15c50ebeeaf39a58fff89faed5c27b9e2d3f2c65))
+
 ## [1.7.0](https://github.com/sptlco/spatial/compare/spatial-interface-design-1.6.4...spatial-interface-design-1.7.0) (2025-12-27)
 
 

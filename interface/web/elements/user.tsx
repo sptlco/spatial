@@ -10,10 +10,10 @@ import { FC, useEffect } from "react";
  * @returns Nothing.
  */
 export const User: FC = () => {
-  const authenticate = useUser((state) => state.authenticate);
+  const login = useUser((state) => state.login);
 
   useEffect(() => {
-    authenticate();
+    login();
   }, []);
 
   return null;

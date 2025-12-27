@@ -22,6 +22,7 @@ export * from "./logo";
 export * from "./main";
 export * from "./paragraph";
 export * from "./path";
+export * from "./sonner";
 export * from "./span";
 export * from "./spinner";
 export * from "./svg";

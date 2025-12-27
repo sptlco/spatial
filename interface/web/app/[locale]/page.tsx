@@ -1,5 +1,7 @@
 // Copyright © Spatial Corporation. All rights reserved.
 
+"use client";
+
 import { Logo, Main } from "@sptlco/design";
 
 /**
@@ -8,7 +10,7 @@ import { Logo, Main } from "@sptlco/design";
  */
 export default function Page() {
   return (
-    <Main className="flex w-full h-screen items-center justify-center">
+    <Main className="flex flex-col w-full h-screen items-center justify-center gap-10">
       <Logo mode="wordmark" className="h-6 md:h-12 fill-white" />
     </Main>
   );

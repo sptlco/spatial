@@ -18,7 +18,7 @@ export class Controller {
    * @param body The request's body.
    * @returns A response from the server.
    */
-  protected post = async <R>(path: string, body: any) => this.fetch<R>(path, "POST", body);
+  protected post = async <R>(path: string, body?: any) => this.fetch<R>(path, "POST", body);
 
   /**
    * Send a GET request to the server.
@@ -33,7 +33,7 @@ export class Controller {
    * @param body The request's body.
    * @returns A response from the server.
    */
-  protected patch = async <R>(path: string, body: any) => this.fetch<R>(path, "PATCH", body);
+  protected patch = async <R>(path: string, body?: any) => this.fetch<R>(path, "PATCH", body);
 
   /**
    * Send a DELETE request to the server.
@@ -41,7 +41,7 @@ export class Controller {
    * @param body The request's body.
    * @returns A response from the server.
    */
-  protected delete = async <R>(path: string, body: any) => this.fetch<R>(path, "DELETE", body);
+  protected delete = async <R>(path: string, body?: any) => this.fetch<R>(path, "DELETE", body);
 
   private fetch = async <T>(path: string, method: string, body?: any): Promise<Response<T>> => {
     try {

@@ -6,7 +6,7 @@ import { Unauthenticated } from "@/elements";
 import { LocaleSwitcher } from "@/locales/switch";
 import { useUser } from "@/stores";
 import { SESSION_COOKIE_NAME, Spatial } from "@sptlco/client";
-import { Button, Container, Dialog, Field, Form, H1, Icon, Link, Logo, Main, OTP, Paragraph, resolve, Span, Spinner } from "@sptlco/design";
+import { Button, Container, Dialog, Field, Form, H1, Icon, Link, Logo, Main, OTP, Paragraph, Span, Spinner, toast } from "@sptlco/design";
 import cookies from "js-cookie";
 import { useTranslations } from "next-intl";
 import { useSearchParams } from "next/navigation";
@@ -29,7 +29,7 @@ export default function Page() {
 }
 
 const Authentication = () => {
-  const authenticate = useUser((state) => state.authenticate);
+  const login = useUser((state) => state.login);
 
   const searchParams = useSearchParams();
   const t = useTranslations("authentication");
@@ -64,7 +64,10 @@ const Authentication = () => {
     const response = await Spatial.keys.create({ user: email });
 
     if (response.error) {
-      // ...
+      toast.error("Something went wrong", {
+        closeButton: true,
+        description: "We ran into a rare issue while preparing your verification code. Please try again shortly."
+      });
 
       setState("idle");
       return;
@@ -83,22 +86,26 @@ const Authentication = () => {
     const response = await Spatial.sessions.create({ user: email, key: code });
 
     if (response.error) {
-      // ...
+      toast.error("Invalid verification code", {
+        closeButton: true,
+        description: "The code you entered is incorrect or has expired. Please check it and try again."
+      });
 
       setCode("");
       setState("confirming");
+
       return;
     }
 
     cookies.set(SESSION_COOKIE_NAME, response.data.token, {
       path: "/",
       secure: true,
-      expires: 365
+      expires: new Date(response.data.expires)
     });
 
-    await authenticate();
-
     setState("authenticated");
+
+    await login();
   };
 
   const render = () => {

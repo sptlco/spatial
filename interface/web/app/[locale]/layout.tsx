@@ -1,7 +1,7 @@
 // Copyright © Spatial Corporation. All rights reserved.
 
 import { User } from "@/elements";
-import { Body, Favicon, Head, Html } from "@sptlco/design";
+import { Body, Favicon, Head, Html, Toaster } from "@sptlco/design";
 import type { Metadata } from "next";
 import { NextIntlClientProvider } from "next-intl";
 
@@ -30,6 +30,7 @@ export default async function Layout(props: { children: React.ReactNode; params:
       </Head>
       <Body>
         <NextIntlClientProvider>{props.children}</NextIntlClientProvider>
+        <Toaster />
         <User />
       </Body>
     </Html>

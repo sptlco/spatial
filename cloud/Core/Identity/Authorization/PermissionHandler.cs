@@ -17,17 +17,24 @@ public class PermissionHandler : AuthorizationHandler<PermissionRequirement>
     /// <param name="requirement">The <see cref="PermissionRequirement"/> to handle.</param>
     protected override Task HandleRequirementAsync(AuthorizationHandlerContext context, PermissionRequirement requirement)
     {
-        if (context.Resource is HttpContext http)
+        if (context.User?.Identity?.IsAuthenticated == true)
         {
-            var endpoint = http.GetEndpoint();
-
-            if (endpoint?.Metadata.GetMetadata<AuthorizeAttribute>()?.Permissions is string[] permissions)
+            if (context.Resource is HttpContext http)
             {
-                if (permissions.All(permission => context.User.HasClaim(Claims.Permission, permission)))
+                var endpoint = http.GetEndpoint();
+
+                if (endpoint?.Metadata.GetMetadata<AuthorizeAttribute>()?.Permissions is string[] permissions)
                 {
-                    context.Succeed(requirement);
+                    if (permissions.All(permission => context.User.HasClaim(Claims.Permission, permission)))
+                    {
+                        context.Succeed(requirement);
+                    }
                 }
             }
+        }
+        else
+        {
+            context.Fail();
         }
 
         return Task.CompletedTask;

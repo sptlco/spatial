@@ -13,6 +13,18 @@ namespace Spatial.Cloud.Controllers;
 public class AccountController : Controller
 {
     /// <summary>
+    /// Get the current account.
+    /// </summary>
+    /// <returns>The current account.</returns>
+    [GET]
+    [Path("me")]
+    [Authorize]
+    public async Task<Account> GetAccountAsync()
+    {
+        return _account;
+    }
+
+    /// <summary>
     /// Get an account.
     /// </summary>
     /// <param name="id">An account identifier.</param>

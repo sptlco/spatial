@@ -1,5 +1,6 @@
 // Copyright © Spatial Corporation. All rights reserved.
 
+using Microsoft.AspNetCore.Authorization;
 using Spatial.Cloud.Data.Accounts;
 using Spatial.Cloud.Data.Keys;
 using Spatial.Cloud.Data.Sessions;
@@ -16,6 +17,18 @@ namespace Spatial.Cloud.Controllers;
 [Path("sessions")]
 public class SessionController : Controller
 {
+    /// <summary>
+    /// Get the current session.
+    /// </summary>
+    /// <returns>The current session.</returns>
+    [GET]
+    [Path("me")]
+    [Authorize]
+    public async Task<Session> GetSessionAsync()
+    {
+        return _session;    
+    }
+
     /// <summary>
     /// Create a new <see cref="Session"/>.
     /// </summary>
@@ -49,5 +62,17 @@ public class SessionController : Controller
         session.Store();
 
         return await Task.FromResult(session);
+    }
+
+    /// <summary>
+    /// Destroy the current session.
+    /// </summary>
+    /// <returns></returns>
+    [DELETE]
+    [Path("me")]
+    [Authorize]
+    public async Task DestroySessionAsync()
+    {
+        _session.Remove();
     }
 }

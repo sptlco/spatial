@@ -11,11 +11,6 @@
 
     "continue": "Continue",
 
-    "legal": {
-      "users": "User Agreement",
-      "privacy": "Privacy Policy"
-    },
-
     "verification": {
       "title": "Check your inbox",
       "description": "We sent you a verification code.",
@@ -32,6 +27,13 @@
         "title": "Invalid verification code",
         "description": "The code you entered is incorrect or has expired. Please check it and try again."
       }
+    }
+  },
+
+  "footer": {
+    "legal": {
+      "users": "User Agreement",
+      "privacy": "Privacy Policy"
     }
   },
 

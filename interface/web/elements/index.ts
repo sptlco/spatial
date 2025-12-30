@@ -1,5 +1,5 @@
 // Copyright © Spatial Corporation. All rights reserved.
 
-export * from "./authenticated";
-export * from "./unauthenticated";
+export * from "./footer";
+export * from "./guard";
 export * from "./user";

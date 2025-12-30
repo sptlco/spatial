@@ -44,20 +44,16 @@ export const LocaleSwitcher = () => {
       </Container>
       <Dropdown.Root>
         <Dropdown.Trigger asChild>
-          <Button intent="ghost" shape="pill" className="data-[state=open]:bg-button-ghost-active">
+          <Button intent="ghost" shape="pill" className="px-2! sm:px-8! data-[state=open]:bg-button-ghost-active">
             <Icon symbol="language" />
-            <Span>{t("label")}</Span>
+            <Span className="hidden sm:inline">{t("label")}</Span>
           </Button>
         </Dropdown.Trigger>
         <Dropdown.Portal>
-          <Dropdown.Content className="bg-background-surface rounded-lg p-4 w-screen max-w-48 sm:max-w-3xs" sideOffset={10} collisionPadding={40}>
+          <Dropdown.Content>
             <Dropdown.RadioGroup value={locale} onValueChange={change} className="flex flex-col gap-2">
               {routing.locales.map((locale, i) => (
-                <Dropdown.RadioItem
-                  key={i}
-                  value={locale}
-                  className="py-2 px-4 cursor-pointer transition-all data-highlighted:bg-button-ghost-active rounded-lg flex items-center"
-                >
+                <Dropdown.RadioItem key={i} value={locale}>
                   <Container className="flex flex-col grow">
                     <Span className="text-sm font-bold">{t("name", { locale: locale.replace("-", "_") })}</Span>
                     <Span className="text-xs">{t("origin", { locale: locale.replace("-", "_") })}</Span>

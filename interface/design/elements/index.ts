@@ -1,5 +1,6 @@
 // Copyright © Spatial Corporation. All rights reserved.
 
+export * from "./avatar";
 export * from "./body";
 export * from "./button";
 export * from "./container";
@@ -20,8 +21,10 @@ export * from "./label";
 export * from "./link";
 export * from "./logo";
 export * from "./main";
+export * from "./navigation";
 export * from "./paragraph";
 export * from "./path";
+export * from "./sheet";
 export * from "./sonner";
 export * from "./span";
 export * from "./spinner";

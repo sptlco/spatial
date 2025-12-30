@@ -5,7 +5,7 @@ import { Account, Session } from "@sptlco/data";
 import { create } from "zustand";
 import { devtools } from "zustand/middleware";
 
-type User = {
+export type User = {
   account?: Account;
   authenticated: boolean;
   loading: boolean;

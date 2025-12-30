@@ -38,8 +38,8 @@ const styles = cva({
       pill: "rounded-full"
     },
     size: {
-      small: "px-4 py-1.5 space-x-2 text-sm",
-      medium: "px-8 py-2 space-x-2 text-base"
+      small: "px-4 py-1.5 gap-2 text-sm",
+      medium: "px-8 py-2 gap-2 text-base"
     }
   }
 });

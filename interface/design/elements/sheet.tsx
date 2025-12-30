@@ -1,0 +1,76 @@
+// Copyright © Spatial Corporation. All rights reserved.
+
+import { Container, createElement, Hidden } from "..";
+import * as Primitive from "@radix-ui/react-dialog";
+import { clsx } from "clsx";
+import { cva } from "cva";
+import { FC, PropsWithChildren, ReactNode } from "react";
+
+const classes = cva({
+  base: [
+    "fixed z-52 flex flex-col gap-4 p-10",
+    "bg-background-surface shadow-lg transition ease-in-out",
+    "data-[state=open]:animate-in data-[state=open]:duration-1000",
+    "data-[state=closed]:animate-out data-[state=closed]:duration-300"
+  ],
+  variants: {
+    side: {
+      top: ["inset-x-0 top-0 h-auto sm:rounded-b-4xl", "data-[state=open]:slide-in-from-top", "data-[state=closed]:slide-out-to-top"],
+      bottom: ["inset-x-0 bottom-0 h-auto sm:rounded-t-4xl", "data-[state=open]:slide-in-from-bottom", "data-[state=closed]:slide-out-to-bottom"],
+      right: [
+        "inset-y-0 right-0 w-3/4 sm:max-w-sm h-full sm:rounded-l-4xl",
+        "data-[state=open]:slide-in-from-right",
+        "data-[state=closed]:slide-out-to-right"
+      ],
+      left: [
+        "inset-y-0 left-0 w-3/4 sm:max-w-sm h-full sm:rounded-r-4xl",
+        "data-[state=open]:slide-in-from-left",
+        "data-[state=closed]:slide-out-to-left"
+      ]
+    }
+  }
+});
+
+/**
+ * Extends the dialog element to display content that complements
+ * the main content of the screen.
+ */
+export const Sheet = {
+  Root: createElement<typeof Primitive.Root, Primitive.DialogProps>((props, _) => <Primitive.Root {...props} />),
+  Trigger: createElement<typeof Primitive.Trigger, Primitive.DialogTriggerProps>((props, ref) => <Primitive.Trigger {...props} ref={ref} />),
+  Close: createElement<typeof Primitive.Close, Primitive.DialogCloseProps>((props, ref) => <Primitive.Close {...props} ref={ref} />),
+  Portal: createElement<typeof Primitive.Portal, Primitive.DialogPortalProps>((props, _) => <Primitive.Portal {...props} />),
+  Overlay: createElement<typeof Primitive.Overlay, Primitive.DialogOverlayProps>((props, ref) => <Primitive.Overlay {...props} ref={ref} />),
+  Content: createElement<
+    typeof Primitive.Content,
+    Primitive.DialogContentProps & { title?: ReactNode; description?: ReactNode; side?: "top" | "right" | "bottom" | "left" }
+  >(({ side = "right", ...props }, ref) => {
+    const Optional: FC<PropsWithChildren<{ value?: ReactNode }>> = ({ value, ...props }) => {
+      return !value ? <Hidden {...props} /> : props.children;
+    };
+
+    return (
+      <Sheet.Portal>
+        <Sheet.Overlay
+          className={clsx(
+            "fixed inset-0 z-50 size-full bg-background-base/30 backdrop-blur",
+            "data-[state=open]:animate-in data-[state=open]:fade-in",
+            "data-[state=closed]:animate-out data-[state=closed]:fade-out",
+            "duration-500"
+          )}
+        />
+        <Primitive.Content {...props} className={clsx(classes({ side }), props.className)} ref={ref}>
+          <Container className="flex flex-col">
+            <Optional value={props.title}>
+              <Primitive.Title className="font-bold text-lg">{props.title}</Primitive.Title>
+            </Optional>
+            <Optional value={props.description}>
+              <Primitive.Description className="text-foreground-secondary">{props.description}</Primitive.Description>
+            </Optional>
+          </Container>
+          <Container>{props.children}</Container>
+        </Primitive.Content>
+      </Sheet.Portal>
+    );
+  })
+};

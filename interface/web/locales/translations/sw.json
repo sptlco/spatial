@@ -11,11 +11,6 @@
 
     "continue": "Endelea",
 
-    "legal": {
-      "users": "Makubaliano ya Mtumiaji",
-      "privacy": "Sera ya Faragha"
-    },
-
     "verification": {
       "title": "Angalia kikasha chako",
       "description": "Tumekutumia msimbo wa uthibitishaji.",
@@ -32,6 +27,13 @@
         "title": "Msimbo wa uthibitishaji si sahihi",
         "description": "Msimbo ulioweka si sahihi au muda wake umeisha. Tafadhali hakikisha na ujaribu tena."
       }
+    }
+  },
+
+  "footer": {
+    "legal": {
+      "users": "Makubaliano ya Mtumiaji",
+      "privacy": "Sera ya Faragha"
     }
   },
 

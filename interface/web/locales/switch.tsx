@@ -40,7 +40,7 @@ export const LocaleSwitcher = () => {
           ) : (
             <>
               <Icon symbol="language" />
-              <Span className="hidden sm:inline">{t("label")}</Span>
+              <Span>{t("label")}</Span>
             </>
           )}
         </Button>

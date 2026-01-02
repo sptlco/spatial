@@ -2,6 +2,7 @@
 
 import { User } from "@/elements";
 import { Body, Favicon, Head, Html, Toaster } from "@sptlco/design";
+import { clsx } from "clsx";
 import type { Metadata } from "next";
 import { NextIntlClientProvider } from "next-intl";
 
@@ -24,7 +25,7 @@ export default async function Layout(props: { children: React.ReactNode; params:
   const { locale } = await props.params;
 
   return (
-    <Html lang={locale}>
+    <Html lang={locale} suppressHydrationWarning>
       <Head>
         <Favicon href="/assets/favicon.ico" />
       </Head>

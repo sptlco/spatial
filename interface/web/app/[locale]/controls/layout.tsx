@@ -5,7 +5,8 @@
 import { CompactFooter, Guard } from "@/elements";
 import { LocaleSwitcher } from "@/locales/switch";
 import { useUser } from "@/stores";
-import { Avatar, Container, Dropdown, Icon, Link, Logo, Main, Sheet, Span } from "@sptlco/design";
+import { Avatar, Button, Container, Icon, LI, Link, Logo, Main, Sheet, Span, UL } from "@sptlco/design";
+import { clsx } from "clsx";
 import { useTranslations } from "next-intl";
 import { ReactNode } from "react";
 import { useShallow } from "zustand/shallow";
@@ -20,11 +21,32 @@ export default function Layout(props: { children: ReactNode }) {
   const t = useTranslations();
 
   return (
-    <Main className="flex flex-col w-full min-h-screen">
+    <Main className={clsx("flex flex-col w-full min-h-screen")}>
       <Container className="flex shrink-0 w-full p-10 gap-10 items-center justify-between">
-        <Link href="/" className="h-fit">
-          <Logo mode="symbol" className="h-6 fill-white" />
-        </Link>
+        <Container className="flex items-center gap-6">
+          <Link href="/" className="h-fit">
+            <Logo mode="symbol" className="h-6 fill-white" />
+          </Link>
+          <Container className="flex items-center gap-2.5">
+            <Link href="/manual" className="text-foreground-primary!">
+              <Button intent="secondary" shape="pill">
+                <Icon symbol="info" />
+                <Span>Documentation</Span>
+              </Button>
+            </Link>
+            <Link href="/support" className="text-foreground-primary!">
+              <Button intent="secondary" shape="pill">
+                <Icon symbol="help" />
+                <Span>Support</Span>
+              </Button>
+            </Link>
+            <Link href="/controls/users" className="text-foreground-primary!">
+              <Button intent="ghost" shape="pill" className="px-2!">
+                <Icon symbol="search" />
+              </Button>
+            </Link>
+          </Container>
+        </Container>
         <Container className="flex gap-2.5 items-center">
           <LocaleSwitcher />
           <Sheet.Root>
@@ -40,9 +62,8 @@ export default function Layout(props: { children: ReactNode }) {
           </Sheet.Root>
         </Container>
       </Container>
-      <Container className="grow p-10"></Container>
+      <Container className="flex grow">{props.children}</Container>
       <CompactFooter className="p-10" />
-      <Guard condition={(user) => user.authenticated} />
     </Main>
   );
 }

@@ -8,7 +8,6 @@ import { LocaleSwitcher } from "@/locales/switch";
 import { useUser } from "@/stores";
 import { SESSION_COOKIE_NAME, Spatial } from "@sptlco/client";
 import { Button, Container, Dialog, Field, Form, H1, Icon, Link, Logo, Main, OTP, Paragraph, Span, Spinner, toast } from "@sptlco/design";
-import { clsx } from "clsx";
 import cookies from "js-cookie";
 import { useTranslations } from "next-intl";
 import { useSearchParams } from "next/navigation";
@@ -24,7 +23,7 @@ type AuthenticationState = "idle" | "requesting" | "confirming" | "verifying" | 
  * @returns A user authentication page.
  */
 export default function Page() {
-  const { authenticated, loading, login } = useUser(
+  const { login } = useUser(
     useShallow((state) => ({
       authenticated: state.authenticated,
       loading: state.loading,
@@ -38,8 +37,8 @@ export default function Page() {
   const [email, setEmail] = useState("");
   const [code, setCode] = useState("");
 
-  const processing = state === "requesting" || state === "verifying";
-  const open = state === "confirming" || state === "verifying";
+  const processing = state === "requesting" || state === "verifying" || state === "authenticated";
+  const open = state === "confirming" || state === "verifying" || state === "authenticated";
 
   const request = async (e: FormEvent) => {
     e.preventDefault();
@@ -91,47 +90,21 @@ export default function Page() {
       expires: new Date(response.data.expires)
     });
 
-    setState("authenticated");
-
     await login();
+
+    setState("authenticated");
   };
 
-  const Redirect: FC = () => {
-    const router = useRouter();
-    const searchParams = useSearchParams();
-
-    const next = () => {
-      let href = "/";
-      let param = searchParams.get("next");
-
-      if (param) {
-        href = atob(param);
-      }
-
-      return href;
-    };
-
-    useEffect(() => {
-      if (!loading && authenticated) {
-        router.push(next());
-      }
-    }, [loading, authenticated]);
-
-    return null;
-  };
+  useEffect(() => {
+    switch (state) {
+      case "authenticated":
+        window.location.reload();
+        break;
+    }
+  }, [state]);
 
   return (
     <Main className="grid grid-cols-[1fr_auto_1fr] grid-rows-[auto_1fr_auto] p-10 gap-y-20 w-full min-h-screen">
-      <Container
-        className={clsx(
-          "fixed inset-0 w-screen h-screen z-50 bg-background-base/30 backdrop-blur flex items-center justify-center",
-          { "animate-in fade-in": loading || authenticated },
-          { "animate-out fade-out fill-mode-forwards pointer-events-none": !loading && !authenticated },
-          "duration-500"
-        )}
-      >
-        <Spinner className="size-6" />
-      </Container>
       <Container className="row-start-1 col-start-2 sm:col-start-3 sm:justify-self-end h-10 flex items-center justify-center">
         <LocaleSwitcher />
       </Container>
@@ -208,9 +181,6 @@ export default function Page() {
           </Container>
         </Dialog.Content>
       </Dialog.Root>
-      <Suspense>
-        <Redirect />
-      </Suspense>
     </Main>
   );
 }

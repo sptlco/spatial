@@ -11,15 +11,14 @@ export const Link = createElement<"a">((props, ref) => (
     <a
       {...props}
       ref={ref}
-      href={props.href ? resolve(props.href) : undefined}
       className={clsx(
-        "cursor-pointer",
+        "cursor-pointer inline-flex",
         "text-button-primary hover:text-button-primary-hover active:text-button-primary-active font-medium",
         "transition-all",
         props.className
       )}
     >
-      <Span>{props.children}</Span>
+      <Span className="inline-flex">{props.children}</Span>
       {props.target == "_blank" && (
         <Span className="inline-flex items-center align-middle">
           <Icon className="ml-0.5 font-medium text-[1em]!" symbol="arrow_outward" />

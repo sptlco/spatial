@@ -10,7 +10,7 @@ const classes = cva({
   base: [
     "fixed z-52 flex flex-col gap-4 p-10",
     "bg-background-surface shadow-lg transition ease-in-out",
-    "data-[state=open]:animate-in data-[state=open]:duration-1000",
+    "data-[state=open]:animate-in data-[state=open]:duration-500",
     "data-[state=closed]:animate-out data-[state=closed]:duration-300"
   ],
   variants: {
@@ -37,7 +37,9 @@ const classes = cva({
  */
 export const Sheet = {
   Root: createElement<typeof Primitive.Root, Primitive.DialogProps>((props, _) => <Primitive.Root {...props} />),
-  Trigger: createElement<typeof Primitive.Trigger, Primitive.DialogTriggerProps>((props, ref) => <Primitive.Trigger {...props} ref={ref} />),
+  Trigger: createElement<typeof Primitive.Trigger, Primitive.DialogTriggerProps>((props, ref) => (
+    <Primitive.Trigger {...props} ref={ref} data-slot="sheet-trigger" />
+  )),
   Close: createElement<typeof Primitive.Close, Primitive.DialogCloseProps>((props, ref) => <Primitive.Close {...props} ref={ref} />),
   Portal: createElement<typeof Primitive.Portal, Primitive.DialogPortalProps>((props, _) => <Primitive.Portal {...props} />),
   Overlay: createElement<typeof Primitive.Overlay, Primitive.DialogOverlayProps>((props, ref) => <Primitive.Overlay {...props} ref={ref} />),
@@ -59,7 +61,7 @@ export const Sheet = {
             "duration-500"
           )}
         />
-        <Primitive.Content {...props} className={clsx(classes({ side }), props.className)} ref={ref}>
+        <Primitive.Content {...props} data-slot="sheet-content" className={clsx(classes({ side }), props.className)} ref={ref}>
           <Container className="flex flex-col">
             <Optional value={props.title}>
               <Primitive.Title className="font-bold text-lg">{props.title}</Primitive.Title>

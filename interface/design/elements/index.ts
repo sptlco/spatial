@@ -19,6 +19,7 @@ export * from "./image";
 export * from "./input";
 export * from "./label";
 export * from "./link";
+export * from "./list";
 export * from "./logo";
 export * from "./main";
 export * from "./navigation";

@@ -144,3 +144,7 @@
     font-variation-settings: "FILL" 1;
   }
 }
+
+@view-transition {
+  navigation: auto;
+}

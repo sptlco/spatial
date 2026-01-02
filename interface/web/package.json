@@ -12,6 +12,7 @@
     "@sptlco/data": "*",
     "@sptlco/design": "*",
     "babel-plugin-react-compiler": "^1.0.0",
+    "jose": "^6.1.3",
     "next": "^16",
     "next-intl": "^4.6.1",
     "react": "^19",

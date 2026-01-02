@@ -31,6 +31,7 @@
   --color-background-surface: var(--color-gray-8);
   --color-background-subtle: var(--color-gray-9);
   --color-background-highlight: var(--color-gray-7);
+  --color-background-inverse: var(--color-white);
 
   --color-foreground-primary: var(--color-white);
   --color-foreground-secondary: --alpha(var(--color-white) / 70%);

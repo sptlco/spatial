@@ -3,6 +3,7 @@
 export * from "./avatar";
 export * from "./body";
 export * from "./button";
+export * from "./card";
 export * from "./container";
 export * from "./dialog";
 export * from "./dropdown";

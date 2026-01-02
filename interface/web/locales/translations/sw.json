@@ -30,6 +30,13 @@
     }
   },
 
+  "navigation": {
+    "links": {
+      "manual": "Nyaraka",
+      "support": "Msaada"
+    }
+  },
+
   "footer": {
     "legal": {
       "users": "Makubaliano ya Mtumiaji",

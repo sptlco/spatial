@@ -3,15 +3,13 @@
 "use client";
 
 import { CompactFooter } from "@/elements";
-import { useRouter } from "@/locales/navigation";
 import { LocaleSwitcher } from "@/locales/switch";
 import { useUser } from "@/stores";
 import { SESSION_COOKIE_NAME, Spatial } from "@sptlco/client";
 import { Button, Container, Dialog, Field, Form, H1, Icon, Link, Logo, Main, OTP, Paragraph, Span, Spinner, toast } from "@sptlco/design";
 import cookies from "js-cookie";
 import { useTranslations } from "next-intl";
-import { useSearchParams } from "next/navigation";
-import { FC, FormEvent, Suspense, useEffect, useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
 import { useShallow } from "zustand/shallow";
 
 const KEY_LENGTH = 4;
@@ -166,7 +164,7 @@ export default function Page() {
             onComplete={verify}
             disabled={state === "verifying" || state === "authenticated"}
             autoFocus
-            description={t.rich("verification.help", { link: (chunks) => <Link>{chunks}</Link> })}
+            description={t.rich("verification.help", { link: (chunks) => <Link href="#">{chunks}</Link> })}
             containerClassName="items-center text-center"
             className="justify-center"
           >

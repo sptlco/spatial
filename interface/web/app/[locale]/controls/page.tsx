@@ -5,5 +5,5 @@
  * @returns The admin interface.
  */
 export default function Page() {
-  return "Hello, world!";
+  return null;
 }

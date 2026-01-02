@@ -2,10 +2,10 @@
 
 "use client";
 
-import { CompactFooter, Guard } from "@/elements";
+import { CompactFooter } from "@/elements";
 import { LocaleSwitcher } from "@/locales/switch";
 import { useUser } from "@/stores";
-import { Avatar, Button, Container, Icon, LI, Link, Logo, Main, Sheet, Span, UL } from "@sptlco/design";
+import { Avatar, Button, Container, Icon, Link, Logo, Main, Sheet, Span } from "@sptlco/design";
 import { clsx } from "clsx";
 import { useTranslations } from "next-intl";
 import { ReactNode } from "react";
@@ -30,21 +30,19 @@ export default function Layout(props: { children: ReactNode }) {
           <Container className="flex items-center gap-2.5">
             <Link href="/manual" className="text-foreground-primary!">
               <Button intent="secondary" shape="pill">
-                <Icon symbol="info" />
-                <Span>Documentation</Span>
+                <Icon symbol="help" />
+                <Span>{t("navigation.links.manual")}</Span>
               </Button>
             </Link>
             <Link href="/support" className="text-foreground-primary!">
               <Button intent="secondary" shape="pill">
-                <Icon symbol="help" />
-                <Span>Support</Span>
+                <Icon symbol="support" />
+                <Span>{t("navigation.links.support")}</Span>
               </Button>
             </Link>
-            <Link href="/controls/users" className="text-foreground-primary!">
-              <Button intent="ghost" shape="pill" className="px-2!">
-                <Icon symbol="search" />
-              </Button>
-            </Link>
+            <Button intent="ghost" shape="pill" className="px-2!">
+              <Icon symbol="search" />
+            </Button>
           </Container>
         </Container>
         <Container className="flex gap-2.5 items-center">
@@ -56,13 +54,13 @@ export default function Layout(props: { children: ReactNode }) {
                 className="size-10 transition-all outline-transparent outline-0 outline-offset-2 group-data-[state=open]:outline-3 group-data-[state=open]:outline-background-highlight"
               />
             </Sheet.Trigger>
-            <Sheet.Content title="Your account" description="An overview of your account." side="right">
+            <Sheet.Content title="Account summary" description="An overview of your account." side="right">
               {user.account?.email}
             </Sheet.Content>
           </Sheet.Root>
         </Container>
       </Container>
-      <Container className="flex grow">{props.children}</Container>
+      <Container className="flex grow p-10">{props.children}</Container>
       <CompactFooter className="p-10" />
     </Main>
   );

@@ -3,5 +3,5 @@
 import { Link } from "@sptlco/design";
 
 export default function Page() {
-  return <Link href="/controls">Go back!</Link>;
+  return null;
 }

@@ -21,12 +21,19 @@
     "errors": {
       "request": {
         "title": "Something went wrong",
-        "description": "We ran into a rare issue while preparing your verification code. Please try again shortly."
+        "description": "We ran into an issue while preparing your verification code. Please try again shortly."
       },
       "verify": {
         "title": "Invalid verification code",
         "description": "The code you entered is incorrect or has expired. Please check it and try again."
       }
+    }
+  },
+
+  "navigation": {
+    "links": {
+      "manual": "Documentation",
+      "support": "Support"
     }
   },
 

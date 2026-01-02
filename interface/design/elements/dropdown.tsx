@@ -18,7 +18,9 @@ export const Dropdown = {
   /**
    * The button that toggles the dropdown menu.
    */
-  Trigger: createElement<typeof Primitive.Trigger, Primitive.DropdownMenuTriggerProps>((props, ref) => <Primitive.Trigger {...props} ref={ref} />),
+  Trigger: createElement<typeof Primitive.Trigger, Primitive.DropdownMenuTriggerProps>((props, ref) => (
+    <Primitive.Trigger {...props} ref={ref} className={clsx("cursor-pointer", props.className)} />
+  )),
 
   /**
    * When used, portals the content part into the body.
@@ -35,7 +37,7 @@ export const Dropdown = {
       sideOffset={10}
       collisionPadding={40}
       className={clsx(
-        "bg-background-surface text-sm shadow-lg rounded-xl p-4 w-screen max-w-48 sm:max-w-3xs",
+        "bg-button-secondary backdrop-blur text-sm shadow-lg rounded-xl p-4 w-screen max-w-48 sm:max-w-3xs",
         "data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2",
         props.className
       )}

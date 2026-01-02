@@ -27,6 +27,8 @@
   --color-yellow: #fcc924;
   --color-magenta: #e16ef9;
 
+  --color-translucent: --alpha(var(--color-white) / 10%);
+
   --color-background-base: var(--color-black);
   --color-background-surface: var(--color-gray-8);
   --color-background-subtle: var(--color-gray-9);
@@ -41,7 +43,7 @@
 
   --color-hint: --alpha(var(--color-white) / 40%);
 
-  --color-line-subtle: --alpha(var(--color-white) / 10%);
+  --color-line-subtle: var(--color-translucent);
   --color-line-base: --alpha(var(--color-white) / 20%);
   --color-line-strong: --alpha(var(--color-white) / 50%);
   --color-line-accent: var(--color-blue);
@@ -51,12 +53,12 @@
   --color-button-primary-hover: #0055e0;
   --color-button-primary-active: #0045c0;
 
-  --color-button-secondary: --alpha(var(--color-white) / 10%);
+  --color-button-secondary: var(--color-translucent);
   --color-button-secondary-hover: --alpha(var(--color-white) / 20%);
   --color-button-secondary-active: --alpha(var(--color-white) / 30%);
 
   --color-button-ghost: transparent;
-  --color-button-ghost-hover: --alpha(var(--color-white) / 10%);
+  --color-button-ghost-hover: var(--color-translucent);
   --color-button-ghost-active: --alpha(var(--color-white) / 20%);
 
   --color-button-destructive: var(--color-red);

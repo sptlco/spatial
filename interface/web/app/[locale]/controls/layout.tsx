@@ -45,7 +45,7 @@ export default function Layout(props: { children: ReactNode }) {
             </Button>
           </Container>
         </Container>
-        <Container className="flex gap-2.5 items-center">
+        <Container className="flex gap-2.5 items-center shrink-0">
           <LocaleSwitcher />
           <Sheet.Root>
             <Sheet.Trigger className="cursor-pointer group">
@@ -54,9 +54,7 @@ export default function Layout(props: { children: ReactNode }) {
                 className="size-10 transition-all outline-transparent outline-0 outline-offset-2 group-data-[state=open]:outline-3 group-data-[state=open]:outline-background-highlight"
               />
             </Sheet.Trigger>
-            <Sheet.Content title="Account summary" description="An overview of your account." side="right">
-              {user.account?.email}
-            </Sheet.Content>
+            <Sheet.Content title={t("modals.account.title")} description={t("modals.account.description")} side="right" />
           </Sheet.Root>
         </Container>
       </Container>

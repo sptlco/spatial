@@ -30,6 +30,13 @@
     }
   },
 
+  "modals": {
+    "account": {
+      "title": "Account summary",
+      "description": "An overview of your account."
+    }
+  },
+
   "navigation": {
     "links": {
       "manual": "Documentation",

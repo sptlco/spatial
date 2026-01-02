@@ -30,6 +30,13 @@
     }
   },
 
+  "modals": {
+    "account": {
+      "title": "Muhtasari wa Akaunti",
+      "description": "Muhtasari wa akaunti yako."
+    }
+  },
+
   "navigation": {
     "links": {
       "manual": "Nyaraka",

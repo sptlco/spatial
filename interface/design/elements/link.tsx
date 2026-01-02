@@ -19,7 +19,7 @@ export const Link = createElement<typeof Primitive, LinkProps>((props, ref) => (
       props.className
     )}
   >
-    <Span className="inline-flex">{props.children}</Span>
+    {props.children}
     {props.target == "_blank" && (
       <Span className="inline-flex items-center align-middle">
         <Icon className="ml-0.5 font-medium text-[1em]!" symbol="arrow_outward" />

@@ -70,7 +70,7 @@ export const Sheet = {
               <Primitive.Description className="text-foreground-secondary">{props.description}</Primitive.Description>
             </Optional>
           </Container>
-          <Container>{props.children}</Container>
+          {props.children}
         </Primitive.Content>
       </Sheet.Portal>
     );

@@ -12,6 +12,7 @@
     "@sptlco:registry": "https://npm.pkg.github.com/"
   },
   "dependencies": {
+    "next": "^16",
     "react": "^19",
     "react-dom": "^19"
   },

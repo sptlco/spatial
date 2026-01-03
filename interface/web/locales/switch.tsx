@@ -5,6 +5,7 @@
 import { Button, Container, Dropdown, Icon, Span, Spinner } from "@sptlco/design";
 import { usePathname, useRouter } from "./navigation";
 import { routing } from "./routing";
+import { clsx } from "clsx";
 import { useTransition } from "react";
 import { Locale, useLocale, useTranslations } from "next-intl";
 import { useSearchParams } from "next/navigation";
@@ -13,7 +14,7 @@ import { useSearchParams } from "next/navigation";
  * A dropdown menu that allows the user to change locales.
  * @returns A locale switcher component.
  */
-export const LocaleSwitcher = () => {
+export const LocaleSwitcher = ({ compact = false }: { compact?: boolean }) => {
   const locale = useLocale();
   const params = useSearchParams();
   const pathname = usePathname();
@@ -32,7 +33,7 @@ export const LocaleSwitcher = () => {
   return (
     <Dropdown.Root>
       <Dropdown.Trigger asChild>
-        <Button intent="ghost" shape="pill" className="data-[state=open]:bg-button-ghost-active px-2! sm:px-4!">
+        <Button intent="ghost" shape="pill" className={clsx("data-[state=open]:bg-button-ghost-active", { "px-2! sm:px-4!": compact })}>
           {pending ? (
             <Span className="inline-flex size-6 items-center justify-center">
               <Spinner className="size-4 text-foreground-secondary" />
@@ -40,7 +41,7 @@ export const LocaleSwitcher = () => {
           ) : (
             <>
               <Icon symbol="language" />
-              <Span className="hidden sm:inline">{t("label")}</Span>
+              <Span className={compact ? "hidden sm:inline" : undefined}>{t("label")}</Span>
             </>
           )}
         </Button>

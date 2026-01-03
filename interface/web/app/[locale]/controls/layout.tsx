@@ -33,7 +33,7 @@ export default function Layout(props: { children: ReactNode }) {
         </Link>
       </Container>
       <Container className="flex p-10 gap-2.5 ml-auto items-center shrink-0 row-start-1 col-start-1 md:col-start-2">
-        <LocaleSwitcher />
+        <LocaleSwitcher compact />
         <Sheet.Root>
           <Sheet.Trigger className="cursor-pointer group">
             <Avatar

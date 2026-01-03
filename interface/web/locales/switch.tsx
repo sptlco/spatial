@@ -32,7 +32,7 @@ export const LocaleSwitcher = () => {
   return (
     <Dropdown.Root>
       <Dropdown.Trigger asChild>
-        <Button intent="ghost" shape="pill" className="data-[state=open]:bg-button-ghost-active">
+        <Button intent="ghost" shape="pill" className="data-[state=open]:bg-button-ghost-active px-2! sm:px-4!">
           {pending ? (
             <Span className="inline-flex size-6 items-center justify-center">
               <Spinner className="size-4 text-foreground-secondary" />
@@ -40,7 +40,7 @@ export const LocaleSwitcher = () => {
           ) : (
             <>
               <Icon symbol="language" />
-              <Span>{t("label")}</Span>
+              <Span className="hidden sm:inline">{t("label")}</Span>
             </>
           )}
         </Button>

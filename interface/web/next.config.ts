@@ -9,7 +9,8 @@ const nextConfig: NextConfig = {
   reactCompiler: true,
   allowedDevOrigins: ["s1.sptlco.com"],
   experimental: {
-    externalDir: true
+    externalDir: true,
+    viewTransition: true
   }
 };
 

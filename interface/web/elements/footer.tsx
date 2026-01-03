@@ -14,7 +14,7 @@ export const CompactFooter = createElement<typeof Container>((props, ref) => {
     <Container
       {...props}
       ref={ref}
-      className={clsx("col-span-3 row-start-3 place-self-center flex flex-col sm:flex-row items-center gap-4 sm:gap-10 text-sm", props.className)}
+      className={clsx("w-full flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-10 text-sm", props.className)}
     >
       <Link className="text-foreground-tertiary" href="#" target="_blank">
         {t("legal.users")}

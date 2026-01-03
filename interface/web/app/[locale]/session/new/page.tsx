@@ -139,7 +139,7 @@ export default function Page() {
           {processing ? <Spinner className="size-4 m-1 text-foreground-tertiary" /> : <Icon symbol="arrow_right_alt" />}
         </Button>
       </Form>
-      <CompactFooter />
+      <CompactFooter className="col-span-3 row-start-3 place-self-center" />
       <Dialog.Root
         open={open}
         onOpenChange={(open) => {

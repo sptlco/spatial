@@ -4,12 +4,10 @@
 
 import { CompactFooter } from "@/elements";
 import { LocaleSwitcher } from "@/locales/switch";
-import { useUser } from "@/stores";
-import { Avatar, Button, Container, Icon, Link, Logo, Main, Sheet, Span } from "@sptlco/design";
+import { Avatar, Container, Link, Logo, Main, Sheet } from "@sptlco/design";
 import { clsx } from "clsx";
 import { useTranslations } from "next-intl";
 import { ReactNode } from "react";
-import { useShallow } from "zustand/shallow";
 
 /**
  * A shared layout for administration pages.
@@ -17,49 +15,42 @@ import { useShallow } from "zustand/shallow";
  * @returns A shared administration layout.
  */
 export default function Layout(props: { children: ReactNode }) {
-  const { logout, user } = useUser(useShallow((state) => ({ logout: state.logout, user: state })));
   const t = useTranslations();
 
   return (
-    <Main className={clsx("flex flex-col w-full min-h-screen")}>
-      <Container className="flex shrink-0 w-full p-10 gap-10 items-center justify-between">
-        <Container className="flex items-center gap-6">
-          <Link href="/" className="h-fit">
-            <Logo mode="symbol" className="h-6 fill-white" />
-          </Link>
-          <Container className="flex items-center gap-2.5">
-            <Link href="/manual" className="text-foreground-primary!">
-              <Button intent="secondary" shape="pill">
-                <Icon symbol="help" />
-                <Span>{t("navigation.links.manual")}</Span>
-              </Button>
-            </Link>
-            <Link href="/support" className="text-foreground-primary!">
-              <Button intent="secondary" shape="pill">
-                <Icon symbol="support" />
-                <Span>{t("navigation.links.support")}</Span>
-              </Button>
-            </Link>
-            <Button intent="ghost" shape="pill" className="px-2!">
-              <Icon symbol="search" />
-            </Button>
-          </Container>
-        </Container>
-        <Container className="flex gap-2.5 items-center shrink-0">
-          <LocaleSwitcher />
-          <Sheet.Root>
-            <Sheet.Trigger className="cursor-pointer group">
-              <Avatar
-                src="https://dakarai.org/_next/image?url=%2Fdakarai.jpeg&w=3840&q=75"
-                className="size-10 transition-all outline-transparent outline-0 outline-offset-2 group-data-[state=open]:outline-3 group-data-[state=open]:outline-background-highlight"
-              />
-            </Sheet.Trigger>
-            <Sheet.Content title={t("modals.account.title")} description={t("modals.account.description")} side="right" />
-          </Sheet.Root>
-        </Container>
+    <Main className={clsx("grid w-full h-screen md:overflow-hidden", "grid-cols-1 md:grid-cols-[auto_1fr]", "grid-rows-[auto_minmax(0,1fr)]")}>
+      <Container
+        className={clsx(
+          "p-10",
+          "flex items-center md:items-start",
+          "row-start-1 col-start-1",
+          "md:row-span-2 md:col-start-1 md:row-start-1 md:max-w-sm",
+          "md:overflow-y-auto"
+        )}
+      >
+        <Link href="/">
+          <Logo mode="symbol" className="size-10 fill-foreground-primary" />
+        </Link>
       </Container>
-      <Container className="flex grow p-10">{props.children}</Container>
-      <CompactFooter className="p-10" />
+      <Container className="flex p-10 gap-2.5 ml-auto items-center shrink-0 row-start-1 col-start-1 md:col-start-2">
+        <LocaleSwitcher />
+        <Sheet.Root>
+          <Sheet.Trigger className="cursor-pointer group">
+            <Avatar
+              src="https://dakarai.org/_next/image?url=%2Fdakarai.jpeg&w=3840&q=75"
+              className="size-10 transition-all outline-transparent outline-0 outline-offset-2 group-data-[state=open]:outline-3 group-data-[state=open]:outline-background-highlight"
+            />
+          </Sheet.Trigger>
+          <Sheet.Content title={t("modals.account.title")} description={t("modals.account.description")} side="right" />
+        </Sheet.Root>
+      </Container>
+      <Container className={clsx("row-start-2 col-start-1", "md:col-start-2", "md:overflow-y-auto")}>
+        <Container className="px-10">
+          {props.children}
+          <Container className="w-full h-[500vh]" />
+        </Container>
+        <CompactFooter className="p-10" />
+      </Container>
     </Main>
   );
 }

@@ -4,7 +4,7 @@
 
 import { CompactFooter } from "@/elements";
 import { LocaleSwitcher } from "@/locales/switch";
-import { Avatar, Container, Link, Logo, Main, Sheet } from "@sptlco/design";
+import { Avatar, Container, Dialog, Icon, Link, Logo, Main, Sheet } from "@sptlco/design";
 import { clsx } from "clsx";
 import { useTranslations } from "next-intl";
 import { ReactNode } from "react";
@@ -28,9 +28,17 @@ export default function Layout(props: { children: ReactNode }) {
           "md:overflow-y-auto"
         )}
       >
-        <Link href="/">
-          <Logo mode="symbol" className="size-10 fill-foreground-primary" />
-        </Link>
+        <Container className="flex items-center gap-5">
+          <Link href="/">
+            <Logo mode="symbol" className="size-10 fill-foreground-primary" />
+          </Link>
+          <Dialog.Root>
+            <Dialog.Trigger className="cursor-pointer md:hidden">
+              <Icon symbol="sort" size={40} />
+            </Dialog.Trigger>
+            <Dialog.Content>Hello, world!</Dialog.Content>
+          </Dialog.Root>
+        </Container>
       </Container>
       <Container className="flex p-10 gap-2.5 ml-auto items-center shrink-0 row-start-1 col-start-1 md:col-start-2">
         <LocaleSwitcher compact />

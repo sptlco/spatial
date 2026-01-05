@@ -33,7 +33,7 @@ export default function Layout(props: { children: ReactNode }) {
             <Logo mode="symbol" className="size-10 fill-foreground-primary" />
           </Link>
           <Drawer.Root>
-            <Drawer.Trigger className="cursor-pointer fixed rounded-full bg-translucent p-4 flex items-center justify-center z-20 bottom-10 left-1/2 transform -translate-x-1/2">
+            <Drawer.Trigger className="cursor-pointer md:hidden fixed rounded-full bg-translucent p-4 flex items-center justify-center z-20 bottom-10 left-1/2 transform -translate-x-1/2">
               <Icon symbol="apps" />
             </Drawer.Trigger>
             <Drawer.Content>Hello, world!</Drawer.Content>

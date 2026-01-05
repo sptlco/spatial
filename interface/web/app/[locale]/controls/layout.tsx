@@ -4,7 +4,7 @@
 
 import { CompactFooter } from "@/elements";
 import { LocaleSwitcher } from "@/locales/switch";
-import { Avatar, Container, Dialog, Icon, Link, Logo, Main, Sheet } from "@sptlco/design";
+import { Avatar, Container, Dialog, Icon, Link, Logo, Main, ScrollArea, Sheet } from "@sptlco/design";
 import { clsx } from "clsx";
 import { useTranslations } from "next-intl";
 import { ReactNode } from "react";
@@ -52,13 +52,19 @@ export default function Layout(props: { children: ReactNode }) {
           <Sheet.Content title={t("modals.account.title")} description={t("modals.account.description")} side="right" />
         </Sheet.Root>
       </Container>
-      <Container className={clsx("row-start-2 col-start-1", "md:col-start-2", "md:overflow-y-auto")}>
-        <Container className="px-10">
-          {props.children}
-          <Container className="w-full h-[500vh]" />
-        </Container>
-        <CompactFooter className="p-10" />
-      </Container>
+      <ScrollArea.Root>
+        <ScrollArea.Viewport className={clsx("row-start-2 col-start-1", "md:col-start-2")}>
+          <Container className="px-10">
+            {props.children}
+            <Container className="w-full h-[500vh]" />
+          </Container>
+          <CompactFooter className="p-10" />
+        </ScrollArea.Viewport>
+        <ScrollArea.Scrollbar>
+          <ScrollArea.Thumb />
+        </ScrollArea.Scrollbar>
+        <ScrollArea.Corner />
+      </ScrollArea.Root>
     </Main>
   );
 }

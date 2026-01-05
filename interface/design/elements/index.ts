@@ -26,6 +26,7 @@ export * from "./main";
 export * from "./navigation";
 export * from "./paragraph";
 export * from "./path";
+export * from "./scroll-area";
 export * from "./sheet";
 export * from "./sonner";
 export * from "./span";

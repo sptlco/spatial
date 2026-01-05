@@ -7,5 +7,10 @@ import { createElement } from "..";
  * A document written in HTML.
  */
 export const Html = createElement<"html">((props, ref) => (
-  <html {...props} ref={ref} className={clsx("size-full", "bg-background-base text-foreground-primary", props.className)} />
+  <html
+    {...props}
+    ref={ref}
+    data-scroll-behavior="smooth"
+    className={clsx("size-full scroll-smooth", "bg-background-base text-foreground-primary", props.className)}
+  />
 ));

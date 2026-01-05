@@ -13,5 +13,8 @@
     "dev:mobile": "npm run dev --workspace @spatial/mobile",
     "build:web": "npm run build --workspace @spatial/web",
     "dev:web": "npm run dev --workspace @spatial/web"
+  },
+  "devDependencies": {
+    "@radix-ui/react-scroll-area": "^1.2.10"
   }
 }

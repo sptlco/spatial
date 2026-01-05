@@ -4,7 +4,7 @@
 
 import { CompactFooter } from "@/elements";
 import { LocaleSwitcher } from "@/locales/switch";
-import { Avatar, Container, Dialog, Drawer, Icon, Link, Logo, Main, ScrollArea, Sheet } from "@sptlco/design";
+import { Avatar, Container, Dialog, Drawer, Icon, LI, Link, Logo, Main, ScrollArea, Sheet, Span, Tooltip, UL } from "@sptlco/design";
 import { clsx } from "clsx";
 import { useTranslations } from "next-intl";
 import { ReactNode } from "react";
@@ -28,16 +28,39 @@ export default function Layout(props: { children: ReactNode }) {
           "md:overflow-y-auto"
         )}
       >
-        <Container className="flex items-center gap-5">
-          <Link href="/">
+        <Container className="flex flex-col h-full gap-10">
+          <Link href="/" className="flex items-center justify-center">
             <Logo mode="symbol" className="size-10 fill-foreground-primary" />
           </Link>
           <Drawer.Root>
-            <Drawer.Trigger className="cursor-pointer md:hidden fixed rounded-full bg-translucent p-4 flex items-center justify-center z-20 bottom-10 left-1/2 transform -translate-x-1/2">
+            <Drawer.Trigger className="cursor-pointer md:hidden fixed rounded-full bg-translucent p-4 flex items-center justify-center z-20 bottom-10 right-10">
               <Icon symbol="apps" />
             </Drawer.Trigger>
             <Drawer.Content>Hello, world!</Drawer.Content>
           </Drawer.Root>
+          <UL className="hidden md:flex grow flex-col items-center justify-center gap-6">
+            <LI>
+              <Tooltip.Root>
+                <Tooltip.Trigger>
+                  <Link
+                    href="/compute"
+                    className={clsx(
+                      "transition-all",
+                      "flex items-center justify-center size-10 scale-125",
+                      "rounded-full bg-button-secondary text-foreground-primary",
+                      "hover:bg-button-secondary-hover active:bg-button-secondary-active",
+                      "hover:text-foreground-primary active:text-foreground-primary"
+                    )}
+                  >
+                    <Icon symbol="bolt" fill />
+                  </Link>
+                </Tooltip.Trigger>
+                <Tooltip.Content side="right" sideOffset={20} className="bg-translucent rounded-lg text-sm px-4 py-2">
+                  Compute
+                </Tooltip.Content>
+              </Tooltip.Root>
+            </LI>
+          </UL>
         </Container>
       </Container>
       <Container className="flex p-10 gap-2.5 ml-auto items-center shrink-0 row-start-1 col-start-1 md:col-start-2">
@@ -56,7 +79,7 @@ export default function Layout(props: { children: ReactNode }) {
         <ScrollArea.Viewport className={clsx("row-start-2 col-start-1", "md:col-start-2")}>
           <Container className="px-10">
             {props.children}
-            <Container className="w-full h-[500vh]" />
+            <Span className="flex w-full h-[500vh]" />
           </Container>
           <CompactFooter className="p-10" />
         </ScrollArea.Viewport>

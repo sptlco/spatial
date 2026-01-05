@@ -6,6 +6,7 @@ export * from "./button";
 export * from "./card";
 export * from "./container";
 export * from "./dialog";
+export * from "./drawer";
 export * from "./dropdown";
 export * from "./element";
 export * from "./favicon";

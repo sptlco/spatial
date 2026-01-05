@@ -4,7 +4,7 @@
 
 import { CompactFooter } from "@/elements";
 import { LocaleSwitcher } from "@/locales/switch";
-import { Avatar, Container, Dialog, Icon, Link, Logo, Main, ScrollArea, Sheet } from "@sptlco/design";
+import { Avatar, Container, Dialog, Drawer, Icon, Link, Logo, Main, ScrollArea, Sheet } from "@sptlco/design";
 import { clsx } from "clsx";
 import { useTranslations } from "next-intl";
 import { ReactNode } from "react";
@@ -32,12 +32,12 @@ export default function Layout(props: { children: ReactNode }) {
           <Link href="/">
             <Logo mode="symbol" className="size-10 fill-foreground-primary" />
           </Link>
-          <Dialog.Root>
-            <Dialog.Trigger className="cursor-pointer md:hidden">
-              <Icon symbol="sort" size={40} />
-            </Dialog.Trigger>
-            <Dialog.Content>Hello, world!</Dialog.Content>
-          </Dialog.Root>
+          <Drawer.Root>
+            <Drawer.Trigger className="cursor-pointer fixed rounded-full bg-translucent p-4 flex items-center justify-center z-20 bottom-10 left-1/2 transform -translate-x-1/2">
+              <Icon symbol="apps" />
+            </Drawer.Trigger>
+            <Drawer.Content>Hello, world!</Drawer.Content>
+          </Drawer.Root>
         </Container>
       </Container>
       <Container className="flex p-10 gap-2.5 ml-auto items-center shrink-0 row-start-1 col-start-1 md:col-start-2">

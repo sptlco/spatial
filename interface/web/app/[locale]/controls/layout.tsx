@@ -38,11 +38,6 @@ const pages: Page[] = [
     icon: "neurology"
   },
   {
-    name: "Logs",
-    href: "/controls/intel",
-    icon: "history"
-  },
-  {
     name: "Network",
     href: "/controls/network",
     icon: "cell_tower"
@@ -56,6 +51,11 @@ const pages: Page[] = [
     name: "Users",
     href: "/controls/users",
     icon: "person"
+  },
+  {
+    name: "Warehouse",
+    href: "/controls/store",
+    icon: "package_2"
   }
 ];
 
@@ -80,14 +80,14 @@ export default function Layout(props: { children: ReactNode }) {
   };
 
   return (
-    <Main className={clsx("grid w-full h-screen md:overflow-hidden", "grid-cols-1 md:grid-cols-[auto_1fr]", "grid-rows-[auto_minmax(0,1fr)]")}>
+    <Main className={clsx("grid w-full h-screen xl:overflow-hidden", "grid-cols-1 xl:grid-cols-[auto_1fr]", "grid-rows-[auto_minmax(0,1fr)]")}>
       <Container
         className={clsx(
           "p-10",
-          "flex items-center md:items-start",
+          "flex items-center xl:items-start",
           "row-start-1 col-start-1",
-          "md:row-span-2 md:col-start-1 md:row-start-1 md:max-w-sm",
-          "md:overflow-y-auto"
+          "xl:row-span-2 xl:col-start-1 xl:row-start-1 xl:max-w-sm",
+          "xl:overflow-y-auto"
         )}
       >
         <Container className="flex flex-col h-full gap-10">
@@ -95,39 +95,47 @@ export default function Layout(props: { children: ReactNode }) {
             <Logo mode="symbol" className="size-10 fill-foreground-primary" />
           </Link>
           <Drawer.Root>
-            <Drawer.Trigger className="cursor-pointer md:hidden fixed rounded-full bg-translucent p-4 flex items-center justify-center z-20 bottom-10 right-10">
+            <Drawer.Trigger className="cursor-pointer xl:hidden fixed rounded-full bg-translucent p-4 flex items-center justify-center z-20 bottom-10 right-10">
               <Icon symbol="apps" />
             </Drawer.Trigger>
-            <Drawer.Content>
-              <UL className="grid gap-4 grid-cols-2">
-                {pages.map((page, i) => {
-                  const highlight = active(page.href);
+            <Drawer.Content className="max-h-[80vh]">
+              <ScrollArea.Root className="h-auto overflow-y-auto">
+                <ScrollArea.Viewport>
+                  <UL className="grid gap-4 grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+                    {pages.map((page, i) => {
+                      const highlight = active(page.href);
 
-                  return (
-                    <LI key={i}>
-                      <Drawer.Close asChild>
-                        <Link
-                          href={page.href}
-                          className={clsx(
-                            "transition-all",
-                            "flex flex-col gap-1 items-center justify-center w-full h-20",
-                            "rounded-2xl bg-button-secondary text-foreground-primary",
-                            "hover:bg-button-secondary-hover active:bg-button-secondary-active",
-                            "hover:text-foreground-primary active:text-foreground-primary",
-                            { "bg-blue! text-white!": highlight }
-                          )}
-                        >
-                          <Icon symbol={page.icon} className={highlight ? "animate-fill" : "animate-outline"} />
-                          <Span className="text-xs">{page.name}</Span>
-                        </Link>
-                      </Drawer.Close>
-                    </LI>
-                  );
-                })}
-              </UL>
+                      return (
+                        <LI key={i}>
+                          <Drawer.Close asChild>
+                            <Link
+                              href={page.href}
+                              className={clsx(
+                                "transition-colors",
+                                "flex flex-col gap-1 items-center justify-center w-full h-20",
+                                "rounded-2xl bg-button-secondary text-foreground-primary",
+                                "hover:bg-button-secondary-hover active:bg-button-secondary-active",
+                                "hover:text-foreground-primary active:text-foreground-primary",
+                                { "bg-blue! text-white!": highlight }
+                              )}
+                            >
+                              <Icon symbol={page.icon} className={highlight ? "animate-fill" : "animate-outline"} />
+                              <Span className="text-xs">{page.name}</Span>
+                            </Link>
+                          </Drawer.Close>
+                        </LI>
+                      );
+                    })}
+                  </UL>
+                </ScrollArea.Viewport>
+                <ScrollArea.Scrollbar>
+                  <ScrollArea.Thumb />
+                </ScrollArea.Scrollbar>
+                <ScrollArea.Corner />
+              </ScrollArea.Root>
             </Drawer.Content>
           </Drawer.Root>
-          <UL className="hidden md:flex grow flex-col items-center justify-center gap-6">
+          <UL className="hidden xl:flex grow flex-col items-center justify-center gap-6">
             {pages.map((page, i) => {
               const highlight = active(page.href);
 
@@ -138,7 +146,7 @@ export default function Layout(props: { children: ReactNode }) {
                       <Link
                         href={page.href}
                         className={clsx(
-                          "transition-all",
+                          "transition-colors",
                           "flex items-center justify-center size-10 scale-125",
                           "rounded-full bg-button-secondary text-foreground-primary",
                           "hover:bg-button-secondary-hover active:bg-button-secondary-active",
@@ -159,7 +167,7 @@ export default function Layout(props: { children: ReactNode }) {
           </UL>
         </Container>
       </Container>
-      <Container className="flex p-10 gap-2.5 ml-auto items-center shrink-0 row-start-1 col-start-1 md:col-start-2">
+      <Container className="flex p-10 gap-2.5 ml-auto items-center shrink-0 row-start-1 col-start-1 xl:col-start-2">
         <LocaleSwitcher compact />
         <Sheet.Root>
           <Sheet.Trigger className="cursor-pointer group">
@@ -172,7 +180,7 @@ export default function Layout(props: { children: ReactNode }) {
         </Sheet.Root>
       </Container>
       <ScrollArea.Root>
-        <ScrollArea.Viewport className={clsx("row-start-2 col-start-1", "md:col-start-2")}>
+        <ScrollArea.Viewport className={clsx("row-start-2 col-start-1", "xl:col-start-2")}>
           <Container className="px-10">
             {props.children}
             <Span className="flex w-full h-[500vh]" />

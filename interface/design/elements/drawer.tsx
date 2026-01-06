@@ -6,6 +6,8 @@ import { ComponentProps, FC, PropsWithChildren, ReactNode } from "react";
 import { Drawer as Primitive } from "vaul";
 
 export const Drawer = {
+  ...Primitive,
+
   Root: createElement<typeof Primitive.Root, ComponentProps<typeof Primitive.Root>>((props, _) => <Primitive.Root {...props} />),
 
   Trigger: createElement<typeof Primitive.Trigger, ComponentProps<typeof Primitive.Trigger>>((props, ref) => (

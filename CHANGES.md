@@ -1,5 +1,37 @@
 # Changelog
 
+## [1.12.0](https://github.com/sptlco/spatial/compare/spatial-1.11.1...spatial-1.12.0) (2026-01-06)
+
+
+### Features
+
+* Added a card element ([#51](https://github.com/sptlco/spatial/issues/51)) ([5e72a59](https://github.com/sptlco/spatial/commit/5e72a5989c1ee65ac2511b1b612165a9a20a1ba8))
+* Added a compact locale switcher ([#51](https://github.com/sptlco/spatial/issues/51)) ([5e4f2f7](https://github.com/sptlco/spatial/commit/5e4f2f7fde42358c8db61bac23666b0eaecae2d5))
+* Added a custom scrollbar ([#51](https://github.com/sptlco/spatial/issues/51)) ([6d372ba](https://github.com/sptlco/spatial/commit/6d372ba06a44ca07deac2576537805d7add56def))
+* Added a drawer ([#51](https://github.com/sptlco/spatial/issues/51)) ([8115aa3](https://github.com/sptlco/spatial/commit/8115aa30108cab9da315770fee4c93639948ff4d))
+* Added a mobile navigation trigger ([#51](https://github.com/sptlco/spatial/issues/51)) ([a231e52](https://github.com/sptlco/spatial/commit/a231e5226c847bd807fe8d42d4208609fa53bf34))
+* Added a navigation menu ([#51](https://github.com/sptlco/spatial/issues/51)) ([1bdf258](https://github.com/sptlco/spatial/commit/1bdf2584d518fa22dd90a480888b440c473720dd))
+* Added a sheet element ([#51](https://github.com/sptlco/spatial/issues/51)) ([d28643c](https://github.com/sptlco/spatial/commit/d28643cf6af9b372f433e62a1ed1c51a8ea5ace0))
+* Added a tooltip ([#51](https://github.com/sptlco/spatial/issues/51)) ([aa95582](https://github.com/sptlco/spatial/commit/aa955825c2dc35d4ebd51f14a31232b27ebce81e))
+* Added redirect rules ([#51](https://github.com/sptlco/spatial/issues/51)) ([cb88f97](https://github.com/sptlco/spatial/commit/cb88f974cd26e8555ccd86f25bc39ab4a347ed98))
+* Added translations ([#51](https://github.com/sptlco/spatial/issues/51)) ([7d2d929](https://github.com/sptlco/spatial/commit/7d2d92973802b95d611e50d2c0939bffa018bf9e))
+* Created a dashboard layout ([#51](https://github.com/sptlco/spatial/issues/51)) ([10b8385](https://github.com/sptlco/spatial/commit/10b83858befbec461e2af3f78654217381117bf6))
+* Migrated to next/link ([#51](https://github.com/sptlco/spatial/issues/51)) ([d54dde6](https://github.com/sptlco/spatial/commit/d54dde6ecb27fb9c972726f38ef7aaca12f37d89))
+
+
+### Bug Fixes
+
+* Added responsive styles ([#51](https://github.com/sptlco/spatial/issues/51)) ([919e8f3](https://github.com/sptlco/spatial/commit/919e8f32cd96097572a1d58293cd7f8969d28ce4))
+* Added translations ([#51](https://github.com/sptlco/spatial/issues/51)) ([bb34cf8](https://github.com/sptlco/spatial/commit/bb34cf89c2dc03c6de0f6b565955515ee79db514))
+* Added translucent color ([#51](https://github.com/sptlco/spatial/issues/51)) ([421da0b](https://github.com/sptlco/spatial/commit/421da0b3492a9d8109aeae543049d20535eba200))
+* Always display locale name ([#51](https://github.com/sptlco/spatial/issues/51)) ([5b8a985](https://github.com/sptlco/spatial/commit/5b8a9855b0f84633692f8939878275333fcc0b18))
+* Hid mobile navigation on desktop ([#51](https://github.com/sptlco/spatial/issues/51)) ([58c616e](https://github.com/sptlco/spatial/commit/58c616e1edd89d66fc6c4d0eb1bd72515e2ff582))
+* Increased locale switcher width on mobile ([#51](https://github.com/sptlco/spatial/issues/51)) ([f5e55aa](https://github.com/sptlco/spatial/commit/f5e55aa1590b1aa2ff1417077abb506409a046f8))
+* Moved errors to translations ([#51](https://github.com/sptlco/spatial/issues/51)) ([bc8d03a](https://github.com/sptlco/spatial/commit/bc8d03a740d55fda8dcf8b35022e0ecdf9783f14))
+* Reduced the size of the locale spinner ([#51](https://github.com/sptlco/spatial/issues/51)) ([3b7ba22](https://github.com/sptlco/spatial/commit/3b7ba225c8a3e02e2749a275c5479d4b55e79a2e))
+* Removed unnecessary wrappers ([#51](https://github.com/sptlco/spatial/issues/51)) ([9477808](https://github.com/sptlco/spatial/commit/94778086abcb8339b310e9e1cf4bfd5f22066c85))
+* Removed view transitions ([#51](https://github.com/sptlco/spatial/issues/51)) ([96c2a51](https://github.com/sptlco/spatial/commit/96c2a51c98ece89ddce9469c6ff8cf25dba21a58))
+
 ## [1.11.1](https://github.com/sptlco/spatial/compare/spatial-1.11.0...spatial-1.11.1) (2025-12-27)
 
 

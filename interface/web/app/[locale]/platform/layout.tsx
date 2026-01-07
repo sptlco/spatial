@@ -10,52 +10,54 @@ import { useLocale, useTranslations } from "next-intl";
 import { usePathname } from "next/navigation";
 import { ReactNode } from "react";
 
+const BASE_URL = "/platform";
+
 type Page = {
   name: string;
-  href: string;
+  path: string;
   icon: string;
 };
 
 const pages: Page[] = [
   {
     name: "Dashboard",
-    href: "/controls",
-    icon: "home"
+    path: BASE_URL,
+    icon: "view_cozy"
   },
   {
     name: "Compute",
-    href: "/controls/compute",
+    path: `${BASE_URL}/compute`,
     icon: "bolt"
   },
   {
-    name: "Data",
-    href: "/controls/data",
+    name: "Datastore",
+    path: `${BASE_URL}/data`,
     icon: "database"
   },
   {
+    name: "Identity",
+    path: `${BASE_URL}/users`,
+    icon: "person"
+  },
+  {
     name: "Intelligence",
-    href: "/controls/models",
+    path: `${BASE_URL}/models`,
     icon: "neurology"
   },
   {
+    name: "Logistics",
+    path: `${BASE_URL}/logistics`,
+    icon: "package_2"
+  },
+  {
     name: "Network",
-    href: "/controls/network",
+    path: `${BASE_URL}/network`,
     icon: "cell_tower"
   },
   {
     name: "Security",
-    href: "/controls/security",
+    path: `${BASE_URL}/security`,
     icon: "lock"
-  },
-  {
-    name: "Users",
-    href: "/controls/users",
-    icon: "person"
-  },
-  {
-    name: "Warehouse",
-    href: "/controls/store",
-    icon: "package_2"
   }
 ];
 
@@ -66,17 +68,15 @@ const pages: Page[] = [
  */
 export default function Layout(props: { children: ReactNode }) {
   const t = useTranslations();
-
-  const path = usePathname();
   const locale = useLocale();
-  const route = path.replace(`/${locale}`, "");
+  const path = usePathname().replace(`/${locale}`, "");
 
   const active = (href: string): boolean => {
-    if (href === "/controls") {
-      return route === href;
+    if (href === BASE_URL) {
+      return path === href;
     }
 
-    return route.startsWith(href);
+    return path.startsWith(href);
   };
 
   return (
@@ -92,7 +92,7 @@ export default function Layout(props: { children: ReactNode }) {
       >
         <Container className="flex flex-col h-full gap-10">
           <Link href="/" className="flex items-center justify-center">
-            <Logo mode="symbol" className="size-10 fill-foreground-primary" />
+            {<Logo mode="symbol" className="size-10 fill-foreground-primary" />}
           </Link>
           <Drawer.Root>
             <Drawer.Trigger className="cursor-pointer xl:hidden fixed rounded-full bg-translucent p-4 flex items-center justify-center z-20 bottom-10 right-10">
@@ -103,13 +103,13 @@ export default function Layout(props: { children: ReactNode }) {
                 <ScrollArea.Viewport>
                   <UL className="grid gap-4 grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
                     {pages.map((page, i) => {
-                      const highlight = active(page.href);
+                      const highlight = active(page.path);
 
                       return (
                         <LI key={i}>
                           <Drawer.Close asChild>
                             <Link
-                              href={page.href}
+                              href={page.path}
                               className={clsx(
                                 "transition-colors",
                                 "flex flex-col gap-1 items-center justify-center w-full h-20",
@@ -137,14 +137,14 @@ export default function Layout(props: { children: ReactNode }) {
           </Drawer.Root>
           <UL className="hidden xl:flex grow flex-col items-center justify-center gap-6">
             {pages.map((page, i) => {
-              const highlight = active(page.href);
+              const highlight = active(page.path);
 
               return (
                 <LI key={i}>
                   <Tooltip.Root>
                     <Tooltip.Trigger>
                       <Link
-                        href={page.href}
+                        href={page.path}
                         className={clsx(
                           "transition-colors",
                           "flex items-center justify-center size-10 scale-125",
@@ -167,7 +167,7 @@ export default function Layout(props: { children: ReactNode }) {
           </UL>
         </Container>
       </Container>
-      <Container className="flex p-10 gap-2.5 ml-auto items-center shrink-0 row-start-1 col-start-1 xl:col-start-2">
+      <Container className="flex p-10 gap-2.5 sm:gap-5 ml-auto items-center shrink-0 row-start-1 col-start-1 xl:col-start-2">
         <LocaleSwitcher compact />
         <Sheet.Root>
           <Sheet.Trigger className="cursor-pointer group">
@@ -181,10 +181,7 @@ export default function Layout(props: { children: ReactNode }) {
       </Container>
       <ScrollArea.Root>
         <ScrollArea.Viewport className={clsx("row-start-2 col-start-1", "xl:col-start-2")}>
-          <Container className="px-10">
-            {props.children}
-            <Span className="flex w-full h-[500vh]" />
-          </Container>
+          <Container className="px-10">{props.children}</Container>
           <CompactFooter className="p-10" />
         </ScrollArea.Viewport>
         <ScrollArea.Scrollbar>

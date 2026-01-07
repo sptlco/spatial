@@ -1,17 +1,20 @@
 // Copyright © Spatial Corporation. All rights reserved.
 
 import { Spatial } from "@sptlco/client";
-import { Account, Session } from "@sptlco/data";
+import { Account, Principal, Session } from "@sptlco/data";
 import { create } from "zustand";
 import { devtools } from "zustand/middleware";
 
 export type User = {
-  account?: Account;
-  authenticated: boolean;
+  account: Account;
+  authenticated: () => boolean;
+  can: (scope: string) => boolean;
+  is: (role: string) => boolean;
   loading: boolean;
   login: () => Promise<void>;
   logout: () => Promise<void>;
-  session?: Session;
+  principal: Principal;
+  session: Session;
 };
 
 /**
@@ -19,18 +22,20 @@ export type User = {
  */
 export const useUser = create<User>()(
   devtools(
-    (set) => ({
+    (set, get) => ({
+      authenticated: () => !!get().account,
+      can: (scope: string) => get().principal?.permissions.includes(scope) ?? false,
+      is: (role: string) => get().principal?.roles.includes(role) ?? false,
       loading: true,
-      authenticated: false,
       login: async () => {
         set({ loading: true });
 
-        const [account, session] = await Promise.all([Spatial.accounts.me(), Spatial.sessions.me()]);
+        const [account, principal, session] = await Promise.all([Spatial.accounts.me(), Spatial.principals.me(), Spatial.sessions.me()]);
 
         set({
           account: !account.error ? account.data : undefined,
-          authenticated: !account.error,
           loading: false,
+          principal: !principal.error ? principal.data : undefined,
           session: !session.error ? session.data : undefined
         });
       },
@@ -41,8 +46,8 @@ export const useUser = create<User>()(
 
         set({
           account: undefined,
-          authenticated: false,
           loading: false,
+          principal: undefined,
           session: undefined
         });
       }

@@ -25,7 +25,7 @@ public class PermissionHandler : AuthorizationHandler<PermissionRequirement>
 
                 if (endpoint?.Metadata.GetMetadata<AuthorizeAttribute>()?.Permissions is string[] permissions)
                 {
-                    if (permissions.All(permission => context.User.HasClaim(Claims.Permission, permission)))
+                    if (permissions.Length <= 0 || permissions.Any(permission => context.User.HasClaim(Claims.Permission, permission)))
                     {
                         context.Succeed(requirement);
                     }

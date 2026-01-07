@@ -33,15 +33,15 @@ const normalize = (target?: Target): User[] => {
   return Array.isArray(target) ? target : [target];
 };
 
-const target = async (request: NextRequest): Promise<User> => {
-  const token = request.cookies.get(SESSION_COOKIE_NAME)?.value;
+const extract = async (request: NextRequest): Promise<User> => {
+  const cookie = request.cookies.get(SESSION_COOKIE_NAME)?.value;
 
-  if (!token) {
+  if (!cookie) {
     return "guest";
   }
 
   try {
-    await jwtVerify(token, new TextEncoder().encode(process.env.JWT_SECRET));
+    await jwtVerify(cookie, new TextEncoder().encode(process.env.JWT_SECRET));
     return "member";
   } catch {
     return "guest";
@@ -58,11 +58,11 @@ export default async (request: NextRequest) => {
     return response;
   }
 
-  const user = await target(request);
+  const role = await extract(request);
   const allow = normalize(rule.allow);
   const block = normalize(rule.block);
 
-  if (block.includes(user) || (allow.length > 0 && !allow.includes(user))) {
+  if (block.includes(role) || (allow.length > 0 && !allow.includes(role))) {
     const url = new URL(rule.redirect, request.url);
     const origin = request.nextUrl.searchParams.get("origin");
 
@@ -84,7 +84,7 @@ export const config = {
 
 const rules: Rule[] = [
   {
-    pattern: "/controls*",
+    pattern: "/platform*",
     allow: "member",
     redirect: "/session/new"
   },

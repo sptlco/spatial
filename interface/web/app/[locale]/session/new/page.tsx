@@ -21,13 +21,7 @@ type AuthenticationState = "idle" | "requesting" | "confirming" | "verifying" | 
  * @returns A user authentication page.
  */
 export default function Page() {
-  const { login } = useUser(
-    useShallow((state) => ({
-      authenticated: state.authenticated,
-      loading: state.loading,
-      login: state.login
-    }))
-  );
+  const login = useUser((state) => state.login);
 
   const t = useTranslations("authentication");
 

@@ -34,7 +34,7 @@ export const Dropdown = {
     <Primitive.Content
       {...props}
       ref={ref}
-      sideOffset={10}
+      sideOffset={20}
       collisionPadding={40}
       className={clsx(
         "bg-translucent backdrop-blur text-sm shadow-lg rounded-xl p-3 w-screen max-w-48 sm:max-w-3xs",

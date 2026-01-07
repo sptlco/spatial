@@ -12,6 +12,7 @@
   "scripts": {
     "dev:mobile": "npm run dev --workspace @spatial/mobile",
     "build:web": "npm run build --workspace @spatial/web",
-    "dev:web": "npm run dev --workspace @spatial/web"
+    "dev:web": "npm run dev --workspace @spatial/web",
+    "start:web": "npm run start --workspace @spatial/web"
   }
 }

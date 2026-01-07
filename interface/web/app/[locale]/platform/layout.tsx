@@ -55,9 +55,9 @@ const pages: Page[] = [
     icon: "cell_tower"
   },
   {
-    name: "Security",
-    path: `${BASE_URL}/security`,
-    icon: "lock"
+    name: "Simulation",
+    path: `${BASE_URL}/space`,
+    icon: "simulation"
   }
 ];
 

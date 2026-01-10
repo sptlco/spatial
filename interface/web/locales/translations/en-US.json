@@ -38,9 +38,17 @@
   },
 
   "navigation": {
-    "links": {
-      "manual": "Documentation",
-      "support": "Support"
+    "platform": {
+      "pages": {
+        "dashboard": "Dashboard",
+        "compute": "Compute",
+        "datastore": "Datastore",
+        "identity": "Identity",
+        "intelligence": "Intelligence",
+        "logistics": "Logistics",
+        "network": "Network",
+        "simulation": "Simulation"
+      }
     }
   },
 

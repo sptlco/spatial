@@ -20,42 +20,42 @@ type Page = {
 
 const pages: Page[] = [
   {
-    name: "Dashboard",
+    name: "navigation.platform.pages.dashboard",
     path: BASE_URL,
     icon: "view_cozy"
   },
   {
-    name: "Compute",
+    name: "navigation.platform.pages.compute",
     path: `${BASE_URL}/compute`,
     icon: "bolt"
   },
   {
-    name: "Datastore",
+    name: "navigation.platform.pages.datastore",
     path: `${BASE_URL}/data`,
     icon: "database"
   },
   {
-    name: "Identity",
+    name: "navigation.platform.pages.identity",
     path: `${BASE_URL}/users`,
     icon: "person"
   },
   {
-    name: "Intelligence",
+    name: "navigation.platform.pages.intelligence",
     path: `${BASE_URL}/models`,
     icon: "neurology"
   },
   {
-    name: "Logistics",
+    name: "navigation.platform.pages.logistics",
     path: `${BASE_URL}/logistics`,
     icon: "package_2"
   },
   {
-    name: "Network",
+    name: "navigation.platform.pages.network",
     path: `${BASE_URL}/network`,
     icon: "cell_tower"
   },
   {
-    name: "Simulation",
+    name: "navigation.platform.pages.simulation",
     path: `${BASE_URL}/space`,
     icon: "simulation"
   }
@@ -120,7 +120,7 @@ export default function Layout(props: { children: ReactNode }) {
                               )}
                             >
                               <Icon symbol={page.icon} className={highlight ? "animate-fill" : "animate-outline"} />
-                              <Span className="text-xs">{page.name}</Span>
+                              <Span className="text-xs">{t(page.name)}</Span>
                             </Link>
                           </Drawer.Close>
                         </LI>
@@ -158,7 +158,7 @@ export default function Layout(props: { children: ReactNode }) {
                       </Link>
                     </Tooltip.Trigger>
                     <Tooltip.Content side="right" sideOffset={20} className="bg-translucent rounded-lg text-sm px-4 py-2">
-                      {page.name}
+                      {t(page.name)}
                     </Tooltip.Content>
                   </Tooltip.Root>
                 </LI>

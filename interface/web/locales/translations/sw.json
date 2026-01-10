@@ -38,9 +38,17 @@
   },
 
   "navigation": {
-    "links": {
-      "manual": "Nyaraka",
-      "support": "Msaada"
+    "platform": {
+      "pages": {
+        "dashboard": "Dashibodi",
+        "compute": "Hesabu",
+        "datastore": "Hifadhi Data",
+        "identity": "Utambulisho",
+        "intelligence": "Akili Bandia",
+        "logistics": "Usafirishaji",
+        "network": "Mtandao",
+        "simulation": "Uigaji"
+      }
     }
   },
 

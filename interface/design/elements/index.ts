@@ -33,4 +33,5 @@ export * from "./sonner";
 export * from "./span";
 export * from "./spinner";
 export * from "./svg";
+export * from "./tabs";
 export * from "./tooltip";

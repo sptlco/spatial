@@ -146,12 +146,12 @@ export default function Layout(props: { children: ReactNode }) {
                       <Link
                         href={page.path}
                         className={clsx(
-                          "transition-colors",
+                          "transition-all",
                           "flex items-center justify-center size-10 scale-125",
                           "rounded-full bg-button-secondary text-foreground-primary",
                           "hover:bg-button-secondary-hover active:bg-button-secondary-active",
                           "hover:text-foreground-primary active:text-foreground-primary",
-                          { "bg-blue! text-white!": highlight }
+                          { "bg-blue! text-white! scale-140!": highlight }
                         )}
                       >
                         <Icon symbol={page.icon} className={highlight ? "animate-fill" : "animate-outline"} />

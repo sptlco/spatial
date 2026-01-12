@@ -1,5 +1,22 @@
 # Changelog
 
+## [1.13.0](https://github.com/sptlco/spatial/compare/spatial-1.12.0...spatial-1.13.0) (2026-01-12)
+
+
+### Features
+
+* Added a tabs component ([#137](https://github.com/sptlco/spatial/issues/137)) ([2fa83b8](https://github.com/sptlco/spatial/commit/2fa83b875fb1e7e9cefbc4aa76376ac5a5f29389))
+* Added design elements ([#137](https://github.com/sptlco/spatial/issues/137)) ([b459bb6](https://github.com/sptlco/spatial/commit/b459bb67844401404569f3ff9172db42887d8cf1))
+* Added locale support ([#137](https://github.com/sptlco/spatial/issues/137)) ([252f78a](https://github.com/sptlco/spatial/commit/252f78a11fa600ad1cf0d4bc1ec680ce1e6c8a75))
+* Enriched the UX with the user principal ([#137](https://github.com/sptlco/spatial/issues/137)) ([6b048c7](https://github.com/sptlco/spatial/commit/6b048c7a2a06993fc486212d6a632af5a4d4c398))
+* Replaced security with simulation ([#137](https://github.com/sptlco/spatial/issues/137)) ([8b7c50e](https://github.com/sptlco/spatial/commit/8b7c50e658b7ba780649bd37b5aa9f9a06f7aa6b))
+* Updated namespaces ([#137](https://github.com/sptlco/spatial/issues/137)) ([b8b9632](https://github.com/sptlco/spatial/commit/b8b963219a583a7b0821dc28edd761d3ddd55710))
+
+
+### Bug Fixes
+
+* Consolidated endpoints ([#137](https://github.com/sptlco/spatial/issues/137)) ([6898726](https://github.com/sptlco/spatial/commit/689872685ca66d97f7e889f1692855f9e50b40e0))
+
 ## [1.12.0](https://github.com/sptlco/spatial/compare/spatial-1.11.1...spatial-1.12.0) (2026-01-06)
 
 

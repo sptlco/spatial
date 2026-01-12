@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.2.0](https://github.com/sptlco/spatial/compare/spatial-interface-data-1.1.0...spatial-interface-data-1.2.0) (2026-01-12)
+
+
+### Features
+
+* Enriched the UX with the user principal ([#137](https://github.com/sptlco/spatial/issues/137)) ([6b048c7](https://github.com/sptlco/spatial/commit/6b048c7a2a06993fc486212d6a632af5a4d4c398))
+
+
+### Bug Fixes
+
+* Consolidated endpoints ([#137](https://github.com/sptlco/spatial/issues/137)) ([6898726](https://github.com/sptlco/spatial/commit/689872685ca66d97f7e889f1692855f9e50b40e0))
+
 ## [1.1.0](https://github.com/sptlco/spatial/compare/spatial-interface-data-1.0.1...spatial-interface-data-1.1.0) (2025-12-25)
 
 

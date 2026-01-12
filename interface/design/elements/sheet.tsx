@@ -1,6 +1,6 @@
 // Copyright © Spatial Corporation. All rights reserved.
 
-import { Container, createElement, Hidden } from "..";
+import { Container, createElement, Hidden, Icon } from "..";
 import * as Primitive from "@radix-ui/react-dialog";
 import { clsx } from "clsx";
 import { cva } from "cva";
@@ -18,12 +18,12 @@ const classes = cva({
       top: ["inset-x-0 top-0 h-auto sm:rounded-b-4xl", "data-[state=open]:slide-in-from-top", "data-[state=closed]:slide-out-to-top"],
       bottom: ["inset-x-0 bottom-0 h-auto sm:rounded-t-4xl", "data-[state=open]:slide-in-from-bottom", "data-[state=closed]:slide-out-to-bottom"],
       right: [
-        "inset-y-0 right-0 w-3/4 sm:max-w-sm h-full sm:rounded-l-4xl",
+        "inset-y-0 right-0 w-full sm:w-auto sm:max-w-sm h-full sm:rounded-l-4xl",
         "data-[state=open]:slide-in-from-right",
         "data-[state=closed]:slide-out-to-right"
       ],
       left: [
-        "inset-y-0 left-0 w-3/4 sm:max-w-sm h-full sm:rounded-r-4xl",
+        "inset-y-0 left-0 w-full sm:w-auto sm:max-w-sm h-full sm:rounded-r-4xl",
         "data-[state=open]:slide-in-from-left",
         "data-[state=closed]:slide-out-to-left"
       ]
@@ -45,8 +45,8 @@ export const Sheet = {
   Overlay: createElement<typeof Primitive.Overlay, Primitive.DialogOverlayProps>((props, ref) => <Primitive.Overlay {...props} ref={ref} />),
   Content: createElement<
     typeof Primitive.Content,
-    Primitive.DialogContentProps & { title?: ReactNode; description?: ReactNode; side?: "top" | "right" | "bottom" | "left" }
-  >(({ side = "right", ...props }, ref) => {
+    Primitive.DialogContentProps & { title?: ReactNode; description?: ReactNode; side?: "top" | "right" | "bottom" | "left"; closeButton?: boolean }
+  >(({ side = "right", closeButton = false, ...props }, ref) => {
     const Optional: FC<PropsWithChildren<{ value?: ReactNode }>> = ({ value, ...props }) => {
       return !value ? <Hidden {...props} /> : props.children;
     };
@@ -62,13 +62,20 @@ export const Sheet = {
           )}
         />
         <Primitive.Content {...props} data-slot="sheet-content" className={clsx(classes({ side }), props.className)} ref={ref}>
-          <Container className="flex flex-col">
-            <Optional value={props.title}>
-              <Primitive.Title className="font-bold text-lg">{props.title}</Primitive.Title>
-            </Optional>
-            <Optional value={props.description}>
-              <Primitive.Description className="text-foreground-secondary">{props.description}</Primitive.Description>
-            </Optional>
+          <Container className="flex gap-10">
+            <Container className="flex flex-col grow">
+              <Optional value={props.title}>
+                <Primitive.Title className="font-bold text-lg">{props.title}</Primitive.Title>
+              </Optional>
+              <Optional value={props.description}>
+                <Primitive.Description className="text-foreground-secondary">{props.description}</Primitive.Description>
+              </Optional>
+            </Container>
+            {closeButton && (
+              <Primitive.Close className="cursor-pointer flex size-7 items-center justify-center">
+                <Icon symbol="close" />
+              </Primitive.Close>
+            )}
           </Container>
           {props.children}
         </Primitive.Content>

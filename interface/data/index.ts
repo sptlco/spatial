@@ -7,5 +7,6 @@ export * from "./permissions";
 export * from "./principals";
 export * from "./roles";
 export * from "./sessions";
+export * from "./users";
 
 export * from "./Record";

@@ -87,7 +87,8 @@ export const Field = createElement<"input", FieldProps>((props, ref) => {
             className={clsx(
               "disabled:opacity-50",
               "w-full px-4 py-2 bg-input placeholder-hint rounded-lg transition-all",
-              "outline-2 outline-transparent focus:outline-line-input-focus"
+              "outline-2 outline-transparent focus:outline-line-input-focus",
+              props.className
             )}
           />
         );

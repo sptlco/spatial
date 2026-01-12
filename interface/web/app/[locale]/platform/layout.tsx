@@ -176,12 +176,12 @@ export default function Layout(props: { children: ReactNode }) {
               className="size-10 transition-all outline-transparent outline-0 outline-offset-2 group-data-[state=open]:outline-3 group-data-[state=open]:outline-background-highlight"
             />
           </Sheet.Trigger>
-          <Sheet.Content title={t("modals.account.title")} description={t("modals.account.description")} side="right" />
+          <Sheet.Content title={t("modals.account.title")} description={t("modals.account.description")} closeButton side="right" />
         </Sheet.Root>
       </Container>
       <ScrollArea.Root>
         <ScrollArea.Viewport className={clsx("row-start-2 col-start-1", "xl:col-start-2")}>
-          <Container className="px-10">{props.children}</Container>
+          <Container className="px-10 xl:pl-0! flex flex-col">{props.children}</Container>
           <CompactFooter className="p-10" />
         </ScrollArea.Viewport>
         <ScrollArea.Scrollbar>

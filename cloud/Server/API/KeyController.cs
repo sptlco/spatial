@@ -4,7 +4,7 @@ using Spatial.Cloud.Data.Keys;
 using Spatial.Communication;
 using Spatial.Extensions;
 
-namespace Spatial.Cloud.Controllers;
+namespace Spatial.Cloud.API;
 
 /// <summary>
 /// A <see cref="Controller"/> for keys.

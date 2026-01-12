@@ -4,7 +4,7 @@ using Spatial.Cloud.Data.Assignments;
 using Spatial.Extensions;
 using Spatial.Identity.Authorization;
 
-namespace Spatial.Cloud.Controllers;
+namespace Spatial.Cloud.API;
 
 /// <summary>
 /// A controller for role assignments.

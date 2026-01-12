@@ -2,7 +2,7 @@
 
 using Spatial.Cloud.Data.Accounts;
 
-namespace Spatial.Cloud.Controllers;
+namespace Spatial.Cloud.API;
 
 /// <summary>
 /// An augmented <see cref="Networking.Controller"/>.

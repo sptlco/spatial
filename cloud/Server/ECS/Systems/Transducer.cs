@@ -3,7 +3,7 @@
 using Spatial.Extensions;
 using System.Reflection;
 
-namespace Spatial.Cloud.Baymax.Systems;
+namespace Spatial.Cloud.ECS.Systems;
 
 /// <summary>
 /// A device that converts neural input signals to output values.

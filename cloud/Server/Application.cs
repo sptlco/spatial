@@ -1,7 +1,7 @@
 // Copyright © Spatial Corporation. All rights reserved.
 
-using Spatial.Cloud.Baymax.Systems;
 using Spatial.Cloud.Data.Accounts;
+using Spatial.Cloud.ECS.Systems;
 using Spatial.Identity;
 using Spatial.Persistence;
 using System.Reflection;
@@ -35,12 +35,12 @@ internal class Server : Application
     public static new Server Current => (Server) Application.Current;
 
     /// <summary>
-    /// The server's feature <see cref="Baymax.Systems.Extractor"/>.
+    /// The server's feature <see cref="ECS.Systems.Extractor"/>.
     /// </summary>
     public Extractor Extractor { get; internal set; }
 
     /// <summary>
-    /// The server's <see cref="Baymax.Systems.Hypersolver"/>.
+    /// The server's <see cref="ECS.Systems.Hypersolver"/>.
     /// </summary>
     public Hypersolver Hypersolver { get; internal set; }
 

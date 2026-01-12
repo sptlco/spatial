@@ -4,7 +4,7 @@ using Spatial.Cloud.Data.Accounts;
 using Spatial.Identity.Authorization;
 using Spatial.Persistence;
 
-namespace Spatial.Cloud.Controllers;
+namespace Spatial.Cloud.API;
 
 /// <summary>
 /// A controller for account functions.

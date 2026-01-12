@@ -2,7 +2,7 @@
 
 using Spatial.Simulation;
 
-namespace Spatial.Cloud.Baymax.Components;
+namespace Spatial.Cloud.ECS.Components;
 
 /// <summary>
 /// The 3-dimensional position of an <see cref="Entity"/>.

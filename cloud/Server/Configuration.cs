@@ -1,7 +1,7 @@
 // Copyright © Spatial Corporation. All rights reserved.
 
 using Microsoft.Extensions.Options;
-using Spatial.Cloud.Baymax;
+using Spatial.Cloud.ECS;
 
 namespace Spatial.Cloud;
 

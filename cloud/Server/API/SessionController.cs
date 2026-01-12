@@ -9,7 +9,7 @@ using Spatial.Extensions;
 using Spatial.Identity;
 using Spatial.Persistence;
 
-namespace Spatial.Cloud.Controllers;
+namespace Spatial.Cloud.API;
 
 /// <summary>
 /// A <see cref="Controller"/> for users.

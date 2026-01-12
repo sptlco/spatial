@@ -1,13 +1,13 @@
 // Copyright © Spatial Corporation. All rights reserved.
 
-using Spatial.Cloud.Baymax.Components;
 using Spatial.Cloud.Data.Neurons;
+using Spatial.Cloud.ECS.Components;
 using Spatial.Extensions;
 using Spatial.Persistence;
 using Spatial.Simulation;
 using System.Collections.Concurrent;
 
-namespace Spatial.Cloud.Baymax.Systems;
+namespace Spatial.Cloud.ECS.Systems;
 
 /// <summary>
 /// A neural network leveraging temporal dynamics for continuous state changes over time.
@@ -56,7 +56,7 @@ public class Hypersolver : System
         _synapsesByEntity = [];
 
         _neurons = new Query().WithAll<Components.Neuron>();
-        _synapses = new Query().WithAll<Components.Synapse>();
+        _synapses = new Query().WithAll<Synapse>();
 
         _inputs = [];
         _rewards = [];

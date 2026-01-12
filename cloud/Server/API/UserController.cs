@@ -6,7 +6,7 @@ using Spatial.Identity;
 using Spatial.Identity.Authorization;
 using System.Security.Claims;
 
-namespace Spatial.Cloud.Controllers;
+namespace Spatial.Cloud.API;
 
 /// <summary>
 /// A controller for user functions.
@@ -34,7 +34,6 @@ public class UserController : Controller
                 Permissions = [..HttpContext.User
                     .FindAll(Claims.Permission)
                     .Select(claim => claim.Value)
-                    .Distinct()]}
-        };
+                    .Distinct()]}};
     }
 }

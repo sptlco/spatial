@@ -5,7 +5,7 @@ using Spatial.Identity;
 using Spatial.Identity.Authorization;
 using System.Security.Claims;
 
-namespace Spatial.Cloud.Controllers;
+namespace Spatial.Cloud.API;
 
 /// <summary>
 /// A controller for the current user principal.

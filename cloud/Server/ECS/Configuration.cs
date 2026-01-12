@@ -1,9 +1,9 @@
 // Copyright © Spatial Corporation. All rights reserved.
 
 using Microsoft.Extensions.Options;
-using Spatial.Cloud.Baymax.Systems;
+using Spatial.Cloud.ECS.Systems;
 
-namespace Spatial.Cloud.Baymax;
+namespace Spatial.Cloud.ECS;
 
 /// <summary>
 /// Configurable options for Baymax.

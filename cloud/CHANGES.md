@@ -1,5 +1,18 @@
 # Changelog
 
+## [1.20.0](https://github.com/sptlco/spatial/compare/spatial-cloud-1.19.0...spatial-cloud-1.20.0) (2026-01-12)
+
+
+### Features
+
+* Enriched the UX with the user principal ([#137](https://github.com/sptlco/spatial/issues/137)) ([6b048c7](https://github.com/sptlco/spatial/commit/6b048c7a2a06993fc486212d6a632af5a4d4c398))
+* Updated namespaces ([#137](https://github.com/sptlco/spatial/issues/137)) ([b8b9632](https://github.com/sptlco/spatial/commit/b8b963219a583a7b0821dc28edd761d3ddd55710))
+
+
+### Bug Fixes
+
+* Consolidated endpoints ([#137](https://github.com/sptlco/spatial/issues/137)) ([6898726](https://github.com/sptlco/spatial/commit/689872685ca66d97f7e889f1692855f9e50b40e0))
+
 ## [1.19.0](https://github.com/sptlco/spatial/compare/spatial-cloud-1.18.0...spatial-cloud-1.19.0) (2025-12-27)
 
 

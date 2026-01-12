@@ -1,5 +1,19 @@
 # Changelog
 
+## [1.9.0](https://github.com/sptlco/spatial/compare/spatial-interface-design-1.8.0...spatial-interface-design-1.9.0) (2026-01-12)
+
+
+### Features
+
+* Added a tabs component ([#137](https://github.com/sptlco/spatial/issues/137)) ([2fa83b8](https://github.com/sptlco/spatial/commit/2fa83b875fb1e7e9cefbc4aa76376ac5a5f29389))
+* Added design elements ([#137](https://github.com/sptlco/spatial/issues/137)) ([b459bb6](https://github.com/sptlco/spatial/commit/b459bb67844401404569f3ff9172db42887d8cf1))
+* Enriched the UX with the user principal ([#137](https://github.com/sptlco/spatial/issues/137)) ([6b048c7](https://github.com/sptlco/spatial/commit/6b048c7a2a06993fc486212d6a632af5a4d4c398))
+
+
+### Bug Fixes
+
+* Consolidated endpoints ([#137](https://github.com/sptlco/spatial/issues/137)) ([6898726](https://github.com/sptlco/spatial/commit/689872685ca66d97f7e889f1692855f9e50b40e0))
+
 ## [1.8.0](https://github.com/sptlco/spatial/compare/spatial-interface-design-1.7.1...spatial-interface-design-1.8.0) (2026-01-06)
 
 

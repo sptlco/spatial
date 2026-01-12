@@ -1,5 +1,20 @@
 # Changelog
 
+## [1.16.0](https://github.com/sptlco/spatial/compare/spatial-interface-web-1.15.0...spatial-interface-web-1.16.0) (2026-01-12)
+
+
+### Features
+
+* Added a tabs component ([#137](https://github.com/sptlco/spatial/issues/137)) ([2fa83b8](https://github.com/sptlco/spatial/commit/2fa83b875fb1e7e9cefbc4aa76376ac5a5f29389))
+* Added locale support ([#137](https://github.com/sptlco/spatial/issues/137)) ([252f78a](https://github.com/sptlco/spatial/commit/252f78a11fa600ad1cf0d4bc1ec680ce1e6c8a75))
+* Enriched the UX with the user principal ([#137](https://github.com/sptlco/spatial/issues/137)) ([6b048c7](https://github.com/sptlco/spatial/commit/6b048c7a2a06993fc486212d6a632af5a4d4c398))
+* Replaced security with simulation ([#137](https://github.com/sptlco/spatial/issues/137)) ([8b7c50e](https://github.com/sptlco/spatial/commit/8b7c50e658b7ba780649bd37b5aa9f9a06f7aa6b))
+
+
+### Bug Fixes
+
+* Consolidated endpoints ([#137](https://github.com/sptlco/spatial/issues/137)) ([6898726](https://github.com/sptlco/spatial/commit/689872685ca66d97f7e889f1692855f9e50b40e0))
+
 ## [1.15.0](https://github.com/sptlco/spatial/compare/spatial-interface-web-1.14.1...spatial-interface-web-1.15.0) (2026-01-06)
 
 

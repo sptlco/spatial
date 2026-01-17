@@ -11,7 +11,7 @@ export const Card = {
    * Contains all the parts of a card.
    */
   Root: createElement<typeof Container>((props, ref) => (
-    <Container {...props} ref={ref} className={clsx("h-fit flex flex-col", "gap-5", props.className)} />
+    <Container {...props} ref={ref} className={clsx("h-fit flex flex-col", "gap-10", props.className)} />
   )),
 
   /**
@@ -39,7 +39,7 @@ export const Card = {
    * A container for card actions.
    */
   Gutter: createElement<typeof Container>((props, ref) => (
-    <Container {...props} ref={ref} className="col-start-2 row-start-1 row-span-2 flex items-center gap-2.5 self-start" />
+    <Container {...props} ref={ref} className={clsx("col-start-2 row-start-1 flex items-center gap-2.5 self-start", props.className)} />
   )),
 
   /**

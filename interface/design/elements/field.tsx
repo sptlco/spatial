@@ -20,6 +20,11 @@ export interface SharedFieldProps {
    * An optional description for the field.
    */
   description?: ReactNode;
+
+  /**
+   * Whether or not the field's label is inset.
+   */
+  inset?: boolean;
 }
 
 /**
@@ -71,7 +76,7 @@ export type FieldProps = SharedFieldProps & FieldTypeProps;
 /**
  * Part of a form collecting user data.
  */
-export const Field = createElement<"input", FieldProps>((props, ref) => {
+export const Field = createElement<"input", FieldProps>(({ inset = true, ...props }, ref) => {
   const render = () => {
     switch (props.type) {
       case "text":
@@ -109,12 +114,14 @@ export const Field = createElement<"input", FieldProps>((props, ref) => {
   return (
     <Container className={clsx("group flex flex-col space-y-4 w-full", props.containerClassName)}>
       {props.label && (
-        <Label className="px-4 font-medium transition-all" htmlFor={props.id}>
+        <Label className={clsx("font-medium transition-all", { "px-4": inset })} htmlFor={props.id}>
           {props.label}
         </Label>
       )}
       {render()}
-      {props.description && <Paragraph className="px-4 text-sm transition-all text-foreground-secondary">{props.description}</Paragraph>}
+      {props.description && (
+        <Paragraph className={clsx("text-sm transition-all text-foreground-secondary", { "px-4": inset })}>{props.description}</Paragraph>
+      )}
     </Container>
   );
 });

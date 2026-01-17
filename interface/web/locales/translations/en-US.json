@@ -13,7 +13,7 @@
 
     "verification": {
       "title": "Check your inbox",
-      "description": "We sent you a verification code.",
+      "description": "We sent you a code.",
       "label": "Verification Code",
       "help": "A one-time verification code has been sent to your email address. You may <link>request a new code</link> if necessary."
     },

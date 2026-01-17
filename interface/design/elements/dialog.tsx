@@ -1,6 +1,6 @@
 // Copyright © Spatial Corporation. All rights reserved.
 
-import { Container, createElement, Hidden, Icon } from "..";
+import { Container, createElement, Hidden, Icon, ScrollArea } from "..";
 import * as Primitive from "@radix-ui/react-dialog";
 import { clsx } from "clsx";
 import { FC, PropsWithChildren, ReactNode } from "react";
@@ -25,7 +25,8 @@ export const Dialog = {
   )),
 
   /**
-   * Contains content to be rendered in the open dialog.   */
+   * Contains content to be rendered in the open dialog.
+   */
   Content: createElement<typeof Primitive.Content, Primitive.DialogContentProps & { title?: ReactNode; description?: ReactNode }>((props, ref) => {
     const Optional: FC<PropsWithChildren<{ value?: ReactNode }>> = ({ value, ...props }) => {
       return !value ? <Hidden {...props} /> : props.children;
@@ -36,38 +37,52 @@ export const Dialog = {
         <Primitive.Overlay
           data-slot="dialog-overlay"
           className={clsx(
-            "fixed inset-0 z-50 size-full bg-background-base/30 backdrop-blur",
+            "fixed inset-0 z-50 bg-background-base/30 backdrop-blur",
             "data-[state=open]:animate-in data-[state=open]:fade-in",
             "data-[state=closed]:animate-out data-[state=closed]:fade-out",
             "duration-500"
           )}
         />
-        <Primitive.Content
-          {...props}
-          ref={ref}
-          data-slot="dialog-content"
-          onInteractOutside={(e) => e.preventDefault()}
-          className={clsx(
-            "fixed inset-0 z-51",
-            "grid grid-cols-[1fr_auto_auto] grid-rows-[auto_1fr_auto] gap-10 p-10 w-full min-h-screen",
-            "data-[state=open]:animate-in data-[state=open]:fade-in data-[state=open]:zoom-in-95",
-            "data-[state=closed]:animate-out data-[state=closed]:fade-out data-[state=closed]:zoom-out-95",
-            "duration-500"
-          )}
-        >
-          <Container className="flex z-52 flex-col col-start-1 row-start-1 col-span-2">
-            <Optional value={props.title}>
-              <Primitive.Title className="font-bold text-lg">{props.title}</Primitive.Title>
-            </Optional>
-            <Optional value={props.description}>
-              <Primitive.Description className="text-foreground-secondary">{props.description}</Primitive.Description>
-            </Optional>
-          </Container>
-          <Primitive.Close data-slot="dialog-close" className={clsx("cursor-pointer flex z-52 col-start-3 row-start-1 h-fit justify-self-end")}>
-            <Icon symbol="close" />
-          </Primitive.Close>
-          <Container className={clsx("col-span-3 row-start-2 place-self-center", props.className)}>{props.children}</Container>
-        </Primitive.Content>
+        <Container className={clsx("fixed inset-0 z-51", "flex items-center size-full justify-center", "p-10", "pointer-events-none")}>
+          <Primitive.Content
+            {...props}
+            ref={ref}
+            data-slot="dialog-content"
+            className={clsx(
+              "pointer-events-auto",
+              "w-full max-h-full",
+              "data-[state=open]:animate-in data-[state=open]:fade-in data-[state=open]:zoom-in-95",
+              "data-[state=closed]:animate-out data-[state=closed]:fade-out data-[state=closed]:zoom-out-95",
+              "duration-500",
+              props.className
+            )}
+          >
+            <ScrollArea.Root className="h-full rounded-4xl items-center">
+              <ScrollArea.Viewport className="max-h-[calc(100vh-80px)]">
+                <Container className="flex flex-col gap-10 p-10 rounded-4xl bg-background-surface">
+                  <Container className="flex items-start gap-10">
+                    <Container className="flex flex-col grow">
+                      <Optional value={props.title}>
+                        <Primitive.Title className="font-bold text-lg">{props.title}</Primitive.Title>
+                      </Optional>
+                      <Optional value={props.description}>
+                        <Primitive.Description className="text-foreground-secondary">{props.description}</Primitive.Description>
+                      </Optional>
+                    </Container>
+                    <Primitive.Close data-slot="dialog-close" className="cursor-pointer flex h-fit">
+                      <Icon symbol="close" />
+                    </Primitive.Close>
+                  </Container>
+                  {props.children}
+                </Container>
+              </ScrollArea.Viewport>
+              <ScrollArea.Scrollbar>
+                <ScrollArea.Thumb />
+              </ScrollArea.Scrollbar>
+              <ScrollArea.Corner />
+            </ScrollArea.Root>
+          </Primitive.Content>
+        </Container>
       </Primitive.Portal>
     );
   })

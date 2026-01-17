@@ -95,7 +95,7 @@ export default function Layout(props: { children: ReactNode }) {
             {<Logo mode="symbol" className="size-10 fill-foreground-primary" />}
           </Link>
           <Drawer.Root>
-            <Drawer.Trigger className="cursor-pointer xl:hidden fixed rounded-full bg-translucent p-4 flex items-center justify-center z-20 bottom-10 right-10">
+            <Drawer.Trigger className="cursor-pointer xl:hidden fixed rounded-full bg-translucent backdrop-blur shadow-lg p-4 flex items-center justify-center z-20 bottom-10 right-10">
               <Icon symbol="apps" />
             </Drawer.Trigger>
             <Drawer.Content className="max-h-[80vh]">
@@ -157,7 +157,7 @@ export default function Layout(props: { children: ReactNode }) {
                         <Icon symbol={page.icon} className={highlight ? "animate-fill" : "animate-outline"} />
                       </Link>
                     </Tooltip.Trigger>
-                    <Tooltip.Content side="right" sideOffset={20} className="bg-translucent rounded-lg text-sm px-4 py-2">
+                    <Tooltip.Content side="right" sideOffset={20}>
                       {t(page.name)}
                     </Tooltip.Content>
                   </Tooltip.Root>
@@ -181,7 +181,7 @@ export default function Layout(props: { children: ReactNode }) {
       </Container>
       <ScrollArea.Root>
         <ScrollArea.Viewport className={clsx("row-start-2 col-start-1", "xl:col-start-2")}>
-          <Container className="px-10 xl:pl-0! flex flex-col">{props.children}</Container>
+          <Container className="flex flex-col">{props.children}</Container>
           <CompactFooter className="p-10" />
         </ScrollArea.Viewport>
         <ScrollArea.Scrollbar>

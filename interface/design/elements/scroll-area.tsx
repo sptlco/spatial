@@ -12,13 +12,15 @@ export const ScrollArea = {
   /**
    * Contains all the parts of a scroll area.
    */
-  Root: createElement<typeof Primitive.Root, Primitive.ScrollAreaProps>((props, ref) => <Primitive.Root {...props} ref={ref} />),
+  Root: createElement<typeof Primitive.Root, Primitive.ScrollAreaProps>((props, ref) => (
+    <Primitive.Root {...props} data-slot="scroll-area" ref={ref} className={clsx("flex", props.className)} />
+  )),
 
   /**
    * The viewport area of the scroll area.
    */
   Viewport: createElement<typeof Primitive.Viewport, Primitive.ScrollAreaViewportProps>((props, ref) => (
-    <Primitive.Viewport {...props} className="size-full" ref={ref} />
+    <Primitive.Viewport {...props} data-slot="scroll-area-viewport" className={clsx("size-full rounded-[inherit]", props.className)} ref={ref} />
   )),
 
   /**
@@ -35,7 +37,7 @@ export const ScrollArea = {
       }
     });
 
-    return <Primitive.Scrollbar {...props} ref={ref} className={clsx(classes({ orientation }), props.className)} />;
+    return <Primitive.Scrollbar {...props} ref={ref} data-slot="scroll-area-scrollbar" className={clsx(classes({ orientation }), props.className)} />;
   }),
 
   /**
@@ -45,6 +47,7 @@ export const ScrollArea = {
     <Primitive.Thumb
       {...props}
       ref={ref}
+      data-slot="scroll-area-thumb"
       className={clsx(
         "transition-colors",
         "rounded-full relative flex-1",
@@ -57,5 +60,7 @@ export const ScrollArea = {
   /**
    * The corner where both vertical and horizontal scrollbars meet.
    */
-  Corner: createElement<typeof Primitive.Corner, Primitive.ScrollAreaCornerProps>((props, ref) => <Primitive.Corner {...props} ref={ref} />)
+  Corner: createElement<typeof Primitive.Corner, Primitive.ScrollAreaCornerProps>((props, ref) => (
+    <Primitive.Corner {...props} ref={ref} data-slot="scroll-area-corner" />
+  ))
 };

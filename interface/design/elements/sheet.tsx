@@ -1,6 +1,6 @@
 // Copyright © Spatial Corporation. All rights reserved.
 
-import { Container, createElement, Hidden, Icon } from "..";
+import { Container, createElement, Hidden, Icon, ScrollArea } from "..";
 import * as Primitive from "@radix-ui/react-dialog";
 import { clsx } from "clsx";
 import { cva } from "cva";
@@ -8,7 +8,7 @@ import { FC, PropsWithChildren, ReactNode } from "react";
 
 const classes = cva({
   base: [
-    "fixed z-52 flex flex-col gap-4 p-10",
+    "fixed z-52 p-10 flex flex-col gap-10",
     "bg-background-surface shadow-lg transition ease-in-out",
     "data-[state=open]:animate-in data-[state=open]:duration-500",
     "data-[state=closed]:animate-out data-[state=closed]:duration-300"
@@ -18,12 +18,12 @@ const classes = cva({
       top: ["inset-x-0 top-0 h-auto sm:rounded-b-4xl", "data-[state=open]:slide-in-from-top", "data-[state=closed]:slide-out-to-top"],
       bottom: ["inset-x-0 bottom-0 h-auto sm:rounded-t-4xl", "data-[state=open]:slide-in-from-bottom", "data-[state=closed]:slide-out-to-bottom"],
       right: [
-        "inset-y-0 right-0 w-full sm:w-auto sm:max-w-sm h-full sm:rounded-l-4xl",
+        "inset-y-0 right-0 w-full sm:w-auto sm:max-w-full h-full sm:rounded-l-4xl",
         "data-[state=open]:slide-in-from-right",
         "data-[state=closed]:slide-out-to-right"
       ],
       left: [
-        "inset-y-0 left-0 w-full sm:w-auto sm:max-w-sm h-full sm:rounded-r-4xl",
+        "inset-y-0 left-0 w-full sm:w-auto sm:max-w-full h-full sm:rounded-r-4xl",
         "data-[state=open]:slide-in-from-left",
         "data-[state=closed]:slide-out-to-left"
       ]
@@ -68,7 +68,7 @@ export const Sheet = {
                 <Primitive.Title className="font-bold text-lg">{props.title}</Primitive.Title>
               </Optional>
               <Optional value={props.description}>
-                <Primitive.Description className="text-foreground-secondary">{props.description}</Primitive.Description>
+                <Primitive.Description className="text-foreground-secondary max-w-sm">{props.description}</Primitive.Description>
               </Optional>
             </Container>
             {closeButton && (

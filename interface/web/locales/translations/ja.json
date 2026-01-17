@@ -1,0 +1,67 @@
+{
+  "authentication": {
+    "title": "安全なアクセス",
+    "description": "Spatial を続行するにはサインインしてください。",
+
+    "email": {
+      "label": "メールアドレス",
+      "placeholder": "name@company.com",
+      "description": "公開ドキュメントで、安全かつ <link>パスワードレス認証</link> の仕組みをご確認ください。"
+    },
+
+    "continue": "続行",
+
+    "verification": {
+      "title": "受信トレイを確認してください",
+      "description": "確認コードを送信しました。",
+      "label": "確認コード",
+      "help": "ワンタイム確認コードをメールアドレスに送信しました。必要に応じて <link>新しいコードをリクエスト</link> できます。"
+    },
+
+    "errors": {
+      "request": {
+        "title": "問題が発生しました",
+        "description": "確認コードの準備中に問題が発生しました。しばらくしてからもう一度お試しください。"
+      },
+      "verify": {
+        "title": "確認コードが無効です",
+        "description": "入力したコードが正しくないか、有効期限が切れています。確認して再度お試しください。"
+      }
+    }
+  },
+
+  "modals": {
+    "account": {
+      "title": "アカウント概要",
+      "description": "アカウントの概要を表示します。"
+    }
+  },
+
+  "navigation": {
+    "platform": {
+      "pages": {
+        "dashboard": "ダッシュボード",
+        "compute": "コンピュート",
+        "datastore": "データストア",
+        "identity": "アイデンティティ",
+        "intelligence": "インテリジェンス",
+        "logistics": "ロジスティクス",
+        "network": "ネットワーク",
+        "simulation": "シミュレーション"
+      }
+    }
+  },
+
+  "footer": {
+    "legal": {
+      "users": "利用規約",
+      "privacy": "プライバシーポリシー"
+    }
+  },
+
+  "locale": {
+    "label": "日本語",
+    "name": "{locale, select, en_US {英語} sw {スワヒリ語} fr {フランス語} es {スペイン語} de {ドイツ語} pt_BR {ポルトガル語（ブラジル）} it {イタリア語} ja {日本語} other {不明}}",
+    "origin": "{locale, select, en_US {English} sw {Swahili} fr {French} es {Spanish} de {German} pt_BR {Brazilian Portuguese} it {Italian} ja {Japanese} other {Unknown}}"
+  }
+}

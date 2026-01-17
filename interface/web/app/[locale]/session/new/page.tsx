@@ -143,11 +143,7 @@ export default function Page() {
           }
         }}
       >
-        <Dialog.Content
-          title={t("verification.title")}
-          description={<>{t("verification.description")}</>}
-          className="flex flex-col w-full sm:max-w-sm items-center space-y-10"
-        >
+        <Dialog.Content title={t("verification.title")} description={<>{t("verification.description")}</>} className="sm:max-w-lg">
           <Logo className="fill-current h-8" mode="symbol" />
           <Field
             type="otp"

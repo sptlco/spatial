@@ -2,8 +2,7 @@
 
 "use client";
 
-import { CompactFooter } from "@/elements";
-import { LocaleSwitcher } from "@/locales/switch";
+import { CompactFooter, LocaleSwitcher } from "@/elements";
 import { useUser } from "@/stores";
 import { SESSION_COOKIE_NAME, Spatial } from "@sptlco/client";
 import { Button, Container, Dialog, Field, Form, H1, Icon, Link, Logo, Main, OTP, Paragraph, Span, Spinner, toast } from "@sptlco/design";

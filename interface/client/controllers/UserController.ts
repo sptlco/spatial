@@ -14,4 +14,12 @@ export class UserController extends Controller {
   public me = async () => {
     return this.get<User>("users/me");
   };
+
+  /**
+   * Get a list of users.
+   * @returns A list of users.
+   */
+  public list = async () => {
+    return this.get<User[]>("users/list");
+  };
 }

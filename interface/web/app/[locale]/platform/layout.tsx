@@ -2,8 +2,7 @@
 
 "use client";
 
-import { CompactFooter } from "@/elements";
-import { LocaleSwitcher } from "@/locales/switch";
+import { CompactFooter, LocaleSwitcher } from "@/elements";
 import { Avatar, Container, Drawer, Icon, LI, Link, Logo, Main, ScrollArea, Sheet, Span, Tooltip, UL } from "@sptlco/design";
 import { clsx } from "clsx";
 import { useLocale, useTranslations } from "next-intl";

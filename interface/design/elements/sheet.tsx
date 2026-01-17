@@ -8,7 +8,7 @@ import { FC, PropsWithChildren, ReactNode } from "react";
 
 const classes = cva({
   base: [
-    "fixed z-52 p-10 flex flex-col gap-10",
+    "fixed z-52",
     "bg-background-surface shadow-lg transition ease-in-out",
     "data-[state=open]:animate-in data-[state=open]:duration-500",
     "data-[state=closed]:animate-out data-[state=closed]:duration-300"
@@ -62,22 +62,32 @@ export const Sheet = {
           )}
         />
         <Primitive.Content {...props} data-slot="sheet-content" className={clsx(classes({ side }), props.className)} ref={ref}>
-          <Container className="flex gap-10">
-            <Container className="flex flex-col grow">
-              <Optional value={props.title}>
-                <Primitive.Title className="font-bold text-lg">{props.title}</Primitive.Title>
-              </Optional>
-              <Optional value={props.description}>
-                <Primitive.Description className="text-foreground-secondary max-w-sm">{props.description}</Primitive.Description>
-              </Optional>
-            </Container>
-            {closeButton && (
-              <Primitive.Close className="cursor-pointer flex size-7 items-center justify-center">
-                <Icon symbol="close" />
-              </Primitive.Close>
-            )}
-          </Container>
-          {props.children}
+          <ScrollArea.Root className="h-full">
+            <ScrollArea.Viewport className="max-h-screen">
+              <Container className="flex flex-col p-10 gap-10">
+                <Container className="flex gap-10">
+                  <Container className="flex flex-col grow">
+                    <Optional value={props.title}>
+                      <Primitive.Title className="font-bold text-lg">{props.title}</Primitive.Title>
+                    </Optional>
+                    <Optional value={props.description}>
+                      <Primitive.Description className="text-foreground-secondary max-w-sm">{props.description}</Primitive.Description>
+                    </Optional>
+                  </Container>
+                  {closeButton && (
+                    <Primitive.Close className="cursor-pointer flex size-7 items-center justify-center">
+                      <Icon symbol="close" />
+                    </Primitive.Close>
+                  )}
+                </Container>
+                {props.children}
+              </Container>
+            </ScrollArea.Viewport>
+            <ScrollArea.Scrollbar>
+              <ScrollArea.Thumb />
+            </ScrollArea.Scrollbar>
+            <ScrollArea.Corner />
+          </ScrollArea.Root>
         </Primitive.Content>
       </Sheet.Portal>
     );

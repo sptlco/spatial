@@ -27,13 +27,29 @@ public class UserController : Controller
             Account = _account,
             Session = _session,
             Principal = new Principal {
-                Roles = [..HttpContext.User
-                    .FindAll(ClaimsIdentity.DefaultRoleClaimType)
-                    .Select(claim => claim.Value)
-                    .Distinct()],
-                Permissions = [..HttpContext.User
-                    .FindAll(Claims.Permission)
-                    .Select(claim => claim.Value)
-                    .Distinct()]}};
+                Roles = GetClaims(ClaimsIdentity.DefaultRoleClaimType),
+                Permissions = GetClaims(Claims.Permission)
+            }
+        };
+    }
+
+    /// <summary>
+    /// Get a list of users.
+    /// </summary>
+    /// <returns>A list of users.</returns>
+    [GET]
+    [Path("list")]
+    [Authorize]
+    public async Task<List<User>> ListUsersAsync()
+    {
+        return [];
+    }
+
+    private List<string> GetClaims(string type)
+    {
+        return [.. HttpContext.User
+            .FindAll(type)
+            .Select(claim => claim.Value)
+            .Distinct()];
     }
 }

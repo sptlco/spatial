@@ -3,8 +3,8 @@
 "use client";
 
 import { Button, Container, Dropdown, Icon, Span, Spinner } from "@sptlco/design";
-import { usePathname, useRouter } from "./navigation";
-import { routing } from "./routing";
+import { usePathname, useRouter } from "@/locales/navigation";
+import { routing } from "@/locales/routing";
 import { clsx } from "clsx";
 import { useTransition } from "react";
 import { Locale, useLocale, useTranslations } from "next-intl";

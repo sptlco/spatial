@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.3.0](https://github.com/sptlco/spatial/compare/spatial-interface-data-1.2.0...spatial-interface-data-1.3.0) (2026-01-20)
+
+
+### Features
+
+* Support account creation ([#137](https://github.com/sptlco/spatial/issues/137)) ([a93193d](https://github.com/sptlco/spatial/commit/a93193d7fc1821cd1e7d2cda98e317b17c06e05b))
+
 ## [1.2.0](https://github.com/sptlco/spatial/compare/spatial-interface-data-1.1.0...spatial-interface-data-1.2.0) (2026-01-12)
 
 

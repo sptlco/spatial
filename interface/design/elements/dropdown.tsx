@@ -31,17 +31,21 @@ export const Dropdown = {
    * The component that pops out when the dropdown menu is open.
    */
   Content: createElement<typeof Primitive.Content, Primitive.DropdownMenuContentProps>((props, ref) => (
-    <Primitive.Content
-      {...props}
-      ref={ref}
-      sideOffset={20}
-      collisionPadding={40}
-      className={clsx(
-        "bg-translucent backdrop-blur text-sm shadow-lg rounded-xl p-3 w-fit md:w-screen md:max-w-3xs",
-        "data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2",
-        props.className
-      )}
-    />
+    <Primitive.Portal>
+      <Primitive.Content
+        {...props}
+        ref={ref}
+        sideOffset={20}
+        collisionPadding={40}
+        avoidCollisions
+        className={clsx(
+          "z-50",
+          "bg-background-surface text-sm shadow-lg rounded-xl p-3 w-fit md:w-screen md:max-w-3xs",
+          "data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2",
+          props.className
+        )}
+      />
+    </Primitive.Portal>
   )),
 
   /**
@@ -57,7 +61,7 @@ export const Dropdown = {
       {...props}
       ref={ref}
       className={clsx(
-        "py-2 px-4 cursor-pointer transition-all data-highlighted:bg-button-ghost-active rounded-lg flex items-center",
+        "py-2 px-4 cursor-pointer transition-all rounded-lg flex items-center hover:bg-button-secondary-hover active:bg-button-secondary-active",
         props.className
       )}
     />
@@ -81,7 +85,7 @@ export const Dropdown = {
       {...props}
       ref={ref}
       className={clsx(
-        "py-2 px-4 cursor-pointer transition-all data-highlighted:bg-button-ghost-active rounded-lg flex items-center",
+        "py-2 px-4 cursor-pointer transition-all rounded-lg flex items-center hover:bg-button-secondary-hover active:bg-button-secondary-active",
         props.className
       )}
     />
@@ -102,7 +106,7 @@ export const Dropdown = {
       {...props}
       ref={ref}
       className={clsx(
-        "py-2 px-4 cursor-pointer transition-all data-highlighted:bg-button-ghost-active rounded-lg flex items-center",
+        "py-2 px-4 cursor-pointer transition-all rounded-lg flex items-center hover:bg-button-secondary-hover active:bg-button-secondary-active",
         props.className
       )}
     />

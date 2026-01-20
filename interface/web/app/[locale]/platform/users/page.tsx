@@ -2,12 +2,251 @@
 
 "use client";
 
-import { Tabs, Creator } from "./elements";
-import { Button, Card, Container, Dropdown, Field, Icon, Select, Sheet, Span } from "@sptlco/design";
-import { useState } from "react";
+import { useUser } from "@/stores";
+import { Tabs, Creator, Editor } from "./elements";
+import { Spatial } from "@sptlco/client";
+import { User } from "@sptlco/data";
+import {
+  Avatar,
+  Button,
+  Card,
+  Checkbox,
+  Container,
+  Dialog,
+  Dropdown,
+  Field,
+  Form,
+  Icon,
+  LI,
+  Paragraph,
+  Select,
+  Sheet,
+  Span,
+  Table,
+  toast,
+  UL
+} from "@sptlco/design";
+import { clsx } from "clsx";
+import { useEffect, useState } from "react";
+import { useShallow } from "zustand/shallow";
 
 export default function Page() {
+  const { account } = useUser(useShallow((state) => ({ account: state.account })));
+
+  const [users, setUsers] = useState<User[] | null>(null);
   const [search, setSearch] = useState("");
+
+  const fetch = async () => {
+    setUsers(null);
+
+    const result = await Spatial.users.list();
+
+    if (!result.error) {
+      setUsers(result.data);
+    }
+  };
+
+  useEffect(() => {
+    fetch();
+  }, []);
+
+  const colors = ["text-magenta", "text-yellow"];
+  const [test, setTest] = useState(false);
+
+  const List = () => {
+    const [confirmation, setConfirmation] = useState("");
+
+    if (!users) {
+      return (
+        <>
+          {[...Array(10)].map((num, i) => (
+            <Table.Row key={i}>
+              <Table.Cell>
+                <Span className="flex size-7 rounded-lg animate-pulse bg-background-surface" />
+              </Table.Cell>
+              <Table.Cell>
+                <Container className="flex items-center gap-5 w-full">
+                  <Span className="rounded-full shrink-0 size-12 md:size-16 animate-pulse bg-background-surface" />
+                  <Container className="flex flex-col w-full gap-2">
+                    <Span className="w-2/3 h-4 rounded-full animate-pulse bg-background-surface" />
+                    <Span className="w-4/5 h-4 rounded-full animate-pulse bg-background-surface" />
+                  </Container>
+                </Container>
+              </Table.Cell>
+              <Table.Cell className="hidden xl:table-cell">
+                <UL className="flex flex-wrap gap-4">
+                  {[...Array(3)].map((_, i) => (
+                    <LI
+                      key={i}
+                      className={clsx(
+                        "rounded-xl animate-pulse bg-background-surface text-xs font-bold inline-flex w-20 h-4 items-center justify-center px-5 py-2 gap-3"
+                      )}
+                    >
+                      <Span className="text-foreground-primary" />
+                    </LI>
+                  ))}
+                </UL>
+              </Table.Cell>
+              <Table.Cell className="hidden xl:table-cell">
+                <Span className="flex w-1/2 h-4 rounded-full animate-pulse bg-background-surface" />
+              </Table.Cell>
+              <Table.Cell></Table.Cell>
+            </Table.Row>
+          ))}
+        </>
+      );
+    }
+
+    return (
+      <>
+        {users
+          .sort((a, b) => b.account.created - a.account.created)
+          .map((user, i) => (
+            <Table.Row key={i}>
+              <Table.Cell>
+                <Checkbox />
+              </Table.Cell>
+              <Table.Cell>
+                <Container className="flex items-center gap-5">
+                  <Avatar src="https://dakarai.org/_next/image?url=%2Fdakarai.jpeg&w=3840&q=75" className="shrink-0 size-12" />
+                  <Container className="flex flex-col truncate">
+                    <Span className="font-semibold truncate">{user.account.name}</Span>
+                    <Span className="text-foreground-secondary truncate">{user.account.email}</Span>
+                  </Container>
+                  {user.account.id === (account?.id ?? "") && (
+                    <Span className="hidden xl:flex px-4 py-2 bg-blue rounded-full text-xs font-bold">You</Span>
+                  )}
+                </Container>
+              </Table.Cell>
+              <Table.Cell className="hidden xl:table-cell">
+                <UL className="flex flex-wrap gap-4">
+                  {user.principal.roles.map((role, i) => (
+                    <LI
+                      key={i}
+                      className={clsx(
+                        "rounded-xl bg-background-surface text-xs font-bold inline-flex w-fit items-center justify-center px-5 py-2.5 gap-3",
+                        colors[i]
+                      )}
+                    >
+                      <Span className="flex rounded-full size-2 bg-current" />
+                      <Span className="text-foreground-primary">{role}</Span>
+                    </LI>
+                  ))}
+                </UL>
+              </Table.Cell>
+              <Table.Cell className="hidden xl:table-cell">
+                <Span className="text-sm">
+                  {new Date(user.account.created).toLocaleString(undefined, {
+                    month: "short",
+                    day: "2-digit",
+                    year: "numeric",
+                    hour: "2-digit",
+                    minute: "2-digit",
+                    second: "2-digit",
+                    hour12: false
+                  })}
+                </Span>
+              </Table.Cell>
+              <Table.Cell>
+                <Dropdown.Root>
+                  <Dropdown.Trigger asChild>
+                    <Button intent="ghost" className="ml-auto! size-10! p-0! data-[state=open]:bg-button-ghost-active">
+                      <Icon symbol="more_vert" />
+                    </Button>
+                  </Dropdown.Trigger>
+                  <Dropdown.Content align="end" className="flex flex-col gap-2.5">
+                    <Dropdown.Item asChild>
+                      <Sheet.Root>
+                        <Sheet.Trigger asChild>
+                          <Button intent="ghost" className="w-full" align="left">
+                            <Icon symbol="person" />
+                            <Span>View profile</Span>
+                          </Button>
+                        </Sheet.Trigger>
+                        <Creator onCreate={fetch} />
+                      </Sheet.Root>
+                    </Dropdown.Item>
+                    <Dropdown.Item asChild>
+                      <Sheet.Root>
+                        <Sheet.Trigger asChild>
+                          <Button intent="ghost" className="w-full" align="left">
+                            <Icon symbol="person_edit" />
+                            <Span>Edit details</Span>
+                          </Button>
+                        </Sheet.Trigger>
+                        <Editor user={user} onUpdate={fetch} />
+                      </Sheet.Root>
+                    </Dropdown.Item>
+                    <Dropdown.Item asChild>
+                      <Sheet.Root>
+                        <Sheet.Trigger asChild>
+                          <Button intent="ghost" className="w-full" align="left">
+                            <Icon symbol="download" />
+                            <Span>Export data</Span>
+                          </Button>
+                        </Sheet.Trigger>
+                        <Creator onCreate={fetch} />
+                      </Sheet.Root>
+                    </Dropdown.Item>
+                    <Dropdown.Item asChild>
+                      <Dialog.Root>
+                        <Dialog.Trigger asChild>
+                          <Button intent="destructive" className="w-full" align="left">
+                            <Icon symbol="delete" />
+                            <Span>Delete user</Span>
+                          </Button>
+                        </Dialog.Trigger>
+                        <Dialog.Content title="Delete user" description="Please confirm this action." className="sm:max-w-md">
+                          <Form
+                            className="flex flex-col gap-10"
+                            onSubmit={(e) => {
+                              e.preventDefault();
+
+                              toast.promise(Spatial.accounts.del(user.account.id), {
+                                loading: "Deleting user",
+                                description: `Deleting ${user.account.email}`,
+                                success: (response) => {
+                                  if (!response.error) {
+                                    fetch();
+
+                                    return {
+                                      message: "User deleted",
+                                      description: `Deleted user ${user.account.email}`
+                                    };
+                                  }
+
+                                  return {
+                                    message: "Something went wrong",
+                                    description: "An error occurred while deleting the user."
+                                  };
+                                }
+                              });
+                            }}
+                          >
+                            <Container className="flex items-center gap-5">
+                              <Avatar src="https://dakarai.org/_next/image?url=%2Fdakarai.jpeg&w=3840&q=75" className="shrink-0 size-12" />
+                              <Container className="flex flex-col truncate">
+                                <Span className="font-semibold truncate">{user.account.name}</Span>
+                                <Span className="text-foreground-secondary truncate">{user.account.email}</Span>
+                              </Container>
+                            </Container>
+                            <Container className="flex w-full items-center justify-items-start gap-4">
+                              <Button type="submit" intent="destructive" className="shrink truncate">
+                                Delete
+                              </Button>
+                            </Container>
+                          </Form>
+                        </Dialog.Content>
+                      </Dialog.Root>
+                    </Dropdown.Item>
+                  </Dropdown.Content>
+                </Dropdown.Root>
+              </Table.Cell>
+            </Table.Row>
+          ))}
+      </>
+    );
+  };
 
   return (
     <Card.Root>
@@ -27,9 +266,9 @@ export default function Page() {
               <Card.Header>
                 <Card.Title className="text-2xl font-bold flex gap-3 items-center">
                   <Span>Users</Span>
-                  <Span className="bg-translucent px-4 py-1 rounded-full text-base inline-flex items-center justify-center">124</Span>
+                  <Span className="bg-translucent px-4 py-1 rounded-full text-sm inline-flex items-center justify-center">{users?.length ?? 0}</Span>
                 </Card.Title>
-                <Card.Gutter className="flex md:hidden">
+                <Card.Gutter className="flex xl:hidden">
                   <Dropdown.Root>
                     <Dropdown.Trigger asChild>
                       <Button intent="ghost" className="size-10! p-0! data-[state=open]:bg-button-ghost-active">
@@ -45,7 +284,7 @@ export default function Page() {
                               <Span>Create user</Span>
                             </Button>
                           </Sheet.Trigger>
-                          <Creator />
+                          <Creator onCreate={fetch} />
                         </Sheet.Root>
                       </Dropdown.Item>
                       <Dropdown.Item asChild>
@@ -57,7 +296,7 @@ export default function Page() {
                     </Dropdown.Content>
                   </Dropdown.Root>
                 </Card.Gutter>
-                <Card.Gutter className="hidden md:flex">
+                <Card.Gutter className="hidden xl:flex">
                   <Sheet.Root>
                     <Sheet.Trigger asChild>
                       <Button>
@@ -65,7 +304,7 @@ export default function Page() {
                         <Span>Create user</Span>
                       </Button>
                     </Sheet.Trigger>
-                    <Creator />
+                    <Creator onCreate={fetch} />
                   </Sheet.Root>
                   <Button intent="secondary">
                     <Icon symbol="download" />
@@ -73,10 +312,9 @@ export default function Page() {
                   </Button>
                 </Card.Gutter>
               </Card.Header>
-              <Card.Content className="flex md:hidden"></Card.Content>
-              <Card.Content className="hidden md:flex">
-                <Container className="flex items-center gap-5">
-                  <Container className="relative flex items-center">
+              <Card.Content className="w-full flex flex-col relative">
+                <Container className="flex flex-col xl:flex-row w-full items-start xl:items-center gap-5">
+                  <Container className="relative w-full max-w-sm flex items-center">
                     <Field
                       type="text"
                       id="search"
@@ -84,7 +322,7 @@ export default function Page() {
                       placeholder="Search users"
                       value={search}
                       onChange={(e) => setSearch(e.target.value)}
-                      className="w-screen max-w-sm pl-12"
+                      className="w-full pl-12"
                     />
                     <Icon symbol="search" className="absolute left-3" />
                   </Container>
@@ -94,6 +332,24 @@ export default function Page() {
                     <Select.Content position="popper"></Select.Content>
                   </Select.Root>
                 </Container>
+                <Table.Root className="w-full table-fixed border-separate border-spacing-y-10">
+                  <Table.Header>
+                    <Table.Row>
+                      <Table.Column className="w-12 xl:w-16">
+                        <Checkbox checked={test} onCheckedChange={(v) => setTest(v.valueOf() as boolean)} />
+                      </Table.Column>
+                      <Table.Column className="text-left">User ID</Table.Column>
+                      <Table.Column className="w-md text-left hidden xl:table-cell">Roles</Table.Column>
+                      <Table.Column className="w-xs text-left hidden xl:table-cell">Created</Table.Column>
+                      <Table.Column className="w-12 xl:w-16" />
+                    </Table.Row>
+                  </Table.Header>
+                  <Table.Body className="relative">
+                    <List />
+                  </Table.Body>
+                </Table.Root>
+
+                {!users && <Span className="absolute pointer-events-none inset-0 size-full bg-linear-to-b from-transparent to-background-subtle" />}
               </Card.Content>
             </Card.Root>
           </Tabs.Content>

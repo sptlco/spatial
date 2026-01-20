@@ -1,9 +1,11 @@
 // Copyright © Spatial Corporation. All rights reserved.
 
+using Spatial.Cloud.Data.Accounts;
 using Spatial.Cloud.Data.Principals;
 using Spatial.Cloud.Data.Users;
 using Spatial.Identity;
 using Spatial.Identity.Authorization;
+using Spatial.Persistence;
 using System.Security.Claims;
 
 namespace Spatial.Cloud.API;
@@ -42,7 +44,28 @@ public class UserController : Controller
     [Authorize]
     public async Task<List<User>> ListUsersAsync()
     {
-        return [];
+        var users = Record<Account>
+            .List()
+            .Select(account => {
+                var roles = Record<Assignment>
+                    .List(a => a.User == account.Id)
+                    .Select(a => Record<Role>.Read(a.Role));
+
+                var permissions = roles
+                    .SelectMany(r => Record<Permission>.List(p => p.Role == r.Id))
+                    .Select(p => p.Scope)
+                    .Distinct();
+                
+                return new User {
+                    Account = account,
+                    Principal = new Principal { 
+                        Roles = [..roles.Select(role => role.Name)],
+                        Permissions = [..permissions]
+                    }
+                };
+            });
+
+        return [..users];
     }
 
     private List<string> GetClaims(string type)

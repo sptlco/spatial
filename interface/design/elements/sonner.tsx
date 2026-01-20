@@ -20,7 +20,7 @@ export const Toaster = createElement<typeof Primitive, ToasterProps>((props, ref
     }}
     toastOptions={{
       classNames: {
-        toast: "bg-translucent! backdrop-blur! border-none! rounded-xl! gap-4! px-5! pointer-events-auto!",
+        toast: "bg-background-surface! border-none! rounded-xl! gap-4! px-5! pointer-events-auto!",
         icon: "size-6! text-foreground-primary!",
         content: "mr-auto!",
         title: "text-foreground-primary! text-xs! font-bold!",

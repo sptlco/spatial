@@ -1,14 +1,11 @@
 // Copyright © Spatial Corporation. All rights reserved.
 
-using Spatial.Persistence;
-
 namespace Spatial.Cloud.Data.Accounts;
 
 /// <summary>
-/// ...
+/// Configurable options for a new account.
 /// </summary>
-[Collection("accounts")]
-public class Account : Record
+public class CreateAccountOptions
 {
     /// <summary>
     /// The user's name.

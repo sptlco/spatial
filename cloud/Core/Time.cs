@@ -15,7 +15,7 @@ public readonly struct Time
     /// <summary>
     /// The current <see cref="Time"/>.
     /// </summary>
-    public static Time Now => FromDateTime(DateTime.UtcNow);
+    public static Time Now => FromMilliseconds(DateTimeOffset.UtcNow.ToUnixTimeMilliseconds());
 
     private readonly double _milliseconds;
 
@@ -97,7 +97,12 @@ public readonly struct Time
     /// <returns>A <see cref="Time"/>.</returns>
     public static Time FromDateTime(DateTime time)
     {
-        return new(time.Ticks / (double) TimeSpan.TicksPerMillisecond);
+        if (time.Kind == DateTimeKind.Unspecified)
+        {
+            time = DateTime.SpecifyKind(time, DateTimeKind.Utc);
+        }
+
+        return FromMilliseconds(new DateTimeOffset(time).ToUnixTimeMilliseconds());
     }
 
     /// <summary>
@@ -106,7 +111,7 @@ public readonly struct Time
     /// <returns>A <see cref="DateTime"/>.</returns>
     public DateTime ToDateTime()
     {
-        return new DateTime((long) (_milliseconds * TimeSpan.TicksPerMillisecond), DateTimeKind.Utc);
+         return DateTimeOffset.FromUnixTimeMilliseconds((long)_milliseconds).UtcDateTime;
     }
 
     /// <summary>

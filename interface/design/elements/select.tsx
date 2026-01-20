@@ -38,7 +38,7 @@ export const Select = {
   Content: createElement<typeof Primitive.Content>(({ side = "bottom", ...props }, ref) => {
     const classes = cva({
       base: [
-        "bg-translucent backdrop-blur text-sm shadow-lg rounded-xl p-3 w-screen max-w-48 sm:max-w-3xs",
+        "bg-background-surface text-sm shadow-lg rounded-xl p-3 w-screen max-w-48 sm:max-w-3xs",
         "data-[state=open]:animate-in data-[state=open]:fade-in data-[state=open]:zoom-in-95",
         "data-[state=closed]:animate-out data-[state=closed]:fade-out data-[state=closed]:zoom-out-95"
       ],

@@ -47,8 +47,8 @@ const styles = cva({
       medium: "px-8 py-2 gap-2 text-base"
     },
     align: {
-      left: "px-2! justify-start",
-      right: "px-2! justify-end",
+      left: "pl-2.5! justify-start",
+      right: "pr-2.5! justify-end",
       center: "justify-center"
     }
   }

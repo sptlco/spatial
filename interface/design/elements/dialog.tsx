@@ -27,7 +27,10 @@ export const Dialog = {
   /**
    * Contains content to be rendered in the open dialog.
    */
-  Content: createElement<typeof Primitive.Content, Primitive.DialogContentProps & { title?: ReactNode; description?: ReactNode }>((props, ref) => {
+  Content: createElement<
+    typeof Primitive.Content,
+    Primitive.DialogContentProps & { title?: ReactNode; description?: ReactNode; closeButton?: boolean }
+  >(({ title, description, closeButton = true, ...props }, ref) => {
     const Optional: FC<PropsWithChildren<{ value?: ReactNode }>> = ({ value, ...props }) => {
       return !value ? <Hidden {...props} /> : props.children;
     };
@@ -57,21 +60,23 @@ export const Dialog = {
               props.className
             )}
           >
-            <ScrollArea.Root className="h-full rounded-4xl items-center">
-              <ScrollArea.Viewport className="max-h-[calc(100vh-80px)]">
-                <Container className="flex flex-col gap-10 p-10 rounded-4xl bg-background-surface">
+            <ScrollArea.Root className="w-full h-full rounded-4xl items-center">
+              <ScrollArea.Viewport className="w-full max-h-[calc(100vh-80px)]">
+                <Container className="flex flex-col w-full gap-10 p-10 rounded-4xl bg-background-surface">
                   <Container className="flex items-start gap-10">
                     <Container className="flex flex-col grow">
-                      <Optional value={props.title}>
-                        <Primitive.Title className="font-bold text-lg">{props.title}</Primitive.Title>
+                      <Optional value={title}>
+                        <Primitive.Title className="font-bold text-lg">{title}</Primitive.Title>
                       </Optional>
-                      <Optional value={props.description}>
-                        <Primitive.Description className="text-foreground-secondary">{props.description}</Primitive.Description>
+                      <Optional value={description}>
+                        <Primitive.Description className="text-foreground-secondary">{description}</Primitive.Description>
                       </Optional>
                     </Container>
-                    <Primitive.Close data-slot="dialog-close" className="cursor-pointer flex h-fit">
-                      <Icon symbol="close" />
-                    </Primitive.Close>
+                    {closeButton && (
+                      <Primitive.Close data-slot="dialog-close" className="cursor-pointer flex h-fit">
+                        <Icon symbol="close" />
+                      </Primitive.Close>
+                    )}
                   </Container>
                   {props.children}
                 </Container>

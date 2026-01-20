@@ -12,6 +12,7 @@ type AugmentedUser = User & {
   loading: boolean;
   login: () => Promise<void>;
   logout: () => Promise<void>;
+  update: (user: Partial<User>) => void;
 };
 
 /**
@@ -47,7 +48,14 @@ export const useUser = create<AugmentedUser>()(
           principal: undefined,
           session: undefined
         });
-      }
+      },
+      update: (user) =>
+        set((state) => ({
+          ...state,
+          account: { ...state.account, ...user.account },
+          principal: { ...state.principal, ...user.principal },
+          session: { ...state.session, ...user.session }
+        }))
     }),
     { name: "user" }
   )

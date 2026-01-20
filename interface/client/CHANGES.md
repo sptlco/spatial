@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.5.0](https://github.com/sptlco/spatial/compare/spatial-interface-client-1.4.0...spatial-interface-client-1.5.0) (2026-01-20)
+
+
+### Features
+
+* Sheets are now scrollable ([#137](https://github.com/sptlco/spatial/issues/137)) ([06d48b8](https://github.com/sptlco/spatial/commit/06d48b899db688d6dbe2e8cdcf53e5f56a9499b1))
+* Support account creation ([#137](https://github.com/sptlco/spatial/issues/137)) ([a93193d](https://github.com/sptlco/spatial/commit/a93193d7fc1821cd1e7d2cda98e317b17c06e05b))
+
 ## [1.4.0](https://github.com/sptlco/spatial/compare/spatial-interface-client-1.3.0...spatial-interface-client-1.4.0) (2026-01-12)
 
 

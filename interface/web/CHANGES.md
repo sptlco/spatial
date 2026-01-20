@@ -1,5 +1,14 @@
 # Changelog
 
+## [1.17.0](https://github.com/sptlco/spatial/compare/spatial-interface-web-1.16.0...spatial-interface-web-1.17.0) (2026-01-20)
+
+
+### Features
+
+* Redesigned dialogs ([#137](https://github.com/sptlco/spatial/issues/137)) ([537dca8](https://github.com/sptlco/spatial/commit/537dca8a33bd158f607a0402c3654fa4a37d2b2c))
+* Sheets are now scrollable ([#137](https://github.com/sptlco/spatial/issues/137)) ([06d48b8](https://github.com/sptlco/spatial/commit/06d48b899db688d6dbe2e8cdcf53e5f56a9499b1))
+* Support account creation ([#137](https://github.com/sptlco/spatial/issues/137)) ([a93193d](https://github.com/sptlco/spatial/commit/a93193d7fc1821cd1e7d2cda98e317b17c06e05b))
+
 ## [1.16.0](https://github.com/sptlco/spatial/compare/spatial-interface-web-1.15.0...spatial-interface-web-1.16.0) (2026-01-12)
 
 

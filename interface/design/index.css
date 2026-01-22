@@ -30,6 +30,7 @@
   --color-cyan: #00d6c6;
   --color-yellow: #fcc924;
   --color-magenta: #e16ef9;
+  --color-green: #0fbf3e;
 
   --color-translucent: --alpha(var(--color-white) / 10%);
 

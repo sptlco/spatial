@@ -19,4 +19,9 @@ public class Account : Record
     /// The user's email address.
     /// </summary>
     public string Email { get; set; }
+
+    /// <summary>
+    /// The user's avatar.
+    /// </summary>
+    public string? Avatar { get; set; }
 }

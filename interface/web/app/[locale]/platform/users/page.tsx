@@ -50,16 +50,11 @@ export default function Page() {
     fetch();
   }, []);
 
-  const colors = ["text-magenta", "text-yellow"];
-  const [test, setTest] = useState(false);
-
   const List = () => {
-    const [confirmation, setConfirmation] = useState("");
-
     if (!users) {
       return (
         <>
-          {[...Array(10)].map((num, i) => (
+          {[...Array(10)].map((_, i) => (
             <Table.Row key={i}>
               <Table.Cell>
                 <Span className="flex size-7 rounded-lg animate-pulse bg-background-surface" />
@@ -108,34 +103,38 @@ export default function Page() {
               </Table.Cell>
               <Table.Cell>
                 <Container className="flex items-center gap-5">
-                  <Avatar src="https://dakarai.org/_next/image?url=%2Fdakarai.jpeg&w=3840&q=75" className="shrink-0 size-12" />
+                  <Avatar src={user.account.avatar} alt={user.account.name} className="shrink-0 size-12" />
                   <Container className="flex flex-col truncate">
                     <Span className="font-semibold truncate">{user.account.name}</Span>
                     <Span className="text-foreground-secondary truncate">{user.account.email}</Span>
                   </Container>
                   {user.account.id === (account?.id ?? "") && (
-                    <Span className="hidden xl:flex px-4 py-2 bg-blue rounded-full text-xs font-bold">You</Span>
+                    <Span className="hidden xl:flex px-4 py-2 bg-background-highlight rounded-xl text-xs font-bold">You</Span>
+                  )}
+                  {user.account.name.includes("Obi") && (
+                    <Span className="hidden xl:flex px-4 py-2 bg-background-highlight rounded-xl text-xs font-bold">Agent</Span>
                   )}
                 </Container>
               </Table.Cell>
               <Table.Cell className="hidden xl:table-cell">
-                <UL className="flex flex-wrap gap-4">
-                  {user.principal.roles.map((role, i) => (
+                <UL className="flex flex-wrap gap-2">
+                  {user.principal.roles.map((role: string, i: number) => (
                     <LI
                       key={i}
                       className={clsx(
-                        "rounded-xl bg-background-surface text-xs font-bold inline-flex w-fit items-center justify-center px-5 py-2.5 gap-3",
-                        colors[i]
+                        "rounded-xl bg-current/10 text-xs font-bold",
+                        "inline-flex w-fit items-center justify-center px-4 py-2 gap-3",
+                        "text-green"
                       )}
                     >
-                      <Span className="flex rounded-full size-2 bg-current" />
-                      <Span className="text-foreground-primary">{role}</Span>
+                      <Span className="flex size-2 rounded-full bg-current" />
+                      <Span>{role}</Span>
                     </LI>
                   ))}
                 </UL>
               </Table.Cell>
               <Table.Cell className="hidden xl:table-cell">
-                <Span className="text-sm">
+                <Span>
                   {new Date(user.account.created).toLocaleString(undefined, {
                     month: "short",
                     day: "2-digit",
@@ -154,7 +153,7 @@ export default function Page() {
                       <Icon symbol="more_vert" />
                     </Button>
                   </Dropdown.Trigger>
-                  <Dropdown.Content align="end" className="flex flex-col gap-2.5">
+                  <Dropdown.Content align="end" className="flex flex-col gap-4">
                     <Dropdown.Item asChild>
                       <Sheet.Root>
                         <Sheet.Trigger asChild>
@@ -224,12 +223,15 @@ export default function Page() {
                             }}
                           >
                             <Container className="flex items-center gap-5">
-                              <Avatar src="https://dakarai.org/_next/image?url=%2Fdakarai.jpeg&w=3840&q=75" className="shrink-0 size-12" />
+                              <Avatar src={user.account.avatar} alt={user.account.name} className="shrink-0 size-12" />
                               <Container className="flex flex-col truncate">
                                 <Span className="font-semibold truncate">{user.account.name}</Span>
                                 <Span className="text-foreground-secondary truncate">{user.account.email}</Span>
                               </Container>
                             </Container>
+                            <Paragraph className="text-sm text-foreground-secondary">
+                              This user and all of their account data will be lost immediately upon deletion.
+                            </Paragraph>
                             <Container className="flex w-full items-center justify-items-start gap-4">
                               <Button type="submit" intent="destructive" className="shrink truncate">
                                 Delete
@@ -261,7 +263,7 @@ export default function Page() {
             <Tabs.Trigger value="roles">Roles</Tabs.Trigger>
             <Tabs.Trigger value="permissions">Permissions</Tabs.Trigger>
           </Tabs.List>
-          <Tabs.Content value="users">
+          <Tabs.Content value="users" className="xl:pr-10">
             <Card.Root className="bg-background-subtle transform p-10 xl:rounded-4xl">
               <Card.Header>
                 <Card.Title className="text-2xl font-bold flex gap-3 items-center">
@@ -336,7 +338,7 @@ export default function Page() {
                   <Table.Header>
                     <Table.Row>
                       <Table.Column className="w-12 xl:w-16">
-                        <Checkbox checked={test} onCheckedChange={(v) => setTest(v.valueOf() as boolean)} />
+                        <Checkbox />
                       </Table.Column>
                       <Table.Column className="text-left">User ID</Table.Column>
                       <Table.Column className="w-md text-left hidden xl:table-cell">Roles</Table.Column>

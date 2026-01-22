@@ -12,8 +12,8 @@ export const Main = createElement<"main">((props, ref) => (
     ref={ref}
     className={clsx(
       "transition-all duration-500 ease-out",
-      "group-has-[*[data-slot=dialog-content][data-state=open]]/body:scale-[0.97]",
-      "group-has-[*[data-slot=dialog-content][data-state=open]]/body:overflow-hidden",
+      "sm:group-has-[*[data-slot=dialog-content][data-state=open]]/body:scale-[0.97]",
+      "sm:group-has-[*[data-slot=dialog-content][data-state=open]]/body:overflow-hidden",
       "group-has-[*[data-slot=drawer-content][data-state=open]]/body:scale-[0.97]",
       "group-has-[*[data-slot=drawer-content][data-state=open]]/body:overflow-hidden",
       "sm:group-has-[*[data-slot=sheet-content][data-state=open]]/body:scale-[0.97]",

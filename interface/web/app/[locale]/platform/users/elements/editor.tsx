@@ -2,15 +2,24 @@
 
 "use client";
 
+import { useUser } from "@/stores";
 import { Spatial } from "@sptlco/client";
 import { User } from "@sptlco/data";
 import { Button, Container, createElement, Field, Form, Sheet, toast } from "@sptlco/design";
 import { FormEvent, useState } from "react";
+import { useShallow } from "zustand/shallow";
 
 /**
  * An element that allows for the editing of a user.
  */
 export const Editor = createElement<typeof Sheet.Content, { user: User; onUpdate?: (update: User) => void }>(({ user, onUpdate, ...props }, ref) => {
+  const me = useUser(
+    useShallow((state) => ({
+      account: state.account,
+      update: state.update
+    }))
+  );
+
   const [update, setUpdate] = useState<User>(user);
   const [updating, setUpdating] = useState(false);
 
@@ -28,6 +37,10 @@ export const Editor = createElement<typeof Sheet.Content, { user: User; onUpdate
         if (!response.error) {
           if (onUpdate) {
             onUpdate(update);
+          }
+
+          if (update.account.id === me.account.id) {
+            me.update(update);
           }
 
           return {
@@ -80,6 +93,25 @@ export const Editor = createElement<typeof Sheet.Content, { user: User; onUpdate
               account: {
                 ...update.account,
                 email: e.target.value
+              }
+            })
+          }
+        />
+        <Field
+          type="text"
+          id="avatar"
+          name="avatar"
+          label="Avatar (optional)"
+          value={update.account.avatar || ""}
+          placeholder="An avatar URL"
+          disabled={updating}
+          inset={false}
+          onChange={(e) =>
+            setUpdate({
+              ...update,
+              account: {
+                ...update.account,
+                avatar: e.target.value
               }
             })
           }

@@ -313,10 +313,15 @@ export default function Layout(props: { children: ReactNode }) {
         <LocaleSwitcher compact />
         <Sheet.Root>
           <Sheet.Trigger className="cursor-pointer group">
-            <Avatar
-              src="https://dakarai.org/_next/image?url=%2Fdakarai.jpeg&w=3840&q=75"
-              className="size-10 transition-all outline-transparent outline-0 outline-offset-2 group-data-[state=open]:outline-3 group-data-[state=open]:outline-background-highlight"
-            />
+            {user.loading ? (
+              <Span className="flex bg-background-surface size-10 rounded-full animate-pulse" />
+            ) : (
+              <Avatar
+                src={user.account.avatar}
+                alt={user.account.name}
+                className="size-10 transition-all outline-transparent outline-0 outline-offset-2 group-data-[state=open]:outline-3 group-data-[state=open]:outline-background-highlight"
+              />
+            )}
           </Sheet.Trigger>
           <Sheet.Content title={t("modals.account.title")} description={t("modals.account.description")} closeButton side="right" />
         </Sheet.Root>

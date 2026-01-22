@@ -12,4 +12,9 @@ export type Account = Record<{
    * The user's email address.
    */
   email: string;
+
+  /**
+   * The user's avatar.
+   */
+  avatar?: string;
 }>;

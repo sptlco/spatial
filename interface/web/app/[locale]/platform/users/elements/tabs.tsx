@@ -23,7 +23,7 @@ export const Tabs = {
     <Primitive.Trigger
       {...props}
       ref={ref}
-      className={clsx("cursor-pointer relative px-4 py-2 rounded-lg", "inline-flex items-center h-10", "data-[state=active]:bg-blue")}
+      className={clsx("cursor-pointer relative px-4 py-2 rounded-lg", "inline-flex items-center h-10", "data-[state=active]:bg-background-surface")}
     />
   )),
 

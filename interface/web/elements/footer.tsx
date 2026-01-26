@@ -1,8 +1,12 @@
 // Copyright © Spatial Corporation. All rights reserved.
 
-import { createElement, Container, Link } from "@sptlco/design";
+"use client";
+
+import { Spatial } from "@sptlco/client";
+import { createElement, Container, Link, Span } from "@sptlco/design";
 import { clsx } from "clsx";
 import { useTranslations } from "next-intl";
+import useSWR from "swr";
 
 /**
  * A minimal footer used for interactive pages.
@@ -10,12 +14,36 @@ import { useTranslations } from "next-intl";
 export const CompactFooter = createElement<typeof Container>((props, ref) => {
   const t = useTranslations("footer");
 
+  const version = useSWR("footer/version", async () => {
+    const response = await Spatial.version();
+
+    if (response.error) {
+      throw response.error;
+    }
+
+    return response.data;
+  });
+
   return (
     <Container
       {...props}
       ref={ref}
       className={clsx("w-full flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-10 text-sm", props.className)}
     >
+      <Link className="text-foreground-tertiary" href={`https://github.com/sptlco/spatial/tree/spatial-cloud-${version.data}`} target="_blank">
+        <Span
+          className={clsx(
+            "size-2 rounded-full flex bg-green",
+            { "bg-yellow!": version.isLoading || version.isValidating },
+            { "bg-red!": version.error }
+          )}
+        />
+        {version.isLoading || version.isValidating ? (
+          <Span className="h-4 w-20 rounded-full bg-background-surface animate-pulse" />
+        ) : (
+          <>Mark {version.data}</>
+        )}
+      </Link>
       <Link className="text-foreground-tertiary" href="#" target="_blank">
         {t("legal.users")}
       </Link>

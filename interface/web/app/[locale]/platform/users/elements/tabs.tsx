@@ -13,7 +13,7 @@ export const Tabs = {
    * A list of user management tabs.
    */
   List: createElement<typeof Primitive.List>((props, ref) => (
-    <Primitive.List {...props} ref={ref} className={clsx("flex items-center gap-4 mb-10", "w-full", props.className)} />
+    <Primitive.List {...props} ref={ref} className={clsx("flex items-center gap-2 mb-10", "w-full", props.className)} />
   )),
 
   /**
@@ -23,7 +23,12 @@ export const Tabs = {
     <Primitive.Trigger
       {...props}
       ref={ref}
-      className={clsx("cursor-pointer relative px-4 py-2 rounded-lg", "inline-flex items-center h-10", "data-[state=active]:bg-background-surface")}
+      className={clsx(
+        "cursor-pointer relative px-4 py-2 rounded-lg",
+        "inline-flex items-center h-10",
+        "hover:bg-button-ghost-hover transition-all",
+        "data-[state=active]:bg-background-surface"
+      )}
     />
   )),
 

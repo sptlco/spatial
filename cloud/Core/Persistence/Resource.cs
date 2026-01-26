@@ -10,12 +10,12 @@ namespace Spatial.Persistence;
 /// <summary>
 /// A document stored in the database.
 /// </summary>
-public class Record
+public class Resource
 {
     /// <summary>
-    /// Create a new <see cref="Record"/>.
+    /// Create a new <see cref="Resource"/>.
     /// </summary>
-    public Record()
+    public Resource()
     {
         Id = ObjectId.GenerateNewId().ToString();
     }
@@ -26,38 +26,43 @@ public class Record
     public string Id { get; set; }
 
     /// <summary>
-    /// The <see cref="DateTime"/> the <see cref="Record"/> was created.
+    /// The <see cref="DateTime"/> the <see cref="Resource"/> was created.
     /// </summary>
     public double Created { get; set; } = Time.Now;
+
+    /// <summary>
+    /// Arbitrary properties describing the item.
+    /// </summary>
+    public Dictionary<string, string> Metadata { get; set; } = [];
 }
 
 /// <summary>
 /// A document stored in the database.
 /// </summary>
-public static class Record<T> where T : Record
+public static class Resource<T> where T : Resource
 {
     private static MongoClient _client;
     private static string? _collection;
 
     /// <summary>
-    /// Create a new <see cref="Record{T}"/>.
+    /// Create a new <see cref="Resource{T}"/>.
     /// </summary>
-    static Record()
+    static Resource()
     {
         _client = CreateClient();
     }
 
     /// <summary>
-    /// Store a <see cref="Record"/> of type <typeparamref name="T"/>.
+    /// Store a <see cref="Resource"/> of type <typeparamref name="T"/>.
     /// </summary>
-    /// <param name="record">The <see cref="Record"/> to store.</param>
+    /// <param name="record">The <see cref="Resource"/> to store.</param>
     public static void Store(in T record)
     {
         GetCollection().InsertOne(record);
     }
 
     /// <summary>
-    /// Read a <see cref="Record"/>.
+    /// Read a <see cref="Resource"/>.
     /// </summary>
     /// <param name="id">The document's identification number.</param>
     /// <returns>A of type <typeparamref name="T"/>.</returns>
@@ -67,20 +72,20 @@ public static class Record<T> where T : Record
     }
 
     /// <summary>
-    /// Get the first matching <see cref="Record"/>.
+    /// Get the first matching <see cref="Resource"/>.
     /// </summary>
     /// <param name="filter">An optional filter.</param>
-    /// <returns>A <see cref="Record"/> of type <typeparamref name="T"/>.</returns>
+    /// <returns>A <see cref="Resource"/> of type <typeparamref name="T"/>.</returns>
     public static T First(Expression<Func<T, bool>>? filter = null)
     {
         return List(filter).First();
     }
 
     /// <summary>
-    /// Get the first matching <see cref="Record"/>.
+    /// Get the first matching <see cref="Resource"/>.
     /// </summary>
     /// <param name="filter">An optional filter.</param>
-    /// <returns>A document of type <typeparamref name="T"/>, or null if the <see cref="Record"/> does not exist.</returns>
+    /// <returns>A document of type <typeparamref name="T"/>, or null if the <see cref="Resource"/> does not exist.</returns>
     public static T? FirstOrDefault(Expression<Func<T, bool>>? filter = null)
     {
         return List(filter).FirstOrDefault();
@@ -99,17 +104,17 @@ public static class Record<T> where T : Record
     }
 
     /// <summary>
-    /// Replace a <see cref="Record"/> in the database.
+    /// Replace a <see cref="Resource"/> in the database.
     /// </summary>
     /// <param name="filter">A filter for documents to replace.</param>
-    /// <param name="replacement">A replacement <see cref="Record"/>.</param>
+    /// <param name="replacement">A replacement <see cref="Resource"/>.</param>
     public static void Replace(Expression<Func<T, bool>> filter, T replacement)
     {
         GetCollection().ReplaceOne(filter, replacement);
     }
 
     /// <summary>
-    /// Remove a <see cref="Record"/> from the database.
+    /// Remove a <see cref="Resource"/> from the database.
     /// </summary>
     /// <param name="filter">A filter for the removal.</param>
     public static void RemoveOne(Expression<Func<T, bool>>? filter = null)

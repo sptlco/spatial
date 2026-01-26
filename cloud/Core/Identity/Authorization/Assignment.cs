@@ -8,7 +8,7 @@ namespace Spatial.Identity.Authorization;
 /// ...
 /// </summary>
 [Collection("assignments")]
-public class Assignment : Record
+public class Assignment : Resource
 {
     /// <summary>
     /// The user the <see cref="Role"/> is assigned to.

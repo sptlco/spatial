@@ -9,7 +9,7 @@ namespace Spatial.Cloud.Data.Keys;
 /// An alphanumeric code used for authorization.
 /// </summary>
 [Collection("keys")]
-public class Key : Record
+public class Key : Resource
 {
     /// <summary>
     /// The <see cref="Account"/> that owns the <see cref="Key"/>.

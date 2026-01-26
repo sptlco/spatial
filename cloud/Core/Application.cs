@@ -387,7 +387,7 @@ public class Application
                             return Task.CompletedTask;
                         }
 
-                        if (Record<Session>.FirstOrDefault(sesh => sesh.Id == sid && sesh.Expires > Time.Now) is not Session session)
+                        if (Resource<Session>.FirstOrDefault(sesh => sesh.Id == sid && sesh.Expires > Time.Now) is not Session session)
                         {
                             context.Fail("The user's session does not exist.");
                             return Task.CompletedTask;

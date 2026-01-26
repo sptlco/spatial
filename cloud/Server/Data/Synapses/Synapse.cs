@@ -9,7 +9,7 @@ namespace Spatial.Cloud.Data.Synapses;
 /// A weighted connection between two nodes.
 /// </summary>
 [Collection("synapses")]
-public class Synapse : Record
+public class Synapse : Resource
 {
     /// <summary>
     /// The <see cref="Neuron"/> the <see cref="Synapse"/> extends from.

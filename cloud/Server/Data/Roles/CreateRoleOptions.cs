@@ -16,4 +16,9 @@ public class CreateRoleOptions
     /// A brief description of the role.
     /// </summary>
     public string Description { get; set; }
+
+    /// <summary>
+    /// The color associated with the role.
+    /// </summary>
+    public string? Color { get; set; }
 }

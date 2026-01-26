@@ -1,8 +1,8 @@
 // Copyright © Spatial Corporation. All rights reserved.
 
-import { Record } from "..";
+import { Resource } from "..";
 
-export type Permission = Record<{
+export type Permission = Resource<{
   /**
    * The role granted the permission.
    */

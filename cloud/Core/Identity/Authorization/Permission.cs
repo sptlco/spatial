@@ -8,7 +8,7 @@ namespace Spatial.Identity.Authorization;
 /// Scoped access granted to a <see cref="Role"/>.
 /// </summary>
 [Collection("permissions")]
-public class Permission : Record
+public class Permission : Resource
 {
     /// <summary>
     /// The <see cref="Role"/> granted the <see cref="Permission"/>.

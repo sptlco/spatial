@@ -3,6 +3,7 @@
 using Spatial.Cloud.Data.Permissions;
 using Spatial.Extensions;
 using Spatial.Identity.Authorization;
+using Spatial.Persistence;
 
 namespace Spatial.Cloud.API;
 
@@ -29,5 +30,17 @@ public class PermissionController : Controller
         permission.Store();
 
         return await Task.FromResult(permission);
+    }
+
+    /// <summary>
+    /// List all permissions.
+    /// </summary>
+    /// <returns>A list of permissions.</returns>
+    [GET]
+    [Path("list")]
+    [Authorize]
+    public async Task<List<Permission>> ListPermissionsAsync()
+    {
+        return Resource<Permission>.List();
     }
 }

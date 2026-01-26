@@ -1,11 +1,11 @@
 // Copyright © Spatial Corporation. All rights reserved.
 
-import { Record } from "..";
+import { Resource } from "..";
 
 /**
  * A user role assignment.
  */
-export type Assignment = Record<{
+export type Assignment = Resource<{
   /**
    * The user the role is assigned to.
    */

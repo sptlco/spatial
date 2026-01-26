@@ -30,12 +30,12 @@ public class Enricher
     {
         if (context.Items.TryGetValue(Variables.Session, out var sesh) && sesh is Session session)
         {
-            var roles = Record<Assignment>
+            var roles = Resource<Assignment>
                 .List(a => a.User == session.User)
-                .Select(a => Record<Role>.Read(a.Role));
+                .Select(a => Resource<Role>.Read(a.Role));
 
             var permissions = roles
-                .SelectMany(r => Record<Permission>.List(p => p.Role == r.Id))
+                .SelectMany(r => Resource<Permission>.List(p => p.Role == r.Id))
                 .Select(p => p.Scope)
                 .Distinct();
 

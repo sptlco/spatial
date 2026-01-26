@@ -1,8 +1,8 @@
 // Copyright © Spatial Corporation. All rights reserved.
 
-import { Record } from "..";
+import { Resource } from "..";
 
-export type Session = Record<{
+export type Session = Resource<{
   user: string;
   agent: string;
   token: string;

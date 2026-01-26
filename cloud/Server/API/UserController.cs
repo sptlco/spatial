@@ -44,15 +44,15 @@ public class UserController : Controller
     [Authorize]
     public async Task<List<User>> ListUsersAsync()
     {
-        var users = Record<Account>
+        var users = Resource<Account>
             .List()
             .Select(account => {
-                var roles = Record<Assignment>
+                var roles = Resource<Assignment>
                     .List(a => a.User == account.Id)
-                    .Select(a => Record<Role>.Read(a.Role));
+                    .Select(a => Resource<Role>.Read(a.Role));
 
                 var permissions = roles
-                    .SelectMany(r => Record<Permission>.List(p => p.Role == r.Id))
+                    .SelectMany(r => Resource<Permission>.List(p => p.Role == r.Id))
                     .Select(p => p.Scope)
                     .Distinct();
                 

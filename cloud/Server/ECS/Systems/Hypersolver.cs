@@ -88,8 +88,8 @@ public class Hypersolver : System
         // When the Hypersolver is created, reconstruct the brain.
         // Load neural records from the database and replicate in space.
 
-        var neurons = Record<Data.Neurons.Neuron>.List();
-        var synapses = Record<Data.Synapses.Synapse>.List();
+        var neurons = Resource<Data.Neurons.Neuron>.List();
+        var synapses = Resource<Data.Synapses.Synapse>.List();
 
         space.Reserve(Signature.Combine<Components.Neuron, Position>(), (uint) neurons.Count);
         space.Reserve(Signature.Combine<Synapse>(), (uint) synapses.Count);

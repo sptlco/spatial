@@ -37,12 +37,12 @@ public class SessionController : Controller
     [POST]
     public async Task<Session> CreateSessionAsync([Body] CreateSessionOptions options)
     {
-        (Record<Key>.FirstOrDefault(key => 
+        (Resource<Key>.FirstOrDefault(key => 
             key.Owner == options.User && 
             key.Code.Equals(options.Key, StringComparison.CurrentCultureIgnoreCase) &&
             key.Expires > Time.Now) ?? throw new Unauthorized()).Remove();
 
-        if (Record<Account>.FirstOrDefault(account => account.Email == options.User) is not Account account)
+        if (Resource<Account>.FirstOrDefault(account => account.Email == options.User) is not Account account)
         {
             // This is the user's first time connecting.
             // We should create a new account, and send a welcome email.

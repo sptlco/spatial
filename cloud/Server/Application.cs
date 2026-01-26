@@ -67,7 +67,7 @@ internal class Server : Application
         application.Use(async (context, next) => {
             if (context.Items.TryGetValue(Spatial.Variables.Session, out var sesh) && sesh is Session session)
             {
-                context.Items[Variables.Account] = Record<Account>.Read(session.User);
+                context.Items[Variables.Account] = Resource<Account>.Read(session.User);
             }
 
             await next(context);

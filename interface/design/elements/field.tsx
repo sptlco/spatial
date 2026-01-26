@@ -4,8 +4,8 @@
 
 import { clsx } from "clsx";
 import { OTPInput, OTPInputContext, OTPInputProps } from "input-otp";
-import { ReactNode, useContext } from "react";
-import { Container, createElement, Input, Label, Paragraph, Span } from "..";
+import { ReactNode, useContext, useEffect, useRef, useState } from "react";
+import { Button, Container, createElement, Icon, Input, Label, Paragraph, Span } from "..";
 
 /**
  * Common configurable options for a field.
@@ -25,12 +25,17 @@ export interface SharedFieldProps {
    * Whether or not the field's label is inset.
    */
   inset?: boolean;
+
+  /**
+   * Optional classes for the field's container.
+   */
+  containerClassName?: string;
 }
 
 /**
  * Configurable options for a specific field type.
  */
-export type FieldTypeProps = TextFieldProps | OTPFieldProps;
+export type FieldTypeProps = TextFieldProps | OTPFieldProps | MetaFieldProps;
 
 /**
  * Configurable options for a text field.
@@ -45,11 +50,6 @@ export type TextFieldProps = {
    * An optional placeholder for the field.
    */
   placeholder?: string;
-
-  /**
-   * Optional classes for the field's container.
-   */
-  containerClassName?: string;
 };
 
 /**
@@ -66,6 +66,30 @@ export type OTPFieldProps = OTPInputProps & {
    * @param value An updated value.
    */
   onValueChange?: (value: string) => void;
+};
+
+type Metadata = Record<string, string>;
+type Row = { key: string; value: string };
+
+/**
+ * Configurable options for a meta-field.
+ */
+export type MetaFieldProps = {
+  /**
+   * The field's data type.
+   */
+  type: "meta";
+
+  /**
+   * The field's value.
+   */
+  value?: Metadata;
+
+  /**
+   * An optional change event handler.
+   * @param value The field's new value.
+   */
+  onChange?: (value: Metadata) => void;
 };
 
 /**
@@ -107,6 +131,115 @@ export const Field = createElement<"input", FieldProps>(({ inset = true, ...prop
             containerClassName={clsx("has-disabled:opacity-50", "max-w-full flex flex-wrap items-center gap-4", props.className)}
             data-slot="input-otp"
           />
+        );
+      case "meta":
+        const [rows, setRows] = useState<Row[]>([]);
+        const history = useRef<Metadata | undefined>(props.value);
+
+        useEffect(() => {
+          if (!props.value || JSON.stringify(props.value) === JSON.stringify(history.current)) {
+            return;
+          }
+
+          history.current = props.value;
+
+          const next = Object.entries(props.value).map(([key, value]) => ({
+            key,
+            value: String(value)
+          }));
+
+          if (next.length === 0) {
+            next.push({ key: "", value: "" });
+          }
+
+          setRows(next);
+        }, [props.value]);
+
+        useEffect(() => {
+          if (!props.onChange) return;
+
+          const metadata = rows.reduce<Metadata>((acc, row) => {
+            const key = row.key.trim();
+
+            if (key !== "") {
+              acc[key] = row.value;
+            }
+
+            return acc;
+          }, {});
+
+          if (JSON.stringify(metadata) !== JSON.stringify(history.current)) {
+            history.current = metadata;
+            props.onChange(metadata);
+          }
+        }, [rows, props.onChange]);
+
+        const update = (index: number, patch: Partial<Row>) => {
+          setRows((rows) => {
+            const next = rows.map((row, i) => (i === index ? { ...row, ...patch } : row));
+
+            if (index === rows.length - 1 && patch.key?.trim() && patch.value?.trim()) {
+              return [...next, { key: "", value: "" }];
+            }
+
+            return next;
+          });
+        };
+
+        const remove = (index: number) => {
+          setRows((rows) => {
+            const next = rows.filter((_, i) => i !== index);
+
+            if (next.length === 0) {
+              return [{ key: "", value: "" }];
+            }
+
+            return next;
+          });
+        };
+
+        const add = () => {
+          setRows((rows) => [...rows, { key: "", value: "" }]);
+        };
+
+        return (
+          <Container className="flex flex-col gap-4">
+            {rows.map((row, i) => (
+              <Container key={i} className="flex items-center gap-4">
+                <Field
+                  type="text"
+                  placeholder="Key"
+                  value={row.key}
+                  disabled={props.disabled}
+                  inset={false}
+                  onChange={(e) => update(i, { key: e.target.value })}
+                />
+                <Span>:</Span>
+                <Field
+                  type="text"
+                  placeholder="Value"
+                  value={row.value}
+                  disabled={props.disabled}
+                  inset={false}
+                  onChange={(e) => update(i, { value: e.target.value })}
+                />
+                <Button type="button" intent="ghost" className="bg-transparent! px-0!" disabled={props.disabled} onClick={() => remove(i)}>
+                  <Icon symbol="close" />
+                </Button>
+              </Container>
+            ))}
+
+            <Button
+              type="button"
+              intent="ghost"
+              className="bg-transparent! px-0! duration-1000 fade-in slide-in-from-right-full animate-in"
+              disabled={props.disabled}
+              onClick={add}
+            >
+              <Icon symbol="add" className="duration-1000 animate-in spin-in-360" />
+              <Span>Add</Span>
+            </Button>
+          </Container>
         );
     }
   };

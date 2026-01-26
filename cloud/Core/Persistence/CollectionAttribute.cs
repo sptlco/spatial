@@ -3,7 +3,7 @@
 namespace Spatial.Persistence;
 
 /// <summary>
-/// Specifies the collection of a <see cref="Record"/>.
+/// Specifies the collection of a <see cref="Resource"/>.
 /// </summary>
 [AttributeUsage(AttributeTargets.Class)]
 public class CollectionAttribute : Attribute

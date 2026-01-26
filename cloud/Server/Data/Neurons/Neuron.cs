@@ -9,7 +9,7 @@ namespace Spatial.Cloud.Data.Neurons;
 /// ...
 /// </summary>
 [Collection("neurons")]
-public class Neuron : Record
+public class Neuron : Resource
 {
     /// <summary>
     /// The node's <see cref="NeuronType"/>.

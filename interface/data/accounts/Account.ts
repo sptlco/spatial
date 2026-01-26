@@ -1,8 +1,8 @@
 // Copyright © Spatial Corporation. All rights reserved.
 
-import { Record } from "..";
+import { Resource } from "..";
 
-export type Account = Record<{
+export type Account = Resource<{
   /**
    * The user's name.
    */

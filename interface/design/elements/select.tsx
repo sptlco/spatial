@@ -21,7 +21,7 @@ export const Select = {
       className={clsx(
         "cursor-pointer flex items-center gap-2",
         "rounded-lg px-8 py-2 transition-all",
-        "bg-button-secondary hover:bg-button-secondary-hover active:bg-button-secondary-active",
+        "bg-button-ghost hover:bg-button-ghost-hover active:bg-button-ghost-active data-[state=open]:bg-button-ghost-active",
         props.className
       )}
     >

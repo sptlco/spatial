@@ -1,12 +1,12 @@
 // Copyright © Spatial Corporation. All rights reserved.
 
-import { createElement, Image, ImageProps } from "..";
+import { createElement, Image } from "..";
 import { clsx } from "clsx";
 
 /**
  * An image element representing the user.
  */
-export const Avatar = createElement<"img", ImageProps & { src?: string }>((props, ref) => {
+export const Avatar = createElement<typeof Image, { src?: string }>((props, ref) => {
   const { src, alt = "", className, ...rest } = props;
 
   if (!src) {

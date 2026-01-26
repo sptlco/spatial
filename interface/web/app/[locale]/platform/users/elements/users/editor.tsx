@@ -5,9 +5,10 @@
 import { useUser } from "@/stores";
 import { Spatial } from "@sptlco/client";
 import { User } from "@sptlco/data";
-import { Button, Container, createElement, Field, Form, Sheet, toast } from "@sptlco/design";
 import { FormEvent, useState } from "react";
 import { useShallow } from "zustand/shallow";
+
+import { Button, Container, createElement, Field, Form, Sheet, Span, toast } from "@sptlco/design";
 
 /**
  * An element that allows for the editing of a user.
@@ -50,8 +51,9 @@ export const Editor = createElement<typeof Sheet.Content, { user: User; onUpdate
         }
 
         return {
+          type: "error",
           message: "Something went wrong",
-          description: "An error occurred while updating your account."
+          description: response.error.message
         };
       }
     });
@@ -115,6 +117,24 @@ export const Editor = createElement<typeof Sheet.Content, { user: User; onUpdate
               }
             })
           }
+        />
+        <Field
+          type="meta"
+          id="metadata"
+          name="metadata"
+          label="Metadata"
+          value={update.account.metadata}
+          disabled={updating}
+          inset={false}
+          onChange={(value) => {
+            setUpdate({
+              ...update,
+              account: {
+                ...update.account,
+                metadata: value
+              }
+            });
+          }}
         />
         <Container className="flex items-center gap-4">
           <Button type="submit" disabled={updating}>

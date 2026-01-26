@@ -8,7 +8,7 @@ namespace Spatial.Identity.Authorization;
 /// ...
 /// </summary>
 [Collection("roles")]
-public class Role : Record
+public class Role : Resource
 {
     /// <summary>
     /// The role's display name.
@@ -19,4 +19,9 @@ public class Role : Record
     /// What users with this role do.
     /// </summary>
     public string Description { get; set; }
+
+    /// <summary>
+    /// The color associated with the role.
+    /// </summary>
+    public string? Color { get; set; }
 }

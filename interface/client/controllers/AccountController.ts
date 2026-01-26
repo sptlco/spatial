@@ -22,14 +22,19 @@ export class AccountController extends Controller {
   };
 
   /**
-   * Update the current account.
-   * @param update An account update.
+   * Update an account.
+   * @param account The account to update.
    * @returns The updated account.
    */
-  public update = async (update: Account) => {
-    return this.patch<Account>("accounts/me", update);
+  public update = async (account: Account) => {
+    return this.patch<Account>("accounts", account);
   };
 
+  /**
+   * Delete an account.
+   * @param id The account to delete.
+   * @returns The response from the server.
+   */
   public del = async (id: string) => {
     return this.delete(`accounts/${id}`);
   };

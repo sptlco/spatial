@@ -8,7 +8,7 @@ namespace Spatial.Cloud.Data.Accounts;
 /// ...
 /// </summary>
 [Collection("accounts")]
-public class Account : Record
+public class Account : Resource
 {
     /// <summary>
     /// The user's name.

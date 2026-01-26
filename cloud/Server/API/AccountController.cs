@@ -35,7 +35,7 @@ public class AccountController : Controller
     [Authorize(Scope.Accounts.Read)]
     public async Task<Account> GetAccountAsync(string id)
     {
-        return await Task.FromResult(Record<Account>.Read(id));
+        return await Task.FromResult(Resource<Account>.Read(id));
     }
 
     /// <summary>
@@ -57,12 +57,11 @@ public class AccountController : Controller
     }
 
     /// <summary>
-    /// Update the current account.
+    /// Update an account.
     /// </summary>
-    /// <param name="account">An account update.</param>
+    /// <param name="account">The account to update.</param>
     /// <returns>The updated account.</returns>
     [PATCH]
-    [Path("me")]
     [Authorize]
     public async Task<Account> UpdateAccountAsync([Body] Account account)
     {
@@ -80,6 +79,6 @@ public class AccountController : Controller
     [Authorize]
     public async Task DeleteAccountAsync(string id)
     {
-        Record<Account>.RemoveOne(account => account.Id == id);
+        Resource<Account>.RemoveOne(account => account.Id == id);
     }
 }

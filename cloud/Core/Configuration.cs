@@ -50,7 +50,7 @@ public class Configuration
     public int TickRate { get; set; } = 30;
 
     /// <summary>
-    /// Configurable options for the system's <see cref="Record"/> database.
+    /// Configurable options for the system's <see cref="Resource"/> database.
     /// </summary>
     [ValidateObjectMembers]
     public DatabaseConfiguration Database { get; set; } = new DatabaseConfiguration();

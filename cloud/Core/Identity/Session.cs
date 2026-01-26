@@ -11,7 +11,7 @@ namespace Spatial.Identity;
 /// An active connection to an <see cref="Application"/>.
 /// </summary>
 [Collection("sessions")]
-public class Session : Record
+public class Session : Resource
 {
     /// <summary>
     /// A user identifier.

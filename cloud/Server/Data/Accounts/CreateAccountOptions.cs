@@ -5,7 +5,7 @@ namespace Spatial.Cloud.Data.Accounts;
 /// <summary>
 /// Configurable options for a new account.
 /// </summary>
-public class CreateAccountOptions
+public class CreateAccountOptions : CreateResourceOptions
 {
     /// <summary>
     /// The user's name.

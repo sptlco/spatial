@@ -9,4 +9,5 @@ export * from "./roles";
 export * from "./sessions";
 export * from "./users";
 
+export * from "./CreateResourceOptions";
 export * from "./Resource";

@@ -123,10 +123,10 @@ export const Editor = createElement<typeof Sheet.Content, { user: User; onUpdate
           id="metadata"
           name="metadata"
           label="Metadata"
-          value={update.account.metadata}
+          metadata={update.account.metadata}
           disabled={updating}
           inset={false}
-          onChange={(value) => {
+          onValueChange={(value) => {
             setUpdate({
               ...update,
               account: {

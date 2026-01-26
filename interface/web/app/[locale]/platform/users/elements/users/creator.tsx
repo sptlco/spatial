@@ -11,6 +11,7 @@ import { Button, Container, createElement, Field, Form, Sheet, Spinner, toast } 
 export const Creator = createElement<typeof Sheet.Content, { onCreate?: (account: Account) => void }>(({ onCreate, ...props }, ref) => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
+  const [metadata, setMetadata] = useState<Record<string, string>>();
 
   const [creating, setCreating] = useState(false);
 
@@ -19,7 +20,7 @@ export const Creator = createElement<typeof Sheet.Content, { onCreate?: (account
 
     setCreating(true);
 
-    toast.promise(Spatial.accounts.create({ name, email }), {
+    toast.promise(Spatial.accounts.create({ name, email, metadata }), {
       loading: "Creating an account",
       success: (response) => {
         setCreating(false);
@@ -36,8 +37,9 @@ export const Creator = createElement<typeof Sheet.Content, { onCreate?: (account
         }
 
         return {
+          type: "error",
           message: "Something went wrong",
-          description: "An error occurred while creating the account."
+          description: response.error.message
         };
       }
     });
@@ -67,6 +69,16 @@ export const Creator = createElement<typeof Sheet.Content, { onCreate?: (account
           description="The user will sign into the platform with this email address."
           value={email}
           onChange={(e) => setEmail(e.target.value)}
+          disabled={creating}
+          inset={false}
+        />
+        <Field
+          type="meta"
+          id="metadata"
+          name="metadata"
+          label="Metadata"
+          metadata={metadata}
+          onValueChange={setMetadata}
           disabled={creating}
           inset={false}
         />

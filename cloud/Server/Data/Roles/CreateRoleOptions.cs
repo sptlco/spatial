@@ -5,7 +5,7 @@ namespace Spatial.Cloud.Data.Roles;
 /// <summary>
 /// Configurable options for a new role.
 /// </summary>
-public class CreateRoleOptions
+public class CreateRoleOptions : CreateResourceOptions
 {
     /// <summary>
     /// The name of the role.

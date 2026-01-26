@@ -25,7 +25,8 @@ public class RoleController : Controller
         var role = new Role {
             Name = options.Name,
             Description = options.Description,
-            Color = options.Color
+            Color = options.Color,
+            Metadata = options.Metadata
         };
 
         role.Store();

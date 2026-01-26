@@ -15,6 +15,7 @@ export const Creator = createElement<typeof Sheet.Content, { onCreate?: (role: R
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [color, setColor] = useState("");
+  const [metadata, setMetadata] = useState<Record<string, string>>();
 
   const [creating, setCreating] = useState(false);
 
@@ -23,7 +24,7 @@ export const Creator = createElement<typeof Sheet.Content, { onCreate?: (role: R
 
     setCreating(true);
 
-    toast.promise(Spatial.roles.create({ name, description, color }), {
+    toast.promise(Spatial.roles.create({ name, description, color, metadata }), {
       loading: "Creating a role",
       success: (response) => {
         setCreating(false);
@@ -82,6 +83,16 @@ export const Creator = createElement<typeof Sheet.Content, { onCreate?: (role: R
           value={color || ""}
           placeholder="A color code"
           onChange={(e) => setColor(e.target.value)}
+          disabled={creating}
+          inset={false}
+        />
+        <Field
+          type="meta"
+          id="metadata"
+          name="metadata"
+          label="Metadata"
+          metadata={metadata}
+          onValueChange={setMetadata}
           disabled={creating}
           inset={false}
         />

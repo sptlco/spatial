@@ -48,7 +48,8 @@ public class AccountController : Controller
     {
         var account = new Account {
             Name = options.Name,
-            Email = options.Email
+            Email = options.Email,
+            Metadata = options.Metadata
         };
 
         account.Store();

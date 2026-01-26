@@ -97,17 +97,21 @@ export const Editor = createElement<typeof Sheet.Content, { data: Role; onUpdate
               })
             }
           />
-          <Span className="font-bold">Metadata</Span>
-          {Object.entries(role.metadata).map((k, i) => (
-            <Container className="flex items-center gap-4">
-              <Field key={`key-${i}`} type="text" placeholder={k[0]} id="key" name="key" />
-              <Field key={`value-${i}`} type="text" placeholder={k[1] as string} id="value" name="value" />
-            </Container>
-          ))}
-          <Container className="flex items-center gap-4">
-            <Field type="text" placeholder="Key" id="key" name="key" />
-            <Field type="text" placeholder="Value" id="value" name="value" />
-          </Container>
+          <Field
+            type="meta"
+            id="metadata"
+            name="metadata"
+            label="Metadata"
+            metadata={update.metadata}
+            disabled={updating}
+            inset={false}
+            onValueChange={(value) => {
+              setUpdate({
+                ...update,
+                metadata: value
+              });
+            }}
+          />
           <Container className="flex items-center gap-4">
             <Button type="submit" disabled={updating}>
               Update

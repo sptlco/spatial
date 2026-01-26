@@ -83,13 +83,13 @@ export type MetaFieldProps = {
   /**
    * The field's value.
    */
-  value?: Metadata;
+  metadata?: Metadata;
 
   /**
    * An optional change event handler.
    * @param value The field's new value.
    */
-  onChange?: (value: Metadata) => void;
+  onValueChange?: (value: Metadata) => void;
 };
 
 /**
@@ -134,16 +134,16 @@ export const Field = createElement<"input", FieldProps>(({ inset = true, ...prop
         );
       case "meta":
         const [rows, setRows] = useState<Row[]>([]);
-        const history = useRef<Metadata | undefined>(props.value);
+        const history = useRef<Metadata | undefined>(props.metadata);
 
         useEffect(() => {
-          if (!props.value || JSON.stringify(props.value) === JSON.stringify(history.current)) {
+          if (!props.metadata || JSON.stringify(props.metadata) === JSON.stringify(history.current)) {
             return;
           }
 
-          history.current = props.value;
+          history.current = props.metadata;
 
-          const next = Object.entries(props.value).map(([key, value]) => ({
+          const next = Object.entries(props.metadata).map(([key, value]) => ({
             key,
             value: String(value)
           }));
@@ -153,10 +153,10 @@ export const Field = createElement<"input", FieldProps>(({ inset = true, ...prop
           }
 
           setRows(next);
-        }, [props.value]);
+        }, [props.metadata]);
 
         useEffect(() => {
-          if (!props.onChange) return;
+          if (!props.onValueChange) return;
 
           const metadata = rows.reduce<Metadata>((acc, row) => {
             const key = row.key.trim();
@@ -170,9 +170,9 @@ export const Field = createElement<"input", FieldProps>(({ inset = true, ...prop
 
           if (JSON.stringify(metadata) !== JSON.stringify(history.current)) {
             history.current = metadata;
-            props.onChange(metadata);
+            props.onValueChange(metadata);
           }
-        }, [rows, props.onChange]);
+        }, [rows, props.onValueChange]);
 
         const update = (index: number, patch: Partial<Row>) => {
           setRows((rows) => {

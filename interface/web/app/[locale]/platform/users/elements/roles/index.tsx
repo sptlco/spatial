@@ -86,7 +86,7 @@ export const Roles = () => {
     return (
       <>
         {roles.data
-          .sort((a, b) => b.created - a.created)
+          .sort((a, b) => -b.created - a.created)
           .map((role, i) => (
             <Table.Row key={i}>
               <Table.Cell>

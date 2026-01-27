@@ -1,5 +1,15 @@
 # Changelog
 
+## [1.18.0](https://github.com/sptlco/spatial/compare/spatial-interface-web-1.17.0...spatial-interface-web-1.18.0) (2026-01-27)
+
+
+### Features
+
+* Added a metadata editor ([#137](https://github.com/sptlco/spatial/issues/137)) ([5f7f21e](https://github.com/sptlco/spatial/commit/5f7f21ef5c94eebe9b336d078410fb375753a730))
+* Added metadata fields ([#137](https://github.com/sptlco/spatial/issues/137)) ([2eae0cd](https://github.com/sptlco/spatial/commit/2eae0cd12be34ef4f49f56ea7927d83884e0113b))
+* Added optional avatars ([#137](https://github.com/sptlco/spatial/issues/137)) ([cd4354b](https://github.com/sptlco/spatial/commit/cd4354b52fee1b3c1f21fcd28422e7e61d32abca))
+* Migrate type to metadata ([#137](https://github.com/sptlco/spatial/issues/137)) ([bf16427](https://github.com/sptlco/spatial/commit/bf1642780e499758639b8bf32dc1ddad37fd9eda))
+
 ## [1.17.0](https://github.com/sptlco/spatial/compare/spatial-interface-web-1.16.0...spatial-interface-web-1.17.0) (2026-01-20)
 
 

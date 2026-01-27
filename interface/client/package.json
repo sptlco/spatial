@@ -1,6 +1,6 @@
 {
   "name": "@sptlco/client",
-  "version": "1.5.0",
+  "version": "1.6.0",
   "description": "Client module for cloud communication.",
   "main": "index.ts",
   "author": "Spatial Corporation",

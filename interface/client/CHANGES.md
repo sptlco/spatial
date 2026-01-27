@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.6.0](https://github.com/sptlco/spatial/compare/spatial-interface-client-1.5.0...spatial-interface-client-1.6.0) (2026-01-27)
+
+
+### Features
+
+* Added a metadata editor ([#137](https://github.com/sptlco/spatial/issues/137)) ([5f7f21e](https://github.com/sptlco/spatial/commit/5f7f21ef5c94eebe9b336d078410fb375753a730))
+
 ## [1.5.0](https://github.com/sptlco/spatial/compare/spatial-interface-client-1.4.0...spatial-interface-client-1.5.0) (2026-01-20)
 
 

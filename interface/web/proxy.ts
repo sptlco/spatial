@@ -84,7 +84,7 @@ export const config = {
 
 const rules: Rule[] = [
   {
-    pattern: "/platform*",
+    pattern: "/platform/management*",
     allow: "member",
     redirect: "/session/new"
   },

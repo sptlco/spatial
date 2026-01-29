@@ -42,19 +42,7 @@ public class SessionController : Controller
             key.Code.Equals(options.Key, StringComparison.CurrentCultureIgnoreCase) &&
             key.Expires > Time.Now) ?? throw new Unauthorized()).Remove();
 
-        if (Resource<Account>.FirstOrDefault(account => account.Email == options.User) is not Account account)
-        {
-            // This is the user's first time connecting.
-            // We should create a new account, and send a welcome email.
-
-            (account = new Account { Email = options.User }).Store();
-
-            Mail.Send(
-                subject: "Welcome to Spatial",
-                body: "Welcome to Spatial",
-                recipients: account.Email);
-        }
-
+        var account = Resource<Account>.First(account => account.Email == options.User);
         var session = Session.Create(account.Id);
 
         session.Agent = Request.Headers.UserAgent;

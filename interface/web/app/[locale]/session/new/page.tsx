@@ -45,7 +45,7 @@ export default function Page() {
     if (response.error) {
       toast.error(t("errors.request.title"), {
         closeButton: true,
-        description: t("errors.request.description")
+        description: response.error.message
       });
 
       setState("idle");
@@ -127,7 +127,7 @@ export default function Page() {
           value={email}
           onChange={(e) => setEmail(e.target.value)}
         />
-        <Button type="submit" className="w-full" intent="secondary">
+        <Button type="submit" className="w-full">
           <Span>{t("continue")}</Span>
           {processing ? <Spinner className="size-4 m-1 text-foreground-tertiary" /> : <Icon symbol="arrow_right_alt" />}
         </Button>

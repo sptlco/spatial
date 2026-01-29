@@ -32,7 +32,7 @@ import { usePathname } from "next/navigation";
 import { FormEvent, ReactNode, useEffect, useRef, useState } from "react";
 import { useShallow } from "zustand/shallow";
 
-const BASE_URL = "/platform";
+const BASE_URL = "/platform/management";
 
 type Page = {
   name: string;
@@ -58,7 +58,7 @@ const pages: Page[] = [
   },
   {
     name: "navigation.platform.pages.identity",
-    path: `${BASE_URL}/users`,
+    path: `${BASE_URL}/identity`,
     icon: "person"
   },
   {
@@ -208,22 +208,20 @@ export default function Layout(props: { children: ReactNode }) {
 
                   return (
                     <LI key={i}>
-                      <Drawer.Close asChild>
-                        <Link
-                          href={page.path}
-                          className={clsx(
-                            "transition-colors",
-                            "flex flex-col gap-1 items-center justify-center w-full h-20",
-                            "rounded-2xl bg-button-secondary text-foreground-primary",
-                            "hover:bg-button-secondary-hover active:bg-button-secondary-active",
-                            "hover:text-foreground-primary active:text-foreground-primary",
-                            { "bg-blue! text-white!": highlight }
-                          )}
-                        >
-                          <Icon symbol={page.icon} className={highlight ? "animate-fill" : "animate-outline"} />
-                          <Span className="text-xs">{t(page.name)}</Span>
-                        </Link>
-                      </Drawer.Close>
+                      <Link
+                        href={page.path}
+                        className={clsx(
+                          "transition-colors",
+                          "flex flex-col gap-1 items-center justify-center w-full h-20",
+                          "rounded-2xl bg-button-secondary text-foreground-primary",
+                          "hover:bg-button-secondary-hover active:bg-button-secondary-active",
+                          "hover:text-foreground-primary active:text-foreground-primary",
+                          { "bg-button-ghost-hover! text-white!": highlight }
+                        )}
+                      >
+                        <Icon symbol={page.icon} className={highlight ? "animate-fill" : "animate-outline"} />
+                        <Span className="text-xs">{t(page.name)}</Span>
+                      </Link>
                     </LI>
                   );
                 })}
@@ -283,11 +281,11 @@ export default function Layout(props: { children: ReactNode }) {
                         href={page.path}
                         className={clsx(
                           "transition-all",
-                          "flex items-center justify-center size-10 scale-125",
-                          "rounded-full bg-button-secondary text-foreground-primary",
-                          "hover:bg-button-secondary-hover active:bg-button-secondary-active",
+                          "flex items-center justify-center size-15",
+                          "rounded-full bg-button-ghost text-foreground-primary",
+                          "hover:bg-button-ghost-hover active:bg-button-ghost-active",
                           "hover:text-foreground-primary active:text-foreground-primary",
-                          { "bg-blue! text-white! scale-140!": highlight }
+                          { "bg-button-ghost-hover! text-white!": highlight }
                         )}
                       >
                         <Icon symbol={page.icon} className={highlight ? "animate-fill" : "animate-outline"} />

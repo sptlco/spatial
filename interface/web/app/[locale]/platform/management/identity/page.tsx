@@ -4,6 +4,7 @@
 
 import { Suspense } from "react";
 import { Tabs } from "./elements";
+import { Permissions } from "./elements/permissions";
 import { Roles } from "./elements/roles";
 import { Users } from "./elements/users";
 import { Card } from "@sptlco/design";
@@ -32,7 +33,11 @@ export default function Page() {
               <Roles />
             </Suspense>
           </Tabs.Content>
-          <Tabs.Content value="permissions" className="xl:pr-10"></Tabs.Content>
+          <Tabs.Content value="permissions" className="xl:pr-10">
+            <Suspense>
+              <Permissions />
+            </Suspense>
+          </Tabs.Content>
         </Tabs.Root>
       </Card.Content>
     </Card.Root>

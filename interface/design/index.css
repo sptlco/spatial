@@ -54,21 +54,21 @@
   --color-line-accent: var(--color-blue);
   --color-line-input-focus: var(--color-blue);
 
-  --color-button-primary: var(--color-blue);
-  --color-button-primary-hover: #0055e0;
-  --color-button-primary-active: #0045c0;
+  --color-button: var(--color-translucent);
+  --color-button-hover: --alpha(var(--color-white) / 20%);
+  --color-button-active: --alpha(var(--color-white) / 30%);
 
-  --color-button-secondary: var(--color-translucent);
-  --color-button-secondary-hover: --alpha(var(--color-white) / 20%);
-  --color-button-secondary-active: --alpha(var(--color-white) / 30%);
+  --color-button-destructive: var(--color-red);
+  --color-button-destructive-hover: #e63e1e;
+  --color-button-destructive-active: #cc2e10;
 
   --color-button-ghost: transparent;
   --color-button-ghost-hover: var(--color-translucent);
   --color-button-ghost-active: --alpha(var(--color-white) / 20%);
 
-  --color-button-destructive: var(--color-red);
-  --color-button-destructive-hover: #e63e1e;
-  --color-button-destructive-active: #cc2e10;
+  --color-button-highlight: var(--color-blue);
+  --color-button-highlight-hover: #0055e0;
+  --color-button-highlight-active: #0045c0;
 
   --color-input: --alpha(var(--color-white) / 7.5%);
 

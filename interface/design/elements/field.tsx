@@ -116,7 +116,7 @@ export const Field = createElement<"input", FieldProps>(({ inset = true, ...prop
             className={clsx(
               "disabled:opacity-50",
               "w-full px-4 py-2 bg-input placeholder-hint rounded-lg transition-all",
-              "outline-2 outline-transparent focus:outline-line-input-focus",
+              "outline-2 outline-offset-3 outline-transparent focus:outline-line-input-focus",
               props.className
             )}
           />
@@ -231,7 +231,7 @@ export const Field = createElement<"input", FieldProps>(({ inset = true, ...prop
 
             <Button type="button" intent="ghost" className="bg-transparent! px-0!" disabled={props.disabled} onClick={add}>
               <Icon symbol="add" />
-              <Span>Add pair</Span>
+              <Span>Add property</Span>
             </Button>
           </Container>
         );

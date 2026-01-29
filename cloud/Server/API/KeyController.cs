@@ -1,8 +1,10 @@
 // Copyright © Spatial Corporation. All rights reserved.
 
+using Spatial.Cloud.Data.Accounts;
 using Spatial.Cloud.Data.Keys;
 using Spatial.Communication;
 using Spatial.Extensions;
+using Spatial.Persistence;
 
 namespace Spatial.Cloud.API;
 
@@ -20,7 +22,12 @@ public class KeyController : Controller
     [POST]
     public Task CreateKeyAsync([Body] CreateKeyOptions options)
     {
-        var key = new Key { Owner = options.User };
+        if (Resource<Account>.FirstOrDefault(a => a.Email == options.User) is not Account account)
+        {
+            throw new UserError("The requested user does not exist.");
+        }
+
+        var key = new Key { Owner = account.Email };
 
         key.Store();
 

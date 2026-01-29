@@ -117,7 +117,7 @@ export const Editor = createElement<typeof Sheet.Content, { data: Role; onUpdate
               Update
             </Button>
             <Sheet.Close asChild>
-              <Button intent="secondary">Cancel</Button>
+              <Button intent="ghost">Cancel</Button>
             </Sheet.Close>
           </Container>
         </Form>

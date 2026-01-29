@@ -3,14 +3,18 @@
 "use client";
 
 import { Spatial } from "@sptlco/client";
-import { Account } from "@sptlco/data";
+import { Role } from "@sptlco/data";
 import { FormEvent, useState } from "react";
 
 import { Button, Container, createElement, Field, Form, Sheet, Spinner, toast } from "@sptlco/design";
 
-export const Creator = createElement<typeof Sheet.Content, { onCreate?: (account: Account) => void }>(({ onCreate, ...props }, ref) => {
+/**
+ * Allows the user to create a new role.
+ */
+export const Creator = createElement<typeof Sheet.Content, { onCreate?: (role: Role) => void }>(({ onCreate, ...props }, ref) => {
   const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
+  const [description, setDescription] = useState("");
+  const [color, setColor] = useState("");
   const [metadata, setMetadata] = useState<Record<string, string>>();
 
   const [creating, setCreating] = useState(false);
@@ -20,8 +24,8 @@ export const Creator = createElement<typeof Sheet.Content, { onCreate?: (account
 
     setCreating(true);
 
-    toast.promise(Spatial.accounts.create({ name, email, metadata }), {
-      loading: "Creating an account",
+    toast.promise(Spatial.roles.create({ name, description, color, metadata }), {
+      loading: "Creating a role",
       success: (response) => {
         setCreating(false);
 
@@ -31,8 +35,8 @@ export const Creator = createElement<typeof Sheet.Content, { onCreate?: (account
           }
 
           return {
-            message: "Account created",
-            description: `Created user ${response.data.email}`
+            message: "Role created",
+            description: `Created ${response.data.name} role`
           };
         }
 
@@ -46,15 +50,15 @@ export const Creator = createElement<typeof Sheet.Content, { onCreate?: (account
   };
 
   return (
-    <Sheet.Content {...props} ref={ref} title="Create a new user" description="Grant access to a family member, friend, or colleague." closeButton>
+    <Sheet.Content {...props} ref={ref} title="Create a new role" description="Grant scoped access to a particular set of users." closeButton>
       <Form className="flex flex-col gap-10 w-full max-w-sm" onSubmit={create}>
         <Field
           type="text"
           id="name"
           name="name"
-          placeholder="User"
           label="Name"
           value={name}
+          placeholder="A name for the role"
           onChange={(e) => setName(e.target.value)}
           disabled={creating}
           inset={false}
@@ -62,13 +66,23 @@ export const Creator = createElement<typeof Sheet.Content, { onCreate?: (account
         />
         <Field
           type="text"
-          id="email"
-          name="email"
-          placeholder="name@company.com"
-          label="Email address"
-          description="The user will sign into the platform with this email address."
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
+          id="description"
+          name="description"
+          label="Description"
+          value={description}
+          placeholder="What do these users do?"
+          onChange={(e) => setDescription(e.target.value)}
+          disabled={creating}
+          inset={false}
+        />
+        <Field
+          type="text"
+          id="color"
+          name="color"
+          label="Color (optional)"
+          value={color || ""}
+          placeholder="A color code"
+          onChange={(e) => setColor(e.target.value)}
           disabled={creating}
           inset={false}
         />
@@ -83,11 +97,11 @@ export const Creator = createElement<typeof Sheet.Content, { onCreate?: (account
           inset={false}
         />
         <Container className="flex items-center gap-4">
-          <Button type="submit" disabled={creating || !name || !email}>
+          <Button type="submit" disabled={creating || !name || !description}>
             Create
           </Button>
           <Sheet.Close asChild>
-            <Button intent="secondary">Cancel</Button>
+            <Button intent="ghost">Cancel</Button>
           </Sheet.Close>
           {creating && <Spinner className="size-5 text-foreground-secondary" />}
         </Container>

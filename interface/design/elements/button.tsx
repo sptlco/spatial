@@ -11,7 +11,7 @@ export type ButtonProps = {
   /**
    * The button's intent.
    */
-  intent?: "primary" | "secondary" | "ghost" | "destructive";
+  intent?: "default" | "destructive" | "ghost" | "highlight";
 
   /**
    * The shape of the button.
@@ -33,10 +33,10 @@ const styles = cva({
   base: "w-fit flex items-center transition-all cursor-pointer truncate disabled:opacity-50 disabled:pointer-events-none",
   variants: {
     intent: {
-      primary: "bg-button-primary hover:bg-button-primary-hover active:bg-button-primary-active",
-      secondary: "bg-button-secondary hover:bg-button-secondary-hover active:bg-button-secondary-active",
+      default: "bg-button hover:bg-button-hover active:bg-button-active",
+      destructive: "bg-button-destructive hover:bg-button-destructive-hover active:bg-button-destructive-active",
       ghost: "bg-button-ghost hover:bg-button-ghost-hover active:bg-button-ghost-active",
-      destructive: "bg-button-destructive hover:bg-button-destructive-hover active:bg-button-destructive-active"
+      highlight: "bg-button-highlight hover:bg-button-highlight-hover active:bg-button-highlight-active"
     },
     shape: {
       round: "rounded-lg",
@@ -58,7 +58,7 @@ const styles = cva({
  * An interactive element that prompts a user action.
  */
 export const Button = createElement<"button", ButtonProps>(
-  ({ intent = "primary", shape = "round", size = "medium", align = "center", type = "button", ...props }, ref) => (
+  ({ intent = "default", shape = "round", size = "medium", align = "center", type = "button", ...props }, ref) => (
     <button {...props} type={type} className={clsx(styles({ intent, shape, size, align }), props.className)} ref={ref} />
   )
 );

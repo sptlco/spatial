@@ -20,11 +20,11 @@
 
     "errors": {
       "request": {
-        "title": "Hitilafu imetokea",
+        "title": "Ufikiaji umekataliwa",
         "description": "Tumekutana na tatizo lisilo la kawaida wakati wa kuandaa msimbo wako wa uthibitishaji. Tafadhali jaribu tena baada ya muda mfupi."
       },
       "verify": {
-        "title": "Msimbo wa uthibitishaji si sahihi",
+        "title": "Ufikiaji umekataliwa",
         "description": "Msimbo ulioweka si sahihi au muda wake umeisha. Tafadhali hakikisha na ujaribu tena."
       }
     }

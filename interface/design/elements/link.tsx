@@ -14,7 +14,7 @@ export const Link = createElement<typeof Primitive, LinkProps>((props, ref) => (
     ref={ref}
     className={clsx(
       "cursor-pointer inline-flex items-center gap-2",
-      "text-button-primary hover:text-button-primary-hover active:text-button-primary-active font-medium",
+      "text-button-highlight hover:text-button-highlight-hover active:text-button-highlight-active font-medium",
       "transition-all",
       props.className
     )}

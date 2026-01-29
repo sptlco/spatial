@@ -35,7 +35,7 @@ import {
 export const Roles = () => {
   const [search, setSearch] = useState("");
 
-  const roles = useSWR("roles/roles/list", async (_) => {
+  const roles = useSWR("platform/identity/roles/list", async (_) => {
     const response = await Spatial.roles.list();
 
     if (response.error) {
@@ -45,7 +45,7 @@ export const Roles = () => {
     return response.data;
   });
 
-  const permissions = useSWR("roles/permissions/list", async (_) => {
+  const permissions = useSWR("platform/identity/identity/roles/permissions/list", async (_) => {
     const response = await Spatial.permissions.list();
 
     if (response.error) {
@@ -86,7 +86,7 @@ export const Roles = () => {
     return (
       <>
         {roles.data
-          .sort((a, b) => -b.created - a.created)
+          .sort((a, b) => (a.name < b.name ? -1 : 1))
           .map((role, i) => (
             <Table.Row key={i}>
               <Table.Cell>
@@ -191,7 +191,7 @@ export const Roles = () => {
   };
 
   return (
-    <Card.Root className="bg-background-subtle transform p-10 xl:rounded-4xl gap-0!">
+    <Card.Root className="bg-background-subtle transform p-10 xl:rounded-4xl">
       <Card.Header>
         <Card.Title className="text-2xl font-bold flex gap-3 items-center">
           <Span>Roles</Span>
@@ -234,6 +234,18 @@ export const Roles = () => {
         </Card.Gutter>
       </Card.Header>
       <Card.Content className="w-full flex flex-col relative">
+        <Container className="relative w-full max-w-sm flex items-center">
+          <Field
+            type="text"
+            id="search"
+            name="search"
+            placeholder="Search roles"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className="w-full pl-12"
+          />
+          <Icon symbol="search" className="absolute left-3" />
+        </Container>
         <Table.Root className="w-full table-fixed border-separate border-spacing-y-10">
           <Table.Header>
             <Table.Row>

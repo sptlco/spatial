@@ -29,7 +29,6 @@ import {
   Icon,
   LI,
   Paragraph,
-  Separator,
   Sheet,
   Span,
   Spinner,
@@ -68,7 +67,7 @@ export const Users = () => {
     router.replace(`${pathname}?${params.toString()}`, { scroll: false });
   };
 
-  const users = useSWR("users/users/list", async (_) => {
+  const users = useSWR("platform/identity/users/list", async (_) => {
     const response = await Spatial.users.list();
 
     if (response.error) {
@@ -78,7 +77,7 @@ export const Users = () => {
     return response.data;
   });
 
-  const roles = useSWR("users/roles/list", async (_) => {
+  const roles = useSWR("platform/identity/users/roles/list", async (_) => {
     const response = await Spatial.roles.list();
 
     if (response.error) {
@@ -195,7 +194,7 @@ export const Users = () => {
             </Sheet.Trigger>
             <Creator onCreate={(_) => users.mutate()} />
           </Sheet.Root>
-          <Button intent="secondary">
+          <Button intent="ghost">
             <Icon symbol="download" />
             <Span>Export</Span>
           </Button>

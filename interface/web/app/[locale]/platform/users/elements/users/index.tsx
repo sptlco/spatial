@@ -169,8 +169,8 @@ export const Users = () => {
                 <Sheet.Root>
                   <Sheet.Trigger asChild>
                     <Button intent="ghost" className="w-full" align="left">
-                      <Icon symbol="person_add" />
-                      <Span>Create user</Span>
+                      <Icon symbol="add" />
+                      <Span>Create</Span>
                     </Button>
                   </Sheet.Trigger>
                   <Creator onCreate={(_) => users.mutate()} />
@@ -189,8 +189,8 @@ export const Users = () => {
           <Sheet.Root>
             <Sheet.Trigger asChild>
               <Button>
-                <Icon symbol="person_add" />
-                <Span>Create user</Span>
+                <Icon symbol="add" />
+                <Span>Create</Span>
               </Button>
             </Sheet.Trigger>
             <Creator onCreate={(_) => users.mutate()} />
@@ -390,18 +390,8 @@ const Row = memo(
                 <Sheet.Root>
                   <Sheet.Trigger asChild>
                     <Button intent="ghost" className="w-full" align="left">
-                      <Icon symbol="person" />
-                      <Span>View profile</Span>
-                    </Button>
-                  </Sheet.Trigger>
-                </Sheet.Root>
-              </Dropdown.Item>
-              <Dropdown.Item asChild>
-                <Sheet.Root>
-                  <Sheet.Trigger asChild>
-                    <Button intent="ghost" className="w-full" align="left">
                       <Icon symbol="person_edit" />
-                      <Span>Edit details</Span>
+                      <Span>Edit</Span>
                     </Button>
                   </Sheet.Trigger>
                   <Editor user={user} onUpdate={(_) => users.mutate()} />
@@ -412,7 +402,7 @@ const Row = memo(
                   <Sheet.Trigger asChild>
                     <Button intent="ghost" className="w-full" align="left">
                       <Icon symbol="download" />
-                      <Span>Export data</Span>
+                      <Span>Export</Span>
                     </Button>
                   </Sheet.Trigger>
                 </Sheet.Root>
@@ -422,7 +412,7 @@ const Row = memo(
                   <Dialog.Trigger asChild>
                     <Button intent="destructive" className="w-full" align="left">
                       <Icon symbol="delete" />
-                      <Span>Delete user</Span>
+                      <Span>Delete</Span>
                     </Button>
                   </Dialog.Trigger>
                   <Dialog.Content title="Delete user" description="Please confirm this action." className="sm:max-w-md">

@@ -229,15 +229,9 @@ export const Field = createElement<"input", FieldProps>(({ inset = true, ...prop
               </Container>
             ))}
 
-            <Button
-              type="button"
-              intent="ghost"
-              className="bg-transparent! px-0! duration-1000 fade-in slide-in-from-right-full animate-in"
-              disabled={props.disabled}
-              onClick={add}
-            >
-              <Icon symbol="add" className="duration-1000 animate-in spin-in-360" />
-              <Span>Add</Span>
+            <Button type="button" intent="ghost" className="bg-transparent! px-0!" disabled={props.disabled} onClick={add}>
+              <Icon symbol="add" />
+              <Span>Add pair</Span>
             </Button>
           </Container>
         );

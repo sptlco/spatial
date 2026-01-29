@@ -121,7 +121,7 @@ export const Roles = () => {
                         <Sheet.Trigger asChild>
                           <Button intent="ghost" className="w-full" align="left">
                             <Icon symbol="person_edit" />
-                            <Span>Edit details</Span>
+                            <Span>Edit</Span>
                           </Button>
                         </Sheet.Trigger>
                         <Editor data={role} onUpdate={(_) => roles.mutate()} />
@@ -132,7 +132,7 @@ export const Roles = () => {
                         <Dialog.Trigger asChild>
                           <Button intent="destructive" className="w-full" align="left">
                             <Icon symbol="delete" />
-                            <Span>Delete role</Span>
+                            <Span>Delete</Span>
                           </Button>
                         </Dialog.Trigger>
                         <Dialog.Content title="Delete role" description="Please confirm this action." className="sm:max-w-md">
@@ -211,18 +211,12 @@ export const Roles = () => {
                 <Sheet.Root>
                   <Sheet.Trigger asChild>
                     <Button intent="ghost" className="w-full" align="left">
-                      <Icon symbol="group_add" />
-                      <Span>Create role</Span>
+                      <Icon symbol="add" />
+                      <Span>Create</Span>
                     </Button>
                   </Sheet.Trigger>
                   <Creator onCreate={(_) => roles.mutate()} />
                 </Sheet.Root>
-              </Dropdown.Item>
-              <Dropdown.Item asChild>
-                <Button intent="ghost" className="w-full" align="left">
-                  <Icon symbol="assignment_add" />
-                  <Span>Assign roles</Span>
-                </Button>
               </Dropdown.Item>
             </Dropdown.Content>
           </Dropdown.Root>
@@ -231,16 +225,12 @@ export const Roles = () => {
           <Sheet.Root>
             <Sheet.Trigger asChild>
               <Button>
-                <Icon symbol="group_add" />
-                <Span>Create role</Span>
+                <Icon symbol="add" />
+                <Span>Create</Span>
               </Button>
             </Sheet.Trigger>
             <Creator onCreate={(_) => roles.mutate()} />
           </Sheet.Root>
-          <Button intent="secondary">
-            <Icon symbol="assignment_add" />
-            <Span>Assign roles</Span>
-          </Button>
         </Card.Gutter>
       </Card.Header>
       <Card.Content className="w-full flex flex-col relative">

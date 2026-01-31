@@ -207,7 +207,7 @@ export const Scopes = () => {
                       <Table.Body>
                         {roles.data!.map((role) => (
                           <Table.Row key={role.id}>
-                            <Table.Cell className="xl:pl-5 pr-10">
+                            <Table.Cell className="xl:pl-10 pr-10">
                               <Container className="flex items-center gap-5">
                                 <Monogram text={role.name} className="shrink-0 size-12" style={{ color: role.color }} />
                                 <Container className="flex flex-col truncate">

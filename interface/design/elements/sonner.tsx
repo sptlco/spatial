@@ -26,9 +26,9 @@ export const Toaster = createElement<typeof Primitive, ToasterProps>((props, ref
         title: "text-foreground-primary! text-xs! font-bold!",
         description: "text-foreground-secondary! text-xs!",
         actionButton:
-          "transition-all! duration-300! rounded-lg! text-xs! text-foreground-primary! bg-button-primary! hover:bg-button-primary-hover! active:bg-button-primary-active!",
+          "transition-all! duration-300! rounded-lg! text-xs! text-foreground-primary! bg-button! hover:bg-button-hover! active:bg-button-active!",
         cancelButton:
-          "transition-all! duration-300! rounded-lg! text-xs! text-foreground-primary! bg-button-secondary! hover:bg-button-secondary-hover! active:bg-button-secondary-active!",
+          "transition-all! duration-300! rounded-lg! text-xs! text-foreground-primary! bg-button-ghost! hover:bg-button-ghost-hover! active:bg-button-ghost-active!",
         closeButton: "relative! shrink-0! order-999! transform-none! bg-transparent! text-foreground-primary! border-none! scale-175! size-5!"
       }
     }}

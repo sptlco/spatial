@@ -21,7 +21,8 @@ export const Creator = createElement<typeof Sheet.Content, { onCreate?: (account
     setCreating(true);
 
     toast.promise(Spatial.accounts.create({ name, email, metadata }), {
-      loading: "Creating an account",
+      loading: "Creating user",
+      description: "We are creating a new account with the information you provided.",
       success: (response) => {
         setCreating(false);
 
@@ -31,8 +32,8 @@ export const Creator = createElement<typeof Sheet.Content, { onCreate?: (account
           }
 
           return {
-            message: "Account created",
-            description: `Created user ${response.data.email}`
+            message: "User created",
+            description: `Created user ${response.data.name}`
           };
         }
 

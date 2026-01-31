@@ -3,17 +3,17 @@
 namespace Spatial.Cloud.Data.Permissions;
 
 /// <summary>
-/// Configurable options for a permission.
+/// A permission with minimal properties.
 /// </summary>
-public class CreatePermissionOptions
+public class PermissionSlim
 {
     /// <summary>
-    /// The role the permission is granted to.
+    /// The role the permission is assigned to.
     /// </summary>
     public string Role { get; set; }
 
     /// <summary>
-    /// The scope to grant access to.
+    /// The permission's scope.
     /// </summary>
     public string Scope { get; set; }
 }

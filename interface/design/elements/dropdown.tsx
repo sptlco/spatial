@@ -62,7 +62,7 @@ export const Dropdown = {
       {...props}
       ref={ref}
       className={clsx(
-        "py-2 px-4 cursor-pointer transition-all rounded-lg flex items-center hover:bg-button-secondary-hover active:bg-button-secondary-active",
+        "py-2 px-4 cursor-pointer transition-all rounded-lg flex items-center hover:bg-button-hover active:bg-button-active",
         props.className
       )}
     />
@@ -86,7 +86,7 @@ export const Dropdown = {
       {...props}
       ref={ref}
       className={clsx(
-        "py-2 px-4 cursor-pointer transition-all rounded-lg flex items-center hover:bg-button-secondary-hover active:bg-button-secondary-active",
+        "py-2 px-4 cursor-pointer transition-all rounded-lg flex items-center hover:bg-button-hover active:bg-button-active",
         props.className
       )}
     />
@@ -107,7 +107,7 @@ export const Dropdown = {
       {...props}
       ref={ref}
       className={clsx(
-        "py-2 px-4 cursor-pointer transition-all rounded-lg flex items-center hover:bg-button-secondary-hover active:bg-button-secondary-active",
+        "py-2 px-4 cursor-pointer transition-all rounded-lg flex items-center hover:bg-button-hover active:bg-button-active",
         props.className
       )}
     />

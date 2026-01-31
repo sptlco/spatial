@@ -28,7 +28,7 @@ export const useUser = create<AugmentedUser>()(
       login: async () => {
         set({ loading: true });
 
-        const user = await Spatial.users.me();
+        const user = await Spatial.users.current();
 
         set({
           loading: false,

@@ -30,8 +30,8 @@ export const Editor = createElement<typeof Sheet.Content, { user: User; onUpdate
     setUpdating(true);
 
     toast.promise(Spatial.accounts.update(update.account), {
-      loading: "Updating account",
-      description: "We are updating your account with the information you provided.",
+      loading: "Updating user",
+      description: "We are updating the account with the information you provided.",
       success: (response) => {
         setUpdating(false);
 
@@ -45,8 +45,8 @@ export const Editor = createElement<typeof Sheet.Content, { user: User; onUpdate
           }
 
           return {
-            message: "Account updated",
-            description: "Your account has been updated."
+            message: "User updated",
+            description: `The user ${update.account.name} has been updated.`
           };
         }
 

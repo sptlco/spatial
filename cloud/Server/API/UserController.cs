@@ -2,6 +2,7 @@
 
 using Spatial.Cloud.Data.Accounts;
 using Spatial.Cloud.Data.Principals;
+using Spatial.Cloud.Data.Scopes;
 using Spatial.Cloud.Data.Users;
 using Spatial.Identity;
 using Spatial.Identity.Authorization;
@@ -21,9 +22,9 @@ public class UserController : Controller
     /// </summary>
     /// <returns>The current user.</returns>
     [GET]
-    [Path("me")]
+    [Path("current")]
     [Authorize]
-    public async Task<User> GetUserAsync()
+    public async Task<User> CurrentUserAsync()
     {
         return new User {
             Account = _account,
@@ -41,7 +42,7 @@ public class UserController : Controller
     /// <returns>A list of users.</returns>
     [GET]
     [Path("list")]
-    [Authorize]
+    //[Authorize(Scope.Users.List)]
     public async Task<List<User>> ListUsersAsync()
     {
         var users = Resource<Account>

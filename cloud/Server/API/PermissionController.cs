@@ -1,6 +1,8 @@
 // Copyright © Spatial Corporation. All rights reserved.
 
+using Spatial.Cloud.Data;
 using Spatial.Cloud.Data.Permissions;
+using Spatial.Cloud.Data.Scopes;
 using Spatial.Extensions;
 using Spatial.Identity.Authorization;
 using Spatial.Persistence;
@@ -13,23 +15,12 @@ namespace Spatial.Cloud.API;
 [Path("permissions")]
 public class PermissionController : Controller
 {
-    /// <summary>
-    /// Create a new <see cref="Permission"/>.
-    /// </summary>
-    /// <param name="options">Configurable options for the request.</param>
-    /// <returns>A <see cref="Permission"/>.</returns>
-    [POST]
-    [Authorize(Scope.Permissions.Create)]
-    public async Task<Permission> CreatePermissionAsync([Body] CreatePermissionOptions options)
+    [PATCH]
+    //[Authorize(Scope.Permissions.Update)]
+    public async Task UpdatePermissionsAsync([Body] Difference<PermissionSlim> diff)
     {
-        var permission = new Permission {
-            Role = options.Role,
-            Scope = options.Scope
-        };
-
-        permission.Store();
-
-        return await Task.FromResult(permission);
+        diff.Added.ForEach(p => new Permission { Role = p.Role, Scope = p.Scope }.Store());
+        Resource<Permission>.RemoveMany(a => diff.Removed.Exists(b => b.Role == a.Role && b.Scope == a.Scope));
     }
 
     /// <summary>
@@ -38,7 +29,7 @@ public class PermissionController : Controller
     /// <returns>A list of permissions.</returns>
     [GET]
     [Path("list")]
-    [Authorize]
+    //[Authorize(Scope.Permissions.List)]
     public async Task<List<Permission>> ListPermissionsAsync()
     {
         return Resource<Permission>.List();

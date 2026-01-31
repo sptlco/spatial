@@ -1,6 +1,7 @@
 // Copyright © Spatial Corporation. All rights reserved.
 
 using Spatial.Cloud.Data.Accounts;
+using Spatial.Cloud.Data.Scopes;
 using Spatial.Cloud.ECS.Systems;
 using Spatial.Identity;
 using Spatial.Persistence;
@@ -13,6 +14,7 @@ namespace Spatial.Cloud;
 /// </summary>
 internal class Server : Application
 {
+    private readonly Lazy<List<Sector>> _scopes;
     private readonly Dictionary<int, Transducer> _transducers;
 
     /// <summary>
@@ -20,6 +22,7 @@ internal class Server : Application
     /// </summary>
     public Server()
     {
+        _scopes = new(() => GetScopes());
         _transducers = Assembly
             .GetEntryAssembly()!
             .GetTypes()
@@ -43,6 +46,11 @@ internal class Server : Application
     /// The server's <see cref="ECS.Systems.Hypersolver"/>.
     /// </summary>
     public Hypersolver Hypersolver { get; internal set; }
+
+    /// <summary>
+    /// The server's scopes.
+    /// </summary>
+    public List<Sector> Scopes => _scopes.Value;
 
     /// <summary>
     /// The server's transducers, by their neural group.
@@ -72,5 +80,45 @@ internal class Server : Application
 
             await next(context);
         });
+    }
+
+    private List<Sector> GetScopes()
+    {
+        var sectors = new List<Sector>();
+
+        foreach (var type in typeof(Scope).GetNestedTypes(BindingFlags.Public))
+        {
+            var sector = new Sector
+            {
+                Name = type.Name
+            };
+
+            foreach (var field in type.GetFields(BindingFlags.Public | BindingFlags.Static))
+            {
+                if (field.GetValue(null) is not string tag)
+                {
+                    continue;
+                }
+
+                if (field.GetCustomAttribute<MetadataAttribute>() is not MetadataAttribute metadata)
+                {
+                    continue;
+                }
+
+                sector.Scopes.Add(new Scope {
+                    Tag = tag,
+                    Name = field.Name.Replace("_", " "),
+                    Icon = metadata.Icon,
+                    Description = metadata.Description
+                });
+            }
+
+            if (sector.Scopes.Count > 0)
+            {
+                sectors.Add(sector);
+            }
+        }
+
+        return sectors;
     }
 }

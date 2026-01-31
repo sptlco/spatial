@@ -13,7 +13,7 @@ export const ScrollArea = {
    * Contains all the parts of a scroll area.
    */
   Root: createElement<typeof Primitive.Root, Primitive.ScrollAreaProps>((props, ref) => (
-    <Primitive.Root {...props} data-slot="scroll-area" ref={ref} className={clsx("flex", props.className)} />
+    <Primitive.Root {...props} data-slot="scroll-area" ref={ref} className={clsx("flex relative", props.className)} />
   )),
 
   /**
@@ -37,7 +37,17 @@ export const ScrollArea = {
       }
     });
 
-    return <Primitive.Scrollbar {...props} ref={ref} data-slot="scroll-area-scrollbar" className={clsx(classes({ orientation }), props.className)} />;
+    return (
+      <Primitive.Scrollbar
+        {...props}
+        ref={ref}
+        orientation={orientation}
+        data-slot="scroll-area-scrollbar"
+        className={clsx(classes({ orientation }), props.className)}
+      >
+        <ScrollArea.Thumb />
+      </Primitive.Scrollbar>
+    );
   }),
 
   /**
@@ -48,12 +58,7 @@ export const ScrollArea = {
       {...props}
       ref={ref}
       data-slot="scroll-area-thumb"
-      className={clsx(
-        "transition-colors",
-        "rounded-full relative flex-1",
-        "bg-button-secondary group-hover:bg-button-secondary-hover",
-        props.className
-      )}
+      className={clsx("transition-colors", "rounded-full relative flex-1", "bg-button group-hover:bg-button-hover", props.className)}
     />
   )),
 

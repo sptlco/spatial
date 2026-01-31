@@ -6,6 +6,12 @@ import { CompactFooter, LocaleSwitcher } from "@/elements";
 import { useUser } from "@/stores";
 import { Spatial } from "@sptlco/client";
 import { Account } from "@sptlco/data";
+import { clsx } from "clsx";
+import { useLocale, useTranslations } from "next-intl";
+import { usePathname } from "next/navigation";
+import { FormEvent, ReactNode, useEffect, useRef, useState } from "react";
+import { useShallow } from "zustand/shallow";
+
 import {
   Avatar,
   Button,
@@ -20,17 +26,13 @@ import {
   Logo,
   Main,
   ScrollArea,
+  Separator,
   Sheet,
   Span,
   toast,
   Tooltip,
   UL
 } from "@sptlco/design";
-import { clsx } from "clsx";
-import { useLocale, useTranslations } from "next-intl";
-import { usePathname } from "next/navigation";
-import { FormEvent, ReactNode, useEffect, useRef, useState } from "react";
-import { useShallow } from "zustand/shallow";
 
 const BASE_URL = "/platform/management";
 
@@ -96,6 +98,7 @@ export default function Layout(props: { children: ReactNode }) {
   const t = useTranslations();
   const locale = useLocale();
   const path = usePathname().replace(`/${locale}`, "");
+
   const user = useUser(
     useShallow((state) => ({
       loading: state.loading,
@@ -114,7 +117,7 @@ export default function Layout(props: { children: ReactNode }) {
   };
 
   const scroller = useRef<HTMLDivElement>(null);
-  const raf = useRef<number>(null);
+  const frame = useRef<number>(null);
 
   useEffect(() => {
     const el = scroller.current;
@@ -124,17 +127,17 @@ export default function Layout(props: { children: ReactNode }) {
     }
 
     const onScroll = () => {
-      if (raf.current) {
+      if (frame.current) {
         return;
       }
 
-      raf.current = requestAnimationFrame(() => {
-        const scrollTop = el.scrollTop;
-        const padding = Math.max(16, 40 - (scrollTop * 3) / 40);
+      frame.current = requestAnimationFrame(() => {
+        const px = el.scrollTop;
+        const padding = Math.max(16, 40 - (px * 3) / 40);
 
         document.documentElement.style.setProperty("--layout-pad", `${padding}px`);
 
-        raf.current = null;
+        frame.current = null;
       });
     };
 
@@ -143,8 +146,8 @@ export default function Layout(props: { children: ReactNode }) {
     return () => {
       el.removeEventListener("scroll", onScroll);
 
-      if (raf.current) {
-        cancelAnimationFrame(raf.current);
+      if (frame.current) {
+        cancelAnimationFrame(frame.current);
       }
     };
   }, []);
@@ -200,7 +203,7 @@ export default function Layout(props: { children: ReactNode }) {
           <Icon symbol="apps" />
         </Drawer.Trigger>
         <Drawer.Content className="max-h-[80vh]">
-          <ScrollArea.Root className="h-auto overflow-y-auto">
+          <ScrollArea.Root className="h-auto overflow-y-auto ">
             <ScrollArea.Viewport>
               <UL className="grid gap-4 grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
                 {pages.map((page, i) => {
@@ -213,10 +216,10 @@ export default function Layout(props: { children: ReactNode }) {
                         className={clsx(
                           "transition-colors",
                           "flex flex-col gap-1 items-center justify-center w-full h-20",
-                          "rounded-2xl bg-button-secondary text-foreground-primary",
-                          "hover:bg-button-secondary-hover active:bg-button-secondary-active",
+                          "rounded-2xl bg-button text-foreground-primary",
+                          "hover:bg-button-hover active:bg-button-active",
                           "hover:text-foreground-primary active:text-foreground-primary",
-                          { "bg-button-ghost-hover! text-white!": highlight }
+                          { "bg-button-active! text-white!": highlight }
                         )}
                       >
                         <Icon symbol={page.icon} className={highlight ? "animate-fill" : "animate-outline"} />
@@ -265,40 +268,43 @@ export default function Layout(props: { children: ReactNode }) {
           "xl:overflow-y-auto"
         )}
       >
-        <Container className="flex flex-col h-full gap-10">
-          <Link href="/" className="flex items-center justify-center">
-            {<Logo mode="symbol" className="size-10 fill-foreground-primary" />}
-          </Link>
-          <UL className="hidden xl:flex grow flex-col items-center justify-center gap-6">
-            {pages.map((page, i) => {
-              const highlight = active(page.path);
+        <Container className="flex h-full gap-0 xl:gap-10">
+          <Container className="flex flex-col h-full gap-10">
+            <Link href="/" className="flex items-center justify-center">
+              {<Logo mode="symbol" className="size-10 fill-foreground-primary" />}
+            </Link>
+            <UL className="hidden xl:flex grow flex-col items-center justify-center gap-6">
+              {pages.map((page, i) => {
+                const highlight = active(page.path);
 
-              return (
-                <LI key={i}>
-                  <Tooltip.Root>
-                    <Tooltip.Trigger>
-                      <Link
-                        href={page.path}
-                        className={clsx(
-                          "transition-all",
-                          "flex items-center justify-center size-15",
-                          "rounded-full bg-button-ghost text-foreground-primary",
-                          "hover:bg-button-ghost-hover active:bg-button-ghost-active",
-                          "hover:text-foreground-primary active:text-foreground-primary",
-                          { "bg-button-ghost-hover! text-white!": highlight }
-                        )}
-                      >
-                        <Icon symbol={page.icon} className={highlight ? "animate-fill" : "animate-outline"} />
-                      </Link>
-                    </Tooltip.Trigger>
-                    <Tooltip.Content side="right" sideOffset={20}>
-                      {t(page.name)}
-                    </Tooltip.Content>
-                  </Tooltip.Root>
-                </LI>
-              );
-            })}
-          </UL>
+                return (
+                  <LI key={i}>
+                    <Tooltip.Root>
+                      <Tooltip.Trigger>
+                        <Link
+                          href={page.path}
+                          className={clsx(
+                            "transition-all",
+                            "flex items-center justify-center size-15",
+                            "rounded-full bg-button-ghost text-foreground-primary",
+                            "hover:bg-button-ghost-hover active:bg-button-ghost-active",
+                            "hover:text-foreground-primary active:text-foreground-primary",
+                            { "bg-button-ghost-hover! text-white!": highlight }
+                          )}
+                        >
+                          <Icon symbol={page.icon} className={highlight ? "animate-fill" : "animate-outline"} />
+                        </Link>
+                      </Tooltip.Trigger>
+                      <Tooltip.Content side="right" sideOffset={20}>
+                        {t(page.name)}
+                      </Tooltip.Content>
+                    </Tooltip.Root>
+                  </LI>
+                );
+              })}
+            </UL>
+          </Container>
+          <Separator orientation="vertical" className="hidden xl:flex bg-linear-to-b from-transparent to-transparent via-line-subtle h-full w-px" />
         </Container>
       </Container>
       <Container
@@ -311,7 +317,7 @@ export default function Layout(props: { children: ReactNode }) {
         <LocaleSwitcher compact />
         <Sheet.Root>
           <Sheet.Trigger className="cursor-pointer group">
-            {user.loading ? (
+            {user.loading || !user.authenticated() ? (
               <Span className="flex bg-background-surface size-10 rounded-full animate-pulse" />
             ) : (
               <Avatar
@@ -329,9 +335,7 @@ export default function Layout(props: { children: ReactNode }) {
           <Container className="flex flex-col">{props.children}</Container>
           <CompactFooter className="p-10" />
         </ScrollArea.Viewport>
-        <ScrollArea.Scrollbar>
-          <ScrollArea.Thumb />
-        </ScrollArea.Scrollbar>
+        <ScrollArea.Scrollbar />
         <ScrollArea.Corner />
       </ScrollArea.Root>
     </Main>

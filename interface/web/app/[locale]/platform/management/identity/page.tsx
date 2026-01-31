@@ -4,7 +4,7 @@
 
 import { Suspense } from "react";
 import { Tabs } from "./elements";
-import { Permissions } from "./elements/permissions";
+import { Scopes } from "./elements/scopes";
 import { Roles } from "./elements/roles";
 import { Users } from "./elements/users";
 import { Card } from "@sptlco/design";
@@ -21,7 +21,7 @@ export default function Page() {
           <Tabs.List className="px-10">
             <Tabs.Trigger value="users">Users</Tabs.Trigger>
             <Tabs.Trigger value="roles">Roles</Tabs.Trigger>
-            <Tabs.Trigger value="permissions">Permissions</Tabs.Trigger>
+            <Tabs.Trigger value="scopes">Scopes</Tabs.Trigger>
           </Tabs.List>
           <Tabs.Content value="users" className="xl:pr-10">
             <Suspense>
@@ -33,9 +33,9 @@ export default function Page() {
               <Roles />
             </Suspense>
           </Tabs.Content>
-          <Tabs.Content value="permissions" className="xl:pr-10">
+          <Tabs.Content value="scopes" className="xl:pr-10">
             <Suspense>
-              <Permissions />
+              <Scopes />
             </Suspense>
           </Tabs.Content>
         </Tabs.Root>

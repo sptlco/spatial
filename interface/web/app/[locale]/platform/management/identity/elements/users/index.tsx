@@ -67,7 +67,7 @@ export const Users = () => {
     router.replace(`${pathname}?${params.toString()}`, { scroll: false });
   };
 
-  const users = useSWR("platform/identity/users/list", async (_) => {
+  const users = useSWR("platform/management/identity/users/list", async (_) => {
     const response = await Spatial.users.list();
 
     if (response.error) {
@@ -77,7 +77,7 @@ export const Users = () => {
     return response.data;
   });
 
-  const roles = useSWR("platform/identity/users/roles/list", async (_) => {
+  const roles = useSWR("platform/management/identity/users/roles/list", async (_) => {
     const response = await Spatial.roles.list();
 
     if (response.error) {
@@ -107,7 +107,7 @@ export const Users = () => {
               </Table.Cell>
               <Table.Cell>
                 <Container className="flex items-center gap-5 w-full">
-                  <Span className="rounded-full shrink-0 size-12 md:size-16 animate-pulse bg-background-surface" />
+                  <Span className="rounded-full shrink-0 size-12 animate-pulse bg-background-surface" />
                   <Container className="flex flex-col w-full gap-2">
                     <Span className="w-2/3 h-4 rounded-full animate-pulse bg-background-surface" />
                     <Span className="w-4/5 h-4 rounded-full animate-pulse bg-background-surface" />
@@ -220,12 +220,10 @@ export const Users = () => {
             ) : (
               <Dropdown.Root>
                 <Dropdown.Trigger asChild>
-                  <Button intent="ghost" className={clsx("px-5! data-[state=open]:bg-button-ghost-active")}>
+                  <Button intent="ghost" className={clsx("px-5! data-[state=open]:bg-button-ghost-active relative")}>
                     <Span>Filter</Span>
-                    {tags.length > 0 && (
-                      <Span className="bg-blue rounded-full size-5 flex items-center justify-center text-xs font-medium">{tags.length}</Span>
-                    )}
                     <Icon symbol="keyboard_arrow_down" />
+                    {tags.length > 0 && <Span className="size-2 bg-blue rounded-full flex" />}
                   </Button>
                 </Dropdown.Trigger>
                 <Dropdown.Content className="md:max-w-md! pb-4">
@@ -256,31 +254,6 @@ export const Users = () => {
                             </Dropdown.CheckboxItem>
                           );
                         })}
-                    </Container>
-                    <Container className="flex flex-col gap-1">
-                      <Dropdown.Label className="px-4 py-2 text-foreground-tertiary font-bold">Type</Dropdown.Label>
-                      {["Consumer", "Model"].map((type, i) => {
-                        const checked = tags.includes(type);
-
-                        return (
-                          <Dropdown.CheckboxItem
-                            key={i}
-                            className="group flex items-center gap-4"
-                            checked={checked}
-                            onSelect={(e) => e.preventDefault()}
-                            onCheckedChange={(value) => filter(type, value)}
-                          >
-                            <Span className="relative flex items-center justify-center shrink-0 bg-translucent group-data-[state=checked]:bg-blue rounded-md size-5">
-                              <Dropdown.ItemIndicator className="absolute flex items-center justify-center">
-                                <Icon symbol="check" size={16} className="font-medium" />
-                              </Dropdown.ItemIndicator>
-                            </Span>
-                            <Container className="flex items-center gap-3">
-                              <Span className="font-medium">{type}</Span>
-                            </Container>
-                          </Dropdown.CheckboxItem>
-                        );
-                      })}
                     </Container>
                   </Container>
                 </Dropdown.Content>
@@ -353,9 +326,6 @@ const Row = memo(
             </Container>
             {user.account.id === (account?.id ?? "") && (
               <Span className="hidden xl:flex px-4 py-2 bg-background-highlight rounded-xl text-xs font-bold">You</Span>
-            )}
-            {user.account.metadata.type === "model" && (
-              <Span className="hidden xl:flex px-4 py-2 bg-background-highlight rounded-xl text-xs font-bold">Model</Span>
             )}
           </Container>
         </Table.Cell>

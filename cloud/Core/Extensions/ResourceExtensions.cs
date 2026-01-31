@@ -15,9 +15,11 @@ public static class ResourceExtensions
     /// </summary>
     /// <typeparam name="T">The type of <see cref="Resource"/> to store.</typeparam>
     /// <param name="record">The <see cref="Resource"/> to store.</param>
-    public static void Store<T>(this T record) where T : Resource
+    public static T Store<T>(this T record) where T : Resource
     {
         Resource<T>.Store(record);
+
+        return record;
     }
 
     /// <summary>
@@ -25,9 +27,11 @@ public static class ResourceExtensions
     /// </summary>
     /// <typeparam name="T">The type of <see cref="Resource"/> to save.</typeparam>
     /// <param name="record">The <see cref="Resource"/> to save.</param>
-    public static void Save<T>(this T record) where T : Resource
+    public static T Save<T>(this T record) where T : Resource
     {
         Replace(record, r => r.Id == record.Id);
+
+        return record;
     }
 
     /// <summary>
@@ -36,10 +40,11 @@ public static class ResourceExtensions
     /// <typeparam name="T">The type of <see cref="Resource"/> to save.</typeparam>
     /// <param name="record">The <see cref="Resource"/> to update.</param>
     /// <param name="update">An update.</param>
-    public static void Update<T>(this T record, Action<T> update) where T : Resource
+    public static T Update<T>(this T record, Action<T> update) where T : Resource
     {
         update(record);
-        record.Save();
+
+        return record.Save();
     }
 
     /// <summary>

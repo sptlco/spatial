@@ -11,8 +11,8 @@ export class UserController extends Controller {
    * Get the current user.
    * @returns The current user.
    */
-  public me = async () => {
-    return this.get<User>("users/me");
+  public current = async () => {
+    return this.get<User>("users/current");
   };
 
   /**

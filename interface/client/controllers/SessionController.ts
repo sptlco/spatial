@@ -8,14 +8,6 @@ import { Controller } from "..";
  */
 export class SessionController extends Controller {
   /**
-   * Get the current session.
-   * @returns The current session.
-   */
-  public me = async () => {
-    return this.get<Session>("sessions/me");
-  };
-
-  /**
    * Create a new session.
    * @param options Configurable options for the request.
    * @returns An authorization token.
@@ -28,6 +20,6 @@ export class SessionController extends Controller {
    * Destroy the current session.
    */
   public destroy = async () => {
-    this.delete("sessions/me");
+    this.delete("sessions/current");
   };
 }

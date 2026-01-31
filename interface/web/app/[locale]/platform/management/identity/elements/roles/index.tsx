@@ -35,7 +35,7 @@ import {
 export const Roles = () => {
   const [search, setSearch] = useState("");
 
-  const roles = useSWR("platform/identity/roles/list", async (_) => {
+  const roles = useSWR("platform/management/identity/roles/list", async (_) => {
     const response = await Spatial.roles.list();
 
     if (response.error) {
@@ -45,7 +45,7 @@ export const Roles = () => {
     return response.data;
   });
 
-  const permissions = useSWR("platform/identity/identity/roles/permissions/list", async (_) => {
+  const permissions = useSWR("platform/management/identity/roles/permissions/list", async (_) => {
     const response = await Spatial.permissions.list();
 
     if (response.error) {
@@ -66,15 +66,15 @@ export const Roles = () => {
               </Table.Cell>
               <Table.Cell>
                 <Container className="flex items-center gap-5 w-full">
-                  <Span className="rounded-full shrink-0 size-12 md:size-16 animate-pulse bg-background-surface" />
+                  <Span className="rounded-full shrink-0 size-12 animate-pulse bg-background-surface" />
                   <Container className="flex flex-col w-full gap-2">
                     <Span className="w-2/3 h-4 rounded-full animate-pulse bg-background-surface" />
                     <Span className="w-4/5 h-4 rounded-full animate-pulse bg-background-surface" />
                   </Container>
                 </Container>
               </Table.Cell>
-              <Table.Cell>
-                <Span className="w-2/3 h-4 rounded-full bg-background-surface animate-pulse" />
+              <Table.Cell className="hidden xl:table-cell">
+                <Span className="flex mx-auto w-20 h-4 rounded-full bg-background-surface animate-pulse" />
               </Table.Cell>
               <Table.Cell />
             </Table.Row>
@@ -252,7 +252,7 @@ export const Roles = () => {
               <Table.Column className="w-12 xl:w-16">
                 <Checkbox />
               </Table.Column>
-              <Table.Column className="text-left">Role</Table.Column>
+              <Table.Column className="text-left">User ID</Table.Column>
               <Table.Column className="text-center hidden xl:table-cell">Permissions</Table.Column>
               <Table.Column className="w-12 xl:w-16" />
             </Table.Row>

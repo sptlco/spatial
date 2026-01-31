@@ -15,21 +15,25 @@ namespace Spatial.Cloud.API;
 [Path("permissions")]
 public class PermissionController : Controller
 {
+    /// <summary>
+    /// Update permissions.
+    /// </summary>
+    /// <param name="update">A permission update.</param>
     [PATCH]
-    //[Authorize(Scope.Permissions.Update)]
-    public async Task UpdatePermissionsAsync([Body] Difference<PermissionSlim> diff)
+    [Authorize(Scope.Permissions.Update)]
+    public async Task UpdatePermissionsAsync([Body] Difference<PermissionSlim> update)
     {
-        diff.Added.ForEach(p => new Permission { Role = p.Role, Scope = p.Scope }.Store());
-        Resource<Permission>.RemoveMany(a => diff.Removed.Exists(b => b.Role == a.Role && b.Scope == a.Scope));
+        update.Added.ForEach(p => new Permission { Role = p.Role, Scope = p.Scope }.Store());
+        Resource<Permission>.RemoveMany(a => update.Removed.Exists(b => b.Role == a.Role && b.Scope == a.Scope));
     }
 
     /// <summary>
-    /// List all permissions.
+    /// Get a list of permissions.
     /// </summary>
     /// <returns>A list of permissions.</returns>
     [GET]
     [Path("list")]
-    //[Authorize(Scope.Permissions.List)]
+    [Authorize(Scope.Permissions.List)]
     public async Task<List<Permission>> ListPermissionsAsync()
     {
         return Resource<Permission>.List();

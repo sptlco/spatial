@@ -14,7 +14,7 @@ export default function Page() {
     <Card.Root>
       <Card.Header className="px-10">
         <Card.Title className="text-3xl font-extrabold">Identity</Card.Title>
-        <Card.Description>Manage users, roles, and permissions.</Card.Description>
+        <Card.Description>Manage users, roles, and scopes.</Card.Description>
       </Card.Header>
       <Card.Content>
         <Tabs.Root defaultValue="users">

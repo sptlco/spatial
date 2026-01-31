@@ -1,7 +1,5 @@
 // Copyright © Spatial Corporation. All rights reserved.
 
-using System.ComponentModel.DataAnnotations;
-
 namespace Spatial.Cloud.Data.Scopes;
 
 /// <summary>
@@ -40,9 +38,15 @@ public partial class Scope
     public class Permissions
     {
         /// <summary>
+        /// Update permissions.
+        /// </summary>
+        [Metadata("Update permissions.")]
+        public const string Update = "permissions.update";
+
+        /// <summary>
         /// Get a list of permissions.
         /// </summary>
-        [Metadata("", "Get a list of permissions.")]
+        [Metadata("Get a list of permissions.")]
         public const string List = "permissions.list";
     }
 
@@ -66,7 +70,7 @@ public partial class Scope
         /// <summary>
         /// Get a list of roles.
         /// </summary>
-        [Metadata("", "Get a list of roles.")]
+        [Metadata("Get a list of roles.")]
         public const string List = "roles.list";
 
         /// <summary>
@@ -81,7 +85,7 @@ public partial class Scope
         /// <summary>
         /// Get a list of scopes.
         /// </summary>
-        [Metadata("", "Get a list of scopes.")]
+        [Metadata("Get a list of scopes.")]
         public const string List = "scopes.list";
     }
 
@@ -93,7 +97,7 @@ public partial class Scope
         /// <summary>
         /// Get a list of users.
         /// </summary>
-        [Metadata("", "Get a list of users.")]
+        [Metadata("Get a list of users.")]
         public const string List = "users.list";
     }
 }

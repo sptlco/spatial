@@ -17,7 +17,7 @@ public class ScopeController : Controller
     /// <returns>A list of scopes.</returns>
     [GET]
     [Path("list")]
-    //[Authorize(Scope.Scopes.List)]
+    [Authorize(Scope.Scopes.List)]
     public async Task<List<Sector>> ListScopesAsync()
     {
         return Server.Current.Scopes;

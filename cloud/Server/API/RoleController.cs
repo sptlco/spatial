@@ -20,7 +20,7 @@ public class RoleController : Controller
     /// <param name="options">Configurable options for the <see cref="Role"/>.</param>
     /// <returns>A <see cref="Role"/>.</returns>
     [POST]
-    //[Authorize(Scope.Roles.Create)]
+    [Authorize(Scope.Roles.Create)]
     public async Task<Role> CreateRoleAsync([Body] CreateRoleOptions options)
     {
         var role = new Role {
@@ -41,7 +41,7 @@ public class RoleController : Controller
     /// <param name="role">The <see cref="Role"/> to update.</param>
     /// <returns>The updated <see cref="Role"/>.</returns>
     [PATCH]
-    //[Authorize(Scope.Roles.Update)]
+    [Authorize(Scope.Roles.Update)]
     public async Task<Role> UpdateRoleAsync([Body] Role role)
     {
         role.Save();
@@ -55,7 +55,7 @@ public class RoleController : Controller
     /// <returns>A list of roles.</returns>
     [GET]
     [Path("list")]
-    //[Authorize(Scope.Roles.List)]
+    [Authorize(Scope.Roles.List)]
     public async Task<List<Role>> ListRolesAsync()
     {
         return Resource<Role>.List();
@@ -67,7 +67,7 @@ public class RoleController : Controller
     /// <param name="id">The role to delete.</param>
     [DELETE]
     [Path("{id}")]
-    //[Authorize(Scope.Roles.Delete)]
+    [Authorize(Scope.Roles.Delete)]
     public async Task DeleteRoleAsync(string id)
     {
         Resource<Role>.RemoveOne(role => role.Id == id);

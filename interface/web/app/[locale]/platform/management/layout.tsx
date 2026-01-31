@@ -132,14 +132,15 @@ export default function Layout(props: { children: ReactNode }) {
       }
 
       frame.current = requestAnimationFrame(() => {
-        const px = el.scrollTop;
-        const padding = Math.max(16, 40 - (px * 3) / 40);
+        const { scrollTop } = el;
 
-        document.documentElement.style.setProperty("--layout-pad", `${padding}px`);
+        document.documentElement.style.setProperty("--layout-pad", `${Math.max(16, 40 - (scrollTop * 3) / 40)}px`);
 
         frame.current = null;
       });
     };
+
+    onScroll();
 
     el.addEventListener("scroll", onScroll, { passive: true });
 
@@ -271,7 +272,7 @@ export default function Layout(props: { children: ReactNode }) {
         <Container className="flex h-full gap-0 xl:gap-10">
           <Container className="flex flex-col h-full gap-10">
             <Link href="/" className="flex items-center justify-center">
-              {<Logo mode="symbol" className="size-10 fill-foreground-primary" />}
+              {<Logo mode="symbol" className="size-8 xl:size-10 fill-foreground-primary" />}
             </Link>
             <UL className="hidden xl:flex grow flex-col items-center justify-center gap-6">
               {pages.map((page, i) => {
@@ -323,7 +324,7 @@ export default function Layout(props: { children: ReactNode }) {
               <Avatar
                 src={user.account.avatar}
                 alt={user.account.name}
-                className="size-10 transition-all outline-transparent outline-0 outline-offset-2 group-data-[state=open]:outline-3 group-data-[state=open]:outline-background-highlight"
+                className="size-8 xl:size-10 transition-all outline-transparent outline-0 outline-offset-2 group-data-[state=open]:outline-3 group-data-[state=open]:outline-background-highlight"
               />
             )}
           </Sheet.Trigger>
@@ -332,7 +333,7 @@ export default function Layout(props: { children: ReactNode }) {
       </Container>
       <ScrollArea.Root>
         <ScrollArea.Viewport ref={scroller} className={clsx("row-start-2 col-start-1", "xl:col-start-2")}>
-          <Container className="flex flex-col">{props.children}</Container>
+          <Container className="flex flex-col relative">{props.children}</Container>
           <CompactFooter className="p-10" />
         </ScrollArea.Viewport>
         <ScrollArea.Scrollbar />

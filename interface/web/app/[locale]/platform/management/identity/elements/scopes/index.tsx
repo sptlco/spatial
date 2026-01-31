@@ -5,7 +5,7 @@
 import { Spatial } from "@sptlco/client";
 import useSWR from "swr";
 
-import { Card, Checkbox, Container, Monogram, ScrollArea, Span, Spinner, Table, toast } from "@sptlco/design";
+import { Card, Checkbox, Container, Icon, Monogram, ScrollArea, Span, Spinner, Table, toast, Tooltip } from "@sptlco/design";
 import { useEffect, useMemo, useState } from "react";
 
 /**
@@ -115,7 +115,7 @@ export const Scopes = () => {
 
           return {
             message: "Permissions updated",
-            description: "Your updated selections were just automatically pushed to the server."
+            description: "Your changes are being enforced."
           };
         }
       });
@@ -194,11 +194,31 @@ export const Scopes = () => {
                     <Table.Root className="border-separate border-spacing-y-10">
                       <Table.Header>
                         <Table.Row>
-                          <Table.Column className="xl:min-w-64 pr-10 text-left text-xl font-light">{sector.name}</Table.Column>
+                          <Table.Column className="xl:min-w-64 pr-10 text-left">
+                            <Span className="flex items-center text-xl font-light gap-3">
+                              <Span>{sector.name}</Span>
+                              <Span className="bg-translucent size-10 font-normal rounded-full text-sm inline-flex items-center justify-center">
+                                {sector.scopes.length}
+                              </Span>
+                            </Span>
+                          </Table.Column>
                           {sector.scopes.map((scope) => (
-                            <Table.Column key={scope.tag} className="min-w-32 xl:min-w-64 px-10 text-center" title={scope.description}>
+                            <Table.Column key={scope.tag} className="min-w-32 xl:min-w-64 px-10 text-center">
                               <Span className="flex items-center justify-center gap-4">
                                 <Span>{scope.name}</Span>
+                                {scope.description && (
+                                  <Tooltip.Root>
+                                    <Tooltip.Trigger asChild>
+                                      <Icon symbol="info" className="text-foreground-secondary font-light cursor-pointer" />
+                                    </Tooltip.Trigger>
+                                    <Tooltip.Content side="bottom" sideOffset={16} align="center" className="rounded-xl max-w-64">
+                                      <Span className="flex flex-col items-center gap-4 p-4">
+                                        {scope.icon && <Icon symbol={scope.icon} fill className="text-foreground-tertiary" />}
+                                        <Span>{scope.description}</Span>
+                                      </Span>
+                                    </Tooltip.Content>
+                                  </Tooltip.Root>
+                                )}
                               </Span>
                             </Table.Column>
                           ))}

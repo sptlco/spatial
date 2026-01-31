@@ -42,7 +42,7 @@ public class UserController : Controller
     /// <returns>A list of users.</returns>
     [GET]
     [Path("list")]
-    //[Authorize(Scope.Users.List)]
+    [Authorize(Scope.Users.List)]
     public async Task<List<User>> ListUsersAsync()
     {
         var users = Resource<Account>

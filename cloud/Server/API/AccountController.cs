@@ -20,7 +20,7 @@ public class AccountController : Controller
     /// <param name="options">Configurable options for the <see cref="Account"/>.</param>
     /// <returns>An <see cref="Account"/>.</returns>
     [POST]
-    //[Authorize(Scope.Accounts.Create)]
+    [Authorize(Scope.Accounts.Create)]
     public async Task<Account> CreateAccountAsync([Body] CreateAccountOptions options)
     {
         if (Resource<Account>.FirstOrDefault(a => a.Email == options.Email) is Account account)
@@ -43,7 +43,7 @@ public class AccountController : Controller
     /// <param name="account">The account to update.</param>
     /// <returns>The updated account.</returns>
     [PATCH]
-    //[Authorize(Scope.Accounts.Update)]
+    [Authorize(Scope.Accounts.Update)]
     public async Task<Account> UpdateAccountAsync([Body] Account account)
     {
         return account.Save();
@@ -55,7 +55,7 @@ public class AccountController : Controller
     /// <param name="account">The account to delete.</param>
     [DELETE]
     [Path("{account}")]
-    //[Authorize(Scope.Accounts.Delete)]
+    [Authorize(Scope.Accounts.Delete)]
     public async Task DeleteAccountAsync(string account)
     {
         Resource<Account>.RemoveOne(a => a.Id == account);

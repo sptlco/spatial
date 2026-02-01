@@ -194,7 +194,7 @@ export const Scopes = () => {
                     <Table.Root className="border-separate border-spacing-y-10">
                       <Table.Header>
                         <Table.Row>
-                          <Table.Column className="xl:min-w-64 pr-10 text-left">
+                          <Table.Column className="xl:min-w-64 pr-10 xl:pb-10 text-left">
                             <Span className="flex items-center text-xl font-light gap-3">
                               <Span>{sector.name}</Span>
                               <Span className="bg-translucent size-10 font-normal rounded-full text-sm inline-flex items-center justify-center">
@@ -203,13 +203,13 @@ export const Scopes = () => {
                             </Span>
                           </Table.Column>
                           {sector.scopes.map((scope) => (
-                            <Table.Column key={scope.tag} className="min-w-32 xl:min-w-64 px-10 text-center">
+                            <Table.Column key={scope.tag} className="min-w-32 xl:min-w-64 px-10 xl:pb-10 text-center">
                               <Span className="flex items-center justify-center gap-4">
                                 <Span>{scope.name}</Span>
                                 {scope.description && (
                                   <Tooltip.Root>
                                     <Tooltip.Trigger asChild>
-                                      <Icon symbol="info" className="text-foreground-secondary font-light cursor-pointer" />
+                                      <Icon symbol="info" className="text-hint cursor-pointer font-light" />
                                     </Tooltip.Trigger>
                                     <Tooltip.Content side="bottom" sideOffset={16} align="center" className="rounded-xl max-w-64">
                                       <Span className="flex flex-col items-center gap-4 p-4">
@@ -227,7 +227,7 @@ export const Scopes = () => {
                       <Table.Body>
                         {roles.data!.map((role) => (
                           <Table.Row key={role.id}>
-                            <Table.Cell className="xl:pl-10 pr-10">
+                            <Table.Cell className="pr-10">
                               <Container className="flex items-center gap-5">
                                 <Monogram text={role.name} className="shrink-0 size-12" style={{ color: role.color }} />
                                 <Container className="flex flex-col truncate">

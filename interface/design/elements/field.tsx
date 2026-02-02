@@ -5,7 +5,8 @@
 import { clsx } from "clsx";
 import { OTPInput, OTPInputContext, OTPInputProps } from "input-otp";
 import { ReactNode, useContext, useEffect, useRef, useState } from "react";
-import { Button, Container, createElement, Icon, Input, Label, Paragraph, Span } from "..";
+import { HexColorPicker, HexColorInput } from "react-colorful";
+import { Button, Container, createElement, Dropdown, Icon, Input, Label, Paragraph, Span } from "..";
 
 /**
  * Common configurable options for a field.
@@ -31,11 +32,6 @@ export interface SharedFieldProps {
    */
   containerClassName?: string;
 }
-
-/**
- * Configurable options for a specific field type.
- */
-export type FieldTypeProps = TextFieldProps | OTPFieldProps | MetaFieldProps;
 
 /**
  * Configurable options for a text field.
@@ -93,6 +89,32 @@ export type MetaFieldProps = {
 };
 
 /**
+ * Configurable options for a color field.
+ */
+export type ColorFieldProps = {
+  /**
+   * The field's data type.
+   */
+  type: "color";
+
+  /**
+   * The field's value.
+   */
+  value?: string;
+
+  /**
+   * An optional change event handler.
+   * @param value The field's new value.
+   */
+  onValueChange?: (value: string) => void;
+};
+
+/**
+ * Configurable options for a specific field type.
+ */
+export type FieldTypeProps = TextFieldProps | OTPFieldProps | MetaFieldProps | ColorFieldProps;
+
+/**
  * Configurable options for a field.
  */
 export type FieldProps = SharedFieldProps & FieldTypeProps;
@@ -102,26 +124,19 @@ export type FieldProps = SharedFieldProps & FieldTypeProps;
  */
 export const Field = createElement<"input", FieldProps>(({ inset = true, ...props }, ref) => {
   const render = () => {
+    const defaultClasses = clsx(
+      "disabled:opacity-50",
+      "w-full px-4 py-2 bg-input placeholder-hint rounded-lg transition-all",
+      "outline-2 outline-offset-3 outline-transparent focus:outline-line-input-focus",
+      props.className
+    );
+
     switch (props.type) {
       case "text":
       case "email":
       case "password":
-        return (
-          <Input
-            {...props}
-            ref={ref}
-            type={props.type}
-            placeholder={props.placeholder}
-            autoComplete="off"
-            className={clsx(
-              "disabled:opacity-50",
-              "w-full px-4 py-2 bg-input placeholder-hint rounded-lg transition-all",
-              "outline-2 outline-offset-3 outline-transparent focus:outline-line-input-focus",
-              props.className
-            )}
-          />
-        );
-      case "otp":
+        return <Input {...props} ref={ref} type={props.type} placeholder={props.placeholder} autoComplete="off" className={defaultClasses} />;
+      case "otp": {
         const { onValueChange, ...rest } = props;
 
         return (
@@ -132,8 +147,28 @@ export const Field = createElement<"input", FieldProps>(({ inset = true, ...prop
             data-slot="input-otp"
           />
         );
+      }
+      case "color": {
+        const { onValueChange, ...rest } = props;
+        const [open, setOpen] = useState(false);
+
+        return (
+          <Container className="relative w-full flex items-center">
+            <HexColorInput {...rest} type="text" className={clsx(defaultClasses, "pr-10!")} color={rest.value} prefixed onChange={onValueChange} />
+            <Dropdown.Root open={open} onOpenChange={setOpen}>
+              <Dropdown.Trigger className="absolute right-4 flex size-4 items-center justify-center cursor-pointer">
+                <Span className="size-full rounded-sm" style={{ backgroundColor: rest.value }} />
+              </Dropdown.Trigger>
+              <Dropdown.Content className="bg-transparent! shadow-none! z-80! w-fit!">
+                <HexColorPicker color={rest.value} onChange={onValueChange} />
+              </Dropdown.Content>
+            </Dropdown.Root>
+          </Container>
+        );
+      }
       case "meta":
         const [rows, setRows] = useState<Row[]>([]);
+
         const history = useRef<Metadata | undefined>(props.metadata);
 
         useEffect(() => {

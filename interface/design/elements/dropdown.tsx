@@ -31,7 +31,7 @@ export const Dropdown = {
    * The component that pops out when the dropdown menu is open.
    */
   Content: createElement<typeof Primitive.Content, Primitive.DropdownMenuContentProps>((props, ref) => (
-    <Primitive.Portal>
+    <Dropdown.Portal>
       <Primitive.Content
         {...props}
         ref={ref}
@@ -39,14 +39,13 @@ export const Dropdown = {
         collisionPadding={40}
         avoidCollisions
         className={clsx(
-          "z-50",
-          "flex flex-col gap-3.5",
-          "bg-background-surface text-sm shadow-lg rounded-xl p-3 w-fit md:w-screen md:max-w-3xs",
+          "flex flex-col gap-3 p-3",
+          "bg-background-surface text-sm shadow-lg rounded-xl w-fit md:w-screen md:max-w-3xs",
           "data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2",
           props.className
         )}
       />
-    </Primitive.Portal>
+    </Dropdown.Portal>
   )),
 
   /**

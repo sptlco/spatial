@@ -6,7 +6,7 @@ import { Spatial } from "@sptlco/client";
 import { Role } from "@sptlco/data";
 import { FormEvent, useState } from "react";
 
-import { Button, Container, createElement, Field, Form, Sheet, Span, toast } from "@sptlco/design";
+import { Button, Container, createElement, Field, Form, Sheet, toast } from "@sptlco/design";
 
 /**
  * An element that allows for the editing of a role.
@@ -23,7 +23,7 @@ export const Editor = createElement<typeof Sheet.Content, { data: Role; onUpdate
 
       toast.promise(Spatial.roles.update(update), {
         loading: "Updating role",
-        description: "We are updating the role.",
+        description: `We are updating ${role.name}.`,
         success: (response) => {
           setUpdating(false);
 
@@ -48,7 +48,7 @@ export const Editor = createElement<typeof Sheet.Content, { data: Role; onUpdate
     };
 
     return (
-      <Sheet.Content {...props} ref={ref} title="Edit user" description="Update a user's account details." closeButton>
+      <Sheet.Content {...props} ref={ref} title={role.name} description="Edit role display information." closeButton>
         <Form className="flex flex-col w-full sm:w-screen max-w-sm gap-10" onSubmit={edit}>
           <Field
             type="text"
@@ -70,7 +70,7 @@ export const Editor = createElement<typeof Sheet.Content, { data: Role; onUpdate
             type="text"
             id="description"
             name="description"
-            label="Email address"
+            label="Description"
             value={update.description || ""}
             disabled={updating}
             inset={false}
@@ -82,20 +82,15 @@ export const Editor = createElement<typeof Sheet.Content, { data: Role; onUpdate
             }
           />
           <Field
-            type="text"
+            type="color"
             id="color"
             name="color"
-            label="Color (optional)"
+            label="Color"
             value={update.color || ""}
             placeholder="A color code"
             disabled={updating}
             inset={false}
-            onChange={(e) =>
-              setUpdate({
-                ...update,
-                color: e.target.value
-              })
-            }
+            onValueChange={(color) => setUpdate({ ...update, color })}
           />
           <Field
             type="meta"
@@ -117,7 +112,9 @@ export const Editor = createElement<typeof Sheet.Content, { data: Role; onUpdate
               Update
             </Button>
             <Sheet.Close asChild>
-              <Button intent="ghost">Cancel</Button>
+              <Button intent="ghost" onClick={() => setUpdate(role)}>
+                Cancel
+              </Button>
             </Sheet.Close>
           </Container>
         </Form>

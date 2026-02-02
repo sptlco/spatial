@@ -14,7 +14,7 @@ import { Button, Container, createElement, Field, Form, Sheet, Spinner, toast } 
 export const Creator = createElement<typeof Sheet.Content, { onCreate?: (role: Role) => void }>(({ onCreate, ...props }, ref) => {
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
-  const [color, setColor] = useState("");
+  const [color, setColor] = useState("#0364ff");
   const [metadata, setMetadata] = useState<Record<string, string>>();
 
   const [creating, setCreating] = useState(false);
@@ -76,13 +76,13 @@ export const Creator = createElement<typeof Sheet.Content, { onCreate?: (role: R
           inset={false}
         />
         <Field
-          type="text"
+          type="color"
           id="color"
           name="color"
-          label="Color (optional)"
+          label="Color"
           value={color || ""}
           placeholder="A color code"
-          onChange={(e) => setColor(e.target.value)}
+          onValueChange={setColor}
           disabled={creating}
           inset={false}
         />

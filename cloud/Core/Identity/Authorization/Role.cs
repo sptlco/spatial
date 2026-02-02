@@ -23,5 +23,5 @@ public class Role : Resource
     /// <summary>
     /// The color associated with the role.
     /// </summary>
-    public string? Color { get; set; }
+    public string Color { get; set; }
 }

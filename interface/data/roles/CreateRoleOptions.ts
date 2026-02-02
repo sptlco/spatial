@@ -19,5 +19,5 @@ export type CreateRoleOptions = CreateResourceOptions & {
   /**
    * A color associated with the role.
    */
-  color?: string;
+  color: string;
 };

@@ -16,5 +16,5 @@ export type Role = Resource<{
   /**
    * The color associated with the role.
    */
-  color?: string;
+  color: string;
 }>;

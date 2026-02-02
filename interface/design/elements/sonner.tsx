@@ -12,16 +12,16 @@ export const Toaster = createElement<typeof Primitive, ToasterProps>((props, ref
     ref={ref}
     position="top-center"
     icons={{
-      info: <Icon symbol="info" className="font-medium" fill />,
-      error: <Icon symbol="error" className="font-medium" fill />,
+      info: <Icon symbol="info" className="font-medium" />,
+      error: <Icon symbol="emergency_home" className="font-medium text-red" />,
       loading: <Spinner className="size-4 text-foreground-tertiary" />,
-      success: <Icon symbol="check" className="font-medium" />,
-      warning: <Icon symbol="warning" className="font-medium" fill />
+      success: <Icon symbol="check" className="font-medium text-green" />,
+      warning: <Icon symbol="warning" className="font-medium text-yellow" />
     }}
     toastOptions={{
       classNames: {
         toast: "bg-background-surface! border-none! rounded-xl! gap-4! px-5! pointer-events-auto!",
-        icon: "size-6! text-foreground-primary!",
+        icon: "size-6! ml-0.5! text-foreground-primary!",
         content: "mr-auto!",
         title: "text-foreground-primary! text-xs! font-bold!",
         description: "text-foreground-secondary! text-xs!",

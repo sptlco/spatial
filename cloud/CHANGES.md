@@ -1,5 +1,14 @@
 # Changelog
 
+## [1.23.0](https://github.com/sptlco/spatial/compare/spatial-cloud-1.22.0...spatial-cloud-1.23.0) (2026-02-02)
+
+
+### Features
+
+* Added scopes and permissions ([#137](https://github.com/sptlco/spatial/issues/137)) ([6e9fb64](https://github.com/sptlco/spatial/commit/6e9fb6447079711ed4e9e6b0e60f3950a9099cc0))
+* Finalized scopes ([#137](https://github.com/sptlco/spatial/issues/137)) ([db2716b](https://github.com/sptlco/spatial/commit/db2716b405f862e945257992d511ab633264188d))
+* New minimal theme ([#137](https://github.com/sptlco/spatial/issues/137)) ([057f192](https://github.com/sptlco/spatial/commit/057f1926adc1d5d1996e059656198bac2243881b))
+
 ## [1.22.0](https://github.com/sptlco/spatial/compare/spatial-cloud-1.21.0...spatial-cloud-1.22.0) (2026-01-27)
 
 

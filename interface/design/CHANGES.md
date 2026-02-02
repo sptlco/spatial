@@ -1,5 +1,14 @@
 # Changelog
 
+## [1.12.0](https://github.com/sptlco/spatial/compare/spatial-interface-design-1.11.0...spatial-interface-design-1.12.0) (2026-02-02)
+
+
+### Features
+
+* Added scopes and permissions ([#137](https://github.com/sptlco/spatial/issues/137)) ([6e9fb64](https://github.com/sptlco/spatial/commit/6e9fb6447079711ed4e9e6b0e60f3950a9099cc0))
+* New minimal theme ([#137](https://github.com/sptlco/spatial/issues/137)) ([057f192](https://github.com/sptlco/spatial/commit/057f1926adc1d5d1996e059656198bac2243881b))
+* Shortened labels ([#137](https://github.com/sptlco/spatial/issues/137)) ([59fa91f](https://github.com/sptlco/spatial/commit/59fa91f229da4ba088b939a7eb575b62e33ad859))
+
 ## [1.11.0](https://github.com/sptlco/spatial/compare/spatial-interface-design-1.10.0...spatial-interface-design-1.11.0) (2026-01-27)
 
 

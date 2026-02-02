@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.19.1](https://github.com/sptlco/spatial/compare/spatial-interface-web-1.19.0...spatial-interface-web-1.19.1) (2026-02-02)
+
+
+### Bug Fixes
+
+* Hid mobile scope descriptions ([#149](https://github.com/sptlco/spatial/issues/149)) ([8332269](https://github.com/sptlco/spatial/commit/83322690d26eea2722596fba70e0d012814ca1d6))
+
 ## [1.19.0](https://github.com/sptlco/spatial/compare/spatial-interface-web-1.18.0...spatial-interface-web-1.19.0) (2026-02-02)
 
 

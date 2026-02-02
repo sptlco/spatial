@@ -143,7 +143,7 @@ public class Application
 
                 if (application.Configuration.TickRate > 0)
                 {
-                    INFO("Application running at {TickRate} ticks/s.", application.Configuration.TickRate);
+                    INFO("Application running at {TickRate} tps.", application.Configuration.TickRate);
 
                     Ticker.Run(application.TryTick, 1000.0D / application.Configuration.TickRate, cancellationToken);
                 }

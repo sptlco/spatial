@@ -404,6 +404,7 @@ const Row = memo(
                             }
 
                             return {
+                              type: "error",
                               message: "Something went wrong",
                               description: "An error occurred while deleting the user."
                             };

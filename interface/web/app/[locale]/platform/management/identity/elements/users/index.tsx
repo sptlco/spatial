@@ -231,7 +231,7 @@ export const Users = () => {
                     <Container className="flex flex-col gap-1">
                       <Dropdown.Label className="px-4 py-2 text-foreground-tertiary font-bold">Role</Dropdown.Label>
                       {Object.values(roles.data)
-                        .sort((a, b) => b.created - a.created)
+                        .sort((a, b) => (a.name < b.name ? -1 : 1))
                         .map((role, i) => {
                           const checked = tags.includes(role.name);
 
@@ -337,16 +337,18 @@ const Row = memo(
         <Table.Cell className="hidden xl:table-cell">
           <UL className="flex flex-wrap gap-4">
             {!roles.isLoading &&
-              user.principal.roles.map((role: string, i: number) => (
-                <LI
-                  key={i}
-                  className="inline-flex w-fit items-center justify-center gap-3 "
-                  style={{ color: Object.values(roles.data!).find((r) => r.name == role)?.color ?? "currentColor" }}
-                >
-                  <Span className="size-2 flex rounded-full bg-current" />
-                  <Span className="text-sm text-foreground-primary font-medium">{role}</Span>
-                </LI>
-              ))}
+              user.principal.roles
+                .sort((a: string, b: string) => (a < b ? -1 : 1))
+                .map((role: string, i: number) => (
+                  <LI
+                    key={i}
+                    className="inline-flex w-fit items-center justify-center gap-3 "
+                    style={{ color: Object.values(roles.data!).find((r) => r.name == role)?.color ?? "currentColor" }}
+                  >
+                    <Span className="size-2 flex rounded-full bg-current" />
+                    <Span className="text-sm text-foreground-primary font-medium">{role}</Span>
+                  </LI>
+                ))}
           </UL>
         </Table.Cell>
         <Table.Cell className="hidden xl:table-cell">

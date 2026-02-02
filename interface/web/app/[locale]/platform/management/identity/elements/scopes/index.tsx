@@ -225,28 +225,30 @@ export const Scopes = () => {
                         </Table.Row>
                       </Table.Header>
                       <Table.Body>
-                        {roles.data!.map((role) => (
-                          <Table.Row key={role.id}>
-                            <Table.Cell className="pr-10">
-                              <Container className="flex items-center gap-5">
-                                <Monogram text={role.name} className="shrink-0 size-12" style={{ color: role.color }} />
-                                <Container className="flex flex-col truncate">
-                                  <Span className="font-semibold truncate">{role.name}</Span>
-                                </Container>
-                              </Container>
-                            </Table.Cell>
-                            {sector.scopes.map((scope) => (
-                              <Table.Cell key={scope.tag} className="text-center">
-                                <Container className="flex items-center justify-center">
-                                  <Checkbox
-                                    checked={can(role.id, scope.tag)}
-                                    onCheckedChange={(checked) => toggle(role.id, scope.tag, Boolean(checked))}
-                                  />
+                        {roles
+                          .data!.sort((a, b) => (a.name < b.name ? -1 : 1))
+                          .map((role) => (
+                            <Table.Row key={role.id}>
+                              <Table.Cell className="pr-10">
+                                <Container className="flex items-center gap-5">
+                                  <Monogram text={role.name} className="shrink-0 size-12" style={{ color: role.color }} />
+                                  <Container className="flex flex-col truncate">
+                                    <Span className="font-semibold truncate">{role.name}</Span>
+                                  </Container>
                                 </Container>
                               </Table.Cell>
-                            ))}
-                          </Table.Row>
-                        ))}
+                              {sector.scopes.map((scope) => (
+                                <Table.Cell key={scope.tag} className="text-center">
+                                  <Container className="flex items-center justify-center">
+                                    <Checkbox
+                                      checked={can(role.id, scope.tag)}
+                                      onCheckedChange={(checked) => toggle(role.id, scope.tag, Boolean(checked))}
+                                    />
+                                  </Container>
+                                </Table.Cell>
+                              ))}
+                            </Table.Row>
+                          ))}
                       </Table.Body>
                     </Table.Root>
                   </ScrollArea.Viewport>

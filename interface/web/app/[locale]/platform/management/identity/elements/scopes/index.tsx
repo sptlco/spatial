@@ -209,7 +209,7 @@ export const Scopes = () => {
                                 {scope.description && (
                                   <Tooltip.Root>
                                     <Tooltip.Trigger asChild>
-                                      <Icon symbol="info" className="text-hint cursor-pointer font-light" />
+                                      <Icon symbol="info" className="hidden xl:flex text-hint cursor-pointer font-light" />
                                     </Tooltip.Trigger>
                                     <Tooltip.Content side="bottom" sideOffset={16} align="center" className="rounded-xl max-w-64">
                                       <Span className="flex flex-col items-center gap-4 p-4">

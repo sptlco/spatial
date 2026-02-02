@@ -93,13 +93,18 @@ export const Roles = () => {
                 <Checkbox />
               </Table.Cell>
               <Table.Cell>
-                <Container className="flex items-center gap-5">
-                  <Monogram text={role.name} className="shrink-0 size-12" style={{ color: role.color }} />
-                  <Container className="flex flex-col truncate">
-                    <Span className="font-semibold truncate">{role.name}</Span>
-                    {role.description && <Span className="text-sm text-foreground-secondary truncate">{role.description}</Span>}
-                  </Container>
-                </Container>
+                <Sheet.Root>
+                  <Sheet.Trigger asChild>
+                    <Container className="cursor-pointer flex w-fit items-center gap-5">
+                      <Monogram text={role.name} className="shrink-0 size-12" style={{ color: role.color }} />
+                      <Container className="flex flex-col truncate">
+                        <Span className="font-semibold truncate">{role.name}</Span>
+                        {role.description && <Span className="text-sm text-foreground-secondary truncate">{role.description}</Span>}
+                      </Container>
+                    </Container>
+                  </Sheet.Trigger>
+                  <Editor data={role} onUpdate={(_) => roles.mutate()} />
+                </Sheet.Root>
               </Table.Cell>
               <Table.Cell className="hidden xl:table-cell text-center">
                 {permissions.isLoading || !permissions.data ? (

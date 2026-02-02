@@ -318,16 +318,21 @@ const Row = memo(
           <Checkbox />
         </Table.Cell>
         <Table.Cell>
-          <Container className="flex items-center gap-5">
-            <Avatar src={user.account.avatar} alt={user.account.name} className="shrink-0 size-12" />
-            <Container className="flex flex-col truncate">
-              <Span className="font-semibold truncate">{user.account.name}</Span>
-              <Span className="text-foreground-secondary truncate">{user.account.email}</Span>
-            </Container>
-            {user.account.id === (account?.id ?? "") && (
-              <Span className="hidden xl:flex px-4 py-2 bg-background-highlight rounded-xl text-xs font-bold">You</Span>
-            )}
-          </Container>
+          <Sheet.Root>
+            <Sheet.Trigger asChild>
+              <Container className="cursor-pointer flex w-fit items-center gap-5">
+                <Avatar src={user.account.avatar} alt={user.account.name} className="shrink-0 size-12" />
+                <Container className="flex flex-col truncate">
+                  <Span className="font-semibold truncate">{user.account.name}</Span>
+                  <Span className="text-foreground-secondary truncate">{user.account.email}</Span>
+                </Container>
+                {user.account.id === (account?.id ?? "") && (
+                  <Span className="hidden xl:flex px-4 py-2 bg-background-highlight rounded-xl text-xs font-bold">You</Span>
+                )}
+              </Container>
+            </Sheet.Trigger>
+            <Editor user={user} onUpdate={(_) => users.mutate()} />
+          </Sheet.Root>
         </Table.Cell>
         <Table.Cell className="hidden xl:table-cell">
           <UL className="flex flex-wrap gap-4">

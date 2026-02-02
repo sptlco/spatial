@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.16.0](https://github.com/sptlco/spatial/compare/spatial-1.15.0...spatial-1.16.0) (2026-02-02)
+
+
+### Features
+
+* Add indent ([#137](https://github.com/sptlco/spatial/issues/137)) ([09476dc](https://github.com/sptlco/spatial/commit/09476dcd89c99e75e43776fdec5cc5dd20316faf))
+* Added scopes and permissions ([#137](https://github.com/sptlco/spatial/issues/137)) ([6e9fb64](https://github.com/sptlco/spatial/commit/6e9fb6447079711ed4e9e6b0e60f3950a9099cc0))
+* Finalized scopes ([#137](https://github.com/sptlco/spatial/issues/137)) ([db2716b](https://github.com/sptlco/spatial/commit/db2716b405f862e945257992d511ab633264188d))
+* New minimal theme ([#137](https://github.com/sptlco/spatial/issues/137)) ([057f192](https://github.com/sptlco/spatial/commit/057f1926adc1d5d1996e059656198bac2243881b))
+* Removed indentation ([#137](https://github.com/sptlco/spatial/issues/137)) ([1896a6f](https://github.com/sptlco/spatial/commit/1896a6f1e264b648d9a5aab6d9e156876bb93685))
+* Shortened labels ([#137](https://github.com/sptlco/spatial/issues/137)) ([59fa91f](https://github.com/sptlco/spatial/commit/59fa91f229da4ba088b939a7eb575b62e33ad859))
+
 ## [1.15.0](https://github.com/sptlco/spatial/compare/spatial-1.14.0...spatial-1.15.0) (2026-01-27)
 
 

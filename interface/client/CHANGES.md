@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.7.0](https://github.com/sptlco/spatial/compare/spatial-interface-client-1.6.0...spatial-interface-client-1.7.0) (2026-02-02)
+
+
+### Features
+
+* Added scopes and permissions ([#137](https://github.com/sptlco/spatial/issues/137)) ([6e9fb64](https://github.com/sptlco/spatial/commit/6e9fb6447079711ed4e9e6b0e60f3950a9099cc0))
+
 ## [1.6.0](https://github.com/sptlco/spatial/compare/spatial-interface-client-1.5.0...spatial-interface-client-1.6.0) (2026-01-27)
 
 

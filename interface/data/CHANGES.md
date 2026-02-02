@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.5.0](https://github.com/sptlco/spatial/compare/spatial-interface-data-1.4.0...spatial-interface-data-1.5.0) (2026-02-02)
+
+
+### Features
+
+* Added scopes and permissions ([#137](https://github.com/sptlco/spatial/issues/137)) ([6e9fb64](https://github.com/sptlco/spatial/commit/6e9fb6447079711ed4e9e6b0e60f3950a9099cc0))
+
 ## [1.4.0](https://github.com/sptlco/spatial/compare/spatial-interface-data-1.3.0...spatial-interface-data-1.4.0) (2026-01-27)
 
 

@@ -194,7 +194,7 @@ export const Scopes = () => {
                     <Table.Root className="border-separate border-spacing-y-10">
                       <Table.Header>
                         <Table.Row>
-                          <Table.Column className="xl:min-w-64 pr-10 xl:pb-10 text-left">
+                          <Table.Column className="xl:min-w-64 xl:pl-5 pr-10 text-left">
                             <Span className="flex items-center text-xl font-light gap-3">
                               <Span>{sector.name}</Span>
                               <Span className="bg-translucent size-10 font-normal rounded-full text-sm inline-flex items-center justify-center">
@@ -203,7 +203,7 @@ export const Scopes = () => {
                             </Span>
                           </Table.Column>
                           {sector.scopes.map((scope) => (
-                            <Table.Column key={scope.tag} className="min-w-32 xl:min-w-64 px-10 xl:pb-10 text-center">
+                            <Table.Column key={scope.tag} className="min-w-32 xl:min-w-64 px-10 text-center">
                               <Span className="flex items-center justify-center gap-4">
                                 <Span>{scope.name}</Span>
                                 {scope.description && (

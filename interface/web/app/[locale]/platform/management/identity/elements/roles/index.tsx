@@ -258,7 +258,7 @@ export const Roles = () => {
                 <Checkbox />
               </Table.Column>
               <Table.Column className="text-left">User ID</Table.Column>
-              <Table.Column className="text-center hidden xl:table-cell">Permissions</Table.Column>
+              <Table.Column className="text-center hidden xl:table-cell">Scopes</Table.Column>
               <Table.Column className="w-12 xl:w-16" />
             </Table.Row>
           </Table.Header>

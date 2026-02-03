@@ -71,5 +71,7 @@ public class RoleController : Controller
     public async Task DeleteRoleAsync(string id)
     {
         Resource<Role>.RemoveOne(role => role.Id == id);
+        Resource<Assignment>.RemoveMany(a => a.Role == id);
+        Resource<Permission>.RemoveMany(p => p.Role == id);
     }
 }

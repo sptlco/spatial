@@ -47,8 +47,8 @@ export const LocaleSwitcher = ({ compact = false }: { compact?: boolean }) => {
         </Button>
       </Dropdown.Trigger>
       <Dropdown.Portal>
-        <Dropdown.Content>
-          <Dropdown.RadioGroup value={locale} onValueChange={change} className="flex flex-col gap-2">
+        <Dropdown.Content asChild>
+          <Dropdown.RadioGroup value={locale} onValueChange={change}>
             {routing.locales.map((locale, i) => (
               <Dropdown.RadioItem key={i} value={locale} className="flex items-center gap-10">
                 <Container className="flex flex-col grow">

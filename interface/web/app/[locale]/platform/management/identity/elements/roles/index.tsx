@@ -120,7 +120,7 @@ export const Roles = () => {
                       <Icon symbol="more_vert" />
                     </Button>
                   </Dropdown.Trigger>
-                  <Dropdown.Content align="end" className="flex flex-col gap-4">
+                  <Dropdown.Content align="end">
                     <Dropdown.Item asChild>
                       <Sheet.Root>
                         <Sheet.Trigger asChild>

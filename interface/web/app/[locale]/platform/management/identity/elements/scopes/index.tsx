@@ -229,7 +229,7 @@ export const Scopes = () => {
                           .data!.sort((a, b) => (a.name < b.name ? -1 : 1))
                           .map((role) => (
                             <Table.Row key={role.id}>
-                              <Table.Cell className="pr-10">
+                              <Table.Cell className="pr-10 xl:pl-10">
                                 <Container className="flex items-center gap-5">
                                   <Monogram text={role.name} className="shrink-0 size-12" style={{ color: role.color }} />
                                   <Container className="flex flex-col truncate">

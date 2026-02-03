@@ -1,6 +1,7 @@
 // Copyright © Spatial Corporation. All rights reserved.
 
 import { createElement } from "..";
+import { clsx } from "clsx";
 
 /**
  * An element displaying data in a tabular format.
@@ -29,12 +30,12 @@ export const Table = {
   /**
    * A standard data cell in a table.
    */
-  Cell: createElement<"td">((props, ref) => <td {...props} ref={ref} />),
+  Cell: createElement<"td">((props, ref) => <td {...props} ref={ref} className={clsx("border-b border-line-subtle pb-10", props.className)} />),
 
   /**
    * A header cell in a table.
    */
-  Column: createElement<"th">((props, ref) => <th {...props} ref={ref} />),
+  Column: createElement<"th">((props, ref) => <th {...props} ref={ref} className={clsx("border-b border-line-subtle pb-10", props.className)} />),
 
   /**
    * Groups footer content in a table.

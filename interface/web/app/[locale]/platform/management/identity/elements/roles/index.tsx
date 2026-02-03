@@ -145,7 +145,7 @@ export const Roles = () => {
                       <Sheet.Root>
                         <Sheet.Trigger asChild>
                           <Button intent="ghost" className="w-full">
-                            <Icon symbol="person_edit" />
+                            <Icon symbol="person_edit" fill />
                             <Span>Edit</Span>
                           </Button>
                         </Sheet.Trigger>
@@ -156,7 +156,7 @@ export const Roles = () => {
                       <Dialog.Root>
                         <Dialog.Trigger asChild>
                           <Button destructive intent="ghost" className="w-full">
-                            <Icon symbol="person_cancel" />
+                            <Icon symbol="person_remove" fill />
                             <Span>Delete</Span>
                           </Button>
                         </Dialog.Trigger>
@@ -216,7 +216,7 @@ export const Roles = () => {
   };
 
   return (
-    <Card.Root className="bg-background-subtle transform p-10 xl:rounded-4xl">
+    <Card.Root>
       <Card.Header>
         <Card.Title className="text-2xl font-bold flex gap-3 items-center">
           <Span>Roles</Span>

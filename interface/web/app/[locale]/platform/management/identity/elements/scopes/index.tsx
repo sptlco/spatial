@@ -125,7 +125,7 @@ export const Scopes = () => {
   }, [diff, table]);
 
   return (
-    <Card.Root className="bg-background-subtle transform p-10 xl:rounded-4xl gap-0!">
+    <Card.Root className="gap-0!">
       <Card.Header>
         <Card.Title className="text-2xl font-bold flex gap-3 items-center">
           <Span>Scopes</Span>

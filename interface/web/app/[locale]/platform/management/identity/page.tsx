@@ -23,17 +23,17 @@ export default function Page() {
             <Tabs.Trigger value="roles">Roles</Tabs.Trigger>
             <Tabs.Trigger value="scopes">Scopes</Tabs.Trigger>
           </Tabs.List>
-          <Tabs.Content value="users" className="xl:pr-10">
+          <Tabs.Content value="users">
             <Suspense>
               <Users />
             </Suspense>
           </Tabs.Content>
-          <Tabs.Content value="roles" className="xl:pr-10">
+          <Tabs.Content value="roles">
             <Suspense>
               <Roles />
             </Suspense>
           </Tabs.Content>
-          <Tabs.Content value="scopes" className="xl:pr-10">
+          <Tabs.Content value="scopes">
             <Suspense>
               <Scopes />
             </Suspense>

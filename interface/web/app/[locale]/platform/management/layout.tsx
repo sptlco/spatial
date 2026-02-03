@@ -332,7 +332,7 @@ export default function Layout(props: { children: ReactNode }) {
         </Sheet.Root>
       </Container>
       <ScrollArea.Root>
-        <ScrollArea.Viewport ref={scroller} className={clsx("row-start-2 col-start-1", "xl:col-start-2")}>
+        <ScrollArea.Viewport ref={scroller} className={clsx("xl:pr-10", "row-start-2 col-start-1", "xl:col-start-2")}>
           <Container className="flex flex-col relative">{props.children}</Container>
           <CompactFooter className="p-10" />
         </ScrollArea.Viewport>

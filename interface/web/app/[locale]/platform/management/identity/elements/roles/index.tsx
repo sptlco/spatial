@@ -45,6 +45,16 @@ export const Roles = () => {
     return response.data;
   });
 
+  const assignments = useSWR("platform/management/identity/roles/assignments/list", async (_) => {
+    const response = await Spatial.assignments.list();
+
+    if (response.error) {
+      throw response.error;
+    }
+
+    return response.data;
+  });
+
   const permissions = useSWR("platform/management/identity/roles/permissions/list", async (_) => {
     const response = await Spatial.permissions.list();
 
@@ -72,6 +82,9 @@ export const Roles = () => {
                     <Span className="w-4/5 h-4 rounded-full animate-pulse bg-background-surface" />
                   </Container>
                 </Container>
+              </Table.Cell>
+              <Table.Cell className="hidden xl:table-cell">
+                <Span className="flex mx-auto w-20 h-4 rounded-full bg-background-surface animate-pulse" />
               </Table.Cell>
               <Table.Cell className="hidden xl:table-cell">
                 <Span className="flex mx-auto w-20 h-4 rounded-full bg-background-surface animate-pulse" />
@@ -111,6 +124,13 @@ export const Roles = () => {
                   <Span className="w-2/3 h-4 rounded-full bg-background-surface animate-pulse" />
                 ) : (
                   permissions.data.filter((p) => p.role === role.id).length
+                )}
+              </Table.Cell>
+              <Table.Cell className="hidden xl:table-cell text-center">
+                {assignments.isLoading || !assignments.data ? (
+                  <Span className="w-2/3 h-4 rounded-full bg-background-surface animate-pulse" />
+                ) : (
+                  assignments.data.filter((a) => a.role === role.id).length
                 )}
               </Table.Cell>
               <Table.Cell>
@@ -259,6 +279,7 @@ export const Roles = () => {
               </Table.Column>
               <Table.Column className="text-left">User ID</Table.Column>
               <Table.Column className="text-center hidden xl:table-cell">Scopes</Table.Column>
+              <Table.Column className="text-center hidden xl:table-cell">Assignments</Table.Column>
               <Table.Column className="w-12 xl:w-16" />
             </Table.Row>
           </Table.Header>

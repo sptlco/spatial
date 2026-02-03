@@ -1,6 +1,7 @@
 // Copyright © Spatial Corporation. All rights reserved.
 
 import { AccountController } from "./AccountController";
+import { AssignmentController } from "./AssignmentController";
 import { IndexController } from "./IndexController";
 import { KeyController } from "./KeyController";
 import { PermissionController } from "./PermissionController";
@@ -10,6 +11,7 @@ import { SessionController } from "./SessionController";
 import { UserController } from "./UserController";
 
 export * from "./AccountController";
+export * from "./AssignmentController";
 export * from "./IndexController";
 export * from "./KeyController";
 export * from "./PermissionController";
@@ -21,6 +23,7 @@ export * from "./UserController";
 export const Spatial = {
   ...new IndexController(),
   accounts: new AccountController(),
+  assignments: new AssignmentController(),
   keys: new KeyController(),
   permissions: new PermissionController(),
   roles: new RoleController(),

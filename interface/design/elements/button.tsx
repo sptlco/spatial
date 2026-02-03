@@ -11,7 +11,7 @@ export type ButtonProps = {
   /**
    * The button's intent.
    */
-  intent?: "default" | "destructive" | "ghost" | "highlight";
+  intent?: "default" | "ghost" | "highlight" | "destructive";
 
   /**
    * The shape of the button.
@@ -27,6 +27,11 @@ export type ButtonProps = {
    * The horizontal alignment of the button's content.
    */
   align?: "left" | "right" | "center";
+
+  /**
+   * Whether or not the button is destructive.
+   */
+  destructive?: boolean;
 };
 
 const styles = cva({
@@ -50,6 +55,13 @@ const styles = cva({
       left: "pl-2.5! justify-start",
       right: "pr-2.5! justify-end",
       center: "justify-center"
+    },
+    destructive: {
+      true: [
+        "text-button-destructive!",
+        "hover:bg-button-destructive-hover! hover:text-white!",
+        "active:bg-button-destructive-active! active:text-white!"
+      ]
     }
   }
 });
@@ -58,7 +70,7 @@ const styles = cva({
  * An interactive element that prompts a user action.
  */
 export const Button = createElement<"button", ButtonProps>(
-  ({ intent = "default", shape = "round", size = "medium", align = "center", type = "button", ...props }, ref) => (
-    <button {...props} type={type} className={clsx(styles({ intent, shape, size, align }), props.className)} ref={ref} />
+  ({ intent = "default", shape = "round", size = "medium", align = "center", type = "button", destructive = false, ...props }, ref) => (
+    <button {...props} type={type} className={clsx(styles({ intent, shape, size, align, destructive }), props.className)} ref={ref} />
   )
 );

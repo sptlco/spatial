@@ -365,7 +365,7 @@ const Row = memo(
               <Dropdown.Item asChild>
                 <Sheet.Root>
                   <Sheet.Trigger asChild>
-                    <Button intent="ghost" className="w-full" align="left">
+                    <Button intent="ghost" className="w-full">
                       <Icon symbol="person_edit" />
                       <Span>Edit</Span>
                     </Button>
@@ -376,7 +376,7 @@ const Row = memo(
               <Dropdown.Item asChild>
                 <Sheet.Root>
                   <Sheet.Trigger asChild>
-                    <Button intent="ghost" className="w-full" align="left">
+                    <Button intent="ghost" className="w-full">
                       <Icon symbol="download" />
                       <Span>Export</Span>
                     </Button>
@@ -386,8 +386,8 @@ const Row = memo(
               <Dropdown.Item asChild>
                 <Dialog.Root>
                   <Dialog.Trigger asChild>
-                    <Button intent="destructive" className="w-full" align="left">
-                      <Icon symbol="delete" />
+                    <Button destructive intent="ghost" className="w-full">
+                      <Icon symbol="person_cancel" />
                       <Span>Delete</Span>
                     </Button>
                   </Dialog.Trigger>

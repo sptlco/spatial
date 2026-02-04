@@ -264,8 +264,8 @@ export const Field = createElement<"input", FieldProps>(({ inset = true, ...prop
               </Container>
             ))}
 
-            <Button type="button" intent="ghost" className="bg-transparent! text-foreground-tertiary px-0!" disabled={props.disabled} onClick={add}>
-              <Icon symbol="add_diamond" className="font-light" />
+            <Button type="button" intent="ghost" className="bg-transparent! px-4!" disabled={props.disabled} onClick={add}>
+              <Icon symbol="add_diamond" className="font-normal" />
               <Span>Add property</Span>
             </Button>
           </Container>

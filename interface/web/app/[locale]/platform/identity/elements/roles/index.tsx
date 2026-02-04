@@ -73,7 +73,7 @@ export const Roles = () => {
 
   const sortedData = roles.data?.sort((a, b) => (a.name < b.name ? -1 : 1)) ?? [];
 
-  const PAGE_SIZE = 2;
+  const PAGE_SIZE = 20;
 
   const page = useMemo(() => Math.max(1, Number(searchParams.get("page-roles") ?? 1)), [searchParams]);
   const pages = Math.ceil(sortedData.length / PAGE_SIZE);
@@ -172,7 +172,7 @@ export const Roles = () => {
                   <Dropdown.Item asChild>
                     <Sheet.Root>
                       <Sheet.Trigger asChild>
-                        <Button intent="ghost" className="w-full">
+                        <Button intent="ghost" className="w-full" align="left">
                           <Icon symbol="person_edit" fill />
                           <Span>Edit</Span>
                         </Button>
@@ -183,7 +183,7 @@ export const Roles = () => {
                   <Dropdown.Item asChild>
                     <Dialog.Root>
                       <Dialog.Trigger asChild>
-                        <Button destructive intent="ghost" className="w-full">
+                        <Button destructive intent="ghost" className="w-full" align="left">
                           <Icon symbol="person_remove" fill />
                           <Span>Delete</Span>
                         </Button>

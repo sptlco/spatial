@@ -15,7 +15,7 @@ export const Toaster = createElement<typeof Primitive, ToasterProps>((props, ref
       info: <Icon symbol="info" className="font-medium" />,
       error: <Icon symbol="emergency_home" className="font-medium text-red" />,
       loading: <Spinner className="size-4 text-foreground-tertiary" />,
-      success: <Icon symbol="check" className="font-medium text-green" />,
+      success: <Icon symbol="task_alt" className="font-medium text-green" />,
       warning: <Icon symbol="warning" className="font-medium text-yellow" />
     }}
     toastOptions={{

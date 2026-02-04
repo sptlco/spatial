@@ -4,12 +4,12 @@
 
 import { useUser } from "@/stores";
 import { Spatial } from "@sptlco/client";
-import { Role, User } from "@sptlco/data";
+import { User } from "@sptlco/data";
 import { clsx } from "clsx";
-import { memo, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useFormatter, useNow } from "next-intl";
-import useSWR, { SWRResponse } from "swr";
+import useSWR from "swr";
 import { useShallow } from "zustand/shallow";
 
 import { Creator } from "./creator";
@@ -46,27 +46,10 @@ export const Users = () => {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
+  const now = useNow();
+  const format = useFormatter();
 
-  const [search, setSearch] = useState("");
-
-  const filter = (role: string, checked: boolean) => {
-    const params = new URLSearchParams(searchParams.toString());
-    const next = new Set(tags);
-
-    if (checked) {
-      next.add(role);
-    } else {
-      next.delete(role);
-    }
-
-    if (next.size > 0) {
-      params.set("tags", Array.from(next).join(","));
-    } else {
-      params.delete("tags");
-    }
-
-    router.replace(`${pathname}?${params.toString()}`, { scroll: false });
-  };
+  const { account } = useUser(useShallow((state) => ({ account: state.account })));
 
   const users = useSWR("platform/identity/users/list", async (_) => {
     const response = await Spatial.users.list();
@@ -106,6 +89,44 @@ export const Users = () => {
     const start = (page - 1) * PAGE_SIZE;
     return sortedData.slice(start, start + PAGE_SIZE);
   }, [sortedData, page]);
+
+  const filter = (role: string, checked: boolean) => {
+    const params = new URLSearchParams(searchParams.toString());
+    const next = new Set(tags);
+
+    if (checked) {
+      next.add(role);
+    } else {
+      next.delete(role);
+    }
+
+    if (next.size > 0) {
+      params.set("tags", Array.from(next).join(","));
+    } else {
+      params.delete("tags");
+    }
+
+    router.replace(`${pathname}?${params.toString()}`, { scroll: false });
+  };
+
+  const navigate = (page: number) => {
+    const params = new URLSearchParams(searchParams.toString());
+
+    if (page > 1) {
+      params.set("page-users", page.toString());
+    } else {
+      params.delete("page-users");
+    }
+
+    router.replace(`${pathname}?${params.toString()}`, { scroll: false });
+  };
+
+  const [selection, setSelection] = useState<string[]>([]);
+  const [search, setSearch] = useState("");
+
+  const toggle = (user: User, selected: boolean) => {
+    setSelection((s) => [...s.filter((x) => x !== user.account.id), ...(selected ? [user.account.id] : [])]);
+  };
 
   const Body = () => {
     if (users.isLoading || !users.data) {
@@ -152,34 +173,171 @@ export const Users = () => {
     return (
       <>
         {paginatedData.map((user) => (
-          <Row key={user.account.id} user={user} users={users} roles={roles} />
+          <Row key={user.account.id} user={user} />
         ))}
       </>
     );
   };
 
-  const navigate = (page: number) => {
-    const params = new URLSearchParams(searchParams.toString());
+  const Row = createElement<typeof Table.Row, { user: User }>(({ user, ...props }, ref) => (
+    <Table.Row {...props} ref={ref}>
+      <Table.Cell>
+        <Checkbox checked={selection.includes(user.account.id)} onCheckedChange={(checked: boolean) => toggle(user, checked)} />
+      </Table.Cell>
+      <Table.Cell>
+        <Sheet.Root>
+          <Sheet.Trigger asChild>
+            <Container className="cursor-pointer flex items-center gap-5">
+              <Avatar src={user.account.avatar} alt={user.account.name} className="shrink-0 size-12" />
+              <Container className="flex flex-col truncate">
+                <Span className="font-semibold truncate">{user.account.name}</Span>
+                <Span className="text-foreground-secondary truncate">{user.account.email}</Span>
+              </Container>
+              {user.account.id === (account?.id ?? "") && (
+                <Span className="hidden xl:flex px-4 py-2 bg-background-highlight rounded-xl text-xs font-bold">You</Span>
+              )}
+            </Container>
+          </Sheet.Trigger>
+          <Editor user={user} onUpdate={(_) => users.mutate()} />
+        </Sheet.Root>
+      </Table.Cell>
+      <Table.Cell className="hidden xl:table-cell">
+        <UL className="flex flex-wrap gap-4">
+          {!roles.isLoading &&
+            user.principal.roles
+              .sort((a: string, b: string) => (a < b ? -1 : 1))
+              .map((role: string, i: number) => (
+                <LI
+                  key={i}
+                  className="inline-flex w-fit items-center justify-center gap-3 "
+                  style={{ color: Object.values(roles.data!).find((r) => r.name == role)?.color ?? "currentColor" }}
+                >
+                  <Span className="size-2 flex rounded-full bg-current" />
+                  <Span className="text-sm text-foreground-primary font-medium">{role}</Span>
+                </LI>
+              ))}
+        </UL>
+      </Table.Cell>
+      <Table.Cell className="hidden xl:table-cell">
+        <Span className="text-foreground-tertiary">{format.relativeTime(new Date(user.account.created), now)}</Span>
+      </Table.Cell>
+      <Table.Cell>
+        <Dropdown.Root>
+          <Dropdown.Trigger asChild>
+            <Button intent="ghost" className="ml-auto! size-10! p-0! data-[state=open]:bg-button-ghost-active">
+              <Icon symbol="more_vert" />
+            </Button>
+          </Dropdown.Trigger>
+          <Dropdown.Content align="end">
+            <Dropdown.Item asChild>
+              <Sheet.Root>
+                <Sheet.Trigger asChild>
+                  <Button intent="ghost" className="w-full" align="left">
+                    <Icon symbol="person_edit" fill />
+                    <Span>Edit</Span>
+                  </Button>
+                </Sheet.Trigger>
+                <Editor user={user} onUpdate={(_) => users.mutate()} />
+              </Sheet.Root>
+            </Dropdown.Item>
+            <Dropdown.Item asChild>
+              <Sheet.Root>
+                <Sheet.Trigger asChild>
+                  <Button intent="ghost" className="w-full" align="left">
+                    <Icon symbol="download" fill />
+                    <Span>Export</Span>
+                  </Button>
+                </Sheet.Trigger>
+              </Sheet.Root>
+            </Dropdown.Item>
+            <Dropdown.Item asChild>
+              <Dialog.Root>
+                <Dialog.Trigger asChild>
+                  <Button destructive intent="ghost" className="w-full" align="left">
+                    <Icon symbol="person_remove" fill />
+                    <Span>Delete</Span>
+                  </Button>
+                </Dialog.Trigger>
+                <Dialog.Content title="Delete user" description="Please confirm this action.">
+                  <Form
+                    className="flex flex-col gap-10"
+                    onSubmit={(e) => {
+                      e.preventDefault();
 
-    if (page > 1) {
-      params.set("page-users", page.toString());
-    } else {
-      params.delete("page-users");
+                      toast.promise(Spatial.accounts.del(user.account.id), {
+                        loading: "Deleting user",
+                        description: `Deleting ${user.account.email}`,
+                        success: (response) => {
+                          if (!response.error) {
+                            users.mutate();
+
+                            return {
+                              message: "User deleted",
+                              description: `Deleted user ${user.account.email}`
+                            };
+                          }
+
+                          return {
+                            type: "error",
+                            message: "Something went wrong",
+                            description: "An error occurred while deleting the user."
+                          };
+                        }
+                      });
+                    }}
+                  >
+                    <Container className="flex items-center gap-5">
+                      <Avatar src={user.account.avatar} alt={user.account.name} className="shrink-0 size-12" />
+                      <Container className="flex flex-col truncate">
+                        <Span className="font-semibold truncate">{user.account.name}</Span>
+                        <Span className="text-foreground-secondary truncate">{user.account.email}</Span>
+                      </Container>
+                    </Container>
+                    <Paragraph className="text-sm text-foreground-secondary">
+                      This user and all of their account data will be lost immediately upon deletion.
+                    </Paragraph>
+                    <Container className="flex w-full items-center justify-items-start gap-4">
+                      <Button type="submit" intent="destructive" className="shrink truncate">
+                        Delete
+                      </Button>
+                    </Container>
+                  </Form>
+                </Dialog.Content>
+              </Dialog.Root>
+            </Dropdown.Item>
+          </Dropdown.Content>
+        </Dropdown.Root>
+      </Table.Cell>
+    </Table.Row>
+  ));
+
+  useEffect(() => {
+    if (!selection.every((u) => paginatedData.some((x) => x.account.id === u))) {
+      setSelection((v) => v.filter((u) => paginatedData.some((x) => x.account.id === u)));
     }
-
-    router.replace(`${pathname}?${params.toString()}`, { scroll: false });
-  };
+  }, [paginatedData]);
 
   return (
     <Card.Root>
       <Card.Header>
         <Card.Title className="text-2xl font-bold flex gap-3 items-center">
           <Span>Users</Span>
-          <Span className="bg-translucent size-10 font-normal rounded-full text-sm inline-flex items-center justify-center">
+          <Span className="bg-translucent shrink-0 size-10 font-normal rounded-full text-sm inline-flex items-center justify-center">
             {users.isValidating || !users.data ? <Spinner className="size-3 text-foreground-secondary" /> : data.length}
           </Span>
         </Card.Title>
         <Card.Gutter className="flex xl:hidden">
+          {selection.length > 0 && (
+            <Dropdown.Root>
+              <Dropdown.Trigger asChild>
+                <Button intent="ghost" className="px-2!">
+                  <Span className="hidden md:flex">Selection</Span>
+                  <Span className="text-xs flex items-center justify-center size-6 rounded-full bg-translucent">{selection.length}</Span>
+                  <Icon symbol="keyboard_arrow_down" />
+                </Button>
+              </Dropdown.Trigger>
+            </Dropdown.Root>
+          )}
           <Dropdown.Root>
             <Dropdown.Trigger asChild>
               <Button intent="ghost" className="size-10! p-0! data-[state=open]:bg-button-ghost-active">
@@ -208,6 +366,17 @@ export const Users = () => {
           </Dropdown.Root>
         </Card.Gutter>
         <Card.Gutter className="hidden xl:flex">
+          {selection.length > 0 && (
+            <Dropdown.Root>
+              <Dropdown.Trigger asChild>
+                <Button intent="ghost">
+                  <Span>Selection</Span>
+                  <Span className="text-xs flex items-center justify-center size-6 rounded-full bg-translucent">{selection.length}</Span>
+                  <Icon symbol="keyboard_arrow_down" />
+                </Button>
+              </Dropdown.Trigger>
+            </Dropdown.Root>
+          )}
           <Sheet.Root>
             <Sheet.Trigger asChild>
               <Button>
@@ -297,7 +466,10 @@ export const Users = () => {
           <Table.Header>
             <Table.Row>
               <Table.Column className="w-12 xl:w-16">
-                <Checkbox />
+                <Checkbox
+                  checked={paginatedData.length > 0 && paginatedData.every((u) => selection.includes(u.account.id))}
+                  onCheckedChange={(checked: boolean) => paginatedData.forEach((u) => toggle(u, checked))}
+                />
               </Table.Column>
               <Table.Column className="text-left">User ID</Table.Column>
               <Table.Column className="w-md text-left hidden xl:table-cell">Roles</Table.Column>
@@ -315,157 +487,3 @@ export const Users = () => {
     </Card.Root>
   );
 };
-
-const Row = memo(
-  createElement<
-    typeof Table.Row,
-    {
-      user: User;
-      users: SWRResponse<User[], any, any>;
-      roles: SWRResponse<
-        {
-          [k: string]: Role;
-        },
-        any,
-        any
-      >;
-    }
-  >(({ user, users, roles, ...props }, ref) => {
-    const { account } = useUser(useShallow((state) => ({ account: state.account })));
-
-    const now = useNow();
-    const format = useFormatter();
-
-    return (
-      <Table.Row {...props} ref={ref}>
-        <Table.Cell>
-          <Checkbox />
-        </Table.Cell>
-        <Table.Cell>
-          <Sheet.Root>
-            <Sheet.Trigger asChild>
-              <Container className="cursor-pointer flex items-center gap-5">
-                <Avatar src={user.account.avatar} alt={user.account.name} className="shrink-0 size-12" />
-                <Container className="flex flex-col truncate">
-                  <Span className="font-semibold truncate">{user.account.name}</Span>
-                  <Span className="text-foreground-secondary truncate">{user.account.email}</Span>
-                </Container>
-                {user.account.id === (account?.id ?? "") && (
-                  <Span className="hidden xl:flex px-4 py-2 bg-background-highlight rounded-xl text-xs font-bold">You</Span>
-                )}
-              </Container>
-            </Sheet.Trigger>
-            <Editor user={user} onUpdate={(_) => users.mutate()} />
-          </Sheet.Root>
-        </Table.Cell>
-        <Table.Cell className="hidden xl:table-cell">
-          <UL className="flex flex-wrap gap-4">
-            {!roles.isLoading &&
-              user.principal.roles
-                .sort((a: string, b: string) => (a < b ? -1 : 1))
-                .map((role: string, i: number) => (
-                  <LI
-                    key={i}
-                    className="inline-flex w-fit items-center justify-center gap-3 "
-                    style={{ color: Object.values(roles.data!).find((r) => r.name == role)?.color ?? "currentColor" }}
-                  >
-                    <Span className="size-2 flex rounded-full bg-current" />
-                    <Span className="text-sm text-foreground-primary font-medium">{role}</Span>
-                  </LI>
-                ))}
-          </UL>
-        </Table.Cell>
-        <Table.Cell className="hidden xl:table-cell">
-          <Span className="text-foreground-tertiary">{format.relativeTime(new Date(user.account.created), now)}</Span>
-        </Table.Cell>
-        <Table.Cell>
-          <Dropdown.Root>
-            <Dropdown.Trigger asChild>
-              <Button intent="ghost" className="ml-auto! size-10! p-0! data-[state=open]:bg-button-ghost-active">
-                <Icon symbol="more_vert" />
-              </Button>
-            </Dropdown.Trigger>
-            <Dropdown.Content align="end">
-              <Dropdown.Item asChild>
-                <Sheet.Root>
-                  <Sheet.Trigger asChild>
-                    <Button intent="ghost" className="w-full" align="left">
-                      <Icon symbol="person_edit" fill />
-                      <Span>Edit</Span>
-                    </Button>
-                  </Sheet.Trigger>
-                  <Editor user={user} onUpdate={(_) => users.mutate()} />
-                </Sheet.Root>
-              </Dropdown.Item>
-              <Dropdown.Item asChild>
-                <Sheet.Root>
-                  <Sheet.Trigger asChild>
-                    <Button intent="ghost" className="w-full" align="left">
-                      <Icon symbol="download" fill />
-                      <Span>Export</Span>
-                    </Button>
-                  </Sheet.Trigger>
-                </Sheet.Root>
-              </Dropdown.Item>
-              <Dropdown.Item asChild>
-                <Dialog.Root>
-                  <Dialog.Trigger asChild>
-                    <Button destructive intent="ghost" className="w-full" align="left">
-                      <Icon symbol="person_remove" fill />
-                      <Span>Delete</Span>
-                    </Button>
-                  </Dialog.Trigger>
-                  <Dialog.Content title="Delete user" description="Please confirm this action.">
-                    <Form
-                      className="flex flex-col gap-10"
-                      onSubmit={(e) => {
-                        e.preventDefault();
-
-                        toast.promise(Spatial.accounts.del(user.account.id), {
-                          loading: "Deleting user",
-                          description: `Deleting ${user.account.email}`,
-                          success: (response) => {
-                            if (!response.error) {
-                              users.mutate();
-
-                              return {
-                                message: "User deleted",
-                                description: `Deleted user ${user.account.email}`
-                              };
-                            }
-
-                            return {
-                              type: "error",
-                              message: "Something went wrong",
-                              description: "An error occurred while deleting the user."
-                            };
-                          }
-                        });
-                      }}
-                    >
-                      <Container className="flex items-center gap-5">
-                        <Avatar src={user.account.avatar} alt={user.account.name} className="shrink-0 size-12" />
-                        <Container className="flex flex-col truncate">
-                          <Span className="font-semibold truncate">{user.account.name}</Span>
-                          <Span className="text-foreground-secondary truncate">{user.account.email}</Span>
-                        </Container>
-                      </Container>
-                      <Paragraph className="text-sm text-foreground-secondary">
-                        This user and all of their account data will be lost immediately upon deletion.
-                      </Paragraph>
-                      <Container className="flex w-full items-center justify-items-start gap-4">
-                        <Button type="submit" intent="destructive" className="shrink truncate">
-                          Delete
-                        </Button>
-                      </Container>
-                    </Form>
-                  </Dialog.Content>
-                </Dialog.Root>
-              </Dropdown.Item>
-            </Dropdown.Content>
-          </Dropdown.Root>
-        </Table.Cell>
-      </Table.Row>
-    );
-  })
-);

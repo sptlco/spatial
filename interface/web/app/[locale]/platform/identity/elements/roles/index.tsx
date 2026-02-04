@@ -4,7 +4,7 @@
 
 import { Spatial } from "@sptlco/client";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import useSWR from "swr";
 
 import { Creator } from "./creator";
@@ -29,6 +29,7 @@ import {
   Table,
   toast
 } from "@sptlco/design";
+import { Role } from "@sptlco/data";
 
 /**
  * A dynamic list of roles.
@@ -38,8 +39,6 @@ export const Roles = () => {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
-
-  const [search, setSearch] = useState("");
 
   const roles = useSWR("platform/identity/roles/list", async (_) => {
     const response = await Spatial.roles.list();
@@ -95,6 +94,13 @@ export const Roles = () => {
     router.replace(`${pathname}?${params.toString()}`, { scroll: false });
   };
 
+  const [selection, setSelection] = useState<string[]>([]);
+  const [search, setSearch] = useState("");
+
+  const toggle = (role: Role, selected: boolean) => {
+    setSelection((s) => [...s.filter((x) => x !== role.id), ...(selected ? [role.id] : [])]);
+  };
+
   const Body = () => {
     if (roles.isLoading || !roles.data) {
       return (
@@ -131,7 +137,7 @@ export const Roles = () => {
         {paginatedData.map((role, i) => (
           <Table.Row key={i}>
             <Table.Cell>
-              <Checkbox />
+              <Checkbox checked={selection.includes(role.id)} onCheckedChange={(checked: boolean) => toggle(role, checked)} />
             </Table.Cell>
             <Table.Cell>
               <Sheet.Root>
@@ -243,6 +249,12 @@ export const Roles = () => {
     );
   };
 
+  useEffect(() => {
+    if (!selection.every((u) => paginatedData.some((x) => x.id === u))) {
+      setSelection((v) => v.filter((u) => paginatedData.some((x) => x.id === u)));
+    }
+  }, [paginatedData]);
+
   return (
     <Card.Root>
       <Card.Header>
@@ -253,6 +265,17 @@ export const Roles = () => {
           </Span>
         </Card.Title>
         <Card.Gutter className="flex xl:hidden">
+          {selection.length > 0 && (
+            <Dropdown.Root>
+              <Dropdown.Trigger asChild>
+                <Button intent="ghost" className="px-2!">
+                  <Span className="hidden md:flex">Selection</Span>
+                  <Span className="text-xs flex items-center justify-center size-6 rounded-full bg-translucent">{selection.length}</Span>
+                  <Icon symbol="keyboard_arrow_down" />
+                </Button>
+              </Dropdown.Trigger>
+            </Dropdown.Root>
+          )}
           <Dropdown.Root>
             <Dropdown.Trigger asChild>
               <Button intent="ghost" className="size-10! p-0! data-[state=open]:bg-button-ghost-active">
@@ -275,6 +298,17 @@ export const Roles = () => {
           </Dropdown.Root>
         </Card.Gutter>
         <Card.Gutter className="hidden xl:flex">
+          {selection.length > 0 && (
+            <Dropdown.Root>
+              <Dropdown.Trigger asChild>
+                <Button intent="ghost">
+                  <Span>Selection</Span>
+                  <Span className="text-xs flex items-center justify-center size-6 rounded-full bg-translucent">{selection.length}</Span>
+                  <Icon symbol="keyboard_arrow_down" />
+                </Button>
+              </Dropdown.Trigger>
+            </Dropdown.Root>
+          )}
           <Sheet.Root>
             <Sheet.Trigger asChild>
               <Button>
@@ -303,7 +337,10 @@ export const Roles = () => {
           <Table.Header>
             <Table.Row>
               <Table.Column className="w-12 xl:w-16">
-                <Checkbox />
+                <Checkbox
+                  checked={paginatedData.length > 0 && paginatedData.every((r) => selection.includes(r.id))}
+                  onCheckedChange={(checked: boolean) => paginatedData.forEach((r) => toggle(r, checked))}
+                />
               </Table.Column>
               <Table.Column className="text-left">User ID</Table.Column>
               <Table.Column className="text-center hidden xl:table-cell">Permissions</Table.Column>

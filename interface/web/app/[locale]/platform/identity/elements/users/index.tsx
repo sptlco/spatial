@@ -28,6 +28,7 @@ import {
   Form,
   Icon,
   LI,
+  Pagination,
   Paragraph,
   Sheet,
   Span,
@@ -96,6 +97,16 @@ export const Users = () => {
 
   const sortedData = useMemo(() => [...data].sort((a, b) => b.account.created - a.account.created), [data]);
 
+  const PAGE_SIZE = 20;
+
+  const page = useMemo(() => Math.max(1, Number(searchParams.get("page-users") ?? 1)), [searchParams]);
+  const pages = Math.ceil(sortedData.length / PAGE_SIZE);
+
+  const paginatedData = useMemo(() => {
+    const start = (page - 1) * PAGE_SIZE;
+    return sortedData.slice(start, start + PAGE_SIZE);
+  }, [sortedData, page]);
+
   const Body = () => {
     if (users.isLoading || !users.data) {
       return (
@@ -140,11 +151,23 @@ export const Users = () => {
 
     return (
       <>
-        {sortedData.map((user) => (
+        {paginatedData.map((user) => (
           <Row key={user.account.id} user={user} users={users} roles={roles} />
         ))}
       </>
     );
+  };
+
+  const navigate = (page: number) => {
+    const params = new URLSearchParams(searchParams.toString());
+
+    if (page > 1) {
+      params.set("page-users", page.toString());
+    } else {
+      params.delete("page-users");
+    }
+
+    router.replace(`${pathname}?${params.toString()}`, { scroll: false });
   };
 
   return (
@@ -286,6 +309,7 @@ export const Users = () => {
             <Body />
           </Table.Body>
         </Table.Root>
+        <Pagination page={page} pages={pages} className="self-center" onPageChange={navigate} />
         {!users.data && <Span className="absolute pointer-events-none inset-0 size-full bg-linear-to-b from-transparent to-background-subtle" />}
       </Card.Content>
     </Card.Root>

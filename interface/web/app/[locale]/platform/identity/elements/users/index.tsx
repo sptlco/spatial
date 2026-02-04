@@ -67,7 +67,7 @@ export const Users = () => {
     router.replace(`${pathname}?${params.toString()}`, { scroll: false });
   };
 
-  const users = useSWR("platform/management/identity/users/list", async (_) => {
+  const users = useSWR("platform/identity/users/list", async (_) => {
     const response = await Spatial.users.list();
 
     if (response.error) {
@@ -77,7 +77,7 @@ export const Users = () => {
     return response.data;
   });
 
-  const roles = useSWR("platform/management/identity/users/roles/list", async (_) => {
+  const roles = useSWR("platform/identity/users/roles/list", async (_) => {
     const response = await Spatial.roles.list();
 
     if (response.error) {
@@ -320,7 +320,7 @@ const Row = memo(
         <Table.Cell>
           <Sheet.Root>
             <Sheet.Trigger asChild>
-              <Container className="cursor-pointer flex w-fit items-center gap-5">
+              <Container className="cursor-pointer flex items-center gap-5">
                 <Avatar src={user.account.avatar} alt={user.account.name} className="shrink-0 size-12" />
                 <Container className="flex flex-col truncate">
                   <Span className="font-semibold truncate">{user.account.name}</Span>
@@ -391,7 +391,7 @@ const Row = memo(
                       <Span>Delete</Span>
                     </Button>
                   </Dialog.Trigger>
-                  <Dialog.Content title="Delete user" description="Please confirm this action." className="sm:max-w-md">
+                  <Dialog.Content title="Delete user" description="Please confirm this action.">
                     <Form
                       className="flex flex-col gap-10"
                       onSubmit={(e) => {

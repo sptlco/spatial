@@ -13,7 +13,7 @@ import { useEffect, useMemo, useState } from "react";
  * @returns A list of scopes.
  */
 export const Scopes = () => {
-  const scopes = useSWR("platform/management/identity/scopes/list", async (_) => {
+  const scopes = useSWR("platform/identity/scopes/list", async (_) => {
     const response = await Spatial.scopes.list();
 
     if (response.error) {
@@ -23,7 +23,7 @@ export const Scopes = () => {
     return response.data;
   });
 
-  const roles = useSWR("platform/management/identity/scopes/roles/list", async (_) => {
+  const roles = useSWR("platform/identity/scopes/roles/list", async (_) => {
     const response = await Spatial.roles.list();
 
     if (response.error) {
@@ -33,7 +33,7 @@ export const Scopes = () => {
     return response.data;
   });
 
-  const permissions = useSWR("platform/management/identity/scopes/permissions/list", async (_) => {
+  const permissions = useSWR("platform/identity/scopes/permissions/list", async (_) => {
     const response = await Spatial.permissions.list();
 
     if (response.error) {

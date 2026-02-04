@@ -35,7 +35,7 @@ import {
 export const Roles = () => {
   const [search, setSearch] = useState("");
 
-  const roles = useSWR("platform/management/identity/roles/list", async (_) => {
+  const roles = useSWR("platform/identity/roles/list", async (_) => {
     const response = await Spatial.roles.list();
 
     if (response.error) {
@@ -45,7 +45,7 @@ export const Roles = () => {
     return response.data;
   });
 
-  const assignments = useSWR("platform/management/identity/roles/assignments/list", async (_) => {
+  const assignments = useSWR("platform/identity/roles/assignments/list", async (_) => {
     const response = await Spatial.assignments.list();
 
     if (response.error) {
@@ -55,7 +55,7 @@ export const Roles = () => {
     return response.data;
   });
 
-  const permissions = useSWR("platform/management/identity/roles/permissions/list", async (_) => {
+  const permissions = useSWR("platform/identity/roles/permissions/list", async (_) => {
     const response = await Spatial.permissions.list();
 
     if (response.error) {
@@ -108,7 +108,7 @@ export const Roles = () => {
               <Table.Cell>
                 <Sheet.Root>
                   <Sheet.Trigger asChild>
-                    <Container className="cursor-pointer flex w-fit items-center gap-5">
+                    <Container className="cursor-pointer flex items-center gap-5">
                       <Monogram text={role.name} className="shrink-0 size-12" style={{ color: role.color }} />
                       <Container className="flex flex-col truncate">
                         <Span className="font-semibold truncate">{role.name}</Span>
@@ -160,7 +160,7 @@ export const Roles = () => {
                             <Span>Delete</Span>
                           </Button>
                         </Dialog.Trigger>
-                        <Dialog.Content title="Delete role" description="Please confirm this action." className="sm:max-w-md">
+                        <Dialog.Content title="Delete role" description="Please confirm this action.">
                           <Form
                             className="flex flex-col gap-10"
                             onSubmit={(e) => {

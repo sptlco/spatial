@@ -1,0 +1,67 @@
+{
+  "authentication": {
+    "title": "Sicherer Zugriff",
+    "description": "Melden Sie sich an, um mit Spatial fortzufahren.",
+
+    "email": {
+      "label": "E-Mail-Adresse",
+      "placeholder": "name@unternehmen.com",
+      "description": "Erfahren Sie in der öffentlichen Dokumentation mehr über unseren Ansatz für sichere, <link>passwortlose Authentifizierung</link>."
+    },
+
+    "continue": "Weiter",
+
+    "verification": {
+      "title": "Überprüfen Sie Ihren Posteingang",
+      "description": "Wir haben Ihnen einen Code gesendet.",
+      "label": "Bestätigungscode",
+      "help": "Ein einmaliger Bestätigungscode wurde an Ihre E-Mail-Adresse gesendet. Sie können bei Bedarf <link>einen neuen Code anfordern</link>."
+    },
+
+    "errors": {
+      "request": {
+        "title": "Zugriff verweigert",
+        "description": "Beim Vorbereiten Ihres Bestätigungscodes ist ein Problem aufgetreten. Bitte versuchen Sie es in Kürze erneut."
+      },
+      "verify": {
+        "title": "Zugriff verweigert",
+        "description": "Der eingegebene Code ist ungültig oder abgelaufen. Bitte überprüfen Sie ihn und versuchen Sie es erneut."
+      }
+    }
+  },
+
+  "modals": {
+    "account": {
+      "title": "Kontoübersicht",
+      "description": "Eine Übersicht über Ihr Konto."
+    }
+  },
+
+  "navigation": {
+    "platform": {
+      "pages": {
+        "dashboard": "Dashboard",
+        "compute": "Compute",
+        "datastore": "Datenspeicher",
+        "identity": "Identität",
+        "intelligence": "Intelligenz",
+        "logistics": "Logistik",
+        "network": "Netzwerk",
+        "simulation": "Simulation"
+      }
+    }
+  },
+
+  "footer": {
+    "legal": {
+      "users": "Nutzungsvereinbarung",
+      "privacy": "Datenschutzerklärung"
+    }
+  },
+
+  "locale": {
+    "label": "Deutsch",
+    "name": "{locale, select, en_US {Englisch (US)} sw {Kiswahili} fr {Französisch} es {Spanisch} de {Deutsch} pt_BR {Portugiesisch (Brasilien)} it {Italienisch} ja {Japanisch} other {Unbekannt}}",
+    "origin": "{locale, select, en_US {English} sw {Swahili} fr {French} es {Spanish} de {German} pt_BR {Brazilian Portuguese} it {Italian} ja {Japanese} other {Unknown}}"
+  }
+}

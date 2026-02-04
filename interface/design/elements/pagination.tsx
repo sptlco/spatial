@@ -1,6 +1,6 @@
 // Copyright © Spatial Corporation. All rights reserved.
 
-import { createElement, LI, Link, Span, UL } from "..";
+import { createElement, LI, Link, Nav, Span, UL } from "..";
 
 /**
  * Pagination with page navigation, next and previous links.
@@ -8,6 +8,11 @@ import { createElement, LI, Link, Span, UL } from "..";
 export const Pagination = {
   /**
    * Contains all the parts of a pagination.
+   */
+  Root: createElement<"nav">((props, ref) => <Nav {...props} ref={ref} />),
+
+  /**
+   * Renders a list of pagination items.
    */
   Content: createElement<"ul">((props, ref) => <UL {...props} ref={ref} />),
 

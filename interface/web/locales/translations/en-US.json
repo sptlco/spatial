@@ -60,8 +60,8 @@
   },
 
   "locale": {
-    "label": "English",
-    "name": "{locale, select, en_US {English} sw {Kiswahili} fr {Français} es {Español} de {Deutsch} pt_BR {Português (Brasil)} it {Italiano} ja {日本語} other {Unknown}}",
+    "label": "English (US)",
+    "name": "{locale, select, en_US {English (US)} sw {Kiswahili} fr {Français} es {Español} de {Deutsch} pt_BR {Português (Brasil)} it {Italiano} ja {日本語} other {Unknown}}",
     "origin": "{locale, select, en_US {English} sw {Swahili} fr {French} es {Spanish} de {German} pt_BR {Brazilian Portuguese} it {Italian} ja {Japanese} other {Unknown}}"
   }
 }

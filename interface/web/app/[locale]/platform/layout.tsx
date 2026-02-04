@@ -34,7 +34,7 @@ import {
   UL
 } from "@sptlco/design";
 
-const BASE_URL = "/platform/management";
+const BASE_URL = "/platform";
 
 type Page = {
   name: string;
@@ -239,7 +239,7 @@ export default function Layout(props: { children: ReactNode }) {
         </Drawer.Content>
       </Drawer.Root>
       <Dialog.Root open={requirements.name}>
-        <Dialog.Content className="sm:max-w-md" title="Information required" description="We need to know the following." closeButton={false}>
+        <Dialog.Content title="Information required" description="We need to know the following." closeButton={false}>
           <Form className="flex flex-col items-center gap-10" onSubmit={submit}>
             <Field
               type="text"

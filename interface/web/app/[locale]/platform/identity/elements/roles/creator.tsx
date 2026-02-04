@@ -6,7 +6,7 @@ import { Spatial } from "@sptlco/client";
 import { Role } from "@sptlco/data";
 import { FormEvent, useState } from "react";
 
-import { Button, Container, createElement, Field, Form, Sheet, Spinner, toast } from "@sptlco/design";
+import { Button, Container, createElement, Field, Form, Label, Sheet, Spinner, toast } from "@sptlco/design";
 
 /**
  * Allows the user to create a new role.
@@ -62,7 +62,6 @@ export const Creator = createElement<typeof Sheet.Content, { onCreate?: (role: R
           onChange={(e) => setName(e.target.value)}
           disabled={creating}
           inset={false}
-          autoFocus
         />
         <Field
           type="text"
@@ -86,6 +85,7 @@ export const Creator = createElement<typeof Sheet.Content, { onCreate?: (role: R
           disabled={creating}
           inset={false}
         />
+        <Label className="text-xs text-hint font-extrabold uppercase">Optional</Label>
         <Field
           type="meta"
           id="metadata"

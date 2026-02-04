@@ -29,6 +29,7 @@ export * from "./logo";
 export * from "./main";
 export * from "./monogram";
 export * from "./multi-select";
+export * from "./nav";
 export * from "./navigation";
 export * from "./pagination";
 export * from "./paragraph";

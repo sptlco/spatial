@@ -6,7 +6,7 @@ import { Spatial } from "@sptlco/client";
 import { Role } from "@sptlco/data";
 import { FormEvent, useState } from "react";
 
-import { Button, Container, createElement, Field, Form, Sheet, toast } from "@sptlco/design";
+import { Button, Container, createElement, Field, Form, Label, Sheet, toast } from "@sptlco/design";
 
 /**
  * An element that allows for the editing of a role.
@@ -58,7 +58,6 @@ export const Editor = createElement<typeof Sheet.Content, { data: Role; onUpdate
             value={update.name || ""}
             disabled={updating}
             inset={false}
-            autoFocus
             onChange={(e) =>
               setUpdate({
                 ...update,
@@ -92,6 +91,7 @@ export const Editor = createElement<typeof Sheet.Content, { data: Role; onUpdate
             inset={false}
             onValueChange={(color) => setUpdate({ ...update, color })}
           />
+          <Label className="text-xs text-hint font-extrabold uppercase">Optional</Label>
           <Field
             type="meta"
             id="metadata"

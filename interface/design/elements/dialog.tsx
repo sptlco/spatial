@@ -53,17 +53,17 @@ export const Dialog = {
             data-slot="dialog-content"
             className={clsx(
               "pointer-events-auto",
-              "w-full max-h-full",
+              "w-full sm:max-w-md max-h-full",
               "data-[state=open]:animate-in data-[state=open]:fade-in data-[state=open]:zoom-in-95",
               "data-[state=closed]:animate-out data-[state=closed]:fade-out data-[state=closed]:zoom-out-95",
               "duration-500",
               props.className
             )}
           >
-            <ScrollArea.Root className="w-full h-full rounded-4xl items-center">
-              <ScrollArea.Viewport className="w-full max-h-[calc(100vh-80px)]">
+            <ScrollArea.Root className="rounded-4xl items-center">
+              <ScrollArea.Viewport className="max-h-[calc(100vh-80px)]">
                 <Container className="flex flex-col w-full gap-10 p-10 rounded-4xl bg-background-surface">
-                  <Container className="flex items-start gap-10">
+                  <Container className="flex w-full items-start gap-10">
                     <Container className="flex flex-col grow">
                       <Optional value={title}>
                         <Primitive.Title className="font-bold text-lg">{title}</Primitive.Title>

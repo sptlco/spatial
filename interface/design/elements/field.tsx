@@ -155,14 +155,14 @@ export const Field = createElement<"input", FieldProps>(({ inset = true, ...prop
         return (
           <Container className="relative w-full flex items-center gap-4">
             <Dropdown.Root open={open} onOpenChange={setOpen}>
-              <Dropdown.Trigger className="flex shrink-0 size-10 items-center justify-center cursor-pointer">
+              <Dropdown.Trigger className="flex absolute left-4 shrink-0 size-6 items-center justify-center cursor-pointer">
                 <Span className="size-full rounded-lg" style={{ backgroundColor: rest.value }} />
               </Dropdown.Trigger>
               <Dropdown.Content className="bg-transparent! shadow-none! z-80! w-fit!">
                 <HexColorPicker color={rest.value} onChange={onValueChange} />
               </Dropdown.Content>
             </Dropdown.Root>
-            <HexColorInput {...rest} type="text" className={defaultClasses} color={rest.value} prefixed onChange={onValueChange} />
+            <HexColorInput {...rest} type="text" className={clsx(defaultClasses, "pl-13")} color={rest.value} prefixed onChange={onValueChange} />
           </Container>
         );
       }

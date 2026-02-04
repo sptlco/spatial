@@ -6,7 +6,7 @@ import { Spatial } from "@sptlco/client";
 import { Account } from "@sptlco/data";
 import { FormEvent, useState } from "react";
 
-import { Button, Container, createElement, Field, Form, Label, Sheet, Spinner, toast } from "@sptlco/design";
+import { Button, Container, createElement, Field, Form, Sheet, Spinner, toast } from "@sptlco/design";
 
 export const Creator = createElement<typeof Sheet.Content, { onCreate?: (account: Account) => void }>(({ onCreate, ...props }, ref) => {
   const [name, setName] = useState("");
@@ -72,7 +72,6 @@ export const Creator = createElement<typeof Sheet.Content, { onCreate?: (account
           disabled={creating}
           inset={false}
         />
-        <Label className="text-xs text-hint font-extrabold uppercase">Optional</Label>
         <Field
           type="meta"
           id="metadata"
@@ -82,6 +81,7 @@ export const Creator = createElement<typeof Sheet.Content, { onCreate?: (account
           onValueChange={setMetadata}
           disabled={creating}
           inset={false}
+          required={false}
         />
         <Container className="flex items-center gap-4">
           <Button type="submit" disabled={creating || !name || !email}>

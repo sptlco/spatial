@@ -8,7 +8,7 @@ import { User } from "@sptlco/data";
 import { FormEvent, useState } from "react";
 import { useShallow } from "zustand/shallow";
 
-import { Button, Container, createElement, Field, Form, Label, Sheet, Span, toast } from "@sptlco/design";
+import { Button, Container, createElement, Field, Form, Sheet, toast } from "@sptlco/design";
 
 /**
  * An element that allows for the editing of a user.
@@ -98,7 +98,6 @@ export const Editor = createElement<typeof Sheet.Content, { user: User; onUpdate
             })
           }
         />
-        <Label className="text-xs text-hint font-extrabold uppercase">Optional</Label>
         <Field
           type="text"
           id="avatar"
@@ -108,6 +107,7 @@ export const Editor = createElement<typeof Sheet.Content, { user: User; onUpdate
           placeholder="An avatar URL"
           disabled={updating}
           inset={false}
+          required={false}
           onChange={(e) =>
             setUpdate({
               ...update,
@@ -126,6 +126,7 @@ export const Editor = createElement<typeof Sheet.Content, { user: User; onUpdate
           metadata={update.account.metadata}
           disabled={updating}
           inset={false}
+          required={false}
           onValueChange={(value) => {
             setUpdate({
               ...update,

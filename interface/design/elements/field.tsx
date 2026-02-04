@@ -275,10 +275,15 @@ export const Field = createElement<"input", FieldProps>(({ inset = true, ...prop
 
   return (
     <Container className={clsx("group flex flex-col space-y-4 w-full", props.containerClassName)}>
-      {props.label && (
-        <Label className={clsx("font-medium transition-all", { "px-4": inset })} htmlFor={props.id}>
-          {props.label}
-        </Label>
+      {(props.label || props.required === false) && (
+        <Container className="flex items-center px-4">
+          {props.label && (
+            <Label className={clsx("font-medium transition-all grow", { "px-4": inset })} htmlFor={props.id}>
+              {props.label}
+            </Label>
+          )}
+          {props.required === false && <Span className="text-xs text-hint font-extrabold uppercase">Optional</Span>}
+        </Container>
       )}
       {render()}
       {props.description && (

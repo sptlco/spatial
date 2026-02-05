@@ -101,6 +101,10 @@ export const Roles = () => {
     setSelection((s) => [...s.filter((x) => x !== role.id), ...(selected ? [role.id] : [])]);
   };
 
+  const toggleAll = (selected: boolean) => {
+    setSelection(selected ? paginatedData.map((r) => r.id) : []);
+  };
+
   const Body = () => {
     if (roles.isLoading || !roles.data) {
       return (
@@ -337,10 +341,7 @@ export const Roles = () => {
           <Table.Header>
             <Table.Row>
               <Table.Column className="w-12 xl:w-16">
-                <Checkbox
-                  checked={paginatedData.length > 0 && paginatedData.every((r) => selection.includes(r.id))}
-                  onCheckedChange={(checked: boolean) => paginatedData.forEach((r) => toggle(r, checked))}
-                />
+                <Checkbox checked={paginatedData.length > 0 && paginatedData.every((r) => selection.includes(r.id))} onCheckedChange={toggleAll} />
               </Table.Column>
               <Table.Column className="text-left">User ID</Table.Column>
               <Table.Column className="text-center hidden xl:table-cell">Permissions</Table.Column>

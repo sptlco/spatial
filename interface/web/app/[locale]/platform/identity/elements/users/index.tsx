@@ -128,6 +128,10 @@ export const Users = () => {
     setSelection((s) => [...s.filter((x) => x !== user.account.id), ...(selected ? [user.account.id] : [])]);
   };
 
+  const toggleAll = (selected: boolean) => {
+    setSelection(selected ? paginatedData.map((u) => u.account.id) : []);
+  };
+
   const Body = () => {
     if (users.isLoading || !users.data) {
       return (
@@ -468,7 +472,7 @@ export const Users = () => {
               <Table.Column className="w-12 xl:w-16">
                 <Checkbox
                   checked={paginatedData.length > 0 && paginatedData.every((u) => selection.includes(u.account.id))}
-                  onCheckedChange={(checked: boolean) => paginatedData.forEach((u) => toggle(u, checked))}
+                  onCheckedChange={toggleAll}
                 />
               </Table.Column>
               <Table.Column className="text-left">User ID</Table.Column>

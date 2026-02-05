@@ -71,12 +71,13 @@ export const Users = () => {
     return Object.fromEntries(response.data.map((r) => [r.name, r]));
   });
 
-  const tags = searchParams.get("tags")?.split(",").filter(Boolean) ?? [];
+  const filters = searchParams.get("filters")?.split(",").filter(Boolean) ?? [];
   const data =
-    (tags.length === 0
+    (filters.length === 0
       ? users.data
-      : users.data?.filter((u) => tags.every((t) => u.principal.roles.includes(t) || (u.account.metadata.type ?? "consumer") === t.toLowerCase()))) ??
-    [];
+      : users.data?.filter((u) =>
+          filters.every((t) => u.principal.roles.includes(t) || (u.account.metadata.type ?? "consumer") === t.toLowerCase())
+        )) ?? [];
 
   const sortedData = useMemo(() => [...data].sort((a, b) => b.account.created - a.account.created), [data]);
 
@@ -92,7 +93,7 @@ export const Users = () => {
 
   const filter = (role: string, checked: boolean) => {
     const params = new URLSearchParams(searchParams.toString());
-    const next = new Set(tags);
+    const next = new Set(filters);
 
     if (checked) {
       next.add(role);
@@ -101,11 +102,18 @@ export const Users = () => {
     }
 
     if (next.size > 0) {
-      params.set("tags", Array.from(next).join(","));
+      params.set("filters", Array.from(next).join(","));
     } else {
-      params.delete("tags");
+      params.delete("filters");
     }
 
+    router.replace(`${pathname}?${params.toString()}`, { scroll: false });
+  };
+
+  const clearFilters = () => {
+    const params = new URLSearchParams(searchParams.toString());
+
+    params.delete("filters");
     router.replace(`${pathname}?${params.toString()}`, { scroll: false });
   };
 
@@ -419,39 +427,41 @@ export const Users = () => {
                   <Button intent="ghost" className={clsx("px-5! data-[state=open]:bg-button-ghost-active relative")}>
                     <Span>Filter</Span>
                     <Icon symbol="keyboard_arrow_down" />
-                    {tags.length > 0 && <Span className="size-2 bg-blue rounded-full flex" />}
+                    {filters.length > 0 && <Span className="size-2 bg-blue rounded-full flex" />}
                   </Button>
                 </Dropdown.Trigger>
-                <Dropdown.Content className="md:max-w-md! pb-4">
-                  <Container className="grid md:grid-cols-2">
-                    <Container className="flex flex-col gap-1">
-                      <Dropdown.Label className="px-4 py-2 text-foreground-tertiary font-bold">Role</Dropdown.Label>
-                      {Object.values(roles.data)
-                        .sort((a, b) => (a.name < b.name ? -1 : 1))
-                        .map((role, i) => {
-                          const checked = tags.includes(role.name);
+                <Dropdown.Content>
+                  <Container className="flex flex-col gap-1">
+                    <Dropdown.Label className="px-4 py-2 text-foreground-tertiary font-bold">Role</Dropdown.Label>
+                    {Object.values(roles.data)
+                      .sort((a, b) => (a.name < b.name ? -1 : 1))
+                      .map((role, i) => {
+                        const checked = filters.includes(role.name);
 
-                          return (
-                            <Dropdown.CheckboxItem
-                              key={i}
-                              className="group flex items-center gap-4"
-                              checked={checked}
-                              onSelect={(e) => e.preventDefault()}
-                              onCheckedChange={(value) => filter(role.name, value)}
-                            >
-                              <Span className="relative flex items-center justify-center shrink-0 bg-translucent group-data-[state=checked]:bg-blue rounded-md size-5">
-                                <Dropdown.ItemIndicator className="absolute flex items-center justify-center">
-                                  <Icon symbol="check" size={16} className="font-medium" />
-                                </Dropdown.ItemIndicator>
-                              </Span>
-                              <Container className="flex items-center gap-3">
-                                <Span className="font-medium">{role.name}</Span>
-                              </Container>
-                            </Dropdown.CheckboxItem>
-                          );
-                        })}
-                    </Container>
+                        return (
+                          <Dropdown.CheckboxItem
+                            key={i}
+                            className="group flex items-center gap-4"
+                            checked={checked}
+                            onSelect={(e) => e.preventDefault()}
+                            onCheckedChange={(value) => filter(role.name, value)}
+                          >
+                            <Span className="relative flex items-center justify-center shrink-0 bg-translucent group-data-[state=checked]:bg-blue rounded-md size-5">
+                              <Dropdown.ItemIndicator className="absolute flex items-center justify-center">
+                                <Icon symbol="check" size={16} className="font-medium" />
+                              </Dropdown.ItemIndicator>
+                            </Span>
+                            <Container className="flex items-center gap-3">
+                              <Span className="font-medium">{role.name}</Span>
+                            </Container>
+                          </Dropdown.CheckboxItem>
+                        );
+                      })}
                   </Container>
+                  <Dropdown.Item onSelect={(e) => e.preventDefault()} onClick={clearFilters} className={clsx("gap-4 text-hint")}>
+                    <Icon symbol="close" size={20} />
+                    <Span>Clear</Span>
+                  </Dropdown.Item>
                 </Dropdown.Content>
               </Dropdown.Root>
             )}

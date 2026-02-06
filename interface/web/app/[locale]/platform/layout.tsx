@@ -309,24 +309,18 @@ export default function Layout(props: { children: ReactNode }) {
         </Container>
       </Container>
       <Container
-        className="flex items-center row-start-1 col-start-1 xl:col-start-2"
-        style={{
-          paddingTop: "var(--layout-pad)",
-          paddingBottom: "var(--layout-pad)"
-        }}
-      >
-        <Button intent="ghost" className="p-0! size-10!">
-          <Icon symbol="search" />
-        </Button>
-      </Container>
-      <Container
         className={clsx("flex px-10 gap-2.5 sm:gap-5 ml-auto items-center shrink-0", "row-start-1 col-start-1 xl:col-start-2")}
         style={{
           paddingTop: "var(--layout-pad)",
           paddingBottom: "var(--layout-pad)"
         }}
       >
-        <LocaleSwitcher compact />
+        <Container className="flex items-center gap-1">
+          <Button intent="ghost" className="p-0! size-10!">
+            <Icon symbol="search" />
+          </Button>
+          <LocaleSwitcher compact />
+        </Container>
         <Sheet.Root>
           <Sheet.Trigger className="cursor-pointer group">
             {user.loading || !user.authenticated() ? (

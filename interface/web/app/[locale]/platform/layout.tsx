@@ -315,7 +315,7 @@ export default function Layout(props: { children: ReactNode }) {
           paddingBottom: "var(--layout-pad)"
         }}
       >
-        <Container className="flex items-center gap-1">
+        <Container className="flex items-center gap-2.5">
           <Button intent="ghost" className="p-0! size-10!">
             <Icon symbol="search" />
           </Button>

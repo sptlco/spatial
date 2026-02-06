@@ -430,7 +430,7 @@ export const Users = () => {
                     {filters.length > 0 && <Span className="size-2 bg-blue rounded-full flex" />}
                   </Button>
                 </Dropdown.Trigger>
-                <Dropdown.Content>
+                <Dropdown.Content className="pb-4">
                   <Container className="flex flex-col gap-1">
                     <Dropdown.Label className="px-4 py-2 text-foreground-tertiary font-bold">Role</Dropdown.Label>
                     {Object.values(roles.data)
@@ -451,17 +451,17 @@ export const Users = () => {
                                 <Icon symbol="check" size={16} className="font-medium" />
                               </Dropdown.ItemIndicator>
                             </Span>
-                            <Container className="flex items-center gap-3">
-                              <Span className="font-medium">{role.name}</Span>
-                            </Container>
+                            <Span className="font-medium">{role.name}</Span>
                           </Dropdown.CheckboxItem>
                         );
                       })}
                   </Container>
-                  <Dropdown.Item onSelect={(e) => e.preventDefault()} onClick={clearFilters} className={clsx("gap-4 text-hint")}>
-                    <Icon symbol="close" size={20} />
-                    <Span>Clear</Span>
-                  </Dropdown.Item>
+                  {filters.length > 0 && (
+                    <Dropdown.Item onSelect={(e) => e.preventDefault()} onClick={clearFilters} className={clsx("gap-4")}>
+                      <Icon symbol="close" className="text-hint" size={20} />
+                      <Span className="font-medium">Clear</Span>
+                    </Dropdown.Item>
+                  )}
                 </Dropdown.Content>
               </Dropdown.Root>
             )}
@@ -497,6 +497,11 @@ export const Users = () => {
         </Table.Root>
         <Pagination page={page} pages={pages} className="self-center" onPageChange={navigate} />
         {!users.data && <Span className="absolute pointer-events-none inset-0 size-full bg-linear-to-b from-transparent to-background-subtle" />}
+        <Container
+          className={clsx("forwards", "opacity-0", "fixed bottom-10  left-1/2 -translate-1/2", "p-10 bg-background-surface shadow-lg rounded-2xl", {
+            "animate-in slide-in-from-bottom fade-in": selection.length > 0
+          })}
+        ></Container>
       </Card.Content>
     </Card.Root>
   );

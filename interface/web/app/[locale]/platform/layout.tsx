@@ -60,7 +60,7 @@ const pages: Page[] = [
   },
   {
     name: "navigation.platform.pages.identity",
-    path: `${BASE_URL}/identity`,
+    path: `${BASE_URL}/id`,
     icon: "person"
   },
   {

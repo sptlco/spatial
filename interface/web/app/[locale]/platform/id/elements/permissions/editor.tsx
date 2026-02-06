@@ -115,7 +115,7 @@ export const Editor = createElement<typeof Sheet.Content, { data: Role; onUpdate
             };
           }
         });
-      }, 1200);
+      }, 500);
 
       return () => clearTimeout(timeout);
     }, [diff, table]);

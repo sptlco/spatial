@@ -9,7 +9,7 @@ import { FC, PropsWithChildren, ReactNode } from "react";
 const classes = cva({
   base: [
     "fixed z-52",
-    "bg-background-surface shadow-lg transition ease-in-out",
+    "bg-background-surface shadow-base transition ease-in-out",
     "data-[state=open]:animate-in data-[state=open]:duration-500",
     "data-[state=closed]:animate-out data-[state=closed]:duration-300"
   ],

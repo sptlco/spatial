@@ -502,7 +502,7 @@ export const Users = () => {
         <Pagination page={page} pages={pages} className="self-center" onPageChange={navigate} />
         {!users.data && <Span className="absolute pointer-events-none inset-0 size-full bg-linear-to-b from-transparent to-background-subtle" />}
         <Container
-          className={clsx("forwards", "opacity-0", "fixed bottom-10  left-1/2 -translate-1/2", "p-10 bg-background-surface shadow-lg rounded-2xl", {
+          className={clsx("forwards", "opacity-0", "fixed bottom-10  left-1/2 -translate-1/2", "p-10 bg-background-surface shadow-base rounded-2xl", {
             "animate-in slide-in-from-bottom fade-in": selection.length > 0
           })}
         ></Container>

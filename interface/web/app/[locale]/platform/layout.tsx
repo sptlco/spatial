@@ -200,7 +200,7 @@ export default function Layout(props: { children: ReactNode }) {
   return (
     <Main className={clsx("grid w-full h-screen xl:overflow-hidden", "grid-cols-1 xl:grid-cols-[auto_1fr]", "grid-rows-[auto_minmax(0,1fr)]")}>
       <Drawer.Root>
-        <Drawer.Trigger className="cursor-pointer xl:hidden fixed rounded-full bg-background-surface shadow-lg p-4 flex items-center justify-center z-20 bottom-10 right-10">
+        <Drawer.Trigger className="cursor-pointer xl:hidden fixed rounded-full bg-background-surface shadow-base p-4 flex items-center justify-center z-20 bottom-10 right-10">
           <Icon symbol="apps" />
         </Drawer.Trigger>
         <Drawer.Content className="max-h-[80vh]">

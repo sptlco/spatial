@@ -141,7 +141,14 @@ export const Roles = () => {
       <>
         {paginatedData.map((role, i) => {
           return (
-            <Sheet.Root key={i}>
+            <Sheet.Root
+              key={i}
+              onOpenChange={(open) => {
+                if (!open) {
+                  permissions.mutate();
+                }
+              }}
+            >
               <Table.Row>
                 <Table.Cell>
                   <Checkbox checked={selection.includes(role.id)} onCheckedChange={(checked: boolean) => toggle(role, checked)} />

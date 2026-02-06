@@ -27,7 +27,7 @@ export const Tooltip = {
   Content: createElement<typeof Primitive.Content, Primitive.TooltipContentProps>((props, ref) => {
     const classes = cva({
       base: [
-        "bg-background-surface text-sm shadow-lg rounded-lg px-4 py-2",
+        "bg-background-surface text-sm shadow-base rounded-lg px-4 py-2",
         "data-[state=delayed-open]:animate-in data-[state=delayed-open]:fade-in",
         "data-[state=closed]:animate-out data-[state=closed]:fade-out"
       ],

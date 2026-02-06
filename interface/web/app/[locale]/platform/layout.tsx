@@ -204,7 +204,7 @@ export default function Layout(props: { children: ReactNode }) {
           <Icon symbol="apps" />
         </Drawer.Trigger>
         <Drawer.Content className="max-h-[80vh]">
-          <ScrollArea.Root className="h-auto overflow-y-auto ">
+          <ScrollArea.Root className="h-auto overflow-y-auto" fade>
             <ScrollArea.Viewport>
               <UL className="grid gap-4 grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
                 {pages.map((page, i) => {

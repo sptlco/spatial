@@ -285,7 +285,11 @@ export const Users = () => {
 
                             return {
                               message: "User deleted",
-                              description: `Deleted user ${user.account.email}`
+                              description: (
+                                <>
+                                  Deleted <Span className="font-semibold">{user.account.name}</Span>.
+                                </>
+                              )
                             };
                           }
 

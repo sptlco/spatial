@@ -6,7 +6,7 @@ import { Spatial } from "@sptlco/client";
 import { Account } from "@sptlco/data";
 import { FormEvent, useState } from "react";
 
-import { Button, Container, createElement, Field, Form, Sheet, Spinner, toast } from "@sptlco/design";
+import { Button, Container, createElement, Field, Form, Sheet, Span, Spinner, toast } from "@sptlco/design";
 
 export const Creator = createElement<typeof Sheet.Content, { onCreate?: (account: Account) => void }>(({ onCreate, ...props }, ref) => {
   const [name, setName] = useState("");
@@ -33,7 +33,11 @@ export const Creator = createElement<typeof Sheet.Content, { onCreate?: (account
 
           return {
             message: "User created",
-            description: `Created user ${response.data.name}`
+            description: (
+              <>
+                Created <Span className="font-semibold">{response.data.name}</Span>.
+              </>
+            )
           };
         }
 

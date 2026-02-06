@@ -33,7 +33,7 @@ export const LocaleSwitcher = ({ compact = false }: { compact?: boolean }) => {
   return (
     <Dropdown.Root>
       <Dropdown.Trigger asChild>
-        <Button intent="ghost" shape="pill" className={clsx("data-[state=open]:bg-button-ghost-active", { "px-2! sm:px-4!": compact })}>
+        <Button intent="ghost" className={clsx("data-[state=open]:bg-button-ghost-active", { "px-2! sm:px-4! rounded-lg sm:rounded-full": compact })}>
           {pending ? (
             <Span className="inline-flex size-6 items-center justify-center">
               <Spinner className="size-4 text-foreground-secondary" />

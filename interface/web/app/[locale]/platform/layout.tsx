@@ -287,7 +287,7 @@ export default function Layout(props: { children: ReactNode }) {
                           className={clsx(
                             "transition-all",
                             "flex items-center justify-center size-15",
-                            "rounded-full bg-button-ghost text-foreground-primary",
+                            "rounded-2xl bg-button-ghost text-foreground-primary",
                             "hover:bg-button-ghost-hover active:bg-button-ghost-active",
                             "hover:text-foreground-primary active:text-foreground-primary",
                             { "bg-button-ghost-hover! text-white!": highlight }

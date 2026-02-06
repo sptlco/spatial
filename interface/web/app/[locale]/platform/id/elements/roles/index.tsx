@@ -8,7 +8,8 @@ import { useEffect, useMemo, useState } from "react";
 import useSWR from "swr";
 
 import { Creator } from "./creator";
-import { Editor } from "./editor";
+import { Editor as RoleEditor } from "./editor";
+import { Editor as PermissionEditor } from "../permissions/editor";
 
 import {
   Button,
@@ -138,117 +139,130 @@ export const Roles = () => {
 
     return (
       <>
-        {paginatedData.map((role, i) => (
-          <Table.Row key={i}>
-            <Table.Cell>
-              <Checkbox checked={selection.includes(role.id)} onCheckedChange={(checked: boolean) => toggle(role, checked)} />
-            </Table.Cell>
-            <Table.Cell>
-              <Sheet.Root>
-                <Sheet.Trigger asChild>
-                  <Container className="cursor-pointer flex items-center gap-5">
-                    <Monogram text={role.name} className="shrink-0 size-12" style={{ color: role.color }} />
-                    <Container className="flex flex-col truncate">
-                      <Span className="font-semibold truncate">{role.name}</Span>
-                      {role.description && <Span className="text-sm text-foreground-secondary truncate">{role.description}</Span>}
-                    </Container>
-                  </Container>
-                </Sheet.Trigger>
-                <Editor data={role} onUpdate={(_) => roles.mutate()} />
-              </Sheet.Root>
-            </Table.Cell>
-            <Table.Cell className="hidden xl:table-cell text-center">
-              {permissions.isLoading || !permissions.data ? (
-                <Span className="w-2/3 h-4 rounded-full bg-background-surface animate-pulse" />
-              ) : (
-                permissions.data.filter((p) => p.role === role.id).length
-              )}
-            </Table.Cell>
-            <Table.Cell className="hidden xl:table-cell text-center">
-              {assignments.isLoading || !assignments.data ? (
-                <Span className="w-2/3 h-4 rounded-full bg-background-surface animate-pulse" />
-              ) : (
-                assignments.data.filter((a) => a.role === role.id).length
-              )}
-            </Table.Cell>
-            <Table.Cell>
-              <Dropdown.Root>
-                <Dropdown.Trigger asChild>
-                  <Button intent="ghost" className="ml-auto! size-10! p-0! data-[state=open]:bg-button-ghost-active">
-                    <Icon symbol="more_vert" />
-                  </Button>
-                </Dropdown.Trigger>
-                <Dropdown.Content align="end">
-                  <Dropdown.Item asChild>
-                    <Sheet.Root>
-                      <Sheet.Trigger asChild>
-                        <Button intent="ghost" className="w-full" align="left">
-                          <Icon symbol="person_edit" fill />
-                          <Span>Edit</Span>
-                        </Button>
-                      </Sheet.Trigger>
-                      <Editor data={role} onUpdate={(_) => roles.mutate()} />
-                    </Sheet.Root>
-                  </Dropdown.Item>
-                  <Dropdown.Item asChild>
-                    <Dialog.Root>
-                      <Dialog.Trigger asChild>
-                        <Button destructive intent="ghost" className="w-full" align="left">
-                          <Icon symbol="person_remove" fill />
-                          <Span>Delete</Span>
-                        </Button>
-                      </Dialog.Trigger>
-                      <Dialog.Content title="Delete role" description="Please confirm this action.">
-                        <Form
-                          className="flex flex-col gap-10"
-                          onSubmit={(e) => {
-                            e.preventDefault();
-
-                            toast.promise(Spatial.roles.del(role.id), {
-                              loading: "Deleting role",
-                              description: `Deleting role ${role.name}`,
-                              success: (response) => {
-                                if (!response.error) {
-                                  roles.mutate();
-
-                                  return {
-                                    message: "Role deleted",
-                                    description: `Deleted role ${role.name}`
-                                  };
-                                }
-
-                                return {
-                                  type: "error",
-                                  message: "Something went wrong",
-                                  description: response.error.message
-                                };
-                              }
-                            });
-                          }}
-                        >
-                          <Container className="flex items-center gap-5">
-                            <Monogram text={role.name} className="shrink-0 size-12" style={{ color: role.color }} />
-                            <Container className="flex flex-col truncate">
-                              <Span className="font-semibold truncate">{role.name}</Span>
-                            </Container>
-                          </Container>
-                          <Paragraph className="text-sm text-foreground-secondary">
-                            Any user with this role assigned will have it removed immediately upon deletion.
-                          </Paragraph>
-                          <Container className="flex w-full items-center justify-items-start gap-4">
-                            <Button type="submit" intent="destructive" className="shrink truncate">
-                              Delete
+        {paginatedData.map((role, i) => {
+          return (
+            <Sheet.Root key={i}>
+              <Table.Row>
+                <Table.Cell>
+                  <Checkbox checked={selection.includes(role.id)} onCheckedChange={(checked: boolean) => toggle(role, checked)} />
+                </Table.Cell>
+                <Table.Cell>
+                  <Sheet.Root>
+                    <Sheet.Trigger asChild>
+                      <Container className="cursor-pointer flex items-center gap-5">
+                        <Monogram text={role.name} className="shrink-0 size-12" style={{ color: role.color }} />
+                        <Container className="flex flex-col truncate">
+                          <Span className="font-semibold truncate">{role.name}</Span>
+                          {role.description && <Span className="text-sm text-foreground-secondary truncate">{role.description}</Span>}
+                        </Container>
+                      </Container>
+                    </Sheet.Trigger>
+                    <RoleEditor data={role} onUpdate={(_) => roles.mutate()} />
+                  </Sheet.Root>
+                </Table.Cell>
+                <Table.Cell className="hidden xl:table-cell text-center">
+                  {permissions.isLoading || !permissions.data ? (
+                    <Span className="w-2/3 h-4 rounded-full bg-background-surface animate-pulse" />
+                  ) : (
+                    <Sheet.Trigger className="cursor-pointer">{permissions.data.filter((p) => p.role === role.id).length}</Sheet.Trigger>
+                  )}
+                </Table.Cell>
+                <Table.Cell className="hidden xl:table-cell text-center">
+                  {assignments.isLoading || !assignments.data ? (
+                    <Span className="w-2/3 h-4 rounded-full bg-background-surface animate-pulse" />
+                  ) : (
+                    assignments.data.filter((a) => a.role === role.id).length
+                  )}
+                </Table.Cell>
+                <Table.Cell>
+                  <Dropdown.Root>
+                    <Dropdown.Trigger asChild>
+                      <Button intent="ghost" className="ml-auto! size-10! p-0! data-[state=open]:bg-button-ghost-active">
+                        <Icon symbol="more_vert" />
+                      </Button>
+                    </Dropdown.Trigger>
+                    <Dropdown.Content align="end">
+                      <Dropdown.Item asChild>
+                        <Sheet.Root>
+                          <Sheet.Trigger asChild>
+                            <Button intent="ghost" className="w-full" align="left">
+                              <Icon symbol="person_edit" fill />
+                              <Span>Edit</Span>
                             </Button>
-                          </Container>
-                        </Form>
-                      </Dialog.Content>
-                    </Dialog.Root>
-                  </Dropdown.Item>
-                </Dropdown.Content>
-              </Dropdown.Root>
-            </Table.Cell>
-          </Table.Row>
-        ))}
+                          </Sheet.Trigger>
+                          <RoleEditor data={role} onUpdate={(_) => roles.mutate()} />
+                        </Sheet.Root>
+                      </Dropdown.Item>
+                      <Dropdown.Item asChild>
+                        <Sheet.Trigger asChild>
+                          <Button intent="ghost" className="w-full" align="left">
+                            <Icon symbol="visibility" />
+                            <Span>Permissions</Span>
+                          </Button>
+                        </Sheet.Trigger>
+                      </Dropdown.Item>
+                      <Dropdown.Item asChild>
+                        <Dialog.Root>
+                          <Dialog.Trigger asChild>
+                            <Button destructive intent="ghost" className="w-full" align="left">
+                              <Icon symbol="close" fill />
+                              <Span>Delete</Span>
+                            </Button>
+                          </Dialog.Trigger>
+                          <Dialog.Content title="Delete role" description="Please confirm this action.">
+                            <Form
+                              className="flex flex-col gap-10"
+                              onSubmit={(e) => {
+                                e.preventDefault();
+
+                                toast.promise(Spatial.roles.del(role.id), {
+                                  loading: "Deleting role",
+                                  description: `We are deleting ${role.name}.`,
+                                  success: (response) => {
+                                    if (!response.error) {
+                                      roles.mutate();
+
+                                      return {
+                                        message: "Role deleted",
+                                        description: `Deleted ${role.name}.`
+                                      };
+                                    }
+
+                                    return {
+                                      type: "error",
+                                      message: "Something went wrong",
+                                      description: response.error.message
+                                    };
+                                  }
+                                });
+                              }}
+                            >
+                              <Container className="flex items-center gap-5">
+                                <Monogram text={role.name} className="shrink-0 size-12" style={{ color: role.color }} />
+                                <Container className="flex flex-col truncate">
+                                  <Span className="font-semibold truncate">{role.name}</Span>
+                                </Container>
+                              </Container>
+                              <Paragraph className="text-sm text-foreground-secondary">
+                                Any user with this role assigned will have it removed immediately upon deletion.
+                              </Paragraph>
+                              <Container className="flex w-full items-center justify-items-start gap-4">
+                                <Button type="submit" intent="destructive" className="shrink truncate">
+                                  Delete
+                                </Button>
+                              </Container>
+                            </Form>
+                          </Dialog.Content>
+                        </Dialog.Root>
+                      </Dropdown.Item>
+                    </Dropdown.Content>
+                  </Dropdown.Root>
+                </Table.Cell>
+              </Table.Row>
+              <PermissionEditor data={role} onUpdate={(_) => roles.mutate()} />
+            </Sheet.Root>
+          );
+        })}
       </>
     );
   };

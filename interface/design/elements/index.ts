@@ -45,4 +45,5 @@ export * from "./spinner";
 export * from "./svg";
 export * from "./table";
 export * from "./tabs";
+export * from "./toggle-group";
 export * from "./tooltip";

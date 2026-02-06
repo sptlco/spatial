@@ -8,7 +8,7 @@ import { User } from "@sptlco/data";
 import { FormEvent, useState } from "react";
 import { useShallow } from "zustand/shallow";
 
-import { Avatar, Button, Container, createElement, Field, Form, Sheet, Span, toast } from "@sptlco/design";
+import { Button, Container, createElement, Field, Form, Sheet, Span, toast } from "@sptlco/design";
 
 /**
  * An element that allows for the editing of a user.

@@ -8,7 +8,7 @@ import { User } from "@sptlco/data";
 import { FormEvent, useState } from "react";
 import { useShallow } from "zustand/shallow";
 
-import { Button, Container, createElement, Field, Form, Sheet, toast } from "@sptlco/design";
+import { Avatar, Button, Container, createElement, Field, Form, Sheet, Span, toast } from "@sptlco/design";
 
 /**
  * An element that allows for the editing of a user.
@@ -46,7 +46,11 @@ export const Editor = createElement<typeof Sheet.Content, { user: User; onUpdate
 
           return {
             message: "User updated",
-            description: `The user ${update.account.name} has been updated.`
+            description: (
+              <>
+                Updated <Span className="font-semibold">{user.account.name}</Span>.
+              </>
+            )
           };
         }
 
@@ -60,7 +64,7 @@ export const Editor = createElement<typeof Sheet.Content, { user: User; onUpdate
   };
 
   return (
-    <Sheet.Content {...props} ref={ref} title="Edit user" description="Update a user's account details." closeButton>
+    <Sheet.Content {...props} ref={ref} title={user.account.name} description="Update this user's account." closeButton>
       <Form className="flex flex-col w-full sm:w-screen max-w-sm gap-10" onSubmit={edit}>
         <Field
           type="text"

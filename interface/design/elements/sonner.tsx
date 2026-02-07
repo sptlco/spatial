@@ -6,7 +6,7 @@ import { ExternalToast, toast as sonnerToast, Toaster as Primitive, ToasterProps
 /**
  * An element that displays toast notifications to the user.
  */
-export const Toaster = createElement<typeof Primitive, ToasterProps>(({ closeButton = true, ...props }, ref) => (
+export const Toaster = createElement<typeof Primitive, ToasterProps>(({ closeButton = false, ...props }, ref) => (
   <Primitive
     {...props}
     ref={ref}

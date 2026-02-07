@@ -133,8 +133,11 @@ export const Editor = createElement<typeof Sheet.Content, { data: Role; onUpdate
                   <UL className="flex flex-col w-full gap-10">
                     {sector.scopes.map((scope, i) => (
                       <LI key={i} className="flex items-center gap-10">
-                        <Container className="flex flex-col grow">
-                          <Span className="font-bold">{scope.name}</Span>
+                        <Container className="flex flex-col grow gap-2">
+                          <Container className="flex flex-col">
+                            <Span className="font-bold">{scope.name}</Span>
+                            <Span className="text-xs text-foreground-secondary font-semibold">{scope.tag}</Span>
+                          </Container>
                           <Paragraph className="text-hint">{scope.description}</Paragraph>
                         </Container>
                         <ToggleGroup.Root

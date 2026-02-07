@@ -6,30 +6,42 @@ import { ExternalToast, toast as sonnerToast, Toaster as Primitive, ToasterProps
 /**
  * An element that displays toast notifications to the user.
  */
-export const Toaster = createElement<typeof Primitive, ToasterProps>((props, ref) => (
+export const Toaster = createElement<typeof Primitive, ToasterProps>(({ closeButton = true, ...props }, ref) => (
   <Primitive
     {...props}
     ref={ref}
     position="top-center"
+    closeButton={closeButton}
+    offset={{
+      top: 24,
+      left: 40,
+      right: 40,
+      bottom: 24
+    }}
+    mobileOffset={{
+      top: 24,
+      left: 40,
+      right: 40,
+      bottom: 24
+    }}
     icons={{
-      info: <Icon symbol="info" />,
-      error: <Icon symbol="emergency_home" className="text-red" />,
-      loading: <Spinner className="size-4 text-hint" />,
-      success: <Icon symbol="task_alt" className="text-green" />,
-      warning: <Icon symbol="warning" className="text-yellow" />
+      info: <Icon symbol="info" className="font-light" />,
+      error: <Icon symbol="emergency_home" className="font-light" />,
+      loading: <Spinner className="size-4" />,
+      success: <Icon symbol="task_alt" className="font-light" />,
+      warning: <Icon symbol="warning" className="font-light" />
     }}
     toastOptions={{
       classNames: {
-        toast: "bg-background-subtle! backdrop-blur! border-none! shadow-base! rounded-xl! gap-4! px-5! pointer-events-auto!",
-        icon: "size-6! ml-0.5! text-foreground-primary!",
+        toast: "bg-blue! backdrop-blur! border-none! shadow-base! rounded-xl! gap-4! px-5! pointer-events-auto!",
+        icon: "size-6! inline-flex items-center justify-center ml-0.5! text-white!",
         content: "mr-auto!",
-        title: "text-foreground-primary! text-xs! font-bold!",
-        description: "text-foreground-secondary! text-xs!",
-        actionButton:
-          "transition-all! duration-300! rounded-lg! text-xs! text-foreground-primary! bg-button! hover:bg-button-hover! active:bg-button-active!",
+        title: "text-white! text-xs! font-bold!",
+        description: "text-white! text-xs!",
+        actionButton: "transition-all! duration-300! rounded-lg! text-xs! text-white! bg-button! hover:bg-button-hover! active:bg-button-active!",
         cancelButton:
-          "transition-all! duration-300! rounded-lg! text-xs! text-foreground-primary! bg-button-ghost! hover:bg-button-ghost-hover! active:bg-button-ghost-active!",
-        closeButton: "relative! shrink-0! order-999! transform-none! bg-transparent! text-foreground-primary! border-none! scale-175! size-5!"
+          "transition-all! duration-300! rounded-lg! text-xs! text-white! bg-button-ghost! hover:bg-button-ghost-hover! active:bg-button-ghost-active!",
+        closeButton: "relative! shrink-0! order-999! transform-none! bg-transparent! text-white! border-none! scale-175! size-5!"
       }
     }}
   />

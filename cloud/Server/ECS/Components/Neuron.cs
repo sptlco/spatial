@@ -8,4 +8,4 @@ namespace Spatial.Cloud.ECS.Components;
 /// <summary>
 /// ...
 /// </summary>
-public record struct Neuron(NeuronType Type, int Group, int Channel, double Value) : IComponent;
+public record struct Neuron(NeuronType Type, int Protocol, int Channel, double Value) : IComponent;

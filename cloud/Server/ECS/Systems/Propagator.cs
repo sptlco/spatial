@@ -6,16 +6,16 @@ using System.Reflection;
 namespace Spatial.Cloud.ECS.Systems;
 
 /// <summary>
-/// A device that converts neural input signals to output values.
+/// A signal propagator for deterministic neural behavior.
 /// </summary>
-public abstract class Transducer
+public abstract class Propagator
 {
     private readonly Dictionary<int, Property> _outputs;
 
     /// <summary>
-    /// Create a new <see cref="Transducer"/>.
+    /// Create a new <see cref="Propagator"/>.
     /// </summary>
-    public Transducer()
+    public Propagator()
     {
         var outputs = GetType()
             .GetProperties(BindingFlags.Public | BindingFlags.Instance)
@@ -30,11 +30,10 @@ public abstract class Transducer
     }
 
     /// <summary>
-    /// Extract features from a dataset.
+    /// Extract an input dataset.
     /// </summary>
-    /// <param name="data">Raw data from the input stream.</param>
-    /// <returns>An extracted feature vector.</returns>
-    public abstract double[] Extract(double[] data);
+    /// <returns>An input dataset.</returns>
+    public abstract double[] Extract();
 
     /// <summary>
     /// Apply a value to a <see cref="Property"/>.
@@ -50,31 +49,31 @@ public abstract class Transducer
     }
 
     /// <summary>
-    /// Update the <see cref="Transducer"/>.
+    /// Update the <see cref="Propagator"/>.
     /// </summary>
     /// <param name="delta"><see cref="Time"/> since the last update.</param>
     public virtual void Update(Time delta) { }
 }
 
 /// <summary>
-/// A group of neurons.
+/// Describes a system for handling neural state.
 /// </summary>
 [AttributeUsage(AttributeTargets.Class)]
-public class ModuleAttribute : Attribute
+public class ProtocolAttribute : Attribute
 {
     /// <summary>
-    /// Create a new <see cref="ModuleAttribute"/>.
+    /// Create a new <see cref="ProtocolAttribute"/>.
     /// </summary>
-    /// <param name="id">The module's identification number.</param>
-    public ModuleAttribute(int id)
+    /// <param name="channel">The propagator's identification number.</param>
+    public ProtocolAttribute(int channel)
     {
-        Id = id;
+        Channel = channel;
     }
 
     /// <summary>
     /// The module's identification number.
     /// </summary>
-    public int Id { get; }
+    public int Channel { get; }
 
     /// <summary>
     /// The name of the module.
@@ -126,7 +125,7 @@ public class OutputAttribute : Attribute
 }
 
 /// <summary>
-/// An adjustable <see cref="Transducer"/> property.
+/// An adjustable <see cref="Propagator"/> property.
 /// </summary>
 public class Property
 {

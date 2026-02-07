@@ -16,9 +16,7 @@ namespace Spatial.Cloud.ECS.Systems;
 public class Extractor : System
 {
     private readonly Query _query;
-
     private readonly ConcurrentDictionary<int, double[]> _inputs;
-    private readonly ConcurrentDictionary<int, double[]> _features;
 
     /// <summary>
     /// Create a new <see cref="Extractor"/>.
@@ -28,19 +26,7 @@ public class Extractor : System
         Server.Current.Extractor = this;
 
         _query = new Query().WithAll<Neuron>();
-
         _inputs = [];
-        _features = [];
-    }
- 
-    /// <summary>
-    /// Push data to the <see cref="Extractor"/>.
-    /// </summary>
-    /// <param name="group">A neural group number.</param>
-    /// <param name="signals">Input signals for sensory neurons.</param>
-    public void Push(int group, double[] signals)
-    {
-        _inputs.AddOrUpdate(group, signals, (_, value) => AddElementWise(value, signals));
     }
 
     /// <summary>
@@ -52,7 +38,7 @@ public class Extractor : System
         // Feature extraction.
         // Pre-process the inputs.
 
-        Job.ParallelFor(_inputs, (group, data) => _features[group] = Server.Current.Transducers[group].Extract(data)).Wait();
+        Job.ParallelFor(Server.Current.Propagators, (channel, propagator) => _inputs[channel] = propagator.Extract()).Wait();
 
         // Feature passing.
         // Use the extracted feature vector to update the sensory neurons.
@@ -61,7 +47,7 @@ public class Extractor : System
             query: _query,
             filter: (_, neuron) => neuron.Type == NeuronType.Sensory,
             function: (Future future, in Entity entity, ref Neuron neuron) => {
-                neuron.Value = Math.Tanh(_features.GetValueOrDefault(neuron.Group)?[neuron.Channel] ?? 0.0D);
+                neuron.Value = Math.Tanh(_inputs.GetValueOrDefault(neuron.Protocol)?[neuron.Channel] ?? 0.0D);
             });
     }
 
@@ -72,21 +58,5 @@ public class Extractor : System
     public override void AfterUpdate(Space space)
     {
         _inputs.Clear();
-        _features.Clear();
-    }
-
-    private double[] AddElementWise(double[] a, double[] b)
-    {
-        if (a.Length != b.Length)
-        {
-            throw new ArgumentException("The arrays must match in length.");
-        }
-
-        for (var i = 0; i < a.Length; i++)
-        {
-            a[i] += b[i];
-        }
-
-        return a;
     }
 }

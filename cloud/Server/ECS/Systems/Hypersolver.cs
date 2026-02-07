@@ -39,7 +39,7 @@ public class Hypersolver : System
     // Keyed by post-synaptic neurons for integration later.
 
     private readonly ConcurrentDictionary<Entity, double> _inputs;
-    private readonly ConcurrentDictionary<Entity, double> _rewards;
+    private readonly ConcurrentDictionary<Entity, double> _bias;
 
     /// <summary>
     /// Create a new <see cref="Hypersolver"/>.
@@ -59,24 +59,24 @@ public class Hypersolver : System
         _synapses = new Query().WithAll<Synapse>();
 
         _inputs = [];
-        _rewards = [];
+        _bias = [];
     }
 
     /// <summary>
-    /// Reward a <see cref="Components.Neuron"/>.
+    /// Tune a <see cref="Components.Neuron"/>.
     /// </summary>
-    /// <param name="neuron">The <see cref="Components.Neuron"/> to reward.</param>
-    /// <param name="signal">A reward signal.</param>
-    public void Reward(string neuron, double signal) => Reward(_neuronsById[neuron], signal);
+    /// <param name="neuron">The <see cref="Components.Neuron"/> to tune.</param>
+    /// <param name="signal">A bias signal.</param>
+    public void Tune(string neuron, double signal) => Tune(_neuronsById[neuron], signal);
 
     /// <summary>
-    /// Reward a <see cref="Components.Neuron"/>.
+    /// Tune a <see cref="Components.Neuron"/>.
     /// </summary>
-    /// <param name="neuron">The <see cref="Components.Neuron"/> to reward.</param>
-    /// <param name="signal">A reward signal.</param>
-    public void Reward(Entity neuron, double signal)
+    /// <param name="neuron">The <see cref="Components.Neuron"/> to tune.</param>
+    /// <param name="signal">A bias signal.</param>
+    public void Tune(Entity neuron, double signal)
     {
-        _rewards.AddOrUpdate(neuron, signal, (_, value) => value + signal);
+        _bias.AddOrUpdate(neuron, signal, (_, value) => value + signal);
     }
 
     /// <summary>
@@ -98,7 +98,7 @@ public class Hypersolver : System
         {
             var record = neurons[i];
             var entity = space.Create(
-                new Components.Neuron(record.Type, record.Group, record.Channel, record.Value),
+                new Components.Neuron(record.Type, record.Protocol, record.Channel, record.Value),
                 new Position(record.Position.X, record.Position.Y, record.Position.Z));
 
             _neuronsById[(_neuronsByEntity[entity] = record).Id] = entity;
@@ -107,7 +107,7 @@ public class Hypersolver : System
         for (var i = 0; i < synapses.Count; i++)
         {
             var record = synapses[i];
-            var entity = space.Create(new Components.Synapse(
+            var entity = space.Create(new Synapse(
                 From: _neuronsById[record.From],
                 To: _neuronsById[record.To],
                 Strength: record.Strength));
@@ -148,7 +148,7 @@ public class Hypersolver : System
                 _config.Eta * // Synaptic learning rate
                 (activity - post.Value * post.Value * synapse.Strength) * // Hebbian plasticity
                 (1.0 - Math.Exp(-Math.Abs(activity) / _config.Kappa)) * // Plastic sensitivity
-                (1.0 + Math.Clamp(_rewards.GetValueOrDefault(synapse.To), -1.0D, 1.0D)) * // Reward modulation
+                (1.0 + Math.Clamp(_bias.GetValueOrDefault(synapse.To), -1.0D, 1.0D)) * // Bias modulation
                 Math.Exp(-distance * distance / (2.0 * _config.Sigma * _config.Sigma)) * // Spatial modulation
                 delta.Seconds;
 
@@ -192,7 +192,7 @@ public class Hypersolver : System
                     // Behavior control, yeah! \o/
                     // Route the motor neuron's output value to its parent module.
 
-                    Server.Current.Transducers.GetValueOrDefault(neuron.Group)?.Apply(neuron.Channel, neuron.Value = Math.Tanh(input));
+                    Server.Current.Propagators.GetValueOrDefault(neuron.Protocol)?.Apply(neuron.Channel, neuron.Value = Math.Tanh(input));
 
                     break;
             }
@@ -206,7 +206,7 @@ public class Hypersolver : System
     public override void AfterUpdate(Space space)
     {
         _inputs.Clear();
-        _rewards.Clear();
+        _bias.Clear();
     }
 
     /// <summary>
@@ -223,8 +223,8 @@ public class Hypersolver : System
 
     private void Save(Space space)
     {
-        space.Mutate(_neurons, (Future future, in Entity entity) => SaveNeuron(space, entity));
-        space.Mutate(_synapses, (Future future, in Entity entity) => SaveSynapse(space, entity));
+        space.Mutate(_neurons, (future, in entity) => SaveNeuron(space, entity));
+        space.Mutate(_synapses, (future, in entity) => SaveSynapse(space, entity));
     }
 
     private void SaveNeuron(Space space, Entity entity) => _neuronsByEntity[entity].Update(record => {

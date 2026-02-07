@@ -15,7 +15,7 @@ namespace Spatial.Cloud;
 internal class Server : Application
 {
     private readonly Lazy<List<Sector>> _scopes;
-    private readonly Dictionary<int, Transducer> _transducers;
+    private readonly Dictionary<int, Propagator> _propagators;
 
     /// <summary>
     /// Create a new <see cref="Server"/>.
@@ -23,13 +23,13 @@ internal class Server : Application
     public Server()
     {
         _scopes = new(() => GetScopes());
-        _transducers = Assembly
+        _propagators = Assembly
             .GetEntryAssembly()!
             .GetTypes()
-            .Where(type => type.IsAssignableTo(typeof(Transducer)) && type.GetCustomAttribute<ModuleAttribute>() != default)
+            .Where(type => type.IsAssignableTo(typeof(Propagator)) && type.GetCustomAttribute<ProtocolAttribute>() != default)
             .ToDictionary(
-                keySelector: type => type.GetCustomAttribute<ModuleAttribute>()!.Id,
-                elementSelector: type => (Transducer) Activator.CreateInstance(type)!);
+                keySelector: type => type.GetCustomAttribute<ProtocolAttribute>()!.Channel,
+                elementSelector: type => (Propagator) Activator.CreateInstance(type)!);
     }
 
     /// <summary>
@@ -53,9 +53,9 @@ internal class Server : Application
     public List<Sector> Scopes => _scopes.Value;
 
     /// <summary>
-    /// The server's transducers, by their neural group.
+    /// The server's propagators.
     /// </summary>
-    public Dictionary<int, Transducer> Transducers => _transducers;
+    public Dictionary<int, Propagator> Propagators => _propagators;
 
     /// <summary>
     /// Configure the server's <see cref="IHostApplicationBuilder"/>.
@@ -100,7 +100,7 @@ internal class Server : Application
                     continue;
                 }
 
-                if (field.GetCustomAttribute<MetadataAttribute>() is not MetadataAttribute metadata)
+                if (field.GetCustomAttribute<Data.Scopes.MetadataAttribute>() is not Data.Scopes.MetadataAttribute metadata)
                 {
                     continue;
                 }

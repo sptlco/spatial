@@ -188,14 +188,13 @@ export const Editor = createElement<typeof Sheet.Content, { data: Role; onUpdate
 );
 
 const Skeleton = () => (
-  <Container className="flex flex-col gap-10 relative">
+  <Container className="flex flex-col gap-10 relative w-full">
     {[...Array(10)].map((_, i) => (
-      <Container key={i} className="flex items-center gap-10">
-        <Container className="flex flex-col gap-2">
-          <Span className="flex w-xs h-4 rounded-full bg-translucent animate-pulse" />
-          <Span className="flex w-sm h-4 rounded-full bg-translucent animate-pulse" />
+      <Container key={i} className="flex items-center gap-10 w-full">
+        <Container className="flex flex-col gap-2 w-full">
+          <Span className="flex w-7/10 h-4 rounded-full bg-translucent animate-pulse" />
+          <Span className="flex w-full h-4 rounded-full bg-translucent animate-pulse" />
         </Container>
-        <Span className="flex size-10 shrink-0 rounded-full bg-translucent animate-pulse" />
       </Container>
     ))}
     <Span className="absolute pointer-events-none inset-0 size-full bg-linear-to-b from-transparent to-background-surface" />

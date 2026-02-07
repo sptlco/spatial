@@ -17,9 +17,9 @@ public class Neuron : Resource
     public NeuronType Type { get; set; }
 
     /// <summary>
-    /// The <see cref="ECS.Systems.Transducer"/> the <see cref="Neuron"/> belongs to.
+    /// The protocol the <see cref="Neuron"/> belongs to.
     /// </summary>
-    public int Group { get; set; }
+    public int Protocol { get; set; }
 
     /// <summary>
     /// For <see cref="NeuronType.Sensory"/> and <see cref="NeuronType.Motor"/> neurons, the channel the neuron maps to.

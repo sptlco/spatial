@@ -18,6 +18,6 @@ public class Updater : System
     /// <param name="delta"><see cref="Time"/> since the last update.</param>
     public override void Update(Space space, Time delta)
     {
-        Server.Current.Transducers.ForEach((_, transducer) => transducer.Update(delta));
+        Server.Current.Propagators.ForEach((_, propagator) => propagator.Update(delta));
     }
 }

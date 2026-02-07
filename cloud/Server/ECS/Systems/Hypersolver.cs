@@ -39,7 +39,6 @@ public class Hypersolver : System
     // Keyed by post-synaptic neurons for integration later.
 
     private readonly ConcurrentDictionary<Entity, double> _inputs;
-    private readonly ConcurrentDictionary<Entity, double> _bias;
 
     /// <summary>
     /// Create a new <see cref="Hypersolver"/>.
@@ -59,24 +58,6 @@ public class Hypersolver : System
         _synapses = new Query().WithAll<Synapse>();
 
         _inputs = [];
-        _bias = [];
-    }
-
-    /// <summary>
-    /// Tune a <see cref="Components.Neuron"/>.
-    /// </summary>
-    /// <param name="neuron">The <see cref="Components.Neuron"/> to tune.</param>
-    /// <param name="signal">A bias signal.</param>
-    public void Tune(string neuron, double signal) => Tune(_neuronsById[neuron], signal);
-
-    /// <summary>
-    /// Tune a <see cref="Components.Neuron"/>.
-    /// </summary>
-    /// <param name="neuron">The <see cref="Components.Neuron"/> to tune.</param>
-    /// <param name="signal">A bias signal.</param>
-    public void Tune(Entity neuron, double signal)
-    {
-        _bias.AddOrUpdate(neuron, signal, (_, value) => value + signal);
     }
 
     /// <summary>
@@ -148,7 +129,6 @@ public class Hypersolver : System
                 _config.Eta * // Synaptic learning rate
                 (activity - post.Value * post.Value * synapse.Strength) * // Hebbian plasticity
                 (1.0 - Math.Exp(-Math.Abs(activity) / _config.Kappa)) * // Plastic sensitivity
-                (1.0 + Math.Clamp(_bias.GetValueOrDefault(synapse.To), -1.0D, 1.0D)) * // Bias modulation
                 Math.Exp(-distance * distance / (2.0 * _config.Sigma * _config.Sigma)) * // Spatial modulation
                 delta.Seconds;
 
@@ -206,7 +186,6 @@ public class Hypersolver : System
     public override void AfterUpdate(Space space)
     {
         _inputs.Clear();
-        _bias.Clear();
     }
 
     /// <summary>

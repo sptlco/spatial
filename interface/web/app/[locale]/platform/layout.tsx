@@ -272,7 +272,7 @@ export default function Layout(props: { children: ReactNode }) {
         <Container className="flex h-full gap-0 xl:gap-10">
           <Container className="flex flex-col h-full gap-10">
             <Link href="/" className="flex items-center justify-center">
-              {<Logo mode="symbol" className="size-8 xl:size-10 fill-foreground-primary" />}
+              {<Logo mode="symbol" className="w-10 fill-foreground-primary" />}
             </Link>
             <UL className="hidden xl:flex grow flex-col items-center justify-center gap-6">
               {pages.map((page, i) => {
@@ -329,7 +329,7 @@ export default function Layout(props: { children: ReactNode }) {
               <Avatar
                 src={user.account.avatar}
                 alt={user.account.name}
-                className="size-8 xl:size-10 transition-all outline-transparent outline-0 outline-offset-2 group-data-[state=open]:outline-3 group-data-[state=open]:outline-background-highlight"
+                className="size-10 transition-all outline-transparent outline-0 outline-offset-2 group-data-[state=open]:outline-3 group-data-[state=open]:outline-background-highlight"
               />
             )}
           </Sheet.Trigger>

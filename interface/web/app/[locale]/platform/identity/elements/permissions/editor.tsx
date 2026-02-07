@@ -16,7 +16,7 @@ import { Card, Container, createElement, Form, Icon, LI, Paragraph, Sheet, Span,
  */
 export const Editor = createElement<typeof Sheet.Content, { data: Role; onUpdate?: (update: Role) => void }>(
   ({ data: role, onUpdate, ...props }, ref) => {
-    const permissions = useSWR("platform/id/permissions/list", async (_) => {
+    const permissions = useSWR("platform/identity/permissions/list", async (_) => {
       const response = await Spatial.permissions.list();
 
       if (response.error) {
@@ -26,7 +26,7 @@ export const Editor = createElement<typeof Sheet.Content, { data: Role; onUpdate
       return response.data;
     });
 
-    const scopes = useSWR("platform/id/permissions/scopes/list", async (_) => {
+    const scopes = useSWR("platform/identity/permissions/scopes/list", async (_) => {
       const response = await Spatial.scopes.list();
 
       if (response.error) {

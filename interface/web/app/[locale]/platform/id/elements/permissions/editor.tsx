@@ -153,7 +153,7 @@ export const Editor = createElement<typeof Sheet.Content, { data: Role; onUpdate
                           type="single"
                           value={can(scope.tag) ? "granted" : "revoked"}
                           onValueChange={(value) => toggle(scope.tag, value === "granted" ? true : false)}
-                          disabled={saving}
+                          disabled={saving || !can("permissions.update")}
                         >
                           <ToggleGroup.Item
                             value="revoked"

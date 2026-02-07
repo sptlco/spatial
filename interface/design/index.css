@@ -151,4 +151,10 @@
   .material-symbols-rounded.fill {
     font-variation-settings: "FILL" 1;
   }
+
+  .sonner-loader {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
 }

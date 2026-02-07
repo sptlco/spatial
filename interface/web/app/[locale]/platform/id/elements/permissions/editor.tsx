@@ -48,8 +48,8 @@ export const Editor = createElement<typeof Sheet.Content, { data: Role; onUpdate
 
     const [saving, setSaving] = useState(false);
 
-    const set = new Set(table);
-    const can = (scope: string) => set.has(scope);
+    const could = (scope: string) => new Set(initial).has(scope);
+    const can = (scope: string) => new Set(table).has(scope);
 
     const loading = scopes.isLoading || !scopes.data || permissions.isLoading || !permissions.data;
     const dirty = diff.added.length > 0 || diff.removed.length > 0;
@@ -128,12 +128,20 @@ export const Editor = createElement<typeof Sheet.Content, { data: Role; onUpdate
           ) : (
             scopes.data!.map((sector) => (
               <Card.Root key={sector.name} className="gap-5! w-full">
-                <Card.Header className="text-hint text-xs uppercase font-bold">{sector.name}</Card.Header>
+                <Card.Header
+                  className={clsx(
+                    "grid-rows-1! py-2.5",
+                    "text-hint text-xs uppercase font-bold relative flex items-center",
+                    "after:absolute after:w-[calc(100%+80px)] after:h-full after:bg-background-highlight/30 after:-left-10 after:-z-10"
+                  )}
+                >
+                  <Span>{sector.name}</Span>
+                </Card.Header>
                 <Card.Content className="w-full">
                   <UL className="flex flex-col w-full gap-10">
                     {sector.scopes.map((scope, i) => (
                       <LI key={i} className="flex items-center gap-10">
-                        <Container className="flex flex-col grow gap-2">
+                        <Container className={clsx("flex flex-col grow gap-2 transition-all", { "opacity-50": !can(scope.tag) })}>
                           <Container className="flex flex-col">
                             <Span className="font-bold">{scope.name}</Span>
                             <Span className="text-xs text-foreground-secondary font-semibold">{scope.tag}</Span>

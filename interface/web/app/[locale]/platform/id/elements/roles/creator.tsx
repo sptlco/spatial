@@ -64,17 +64,6 @@ export const Creator = createElement<typeof Sheet.Content, { onCreate?: (role: R
           inset={false}
         />
         <Field
-          type="text"
-          id="description"
-          name="description"
-          label="Description"
-          value={description}
-          placeholder="What do these users do?"
-          onChange={(e) => setDescription(e.target.value)}
-          disabled={creating}
-          inset={false}
-        />
-        <Field
           type="color"
           id="color"
           name="color"
@@ -84,6 +73,18 @@ export const Creator = createElement<typeof Sheet.Content, { onCreate?: (role: R
           onValueChange={setColor}
           disabled={creating}
           inset={false}
+        />
+        <Field
+          type="text"
+          id="description"
+          name="description"
+          label="Description"
+          value={description}
+          placeholder="What do these users do?"
+          onChange={(e) => setDescription(e.target.value)}
+          disabled={creating}
+          inset={false}
+          required={false}
         />
         <Field
           type="meta"
@@ -97,7 +98,7 @@ export const Creator = createElement<typeof Sheet.Content, { onCreate?: (role: R
           required={false}
         />
         <Container className="flex items-center gap-4">
-          <Button type="submit" disabled={creating || !name || !description}>
+          <Button type="submit" disabled={creating || !name}>
             Create
           </Button>
           <Sheet.Close asChild>

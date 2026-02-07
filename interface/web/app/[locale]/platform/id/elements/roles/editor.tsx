@@ -66,21 +66,6 @@ export const Editor = createElement<typeof Sheet.Content, { data: Role; onUpdate
             }
           />
           <Field
-            type="text"
-            id="description"
-            name="description"
-            label="Description"
-            value={update.description || ""}
-            disabled={updating}
-            inset={false}
-            onChange={(e) =>
-              setUpdate({
-                ...update,
-                description: e.target.value
-              })
-            }
-          />
-          <Field
             type="color"
             id="color"
             name="color"
@@ -90,6 +75,23 @@ export const Editor = createElement<typeof Sheet.Content, { data: Role; onUpdate
             disabled={updating}
             inset={false}
             onValueChange={(color) => setUpdate({ ...update, color })}
+          />
+          <Field
+            type="text"
+            id="description"
+            name="description"
+            label="Description"
+            value={update.description || ""}
+            placeholder="Describe this role"
+            disabled={updating}
+            inset={false}
+            required={false}
+            onChange={(e) =>
+              setUpdate({
+                ...update,
+                description: e.target.value
+              })
+            }
           />
           <Field
             type="meta"
@@ -108,7 +110,7 @@ export const Editor = createElement<typeof Sheet.Content, { data: Role; onUpdate
             }}
           />
           <Container className="flex items-center gap-4">
-            <Button type="submit" disabled={updating}>
+            <Button type="submit" disabled={updating || !update.name}>
               Update
             </Button>
             <Sheet.Close asChild>

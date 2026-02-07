@@ -12,12 +12,12 @@ export type CreateRoleOptions = CreateResourceOptions & {
   name: string;
 
   /**
-   * A message describing what the role does.
-   */
-  description: string;
-
-  /**
    * A color associated with the role.
    */
   color: string;
+
+  /**
+   * A message describing what the role does.
+   */
+  description?: string;
 };

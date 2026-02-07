@@ -16,12 +16,12 @@ public class Role : Resource
     public string Name { get; set; }
 
     /// <summary>
-    /// What users with this role do.
-    /// </summary>
-    public string Description { get; set; }
-
-    /// <summary>
     /// The color associated with the role.
     /// </summary>
     public string Color { get; set; }
+
+    /// <summary>
+    /// What users with this role do.
+    /// </summary>
+    public string? Description { get; set; }
 }

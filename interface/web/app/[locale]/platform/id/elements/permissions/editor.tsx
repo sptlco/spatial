@@ -115,7 +115,7 @@ export const Editor = createElement<typeof Sheet.Content, { data: Role; onUpdate
             };
           }
         });
-      }, 500);
+      }, 800);
 
       return () => clearTimeout(timeout);
     }, [diff, table]);
@@ -142,6 +142,7 @@ export const Editor = createElement<typeof Sheet.Content, { data: Role; onUpdate
                           type="single"
                           value={can(scope.tag) ? "granted" : "revoked"}
                           onValueChange={(value) => toggle(scope.tag, value === "granted" ? true : false)}
+                          disabled={saving}
                         >
                           <ToggleGroup.Item
                             value="revoked"

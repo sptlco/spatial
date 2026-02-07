@@ -17,6 +17,6 @@ export const ToggleGroup = {
    * An item in the group.
    */
   Item: createElement<typeof Primitive.Item>((props, ref) => (
-    <Primitive.Item {...props} ref={ref} className={clsx("cursor-pointer", props.className)} />
+    <Primitive.Item {...props} ref={ref} className={clsx("cursor-pointer", "transition-all data-disabled:opacity-50", props.className)} />
   ))
 };

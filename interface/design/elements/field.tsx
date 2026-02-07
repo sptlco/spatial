@@ -264,7 +264,7 @@ export const Field = createElement<"input", FieldProps>(({ inset = true, ...prop
               </Container>
             ))}
 
-            <Button type="button" intent="ghost" className="bg-transparent! text-hint! px-4!" disabled={props.disabled} onClick={add}>
+            <Button type="button" intent="ghost" className={clsx("bg-transparent! text-hint! px-4!")} disabled={props.disabled} onClick={add}>
               <Icon symbol="add_diamond" className="font-light" />
               <Span>Add property</Span>
             </Button>
@@ -276,7 +276,7 @@ export const Field = createElement<"input", FieldProps>(({ inset = true, ...prop
   return (
     <Container className={clsx("group flex flex-col space-y-4 w-full", props.containerClassName)}>
       {(props.label || props.required === false) && (
-        <Container className="flex items-center px-4">
+        <Container className="flex items-center">
           {props.label && (
             <Label className={clsx("font-medium transition-all grow", { "px-4": inset })} htmlFor={props.id}>
               {props.label}

@@ -142,7 +142,7 @@ export const Editor = createElement<typeof Sheet.Content, { user: User; onUpdate
           }}
         />
         <Container className="flex items-center gap-4">
-          <Button type="submit" disabled={updating}>
+          <Button type="submit" disabled={updating || !update.account.name || !update.account.email}>
             Update
           </Button>
           <Sheet.Close asChild>

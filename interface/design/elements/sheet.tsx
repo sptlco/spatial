@@ -62,7 +62,7 @@ export const Sheet = {
           )}
         />
         <Primitive.Content {...props} data-slot="sheet-content" className={clsx(classes({ side }), props.className)} ref={ref}>
-          <ScrollArea.Root className="h-full" fade>
+          <ScrollArea.Root className="h-full rounded-[inherit]" fade>
             <ScrollArea.Viewport className="max-h-screen">
               <Container className="flex flex-col p-10 gap-10">
                 <Container className="flex gap-10">

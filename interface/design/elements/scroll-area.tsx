@@ -32,11 +32,7 @@ export const ScrollArea = {
                 "--fade-bottom": `${down}%`
               } as React.CSSProperties
             }
-            className={clsx(
-              "relative flex rounded-[inherit] overflow-hidden",
-              { "mask-t-from-(--fade-top) mask-b-from-(--fade-bottom)": fade },
-              props.className
-            )}
+            className={clsx("relative flex overflow-hidden", { "mask-t-from-(--fade-top) mask-b-from-(--fade-bottom)": fade }, props.className)}
           />
         </ScrollAreaViewportContext.Provider>
       );

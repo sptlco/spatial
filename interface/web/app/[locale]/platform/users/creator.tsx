@@ -62,7 +62,7 @@ export const Creator = createElement<typeof Sheet.Content, { onCreate?: (account
           type="text"
           id="name"
           name="name"
-          placeholder="Black Panther"
+          placeholder="User"
           label="Name"
           value={name}
           onChange={(e) => setName(e.target.value)}
@@ -75,7 +75,7 @@ export const Creator = createElement<typeof Sheet.Content, { onCreate?: (account
           name="email"
           label="User ID"
           suffix={`@${domain}`}
-          placeholder="panther"
+          placeholder="name"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           disabled={creating}

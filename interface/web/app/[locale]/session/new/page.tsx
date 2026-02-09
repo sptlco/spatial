@@ -26,6 +26,7 @@ export default function Page() {
 
   const [state, setState] = useState<AuthenticationState>("idle");
   const [email, setEmail] = useState("");
+  const [host, setHost] = useState("");
   const [code, setCode] = useState("");
 
   const processing = state === "requesting" || state === "verifying" || state === "authenticated";
@@ -87,6 +88,10 @@ export default function Page() {
   };
 
   useEffect(() => {
+    setHost(window.location.host);
+  }, []);
+
+  useEffect(() => {
     switch (state) {
       case "authenticated":
         window.location.reload();
@@ -125,6 +130,7 @@ export default function Page() {
           })}
           disabled={state !== "idle"}
           value={email}
+          suffix={`@${host}`}
           onChange={(e) => setEmail(e.target.value)}
         />
         <Button type="submit" className="w-full">

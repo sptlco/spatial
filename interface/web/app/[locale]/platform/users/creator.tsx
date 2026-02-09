@@ -4,16 +4,20 @@
 
 import { Spatial } from "@sptlco/client";
 import { Account } from "@sptlco/data";
-import { FormEvent, useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
 
-import { Button, Container, createElement, Field, Form, Sheet, Span, Spinner, toast } from "@sptlco/design";
+import { Button, Container, createElement, Field, Form, Icon, Sheet, Span, Spinner, toast } from "@sptlco/design";
 
 export const Creator = createElement<typeof Sheet.Content, { onCreate?: (account: Account) => void }>(({ onCreate, ...props }, ref) => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
+  const [host, setHost] = useState("");
   const [metadata, setMetadata] = useState<Record<string, string>>();
-
   const [creating, setCreating] = useState(false);
+
+  useEffect(() => {
+    setHost(window.location.host);
+  }, []);
 
   const create = async (e: FormEvent) => {
     e.preventDefault();
@@ -68,9 +72,19 @@ export const Creator = createElement<typeof Sheet.Content, { onCreate?: (account
           type="text"
           id="email"
           name="email"
-          placeholder="name@company.com"
-          label="Email address"
-          description="The user will sign into the platform with this email address."
+          label="User ID"
+          suffix={`@${host}`}
+          placeholder="user"
+          description={
+            email && (
+              <Span className="inline-flex items-start gap-2">
+                <Icon symbol="warning" size={20} className="font-light text-state-warning" fill />
+                <Span>
+                  Before creating the user, ensure there is sufficient quota to create a mailbox for <Span className="font-bold">{email}</Span>.
+                </Span>
+              </Span>
+            )
+          }
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           disabled={creating}

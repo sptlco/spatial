@@ -6,7 +6,7 @@ import { clsx } from "clsx";
 import { OTPInput, OTPInputContext, OTPInputProps } from "input-otp";
 import { ReactNode, useContext, useEffect, useRef, useState } from "react";
 import { HexColorPicker, HexColorInput } from "react-colorful";
-import { Button, Container, createElement, Dropdown, Icon, Input, Label, Paragraph, Span } from "..";
+import { Button, Container, createElement, Dropdown, Icon, Input, Label, Paragraph, Span, toast } from "..";
 
 /**
  * Common configurable options for a field.
@@ -46,6 +46,16 @@ export type TextFieldProps = {
    * An optional placeholder for the field.
    */
   placeholder?: string;
+
+  /**
+   * An optional prefix.
+   */
+  prefix?: string;
+
+  /**
+   * An optional suffix.
+   */
+  suffix?: string;
 };
 
 /**
@@ -135,7 +145,59 @@ export const Field = createElement<"input", FieldProps>(({ inset = true, ...prop
       case "text":
       case "email":
       case "password":
-        return <Input {...props} ref={ref} type={props.type} placeholder={props.placeholder} autoComplete="off" className={defaultClasses} />;
+        let value = props.value?.toString() ?? "";
+
+        if (props.prefix && value.startsWith(props.prefix)) {
+          value = value.slice(props.prefix.length);
+        }
+
+        if (props.suffix && value.endsWith(props.suffix)) {
+          value = value.slice(0, -props.suffix.length);
+        }
+
+        return props.readOnly ? (
+          <Span className="w-fit max-w-full truncate flex items-center gap-4 px-4 py-2 bg-input rounded-lg">
+            <Span className="grow truncate">{props.value}</Span>
+            <Button
+              intent="ghost"
+              className="p-0! size-8! shrink-0"
+              onClick={() => {
+                toast.promise(navigator.clipboard.writeText(props.value?.toString() ?? ""), {
+                  loading: "Copying value",
+                  success: (_) => ({
+                    message: "Value copied",
+                    description: "The field's value was copied to your clipboard."
+                  })
+                });
+              }}
+            >
+              <Icon symbol="copy_all" className="cursor-pointer font-light" size={20} />
+            </Button>
+          </Span>
+        ) : (
+          <Container className="flex items-center w-full gap-4">
+            {props.prefix && <Span className="text-hint">{props.prefix}</Span>}
+            <Input
+              {...props}
+              ref={ref}
+              type={props.type}
+              placeholder={props.placeholder}
+              autoComplete="off"
+              value={value}
+              onChange={(e) =>
+                props.onChange?.({
+                  ...e,
+                  target: {
+                    ...e.target,
+                    value: `${e.target.value && (props.prefix || "")}${e.target.value}${e.target.value && (props.suffix || "")}`
+                  }
+                })
+              }
+              className={clsx(defaultClasses)}
+            />
+            {props.suffix && <Span className="text-hint">{props.suffix}</Span>}
+          </Container>
+        );
       case "otp": {
         const { onValueChange, ...rest } = props;
 

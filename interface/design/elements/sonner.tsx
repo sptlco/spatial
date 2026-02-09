@@ -24,7 +24,7 @@ export const Toaster = createElement<typeof Primitive, ToasterProps>((props, ref
       bottom: 24
     }}
     icons={{
-      info: <Icon symbol="info" className="text-hint font-normal" fill />,
+      info: <Icon symbol="info" className="text-hint font-normal" />,
       error: <Icon symbol="error" className="text-white font-normal" fill />,
       loading: <Spinner className="size-4 text-hint" />,
       success: <Icon symbol="check_circle" className="text-green font-light" fill />,

@@ -5,7 +5,7 @@
 import { useUser } from "@/stores";
 import { Spatial } from "@sptlco/client";
 import { User } from "@sptlco/data";
-import { FormEvent, useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
 import { useShallow } from "zustand/shallow";
 
 import { Button, Container, createElement, Field, Form, Sheet, Span, toast } from "@sptlco/design";
@@ -22,7 +22,12 @@ export const Editor = createElement<typeof Sheet.Content, { user: User; onUpdate
   );
 
   const [update, setUpdate] = useState<User>(user);
+  const [host, setHost] = useState("");
   const [updating, setUpdating] = useState(false);
+
+  useEffect(() => {
+    setHost(window.location.host);
+  }, []);
 
   const edit = async (e: FormEvent) => {
     e.preventDefault();
@@ -88,19 +93,13 @@ export const Editor = createElement<typeof Sheet.Content, { user: User; onUpdate
           type="text"
           id="email"
           name="email"
-          label="Email address"
-          value={update.account.email || ""}
+          label="User ID"
+          value={user.account.email}
+          suffix={`@${host}`}
+          placeholder="user"
           disabled={updating}
+          readOnly
           inset={false}
-          onChange={(e) =>
-            setUpdate({
-              ...update,
-              account: {
-                ...update.account,
-                email: e.target.value
-              }
-            })
-          }
         />
         <Field
           type="text"

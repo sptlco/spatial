@@ -5,7 +5,7 @@
 
     "email": {
       "label": "Email Address",
-      "placeholder": "name@company.com",
+      "placeholder": "name",
       "description": "Learn about our approach to secure, <link>passwordless authentication</link> in the public documentation."
     },
 

@@ -4,9 +4,8 @@
 
 import { clsx } from "clsx";
 import { OTPInput, OTPInputContext, OTPInputProps } from "input-otp";
-import { ComponentProps, ReactNode, useContext, useEffect, useRef, useState } from "react";
+import { ReactNode, useContext, useEffect, useRef, useState } from "react";
 import { HexColorPicker, HexColorInput } from "react-colorful";
-import AutosizeInput from "react-input-autosize";
 import { Button, Container, createElement, Dropdown, Icon, Input, Label, Paragraph, Span, toast } from "..";
 
 /**

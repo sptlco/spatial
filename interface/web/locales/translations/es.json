@@ -47,7 +47,7 @@
         "intelligence": "Inteligencia",
         "logistics": "Logística",
         "network": "Red",
-        "simulation": "Simulación"
+        "environment": "Entorno"
       }
     }
   },

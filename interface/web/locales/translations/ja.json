@@ -47,7 +47,7 @@
         "intelligence": "インテリジェンス",
         "logistics": "ロジスティクス",
         "network": "ネットワーク",
-        "simulation": "シミュレーション"
+        "environment": "環境"
       }
     }
   },

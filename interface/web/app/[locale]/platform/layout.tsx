@@ -59,6 +59,11 @@ const pages: Page[] = [
     icon: "database"
   },
   {
+    name: "navigation.platform.pages.environment",
+    path: `${BASE_URL}/space`,
+    icon: "precision_manufacturing"
+  },
+  {
     name: "navigation.platform.pages.identity",
     path: `${BASE_URL}/users`,
     icon: "person"
@@ -76,12 +81,7 @@ const pages: Page[] = [
   {
     name: "navigation.platform.pages.network",
     path: `${BASE_URL}/network`,
-    icon: "cell_tower"
-  },
-  {
-    name: "navigation.platform.pages.simulation",
-    path: `${BASE_URL}/space`,
-    icon: "simulation"
+    icon: "compare_arrows"
   }
 ];
 

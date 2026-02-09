@@ -18,6 +18,7 @@
     "react": "^19",
     "react-dom": "^19",
     "swr": "^2.3.8",
+    "tldts": "^7.0.23",
     "zustand": "^5.0.9"
   },
   "devDependencies": {

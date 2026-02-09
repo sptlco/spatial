@@ -5,18 +5,19 @@
 import { Spatial } from "@sptlco/client";
 import { Account } from "@sptlco/data";
 import { FormEvent, useEffect, useState } from "react";
+import { getDomain } from "tldts";
 
 import { Button, Container, createElement, Field, Form, Icon, Sheet, Span, Spinner, toast } from "@sptlco/design";
 
 export const Creator = createElement<typeof Sheet.Content, { onCreate?: (account: Account) => void }>(({ onCreate, ...props }, ref) => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
-  const [host, setHost] = useState("");
+  const [domain, setDomain] = useState("");
   const [metadata, setMetadata] = useState<Record<string, string>>();
   const [creating, setCreating] = useState(false);
 
   useEffect(() => {
-    setHost(window.location.host);
+    setDomain(getDomain(window.location.host) || "");
   }, []);
 
   const create = async (e: FormEvent) => {
@@ -61,7 +62,7 @@ export const Creator = createElement<typeof Sheet.Content, { onCreate?: (account
           type="text"
           id="name"
           name="name"
-          placeholder="User"
+          placeholder="Black Panther"
           label="Name"
           value={name}
           onChange={(e) => setName(e.target.value)}
@@ -73,18 +74,8 @@ export const Creator = createElement<typeof Sheet.Content, { onCreate?: (account
           id="email"
           name="email"
           label="User ID"
-          suffix={`@${host}`}
-          placeholder="user"
-          description={
-            email && (
-              <Span className="inline-flex items-start gap-2">
-                <Icon symbol="warning" size={20} className="font-light text-state-warning" fill />
-                <Span>
-                  Before creating the user, ensure there is sufficient quota to create a mailbox for <Span className="font-bold">{email}</Span>.
-                </Span>
-              </Span>
-            )
-          }
+          suffix={`@${domain}`}
+          placeholder="panther"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           disabled={creating}

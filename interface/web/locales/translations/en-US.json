@@ -4,7 +4,7 @@
     "description": "Sign in to continue to Spatial.",
 
     "email": {
-      "label": "Email Address",
+      "label": "User ID",
       "placeholder": "name",
       "description": "Learn about our approach to secure, <link>passwordless authentication</link> in the public documentation."
     },

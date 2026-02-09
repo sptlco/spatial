@@ -9,7 +9,7 @@ import { Button, Container, Dialog, Field, Form, H1, Icon, Link, Logo, Main, OTP
 import cookies from "js-cookie";
 import { useTranslations } from "next-intl";
 import { FormEvent, useEffect, useState } from "react";
-import { useShallow } from "zustand/shallow";
+import { getDomain } from "tldts";
 
 const KEY_LENGTH = 4;
 
@@ -26,7 +26,7 @@ export default function Page() {
 
   const [state, setState] = useState<AuthenticationState>("idle");
   const [email, setEmail] = useState("");
-  const [host, setHost] = useState("");
+  const [domain, setDomain] = useState("");
   const [code, setCode] = useState("");
 
   const processing = state === "requesting" || state === "verifying" || state === "authenticated";
@@ -88,7 +88,7 @@ export default function Page() {
   };
 
   useEffect(() => {
-    setHost(window.location.host);
+    setDomain(getDomain(window.location.host) || "");
   }, []);
 
   useEffect(() => {
@@ -120,7 +120,11 @@ export default function Page() {
           label={t("email.label")}
           name="email"
           id="email"
-          placeholder={t("email.placeholder")}
+          disabled={state !== "idle"}
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          suffix={`@${domain}`}
+          placeholder="name"
           description={t.rich("email.description", {
             link: (chunks) => (
               <Link href="/docs" target="_blank">
@@ -128,10 +132,6 @@ export default function Page() {
               </Link>
             )
           })}
-          disabled={state !== "idle"}
-          value={email}
-          suffix={`@${host}`}
-          onChange={(e) => setEmail(e.target.value)}
         />
         <Button type="submit" className="w-full">
           <Span>{t("continue")}</Span>

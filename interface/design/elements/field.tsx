@@ -4,8 +4,9 @@
 
 import { clsx } from "clsx";
 import { OTPInput, OTPInputContext, OTPInputProps } from "input-otp";
-import { ReactNode, useContext, useEffect, useRef, useState } from "react";
+import { ComponentProps, ReactNode, useContext, useEffect, useRef, useState } from "react";
 import { HexColorPicker, HexColorInput } from "react-colorful";
+import AutosizeInput from "react-input-autosize";
 import { Button, Container, createElement, Dropdown, Icon, Input, Label, Paragraph, Span, toast } from "..";
 
 /**
@@ -134,10 +135,10 @@ export type FieldProps = SharedFieldProps & FieldTypeProps;
  */
 export const Field = createElement<"input", FieldProps>(({ inset = true, ...props }, ref) => {
   const render = () => {
-    const defaultClasses = clsx(
+    const classes = clsx(
       "disabled:opacity-50",
-      "w-full px-4 py-2 bg-input placeholder-hint rounded-lg transition-all",
-      "outline-2 outline-offset-3 outline-transparent focus:outline-line-input-focus",
+      "px-4 py-2 bg-input placeholder-hint rounded-lg transition-all",
+      "outline-2 outline-offset-3 outline-transparent focus:outline-line-input-focus focus-within:outline-line-input-focus",
       props.className
     );
 
@@ -155,8 +156,54 @@ export const Field = createElement<"input", FieldProps>(({ inset = true, ...prop
           value = value.slice(0, -props.suffix.length);
         }
 
+        const input = () => {
+          if (props.prefix || props.suffix) {
+            return (
+              <Container className={clsx(classes, "flex items-center w-full gap-4")}>
+                {props.prefix && <Span className="text-hint shrink-0">{props.prefix}</Span>}
+                <Input
+                  {...props}
+                  ref={ref}
+                  autoComplete="off"
+                  className="placeholder:text-hint grow truncate"
+                  value={value}
+                  onChange={(e) =>
+                    props.onChange?.({
+                      ...e,
+                      target: {
+                        ...e.target,
+                        value: `${e.target.value && (props.prefix || "")}${e.target.value}${e.target.value && (props.suffix || "")}`
+                      }
+                    })
+                  }
+                />
+                {props.suffix && <Span className="text-hint shrink-0">{props.suffix}</Span>}
+              </Container>
+            );
+          }
+
+          return (
+            <Input
+              {...props}
+              ref={ref}
+              autoComplete="off"
+              className={clsx(classes, "w-full")}
+              value={value}
+              onChange={(e) =>
+                props.onChange?.({
+                  ...e,
+                  target: {
+                    ...e.target,
+                    value: `${e.target.value && (props.prefix || "")}${e.target.value}${e.target.value && (props.suffix || "")}`
+                  }
+                })
+              }
+            />
+          );
+        };
+
         return props.readOnly ? (
-          <Span className="w-fit max-w-full truncate flex items-center gap-4 px-4 py-2 bg-input rounded-lg">
+          <Span className="w-full truncate flex items-center gap-4 px-4 py-2 bg-input rounded-lg">
             <Span className="grow truncate">{props.value}</Span>
             <Button
               intent="ghost"
@@ -175,28 +222,7 @@ export const Field = createElement<"input", FieldProps>(({ inset = true, ...prop
             </Button>
           </Span>
         ) : (
-          <Container className="flex items-center w-full gap-4">
-            {props.prefix && <Span className="text-hint">{props.prefix}</Span>}
-            <Input
-              {...props}
-              ref={ref}
-              type={props.type}
-              placeholder={props.placeholder}
-              autoComplete="off"
-              value={value}
-              onChange={(e) =>
-                props.onChange?.({
-                  ...e,
-                  target: {
-                    ...e.target,
-                    value: `${e.target.value && (props.prefix || "")}${e.target.value}${e.target.value && (props.suffix || "")}`
-                  }
-                })
-              }
-              className={clsx(defaultClasses)}
-            />
-            {props.suffix && <Span className="text-hint">{props.suffix}</Span>}
-          </Container>
+          input()
         );
       case "otp": {
         const { onValueChange, ...rest } = props;
@@ -224,7 +250,7 @@ export const Field = createElement<"input", FieldProps>(({ inset = true, ...prop
                 <HexColorPicker color={rest.value} onChange={onValueChange} />
               </Dropdown.Content>
             </Dropdown.Root>
-            <HexColorInput {...rest} type="text" className={clsx(defaultClasses, "pl-13")} color={rest.value} prefixed onChange={onValueChange} />
+            <HexColorInput {...rest} type="text" className={clsx(classes, "pl-13 w-full")} color={rest.value} prefixed onChange={onValueChange} />
           </Container>
         );
       }

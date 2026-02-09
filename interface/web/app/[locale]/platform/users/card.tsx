@@ -526,10 +526,8 @@ export const Users = () => {
                                 <Span className="flex size-2 rounded-full bg-blue" />
                               </Dropdown.ItemIndicator>
                             </Span>
-                            <Span className="flex items-center gap-3">
-                              <Monogram text={role.name} style={{ color: role.color }} className="size-8" />
-                              <Span className="font-bold">{role.name}</Span>
-                            </Span>
+                            <Monogram text={role.name} style={{ color: role.color }} className="size-8" />
+                            <Span className="font-bold">{role.name}</Span>
                           </Dropdown.CheckboxItem>
                         );
                       })}

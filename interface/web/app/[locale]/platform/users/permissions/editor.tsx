@@ -111,7 +111,7 @@ export const Editor = createElement<typeof Sheet.Content, { data: Role; onUpdate
 
             return {
               message: "Permissions updated",
-              description: `Updated ${count} permission${count === 1 ? "" : "s"}.`
+              description: `Applied ${count} change${count === 1 ? "" : "s"} to permissions.`
             };
           }
         });
@@ -152,7 +152,7 @@ export const Editor = createElement<typeof Sheet.Content, { data: Role; onUpdate
                           className="rounded-lg shrink-0 overflow-hidden flex bg-input"
                           type="single"
                           value={can(scope.tag) ? "granted" : "revoked"}
-                          onValueChange={(value) => toggle(scope.tag, value === "granted" ? true : false)}
+                          onValueChange={(value) => toggle(scope.tag, value === "granted")}
                           disabled={saving || !can("permissions.update")}
                         >
                           <ToggleGroup.Item

@@ -28,8 +28,10 @@ import {
   Form,
   Icon,
   LI,
+  Monogram,
   Pagination,
   Paragraph,
+  Separator,
   Sheet,
   Span,
   Spinner,
@@ -48,6 +50,114 @@ export const Users = () => {
   const searchParams = useSearchParams();
   const now = useNow();
   const format = useFormatter();
+
+  const [selection, setSelection] = useState<string[]>([]);
+  const [search, setSearch] = useState("");
+
+  const filters = searchParams.get("filters")?.split(",").filter(Boolean) ?? [];
+  const orders = searchParams.get("sort")?.split(",").filter(Boolean) ?? [];
+
+  const filter = (role: string, checked: boolean) => {
+    const params = new URLSearchParams(searchParams.toString());
+    const next = new Set(filters);
+
+    if (checked) {
+      next.add(role);
+    } else {
+      next.delete(role);
+    }
+
+    if (next.size > 0) {
+      params.set("filters", Array.from(next).join(","));
+    } else {
+      params.delete("filters");
+    }
+
+    router.replace(`${pathname}?${params.toString()}`, { scroll: false });
+  };
+
+  const unfilter = () => {
+    const params = new URLSearchParams(searchParams.toString());
+
+    params.delete("filters");
+    router.replace(`${pathname}?${params.toString()}`, { scroll: false });
+  };
+
+  const getOrderForProperty = (property: string) => orders.find((o) => o.startsWith(`${property}-`));
+
+  const getOrderIndex = (property: string) => orders.findIndex((o) => o.startsWith(`${property}-`));
+
+  const toggleSort = (property: string) => {
+    const params = new URLSearchParams(searchParams.toString());
+    const next = [...orders];
+
+    const asc = `${property}-asc`;
+    const desc = `${property}-desc`;
+
+    const index = next.findIndex((o) => o === asc || o === desc);
+
+    if (index === -1) {
+      // OFF → ASC (append, preserving existing priority)
+      next.push(asc);
+    } else if (next[index] === asc) {
+      // ASC → DESC (same priority slot)
+      next[index] = desc;
+    } else {
+      // DESC → OFF (remove entirely)
+      next.splice(index, 1);
+    }
+
+    if (next.length > 0) {
+      params.set("sort", next.join(","));
+    } else {
+      params.delete("sort");
+    }
+
+    router.replace(`${pathname}?${params.toString()}`, { scroll: false });
+  };
+
+  const sort = (users: User[]): User[] => {
+    if (orders.length === 0) return users;
+
+    return [...users].sort((a, b) => {
+      for (const order of orders) {
+        const result = comparators[order as Order](a, b);
+
+        if (result !== 0) {
+          return result;
+        }
+      }
+
+      return 0;
+    });
+  };
+
+  const unsort = () => {
+    const params = new URLSearchParams(searchParams.toString());
+
+    params.delete("sort");
+    router.replace(`${pathname}?${params.toString()}`, { scroll: false });
+  };
+
+  const navigate = (page: number) => {
+    const params = new URLSearchParams(searchParams.toString());
+
+    if (page > 1) {
+      params.set("users", page.toString());
+    } else {
+      params.delete("users");
+    }
+
+    router.replace(`${pathname}?${params.toString()}`, { scroll: false });
+  };
+
+  const toggle = (user: User, selected: boolean) => {
+    setSelection((s) => [...s.filter((x) => x !== user.account.id), ...(selected ? [user.account.id] : [])]);
+  };
+
+  const toggleAll = (selected: boolean) => {
+    setSelection(selected ? paginatedData.map((u) => u.account.id) : []);
+  };
 
   const { account } = useUser(useShallow((state) => ({ account: state.account })));
 
@@ -71,74 +181,18 @@ export const Users = () => {
     return Object.fromEntries(response.data.map((r) => [r.name, r]));
   });
 
-  const filters = searchParams.get("filters")?.split(",").filter(Boolean) ?? [];
-  const data =
-    (filters.length === 0
-      ? users.data
-      : users.data?.filter((u) =>
-          filters.every((t) => u.principal.roles.includes(t) || (u.account.metadata.type ?? "consumer") === t.toLowerCase())
-        )) ?? [];
-
-  const sortedData = useMemo(() => [...data].sort((a, b) => b.account.created - a.account.created), [data]);
+  const data = (filters.length === 0 ? users.data : users.data?.filter((u) => filters.some((t) => u.principal.roles.includes(t)))) ?? [];
+  const sortedData = useMemo(() => sort([...data]), [data, orders]);
 
   const PAGE_SIZE = 20;
 
-  const page = useMemo(() => Math.max(1, Number(searchParams.get("page-users") ?? 1)), [searchParams]);
+  const page = useMemo(() => Math.max(1, Number(searchParams.get("users") ?? 1)), [searchParams]);
   const pages = Math.ceil(sortedData.length / PAGE_SIZE);
 
   const paginatedData = useMemo(() => {
     const start = (page - 1) * PAGE_SIZE;
     return sortedData.slice(start, start + PAGE_SIZE);
   }, [sortedData, page]);
-
-  const filter = (role: string, checked: boolean) => {
-    const params = new URLSearchParams(searchParams.toString());
-    const next = new Set(filters);
-
-    if (checked) {
-      next.add(role);
-    } else {
-      next.delete(role);
-    }
-
-    if (next.size > 0) {
-      params.set("filters", Array.from(next).join(","));
-    } else {
-      params.delete("filters");
-    }
-
-    router.replace(`${pathname}?${params.toString()}`, { scroll: false });
-  };
-
-  const clearFilters = () => {
-    const params = new URLSearchParams(searchParams.toString());
-
-    params.delete("filters");
-    router.replace(`${pathname}?${params.toString()}`, { scroll: false });
-  };
-
-  const navigate = (page: number) => {
-    const params = new URLSearchParams(searchParams.toString());
-
-    if (page > 1) {
-      params.set("page-users", page.toString());
-    } else {
-      params.delete("page-users");
-    }
-
-    router.replace(`${pathname}?${params.toString()}`, { scroll: false });
-  };
-
-  const [selection, setSelection] = useState<string[]>([]);
-  const [search, setSearch] = useState("");
-
-  const toggle = (user: User, selected: boolean) => {
-    setSelection((s) => [...s.filter((x) => x !== user.account.id), ...(selected ? [user.account.id] : [])]);
-  };
-
-  const toggleAll = (selected: boolean) => {
-    setSelection(selected ? paginatedData.map((u) => u.account.id) : []);
-  };
 
   const Body = () => {
     if (users.isLoading || !users.data) {
@@ -265,8 +319,8 @@ export const Users = () => {
             <Dropdown.Item asChild>
               <Dialog.Root>
                 <Dialog.Trigger asChild>
-                  <Button destructive intent="ghost" className="w-full" align="left">
-                    <Icon symbol="person_remove" fill />
+                  <Button intent="ghost" className="w-full" align="left">
+                    <Icon symbol="close" fill />
                     <Span>Delete</Span>
                   </Button>
                 </Dialog.Trigger>
@@ -332,6 +386,23 @@ export const Users = () => {
       setSelection((v) => v.filter((u) => paginatedData.some((x) => x.account.id === u)));
     }
   }, [paginatedData]);
+
+  const indicator = (property: string) => {
+    const order = getOrderForProperty(property);
+    const index = getOrderIndex(property);
+    const checked = Boolean(order);
+
+    const direction = order?.endsWith("asc") ? "arrow_upward" : order?.endsWith("desc") ? "arrow_downward" : null;
+
+    return (
+      (direction || checked) && (
+        <Span className="flex items-center justify-center text-hint gap-0.5">
+          {direction && <Icon size={16} symbol={direction} className="font-normal" />}
+          {checked && <Span className="text-xs font-extrabold">{index + 1}</Span>}
+        </Span>
+      )
+    );
+  };
 
   return (
     <Card.Root>
@@ -445,27 +516,31 @@ export const Users = () => {
                         return (
                           <Dropdown.CheckboxItem
                             key={i}
-                            className="group flex items-center gap-4"
+                            className="group flex items-center gap-4 pr-5"
                             checked={checked}
                             onSelect={(e) => e.preventDefault()}
                             onCheckedChange={(value) => filter(role.name, value)}
                           >
-                            <Span className="relative flex items-center justify-center shrink-0 bg-translucent group-data-[state=checked]:bg-blue rounded-md size-5">
+                            <Span className="relative flex items-center justify-center shrink-0 rounded-md size-5">
                               <Dropdown.ItemIndicator className="absolute flex items-center justify-center">
-                                <Icon symbol="check" size={16} className="font-medium" />
+                                <Span className="flex size-2 rounded-full bg-blue" />
                               </Dropdown.ItemIndicator>
                             </Span>
-                            <Span className="font-medium">{role.name}</Span>
+                            <Span className="flex items-center gap-3">
+                              <Monogram text={role.name} style={{ color: role.color }} className="size-8" />
+                              <Span className="font-bold">{role.name}</Span>
+                            </Span>
                           </Dropdown.CheckboxItem>
                         );
                       })}
                   </Container>
-                  {filters.length > 0 && (
-                    <Dropdown.Item onSelect={(e) => e.preventDefault()} onClick={clearFilters} className={clsx("gap-4")}>
-                      <Icon symbol="close" className="text-hint" size={20} />
-                      <Span className="font-medium">Clear</Span>
-                    </Dropdown.Item>
-                  )}
+                  <Dropdown.Item
+                    onSelect={(e) => e.preventDefault()}
+                    onClick={unfilter}
+                    className={clsx("gap-4 py-5 pointer-events-none bg-transparent!")}
+                  >
+                    <Span className="font-medium text-hint mx-auto pointer-events-auto">Clear filters</Span>
+                  </Dropdown.Item>
                 </Dropdown.Content>
               </Dropdown.Root>
             )}
@@ -474,9 +549,51 @@ export const Users = () => {
                 <Button intent="ghost" className="px-5! data-[state=open]:bg-button-ghost-active">
                   <Span>Sort</Span>
                   <Icon symbol="keyboard_arrow_down" />
+                  {orders.length > 0 && <Span className="size-2 bg-blue rounded-full flex" />}
                 </Button>
               </Dropdown.Trigger>
-              <Dropdown.Content>Sort</Dropdown.Content>
+              <Dropdown.Content className="pb-4">
+                <Dropdown.Label className="px-4 py-2 text-foreground-tertiary font-bold">Property</Dropdown.Label>
+                {Object.entries(properties).map(([key, field]) => {
+                  const order = getOrderForProperty(key);
+                  const index = getOrderIndex(key);
+                  const checked = Boolean(order);
+
+                  const direction = order?.endsWith("asc") ? "arrow_upward" : order?.endsWith("desc") ? "arrow_downward" : null;
+
+                  return (
+                    <Dropdown.CheckboxItem
+                      key={key}
+                      checked={checked}
+                      onSelect={(e) => e.preventDefault()}
+                      onCheckedChange={() => toggleSort(key)}
+                      className="group flex items-center gap-4"
+                    >
+                      <Span className="relative flex items-center justify-center shrink-0 rounded-md size-5">
+                        <Dropdown.ItemIndicator className="absolute flex items-center justify-center">
+                          <Span className="flex size-2 rounded-full bg-blue" />
+                        </Dropdown.ItemIndicator>
+                      </Span>
+                      <Icon size={16} symbol={field.icon} className="text-hint font-light" />
+                      <Span className="font-bold">{field.name}</Span>
+                      <Span className="flex-1" />
+                      {(direction || checked) && (
+                        <Span className="flex items-center justify-center gap-0.5">
+                          {direction && <Icon size={16} symbol={direction} className="text-hint font-normal" />}
+                          {checked && <Span className="text-xs font-extrabold text-hint">{index + 1}</Span>}
+                        </Span>
+                      )}
+                    </Dropdown.CheckboxItem>
+                  );
+                })}
+                <Dropdown.Item
+                  onSelect={(e) => e.preventDefault()}
+                  onClick={unsort}
+                  className={clsx("gap-4 py-5 pointer-events-none bg-transparent!")}
+                >
+                  <Span className="font-medium text-hint mx-auto pointer-events-auto">Reset order</Span>
+                </Dropdown.Item>
+              </Dropdown.Content>
             </Dropdown.Root>
           </Container>
         </Container>
@@ -489,9 +606,24 @@ export const Users = () => {
                   onCheckedChange={toggleAll}
                 />
               </Table.Column>
-              <Table.Column className="text-left">User ID</Table.Column>
-              <Table.Column className="w-md text-left hidden xl:table-cell">Roles</Table.Column>
-              <Table.Column className="w-xs text-left hidden xl:table-cell">Created</Table.Column>
+              <Table.Column className="text-left">
+                <Span className="cursor-pointer flex items-center gap-2" onClick={() => toggleSort("name")}>
+                  <Span>Name</Span>
+                  {indicator("name")}
+                </Span>
+              </Table.Column>
+              <Table.Column className="w-md text-left hidden xl:table-cell">
+                <Span className="cursor-pointer flex items-center gap-2" onClick={() => toggleSort("roles")}>
+                  <Span>Roles</Span>
+                  {indicator("roles")}
+                </Span>
+              </Table.Column>
+              <Table.Column className="w-xs text-left hidden xl:table-cell">
+                <Span className="cursor-pointer flex items-center gap-2" onClick={() => toggleSort("created")}>
+                  <Span>Created</Span>
+                  {indicator("created")}
+                </Span>
+              </Table.Column>
               <Table.Column className="w-12 xl:w-16" />
             </Table.Row>
           </Table.Header>
@@ -509,4 +641,46 @@ export const Users = () => {
       </Card.Content>
     </Card.Root>
   );
+};
+
+const properties: Record<string, { name: string; icon: string }> = {
+  name: {
+    name: "Name",
+    icon: "text_fields"
+  },
+  roles: {
+    name: "Roles",
+    icon: "assignment"
+  },
+  created: {
+    name: "Created",
+    icon: "history"
+  }
+};
+
+type Order = "name-asc" | "name-desc" | "roles-asc" | "roles-desc" | "created-asc" | "created-desc";
+
+const compareRoles = (a: User, b: User) => {
+  const ar = [...a.principal.roles].sort();
+  const br = [...b.principal.roles].sort();
+
+  const len = Math.min(ar.length, br.length);
+
+  for (let i = 0; i < len; i++) {
+    const diff = ar[i].localeCompare(br[i]);
+    if (diff !== 0) return diff;
+  }
+
+  return ar.length - br.length;
+};
+
+const comparators: Record<Order, (a: User, b: User) => number> = {
+  "name-asc": (a, b) => a.account.name.localeCompare(b.account.name),
+  "name-desc": (a, b) => b.account.name.localeCompare(a.account.name),
+
+  "roles-asc": (a, b) => compareRoles(a, b),
+  "roles-desc": (a, b) => compareRoles(b, a),
+
+  "created-asc": (a, b) => a.account.created - b.account.created,
+  "created-desc": (a, b) => b.account.created - a.account.created
 };

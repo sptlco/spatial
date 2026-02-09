@@ -60,7 +60,7 @@ const pages: Page[] = [
   },
   {
     name: "navigation.platform.pages.identity",
-    path: `${BASE_URL}/identity`,
+    path: `${BASE_URL}/users`,
     icon: "person"
   },
   {
@@ -271,8 +271,8 @@ export default function Layout(props: { children: ReactNode }) {
       >
         <Container className="flex h-full gap-0 xl:gap-10">
           <Container className="flex flex-col h-full gap-10">
-            <Link href="/" className="flex items-center justify-center">
-              {<Logo mode="symbol" className="w-10 fill-foreground-primary" />}
+            <Link href="/" className="relative flex items-center justify-center size-10 xl:w-16!">
+              <Logo mode="symbol" className="w-10 fill-foreground-primary" />
             </Link>
             <UL className="hidden xl:flex grow flex-col items-center justify-center gap-6">
               {pages.map((page, i) => {
@@ -286,7 +286,7 @@ export default function Layout(props: { children: ReactNode }) {
                           href={page.path}
                           className={clsx(
                             "transition-all",
-                            "flex items-center justify-center size-15",
+                            "flex items-center justify-center size-16",
                             "rounded-2xl bg-button-ghost text-foreground-primary",
                             "hover:bg-button-ghost-hover active:bg-button-ghost-active",
                             "hover:text-foreground-primary active:text-foreground-primary",
@@ -338,7 +338,7 @@ export default function Layout(props: { children: ReactNode }) {
       </Container>
       <ScrollArea.Root>
         <ScrollArea.Viewport ref={scroller} className={clsx("xl:pr-10", "row-start-2 col-start-1", "xl:col-start-2")}>
-          <Container className="flex flex-col relative">{props.children}</Container>
+          <Container className="flex flex-col relative xl:min-h-[calc(100vh-(var(--layout-pad)*2)-140px)]">{props.children}</Container>
           <CompactFooter className="p-10" />
         </ScrollArea.Viewport>
         <ScrollArea.Scrollbar />

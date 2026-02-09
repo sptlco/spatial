@@ -6,12 +6,11 @@ import { ExternalToast, toast as sonnerToast, Toaster as Primitive, ToasterProps
 /**
  * An element that displays toast notifications to the user.
  */
-export const Toaster = createElement<typeof Primitive, ToasterProps>(({ closeButton = false, ...props }, ref) => (
+export const Toaster = createElement<typeof Primitive, ToasterProps>((props, ref) => (
   <Primitive
     {...props}
     ref={ref}
     position="top-center"
-    closeButton={closeButton}
     offset={{
       top: 24,
       left: 40,
@@ -25,23 +24,26 @@ export const Toaster = createElement<typeof Primitive, ToasterProps>(({ closeBut
       bottom: 24
     }}
     icons={{
-      info: <Icon symbol="info" className="font-light" />,
-      error: <Icon symbol="emergency_home" className="font-light" />,
-      loading: <Spinner className="size-4" />,
-      success: <Icon symbol="check" className="font-light" />,
-      warning: <Icon symbol="warning" className="font-light" />
+      info: <Icon symbol="info" className="text-hint font-normal" fill />,
+      error: <Icon symbol="error" className="text-white font-normal" fill />,
+      loading: <Spinner className="size-4 text-hint" />,
+      success: <Icon symbol="check_circle" className="text-green font-light" fill />,
+      warning: <Icon symbol="warning" className="text-yellow font-normal" fill />
     }}
     toastOptions={{
       classNames: {
-        toast: "bg-blue! backdrop-blur! border-none! shadow-base! rounded-xl! gap-4! px-5! pointer-events-auto!",
-        icon: "size-6! inline-flex items-center justify-center ml-0.5! text-white!",
+        toast:
+          "bg-background-surface! group data-[type=error]:bg-state-error! border-none! shadow-base! rounded-xl! gap-4! px-5! pointer-events-auto!",
+        icon: "size-6! inline-flex items-center justify-center ml-0.5! text-foreground-primary!",
         content: "mr-auto!",
-        title: "text-white! text-xs! font-bold!",
-        description: "text-white! text-xs!",
-        actionButton: "transition-all! duration-300! rounded-lg! text-xs! text-white! bg-button! hover:bg-button-hover! active:bg-button-active!",
+        title: "text-foreground-primary! group-data-[type=error]:text-white! text-xs! font-bold!",
+        description: "text-foreground-secondary! group-data-[type=error]:text-white! text-xs!",
+        actionButton:
+          "transition-all! duration-300! rounded-lg! text-xs! text-foreground-primary! group-data-[type=error]:text-white! bg-button! hover:bg-button-hover! active:bg-button-active!",
         cancelButton:
-          "transition-all! duration-300! rounded-lg! text-xs! text-white! bg-button-ghost! hover:bg-button-ghost-hover! active:bg-button-ghost-active!",
-        closeButton: "relative! shrink-0! order-999! transform-none! bg-transparent! text-white! border-none! scale-175! size-5!"
+          "transition-all! duration-300! rounded-lg! text-xs! text-foreground-primary! group-data-[type=error]:text-white! bg-button-ghost! hover:bg-button-ghost-hover! active:bg-button-ghost-active!",
+        closeButton:
+          "relative! shrink-0! order-999! transform-none! bg-transparent! text-foreground-primary! group-data-[type=error]:text-white! border-none! scale-175! size-5!"
       }
     }}
   />

@@ -7,9 +7,8 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 import useSWR from "swr";
 
-import { Creator } from "./creator";
-import { Editor as RoleEditor } from "./editor";
-import { Editor as PermissionEditor } from "../permissions/editor";
+import { Creator, Editor as RoleEditor } from ".";
+import { Editor as PermissionEditor } from "../permissions";
 
 import {
   Button,
@@ -75,7 +74,7 @@ export const Roles = () => {
 
   const PAGE_SIZE = 20;
 
-  const page = useMemo(() => Math.max(1, Number(searchParams.get("page-roles") ?? 1)), [searchParams]);
+  const page = useMemo(() => Math.max(1, Number(searchParams.get("roles") ?? 1)), [searchParams]);
   const pages = Math.ceil(sortedData.length / PAGE_SIZE);
 
   const paginatedData = useMemo(() => {
@@ -87,16 +86,15 @@ export const Roles = () => {
     const params = new URLSearchParams(searchParams.toString());
 
     if (page > 1) {
-      params.set("page-roles", page.toString());
+      params.set("roles", page.toString());
     } else {
-      params.delete("page-roles");
+      params.delete("roles");
     }
 
     router.replace(`${pathname}?${params.toString()}`, { scroll: false });
   };
 
   const [selection, setSelection] = useState<string[]>([]);
-  const [search, setSearch] = useState("");
 
   const toggle = (role: Role, selected: boolean) => {
     setSelection((s) => [...s.filter((x) => x !== role.id), ...(selected ? [role.id] : [])]);
@@ -203,7 +201,7 @@ export const Roles = () => {
                       <Dropdown.Item asChild>
                         <Sheet.Trigger asChild>
                           <Button intent="ghost" className="w-full" align="left">
-                            <Icon symbol="visibility" />
+                            <Icon symbol="shield_toggle" />
                             <Span>Permissions</Span>
                           </Button>
                         </Sheet.Trigger>
@@ -211,7 +209,7 @@ export const Roles = () => {
                       <Dropdown.Item asChild>
                         <Dialog.Root>
                           <Dialog.Trigger asChild>
-                            <Button destructive intent="ghost" className="w-full" align="left">
+                            <Button intent="ghost" className="w-full" align="left">
                               <Icon symbol="close" fill />
                               <Span>Delete</Span>
                             </Button>
@@ -281,7 +279,7 @@ export const Roles = () => {
   }, [paginatedData]);
 
   return (
-    <Card.Root>
+    <Card.Root className="gap-0!">
       <Card.Header>
         <Card.Title className="text-2xl font-bold flex gap-3 items-center">
           <Span>Roles</Span>
@@ -346,25 +344,13 @@ export const Roles = () => {
         </Card.Gutter>
       </Card.Header>
       <Card.Content className="w-full flex flex-col relative">
-        <Container className="relative w-full max-w-sm flex items-center">
-          <Field
-            type="text"
-            id="search"
-            name="search"
-            placeholder="Search roles"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            className="w-full pl-12"
-          />
-          <Icon symbol="search" className="absolute left-3" />
-        </Container>
         <Table.Root className="w-full table-fixed border-separate border-spacing-y-10">
           <Table.Header>
             <Table.Row>
               <Table.Column className="w-12 xl:w-16">
                 <Checkbox checked={paginatedData.length > 0 && paginatedData.every((r) => selection.includes(r.id))} onCheckedChange={toggleAll} />
               </Table.Column>
-              <Table.Column className="text-left">User ID</Table.Column>
+              <Table.Column className="text-left">Name</Table.Column>
               <Table.Column className="text-center hidden xl:table-cell">Permissions</Table.Column>
               <Table.Column className="text-center hidden xl:table-cell">Assignments</Table.Column>
               <Table.Column className="w-12 xl:w-16" />

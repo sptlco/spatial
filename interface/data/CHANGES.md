@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.6.0](https://github.com/sptlco/spatial/compare/spatial-interface-data-1.5.0...spatial-interface-data-1.6.0) (2026-02-09)
+
+
+### Features
+
+* Designed a color field ([#148](https://github.com/sptlco/spatial/issues/148)) ([c919390](https://github.com/sptlco/spatial/commit/c919390e3e629e18fa3c40c9949af67ff9cb4df0))
+
 ## [1.5.0](https://github.com/sptlco/spatial/compare/spatial-interface-data-1.4.0...spatial-interface-data-1.5.0) (2026-02-02)
 
 

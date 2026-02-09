@@ -33,7 +33,7 @@ export const Toaster = createElement<typeof Primitive, ToasterProps>((props, ref
     toastOptions={{
       classNames: {
         toast:
-          "bg-background-surface! group data-[type=error]:bg-state-error! border-none! shadow-base! rounded-xl! gap-4! px-5! pointer-events-auto!",
+          "transition-all! bg-background-surface! group data-[type=error]:bg-state-error! border-none! shadow-base! rounded-xl! gap-4! px-5! pointer-events-auto!",
         icon: "size-6! inline-flex items-center justify-center ml-0.5! text-foreground-primary!",
         content: "mr-auto!",
         title: "text-foreground-primary! group-data-[type=error]:text-white! text-xs! font-bold!",

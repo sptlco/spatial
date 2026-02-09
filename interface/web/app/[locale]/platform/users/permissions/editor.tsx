@@ -48,7 +48,6 @@ export const Editor = createElement<typeof Sheet.Content, { data: Role; onUpdate
 
     const [saving, setSaving] = useState(false);
 
-    const could = (scope: string) => new Set(initial).has(scope);
     const can = (scope: string) => new Set(table).has(scope);
 
     const loading = scopes.isLoading || !scopes.data || permissions.isLoading || !permissions.data;
@@ -111,7 +110,7 @@ export const Editor = createElement<typeof Sheet.Content, { data: Role; onUpdate
 
             return {
               message: "Permissions updated",
-              description: `Applied ${count} change${count === 1 ? "" : "s"} to permissions.`
+              description: `Updated ${count} permissions${count === 1 ? "" : "s"} for ${role.name}.`
             };
           }
         });
@@ -153,7 +152,7 @@ export const Editor = createElement<typeof Sheet.Content, { data: Role; onUpdate
                           type="single"
                           value={can(scope.tag) ? "granted" : "revoked"}
                           onValueChange={(value) => toggle(scope.tag, value === "granted")}
-                          disabled={saving || !can("permissions.update")}
+                          disabled={saving}
                         >
                           <ToggleGroup.Item
                             value="revoked"

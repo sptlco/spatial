@@ -40,6 +40,27 @@ import {
   UL
 } from "@sptlco/design";
 
+const highlight = (text: string, keywords: string[]) => {
+  if (keywords.length === 0) {
+    return text;
+  }
+
+  const escaped = keywords.map((k) => k.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"));
+  const regex = new RegExp(`(${escaped.join("|")})`, "gi");
+
+  const parts = text.split(regex);
+
+  return parts.map((part, i) =>
+    regex.test(part) ? (
+      <mark key={i} className="rounded px-1 bg-yellow/80 text-foreground-inverse">
+        {part}
+      </mark>
+    ) : (
+      <span key={i}>{part}</span>
+    )
+  );
+};
+
 /**
  * A dynamic list of users.
  * @returns A list of users.
@@ -51,11 +72,56 @@ export const Users = () => {
   const now = useNow();
   const format = useFormatter();
 
-  const [selection, setSelection] = useState<string[]>([]);
   const [search, setSearch] = useState("");
+  const [selection, setSelection] = useState<string[]>([]);
+
+  const keywords =
+    searchParams
+      .get("keywords")
+      ?.split(",")
+      .map((k) => k.trim())
+      .filter(Boolean) ?? [];
 
   const filters = searchParams.get("filters")?.split(",").filter(Boolean) ?? [];
-  const orders = searchParams.get("sort")?.split(",").filter(Boolean) ?? [];
+  const order = searchParams.get("order")?.split(",").filter(Boolean) ?? [];
+
+  const commitKeywords = (value: string) => {
+    const params = new URLSearchParams(searchParams.toString());
+
+    const next = value
+      .split(/\s+/)
+      .map((k) => k.trim())
+      .filter(Boolean);
+
+    if (next.length > 0) {
+      params.set("keywords", next.join(","));
+      params.delete("users");
+    } else {
+      params.delete("keywords");
+    }
+
+    router.replace(`${pathname}?${params.toString()}`, { scroll: false });
+  };
+
+  const clearKeywords = () => {
+    const params = new URLSearchParams(searchParams.toString());
+
+    params.delete("keywords");
+    params.delete("users");
+
+    setSearch("");
+    router.replace(`${pathname}?${params.toString()}`, { scroll: false });
+  };
+
+  const matchesKeywords = (user: User, keys: string[]) => {
+    if (keys.length === 0) {
+      return true;
+    }
+
+    const haystack = [user.account.name, user.account.email, ...user.principal.roles].join(" ").toLowerCase();
+
+    return keys.some((k) => haystack.includes(k.toLowerCase()));
+  };
 
   const filter = (role: string, checked: boolean) => {
     const params = new URLSearchParams(searchParams.toString());
@@ -83,13 +149,13 @@ export const Users = () => {
     router.replace(`${pathname}?${params.toString()}`, { scroll: false });
   };
 
-  const getOrderForProperty = (property: string) => orders.find((o) => o.startsWith(`${property}-`));
+  const getOrderForProperty = (property: string) => order.find((o) => o.startsWith(`${property}-`));
 
-  const getOrderIndex = (property: string) => orders.findIndex((o) => o.startsWith(`${property}-`));
+  const getOrderIndex = (property: string) => order.findIndex((o) => o.startsWith(`${property}-`));
 
   const toggleSort = (property: string) => {
     const params = new URLSearchParams(searchParams.toString());
-    const next = [...orders];
+    const next = [...order];
 
     const asc = `${property}-asc`;
     const desc = `${property}-desc`;
@@ -97,31 +163,30 @@ export const Users = () => {
     const index = next.findIndex((o) => o === asc || o === desc);
 
     if (index === -1) {
-      // OFF → ASC (append, preserving existing priority)
       next.push(asc);
     } else if (next[index] === asc) {
-      // ASC → DESC (same priority slot)
       next[index] = desc;
     } else {
-      // DESC → OFF (remove entirely)
       next.splice(index, 1);
     }
 
     if (next.length > 0) {
-      params.set("sort", next.join(","));
+      params.set("order", next.join(","));
     } else {
-      params.delete("sort");
+      params.delete("order");
     }
 
     router.replace(`${pathname}?${params.toString()}`, { scroll: false });
   };
 
   const sort = (users: User[]): User[] => {
-    if (orders.length === 0) return users;
+    if (order.length === 0) {
+      return users;
+    }
 
     return [...users].sort((a, b) => {
-      for (const order of orders) {
-        const result = comparators[order as Order](a, b);
+      for (const ordering of order) {
+        const result = comparators[ordering as Order](a, b);
 
         if (result !== 0) {
           return result;
@@ -135,7 +200,7 @@ export const Users = () => {
   const unsort = () => {
     const params = new URLSearchParams(searchParams.toString());
 
-    params.delete("sort");
+    params.delete("order");
     router.replace(`${pathname}?${params.toString()}`, { scroll: false });
   };
 
@@ -181,8 +246,12 @@ export const Users = () => {
     return Object.fromEntries(response.data.map((r) => [r.name, r]));
   });
 
-  const data = (filters.length === 0 ? users.data : users.data?.filter((u) => filters.some((t) => u.principal.roles.includes(t)))) ?? [];
-  const sortedData = useMemo(() => sort([...data]), [data, orders]);
+  const data =
+    (filters.length === 0 ? users.data : users.data?.filter((u) => filters.every((t) => u.principal.roles.includes(t))))?.filter((u) =>
+      matchesKeywords(u, keywords)
+    ) ?? [];
+
+  const sortedData = useMemo(() => sort([...data]), [data, order]);
 
   const PAGE_SIZE = 20;
 
@@ -256,8 +325,8 @@ export const Users = () => {
             <Container className="cursor-pointer flex items-center gap-5">
               <Avatar src={user.account.avatar} alt={user.account.name} className="shrink-0 size-12" />
               <Container className="flex flex-col truncate">
-                <Span className="font-semibold truncate">{user.account.name}</Span>
-                <Span className="text-foreground-secondary truncate">{user.account.email}</Span>
+                <Span className="font-semibold truncate">{highlight(user.account.name, keywords)}</Span>
+                <Span className="text-foreground-secondary truncate">{highlight(user.account.email, keywords)}</Span>
               </Container>
               {user.account.id === (account?.id ?? "") && (
                 <Span className="hidden xl:flex px-4 py-2 bg-background-highlight rounded-xl text-xs font-bold">You</Span>
@@ -279,7 +348,7 @@ export const Users = () => {
                   style={{ color: Object.values(roles.data!).find((r) => r.name == role)?.color ?? "currentColor" }}
                 >
                   <Span className="size-2 flex rounded-full bg-current" />
-                  <Span className="text-sm text-foreground-primary font-medium">{role}</Span>
+                  <Span className="text-sm text-foreground-primary font-medium">{highlight(role, keywords)}</Span>
                 </LI>
               ))}
         </UL>
@@ -382,17 +451,21 @@ export const Users = () => {
   ));
 
   useEffect(() => {
+    setSearch(keywords.join(" "));
+  }, [searchParams]);
+
+  useEffect(() => {
     if (!selection.every((u) => paginatedData.some((x) => x.account.id === u))) {
       setSelection((v) => v.filter((u) => paginatedData.some((x) => x.account.id === u)));
     }
   }, [paginatedData]);
 
   const indicator = (property: string) => {
-    const order = getOrderForProperty(property);
+    const ordering = getOrderForProperty(property);
     const index = getOrderIndex(property);
-    const checked = Boolean(order);
+    const checked = Boolean(ordering);
 
-    const direction = order?.endsWith("asc") ? "arrow_upward" : order?.endsWith("desc") ? "arrow_downward" : null;
+    const direction = ordering?.endsWith("asc") ? "arrow_upward" : ordering?.endsWith("desc") ? "arrow_downward" : null;
 
     return (
       (direction || checked) && (
@@ -481,18 +554,41 @@ export const Users = () => {
       </Card.Header>
       <Card.Content className="w-full flex flex-col relative">
         <Container className="flex flex-col xl:flex-row w-full items-start xl:items-center gap-5">
-          <Container className="relative w-full max-w-sm flex items-center">
+          <Form
+            className="relative w-full max-w-sm flex items-center"
+            onSubmit={(e) => {
+              e.preventDefault();
+              commitKeywords(search);
+            }}
+          >
             <Field
               type="text"
               id="search"
               name="search"
               placeholder="Search users"
               value={search}
+              className="w-full pl-12 pr-12"
               onChange={(e) => setSearch(e.target.value)}
-              className="w-full pl-12"
+              onKeyDown={(e) => {
+                if (e.key === "Escape" && search.length > 0) {
+                  e.preventDefault();
+                  clearKeywords();
+                }
+              }}
             />
+
             <Icon symbol="search" className="absolute left-3" />
-          </Container>
+
+            {search.length > 0 ? (
+              <Button type="button" intent="ghost" className="absolute right-1 size-8! p-0!" onClick={clearKeywords}>
+                <Icon symbol="close" />
+              </Button>
+            ) : (
+              <Button type="submit" intent="ghost" className="absolute right-1 size-8! p-0!">
+                <Icon symbol="arrow_forward" />
+              </Button>
+            )}
+          </Form>
           <Container className="flex items-center justify-center w-full xl:w-fit gap-2">
             {roles.isLoading || !roles.data ? (
               <Span className="w-32 h-4 rounded-full bg-background-surface animate-pulse" />
@@ -550,17 +646,17 @@ export const Users = () => {
                 <Button intent="ghost" className="px-5! data-[state=open]:bg-button-ghost-active">
                   <Span>Sort</Span>
                   <Icon symbol="keyboard_arrow_down" />
-                  {orders.length > 0 && <Span className="size-2 bg-blue rounded-full flex" />}
+                  {order.length > 0 && <Span className="size-2 bg-blue rounded-full flex" />}
                 </Button>
               </Dropdown.Trigger>
               <Dropdown.Content className="pb-4">
                 <Dropdown.Label className="px-4 py-2 text-foreground-tertiary font-bold">Property</Dropdown.Label>
                 {Object.entries(properties).map(([key, field]) => {
-                  const order = getOrderForProperty(key);
+                  const ordering = getOrderForProperty(key);
                   const index = getOrderIndex(key);
-                  const checked = Boolean(order);
+                  const checked = Boolean(ordering);
 
-                  const direction = order?.endsWith("asc") ? "arrow_upward" : order?.endsWith("desc") ? "arrow_downward" : null;
+                  const direction = ordering?.endsWith("asc") ? "arrow_upward" : ordering?.endsWith("desc") ? "arrow_downward" : null;
 
                   return (
                     <Dropdown.CheckboxItem

@@ -537,7 +537,10 @@ export const Users = () => {
                     onClick={unfilter}
                     className={clsx("gap-4 py-5 pointer-events-none bg-transparent!")}
                   >
-                    <Span className="font-medium text-hint mx-auto pointer-events-auto">Clear filters</Span>
+                    <Span className="font-medium text-hint gap-2 flex items-center mx-auto pointer-events-auto">
+                      <Icon symbol="close" size={16} />
+                      <Span>Clear</Span>
+                    </Span>
                   </Dropdown.Item>
                 </Dropdown.Content>
               </Dropdown.Root>
@@ -589,7 +592,10 @@ export const Users = () => {
                   onClick={unsort}
                   className={clsx("gap-4 py-5 pointer-events-none bg-transparent!")}
                 >
-                  <Span className="font-medium text-hint mx-auto pointer-events-auto">Reset order</Span>
+                  <Span className="font-medium text-hint gap-2 flex items-center mx-auto pointer-events-auto">
+                    <Icon symbol="close" size={16} />
+                    <Span>Clear</Span>
+                  </Span>
                 </Dropdown.Item>
               </Dropdown.Content>
             </Dropdown.Root>

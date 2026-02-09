@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.24.0](https://github.com/sptlco/spatial/compare/spatial-cloud-1.23.0...spatial-cloud-1.24.0) (2026-02-09)
+
+
+### Features
+
+* Designed a color field ([#148](https://github.com/sptlco/spatial/issues/148)) ([c919390](https://github.com/sptlco/spatial/commit/c919390e3e629e18fa3c40c9949af67ff9cb4df0))
+
 ## [1.23.0](https://github.com/sptlco/spatial/compare/spatial-cloud-1.22.0...spatial-cloud-1.23.0) (2026-02-02)
 
 

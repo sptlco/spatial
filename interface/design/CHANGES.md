@@ -1,5 +1,19 @@
 # Changelog
 
+## [1.13.0](https://github.com/sptlco/spatial/compare/spatial-interface-design-1.12.0...spatial-interface-design-1.13.0) (2026-02-09)
+
+
+### Features
+
+* Added a permission editor ([#137](https://github.com/sptlco/spatial/issues/137)) ([e33b9ec](https://github.com/sptlco/spatial/commit/e33b9ecfa1f661e50d9ce7eecda2b6ec47f1f7be))
+* Added a switch element ([#137](https://github.com/sptlco/spatial/issues/137)) ([3e3d115](https://github.com/sptlco/spatial/commit/3e3d1158aae7ccf9a8e00eca1089fdeaa1e803fb))
+* Added an optional scroll fade ([#137](https://github.com/sptlco/spatial/issues/137)) ([9959fac](https://github.com/sptlco/spatial/commit/9959fac19187505fc6e12687df8d00dbca79640f))
+* Added field suffix [#137](https://github.com/sptlco/spatial/issues/137)) ([e2bcfaf](https://github.com/sptlco/spatial/commit/e2bcfaf64a5deffd734a941c6ba5235f2bce5d72))
+* Added pagination support ([#156](https://github.com/sptlco/spatial/issues/156)) ([899e8bf](https://github.com/sptlco/spatial/commit/899e8bf8092ca8b3b550974ba85066c12636648e))
+* Added selection support ([#145](https://github.com/sptlco/spatial/issues/145)) ([2a1d7b1](https://github.com/sptlco/spatial/commit/2a1d7b19159d3dc38ea5c11dfc55c142656ccc33))
+* Added sort ([#144](https://github.com/sptlco/spatial/issues/144)) ([dd99aab](https://github.com/sptlco/spatial/commit/dd99aabfe522c93347194288d73a4e92797533d3))
+* Designed a color field ([#148](https://github.com/sptlco/spatial/issues/148)) ([c919390](https://github.com/sptlco/spatial/commit/c919390e3e629e18fa3c40c9949af67ff9cb4df0))
+
 ## [1.12.0](https://github.com/sptlco/spatial/compare/spatial-interface-design-1.11.0...spatial-interface-design-1.12.0) (2026-02-02)
 
 

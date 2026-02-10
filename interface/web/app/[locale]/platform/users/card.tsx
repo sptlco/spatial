@@ -7,6 +7,7 @@ import { Spatial } from "@sptlco/client";
 import { User } from "@sptlco/data";
 import { clsx } from "clsx";
 import { useEffect, useMemo, useState } from "react";
+import { createPortal } from "react-dom";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useFormatter, useNow } from "next-intl";
 import useSWR from "swr";
@@ -31,12 +32,12 @@ import {
   Monogram,
   Pagination,
   Paragraph,
-  Separator,
   Sheet,
   Span,
   Spinner,
   Table,
   toast,
+  Tooltip,
   UL
 } from "@sptlco/design";
 
@@ -52,7 +53,7 @@ const highlight = (text: string, keywords: string[]) => {
 
   return parts.map((part, i) =>
     regex.test(part) ? (
-      <mark key={i} className="rounded px-1 bg-yellow/80 text-foreground-inverse">
+      <mark key={i} className="rounded px-1 bg-yellow text-foreground-inverse">
         {part}
       </mark>
     ) : (
@@ -110,6 +111,7 @@ export const Users = () => {
     params.delete("users");
 
     setSearch("");
+
     router.replace(`${pathname}?${params.toString()}`, { scroll: false });
   };
 
@@ -216,12 +218,54 @@ export const Users = () => {
     router.replace(`${pathname}?${params.toString()}`, { scroll: false });
   };
 
-  const toggle = (user: User, selected: boolean) => {
+  const selectOne = (user: User, selected: boolean) => {
     setSelection((s) => [...s.filter((x) => x !== user.account.id), ...(selected ? [user.account.id] : [])]);
   };
 
-  const toggleAll = (selected: boolean) => {
+  const selectAll = (selected: boolean) => {
     setSelection(selected ? paginatedData.map((u) => u.account.id) : []);
+  };
+
+  const exportMany = (list: User[]) => {
+    toast.promise(
+      (async () => {
+        const json = JSON.stringify(list, null, 2);
+        await navigator.clipboard.writeText(json);
+      })(),
+      {
+        loading: `Exporting ${list.length} user${list.length === 1 ? "" : "s"}`,
+        success: `Copied ${list.length} user${list.length === 1 ? "" : "s"} to clipboard`,
+        error: "Failed to export users"
+      }
+    );
+  };
+
+  const deleteMany = (list: User[]) => {
+    toast.promise(Promise.all(list.map((u) => Spatial.accounts.del(u.account.id))), {
+      loading: `Deleting ${list.length} user${list.length === 1 ? "" : "s"}`,
+      success: async (responses) => {
+        const failed = responses.filter((r) => r.error);
+        await users.mutate();
+        setSelection([]);
+
+        if (failed.length === 0) {
+          return {
+            message: "Users deleted",
+            description: `${list.length} user${list.length === 1 ? "" : "s"} deleted.`
+          };
+        }
+
+        return {
+          type: "error",
+          message: "Partial failure",
+          description: `${failed.length} user${failed.length === 1 ? "" : "s"} failed to delete.`
+        };
+      },
+      error: {
+        message: "Delete failed",
+        description: "Something went wrong while deleting users."
+      }
+    });
   };
 
   const { account } = useUser(useShallow((state) => ({ account: state.account })));
@@ -262,6 +306,8 @@ export const Users = () => {
     const start = (page - 1) * PAGE_SIZE;
     return sortedData.slice(start, start + PAGE_SIZE);
   }, [sortedData, page]);
+
+  const selectedUsers = useMemo(() => users.data?.filter((u) => selection.includes(u.account.id)) ?? [], [users.data, selection]);
 
   const Body = () => {
     if (users.isLoading || !users.data) {
@@ -317,7 +363,7 @@ export const Users = () => {
   const Row = createElement<typeof Table.Row, { user: User }>(({ user, ...props }, ref) => (
     <Table.Row {...props} ref={ref}>
       <Table.Cell>
-        <Checkbox checked={selection.includes(user.account.id)} onCheckedChange={(checked: boolean) => toggle(user, checked)} />
+        <Checkbox checked={selection.includes(user.account.id)} onCheckedChange={(checked: boolean) => selectOne(user, checked)} />
       </Table.Cell>
       <Table.Cell>
         <Sheet.Root>
@@ -376,14 +422,10 @@ export const Users = () => {
               </Sheet.Root>
             </Dropdown.Item>
             <Dropdown.Item asChild>
-              <Sheet.Root>
-                <Sheet.Trigger asChild>
-                  <Button intent="ghost" className="w-full" align="left">
-                    <Icon symbol="download" fill />
-                    <Span>Export</Span>
-                  </Button>
-                </Sheet.Trigger>
-              </Sheet.Root>
+              <Button intent="ghost" className="w-full" align="left" onClick={() => exportMany([user])}>
+                <Icon symbol="download" fill />
+                <Span>Export</Span>
+              </Button>
             </Dropdown.Item>
             <Dropdown.Item asChild>
               <Dialog.Root>
@@ -398,31 +440,7 @@ export const Users = () => {
                     className="flex flex-col gap-10"
                     onSubmit={(e) => {
                       e.preventDefault();
-
-                      toast.promise(Spatial.accounts.del(user.account.id), {
-                        loading: "Deleting user",
-                        description: `Deleting ${user.account.email}`,
-                        success: (response) => {
-                          if (!response.error) {
-                            users.mutate();
-
-                            return {
-                              message: "User deleted",
-                              description: (
-                                <>
-                                  Deleted <Span className="font-semibold">{user.account.name}</Span>.
-                                </>
-                              )
-                            };
-                          }
-
-                          return {
-                            type: "error",
-                            message: "Something went wrong",
-                            description: "An error occurred while deleting the user."
-                          };
-                        }
-                      });
+                      deleteMany([user]);
                     }}
                   >
                     <Container className="flex items-center gap-5">
@@ -435,7 +453,12 @@ export const Users = () => {
                     <Paragraph className="text-sm text-foreground-secondary">
                       This user and all of their account data will be lost immediately upon deletion.
                     </Paragraph>
-                    <Container className="flex w-full items-center justify-items-start gap-4">
+                    <Container className="flex w-full items-center justify-end gap-4">
+                      <Dialog.Close asChild>
+                        <Button type="button" intent="ghost">
+                          Cancel
+                        </Button>
+                      </Dialog.Close>
                       <Button type="submit" intent="destructive" className="shrink truncate">
                         Delete
                       </Button>
@@ -487,17 +510,6 @@ export const Users = () => {
           </Span>
         </Card.Title>
         <Card.Gutter className="flex xl:hidden">
-          {selection.length > 0 && (
-            <Dropdown.Root>
-              <Dropdown.Trigger asChild>
-                <Button intent="ghost" className="px-2!">
-                  <Span className="hidden md:flex">Selection</Span>
-                  <Span className="text-xs flex items-center justify-center size-6 rounded-full bg-translucent">{selection.length}</Span>
-                  <Icon symbol="keyboard_arrow_down" />
-                </Button>
-              </Dropdown.Trigger>
-            </Dropdown.Root>
-          )}
           <Dropdown.Root>
             <Dropdown.Trigger asChild>
               <Button intent="ghost" className="size-10! p-0! data-[state=open]:bg-button-ghost-active">
@@ -516,27 +528,10 @@ export const Users = () => {
                   <Creator onCreate={(_) => users.mutate()} />
                 </Sheet.Root>
               </Dropdown.Item>
-              <Dropdown.Item asChild>
-                <Button intent="ghost" className="w-full" align="left">
-                  <Icon symbol="download" />
-                  <Span>Export</Span>
-                </Button>
-              </Dropdown.Item>
             </Dropdown.Content>
           </Dropdown.Root>
         </Card.Gutter>
         <Card.Gutter className="hidden xl:flex">
-          {selection.length > 0 && (
-            <Dropdown.Root>
-              <Dropdown.Trigger asChild>
-                <Button intent="ghost">
-                  <Span>Selection</Span>
-                  <Span className="text-xs flex items-center justify-center size-6 rounded-full bg-translucent">{selection.length}</Span>
-                  <Icon symbol="keyboard_arrow_down" />
-                </Button>
-              </Dropdown.Trigger>
-            </Dropdown.Root>
-          )}
           <Sheet.Root>
             <Sheet.Trigger asChild>
               <Button>
@@ -546,10 +541,6 @@ export const Users = () => {
             </Sheet.Trigger>
             <Creator onCreate={(_) => users.mutate()} />
           </Sheet.Root>
-          <Button intent="ghost">
-            <Icon symbol="download" />
-            <Span>Export</Span>
-          </Button>
         </Card.Gutter>
       </Card.Header>
       <Card.Content className="w-full flex flex-col relative">
@@ -703,7 +694,7 @@ export const Users = () => {
               <Table.Column className="w-12 xl:w-16">
                 <Checkbox
                   checked={paginatedData.length > 0 && paginatedData.every((u) => selection.includes(u.account.id))}
-                  onCheckedChange={toggleAll}
+                  onCheckedChange={selectAll}
                 />
               </Table.Column>
               <Table.Column className="text-left">
@@ -739,6 +730,90 @@ export const Users = () => {
           })}
         ></Container>
       </Card.Content>
+      {selection.length > 0 &&
+        createPortal(
+          <Container className="pointer-events-auto ml-auto flex items-center gap-2 bg-blue rounded-2xl p-2 animate-in zoom-in-95 slide-in-from-right-50 fade-in duration-500">
+            <Tooltip.Root>
+              <Tooltip.Trigger asChild>
+                <Button intent="ghost" className="size-10! p-0!" onClick={() => exportMany(selectedUsers)}>
+                  <Icon symbol="download" />
+                </Button>
+              </Tooltip.Trigger>
+              <Tooltip.Content side="top" sideOffset={20}>
+                Export
+              </Tooltip.Content>
+            </Tooltip.Root>
+
+            <Dialog.Root>
+              <Dialog.Trigger asChild>
+                <Container>
+                  <Tooltip.Root>
+                    <Tooltip.Trigger asChild>
+                      <Button intent="ghost" className="size-10! p-0!">
+                        <Icon symbol="delete" />
+                      </Button>
+                    </Tooltip.Trigger>
+                    <Tooltip.Content side="top" sideOffset={20}>
+                      Delete
+                    </Tooltip.Content>
+                  </Tooltip.Root>
+                </Container>
+              </Dialog.Trigger>
+
+              <Dialog.Content
+                title={`Delete ${selection.length} user${selection.length === 1 ? "" : "s"}`}
+                description="Please confirm this action. This cannot be undone."
+              >
+                <Form
+                  className="flex flex-col gap-10"
+                  onSubmit={(e) => {
+                    e.preventDefault();
+                    deleteMany(selectedUsers);
+                  }}
+                >
+                  <UL className="flex flex-col gap-4 max-h-60 overflow-y-auto">
+                    {selectedUsers.map((user) => (
+                      <LI key={user.account.id} className="flex items-center gap-4">
+                        <Avatar src={user.account.avatar} alt={user.account.name} className="shrink-0 size-12" />
+                        <Container className="flex flex-col truncate">
+                          <Span className="font-semibold truncate">{user.account.name}</Span>
+                          <Span className="text-foreground-secondary truncate">{user.account.email}</Span>
+                        </Container>
+                      </LI>
+                    ))}
+                  </UL>
+
+                  <Paragraph className="text-sm text-foreground-secondary">
+                    These accounts and all associated data will be deleted immediately.
+                  </Paragraph>
+
+                  <Container className="flex w-full justify-end gap-4">
+                    <Dialog.Close asChild>
+                      <Button type="button" intent="ghost">
+                        Cancel
+                      </Button>
+                    </Dialog.Close>
+                    <Button type="submit" intent="destructive">
+                      Delete
+                    </Button>
+                  </Container>
+                </Form>
+              </Dialog.Content>
+            </Dialog.Root>
+
+            <Tooltip.Root>
+              <Tooltip.Trigger asChild>
+                <Button intent="ghost" className="size-10! p-0!" onClick={() => setSelection([])}>
+                  <Icon symbol="close" fill />
+                </Button>
+              </Tooltip.Trigger>
+              <Tooltip.Content side="top" sideOffset={20}>
+                Clear
+              </Tooltip.Content>
+            </Tooltip.Root>
+          </Container>,
+          document.getElementById("actions")!
+        )}
     </Card.Root>
   );
 };

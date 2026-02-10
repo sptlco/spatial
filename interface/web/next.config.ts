@@ -8,6 +8,7 @@ const withNextIntl = createNextIntlPlugin("./locales/request.ts");
 const nextConfig: NextConfig = {
   reactCompiler: true,
   allowedDevOrigins: ["s1.sptlco.com"],
+  devIndicators: false,
   experimental: {
     externalDir: true,
     viewTransition: true

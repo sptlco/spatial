@@ -199,45 +199,6 @@ export default function Layout(props: { children: ReactNode }) {
 
   return (
     <Main className={clsx("grid w-full h-screen xl:overflow-hidden", "grid-cols-1 xl:grid-cols-[auto_1fr]", "grid-rows-[auto_minmax(0,1fr)]")}>
-      <Drawer.Root>
-        <Drawer.Trigger className="cursor-pointer xl:hidden fixed rounded-full bg-background-surface shadow-base p-4 flex items-center justify-center z-20 bottom-10 right-10">
-          <Icon symbol="apps" />
-        </Drawer.Trigger>
-        <Drawer.Content className="max-h-[80vh]">
-          <ScrollArea.Root className="h-auto overflow-y-auto" fade>
-            <ScrollArea.Viewport>
-              <UL className="grid gap-4 grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-                {pages.map((page, i) => {
-                  const highlight = active(page.path);
-
-                  return (
-                    <LI key={i}>
-                      <Link
-                        href={page.path}
-                        className={clsx(
-                          "transition-colors",
-                          "flex flex-col gap-1 items-center justify-center w-full h-20",
-                          "rounded-2xl bg-button text-foreground-primary",
-                          "hover:bg-button-hover active:bg-button-active",
-                          "hover:text-foreground-primary active:text-foreground-primary",
-                          { "bg-button-active! text-white!": highlight }
-                        )}
-                      >
-                        <Icon symbol={page.icon} className={highlight ? "animate-fill" : "animate-outline"} />
-                        <Span className="text-xs">{t(page.name)}</Span>
-                      </Link>
-                    </LI>
-                  );
-                })}
-              </UL>
-            </ScrollArea.Viewport>
-            <ScrollArea.Scrollbar>
-              <ScrollArea.Thumb />
-            </ScrollArea.Scrollbar>
-            <ScrollArea.Corner />
-          </ScrollArea.Root>
-        </Drawer.Content>
-      </Drawer.Root>
       <Dialog.Root open={requirements.name}>
         <Dialog.Content title="Information required" description="We need to know the following." closeButton={false}>
           <Form className="flex flex-col items-center gap-10" onSubmit={submit}>
@@ -344,6 +305,47 @@ export default function Layout(props: { children: ReactNode }) {
         <ScrollArea.Scrollbar />
         <ScrollArea.Corner />
       </ScrollArea.Root>
+      <Container id="actions" className="fixed pointer-events-none bottom-0 left-0 w-full flex gap-5 p-10 z-20 justify-start">
+        <Drawer.Root>
+          <Drawer.Trigger className="xl:hidden z-30 pointer-events-auto cursor-pointer rounded-full bg-background-surface shadow-base p-4 flex shrink-0 items-center justify-center">
+            <Icon symbol="apps" />
+          </Drawer.Trigger>
+          <Drawer.Content className="max-h-[80vh]">
+            <ScrollArea.Root className="h-auto overflow-y-auto" fade>
+              <ScrollArea.Viewport>
+                <UL className="grid gap-4 grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+                  {pages.map((page, i) => {
+                    const highlight = active(page.path);
+
+                    return (
+                      <LI key={i}>
+                        <Link
+                          href={page.path}
+                          className={clsx(
+                            "transition-colors",
+                            "flex flex-col gap-1 items-center justify-center w-full h-20",
+                            "rounded-2xl bg-button text-foreground-primary",
+                            "hover:bg-button-hover active:bg-button-active",
+                            "hover:text-foreground-primary active:text-foreground-primary",
+                            { "bg-button-active! text-white!": highlight }
+                          )}
+                        >
+                          <Icon symbol={page.icon} className={highlight ? "animate-fill" : "animate-outline"} />
+                          <Span className="text-xs">{t(page.name)}</Span>
+                        </Link>
+                      </LI>
+                    );
+                  })}
+                </UL>
+              </ScrollArea.Viewport>
+              <ScrollArea.Scrollbar>
+                <ScrollArea.Thumb />
+              </ScrollArea.Scrollbar>
+              <ScrollArea.Corner />
+            </ScrollArea.Root>
+          </Drawer.Content>
+        </Drawer.Root>
+      </Container>
     </Main>
   );
 }

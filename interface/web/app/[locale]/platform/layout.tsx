@@ -29,6 +29,7 @@ import {
   Separator,
   Sheet,
   Span,
+  Spinner,
   toast,
   Tooltip,
   UL
@@ -104,7 +105,8 @@ export default function Layout(props: { children: ReactNode }) {
       loading: state.loading,
       authenticated: state.authenticated,
       account: state.account,
-      update: state.update
+      update: state.update,
+      logout: state.logout
     }))
   );
 
@@ -294,7 +296,21 @@ export default function Layout(props: { children: ReactNode }) {
               />
             )}
           </Sheet.Trigger>
-          <Sheet.Content title={t("modals.account.title")} description={t("modals.account.description")} closeButton side="right" />
+          <Sheet.Content title={t("modals.account.title")} description={t("modals.account.description")} closeButton side="right">
+            <Button
+              className="w-full"
+              disabled={user.loading}
+              onClick={async () => {
+                await user.logout();
+                window.location.reload();
+              }}
+            >
+              <Span>Sign out</Span>
+              <Span className="flex size-5 items-center justify-center">
+                {user.loading ? <Spinner className="size-3.5 text-hint" /> : <Icon symbol="arrow_right_alt" size={20} />}
+              </Span>
+            </Button>
+          </Sheet.Content>
         </Sheet.Root>
       </Container>
       <ScrollArea.Root>

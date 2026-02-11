@@ -1,7 +1,8 @@
 // Copyright © Spatial Corporation. All rights reserved.
 
-import { Spatial } from "@sptlco/client";
+import { SESSION_COOKIE_NAME, Spatial } from "@sptlco/client";
 import { User } from "@sptlco/data";
+import cookies from "js-cookie";
 import { create } from "zustand";
 import { devtools } from "zustand/middleware";
 
@@ -41,6 +42,8 @@ export const useUser = create<AugmentedUser>()(
         set({ loading: true });
 
         await Spatial.sessions.destroy();
+
+        cookies.remove(SESSION_COOKIE_NAME);
 
         set({
           loading: false,

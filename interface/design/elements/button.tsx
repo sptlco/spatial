@@ -21,7 +21,7 @@ export type ButtonProps = {
   /**
    * The size of the button.
    */
-  size?: "small" | "medium" | "fit";
+  size?: "fit" | "pad" | "fill";
 
   /**
    * The horizontal alignment of the button's content.
@@ -35,7 +35,7 @@ export type ButtonProps = {
 };
 
 const styles = cva({
-  base: "w-fit flex gap-4 items-center transition-all cursor-pointer truncate disabled:opacity-50 disabled:pointer-events-none",
+  base: "text-base flex gap-4 items-center transition-all cursor-pointer truncate disabled:opacity-50 disabled:pointer-events-none",
   variants: {
     intent: {
       default: "bg-button hover:bg-button-hover active:bg-button-active",
@@ -50,9 +50,9 @@ const styles = cva({
       pill: "rounded-full"
     },
     size: {
-      small: "px-4 py-1.5 text-sm",
-      medium: "px-8 py-2 text-base",
-      fit: ""
+      fit: "w-fit",
+      pad: "px-8 py-2",
+      fill: "w-full"
     },
     align: {
       left: "pl-2.5! justify-start",
@@ -73,7 +73,7 @@ const styles = cva({
  * An interactive element that prompts a user action.
  */
 export const Button = createElement<"button", ButtonProps>(
-  ({ intent = "default", shape = "round", size = "medium", align = "center", type = "button", destructive = false, ...props }, ref) => (
+  ({ intent = "default", shape = "round", size = "pad", align = "center", type = "button", destructive = false, ...props }, ref) => (
     <button {...props} type={type} className={clsx(styles({ intent, shape, size, align, destructive }), props.className)} ref={ref} />
   )
 );

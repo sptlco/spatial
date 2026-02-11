@@ -298,6 +298,7 @@ export default function Layout(props: { children: ReactNode }) {
           </Sheet.Trigger>
           <Sheet.Content title={t("modals.account.title")} description={t("modals.account.description")} closeButton side="right">
             <Button
+              destructive
               className="w-full"
               disabled={user.loading}
               onClick={async () => {
@@ -305,7 +306,7 @@ export default function Layout(props: { children: ReactNode }) {
                 window.location.reload();
               }}
             >
-              <Span>Sign out</Span>
+              <Span>Logout</Span>
               <Span className="flex size-5 items-center justify-center">
                 {user.loading ? <Spinner className="size-3.5 text-hint" /> : <Icon symbol="arrow_right_alt" size={20} />}
               </Span>
@@ -335,20 +336,22 @@ export default function Layout(props: { children: ReactNode }) {
 
                     return (
                       <LI key={i}>
-                        <Link
-                          href={page.path}
-                          className={clsx(
-                            "transition-colors",
-                            "flex flex-col gap-1 items-center justify-center w-full h-20",
-                            "rounded-2xl bg-button text-foreground-primary",
-                            "hover:bg-button-hover active:bg-button-active",
-                            "hover:text-foreground-primary active:text-foreground-primary",
-                            { "bg-button-active! text-white!": highlight }
-                          )}
-                        >
-                          <Icon symbol={page.icon} className={highlight ? "animate-fill" : "animate-outline"} />
-                          <Span className="text-xs">{t(page.name)}</Span>
-                        </Link>
+                        <Drawer.Close asChild>
+                          <Link
+                            href={page.path}
+                            className={clsx(
+                              "transition-colors",
+                              "flex flex-col gap-1 items-center justify-center w-full h-20",
+                              "rounded-2xl bg-button text-foreground-primary",
+                              "hover:bg-button-hover active:bg-button-active",
+                              "hover:text-foreground-primary active:text-foreground-primary",
+                              { "bg-button-highlight-active! text-white!": highlight }
+                            )}
+                          >
+                            <Icon symbol={page.icon} className={highlight ? "animate-fill" : "animate-outline"} />
+                            <Span className="text-xs">{t(page.name)}</Span>
+                          </Link>
+                        </Drawer.Close>
                       </LI>
                     );
                   })}

@@ -171,8 +171,8 @@ export const Field = createElement<"input", FieldProps>(({ containerClassName, i
         const input = () => {
           if (props.prefix || props.suffix) {
             return (
-              <Container className={clsx(classes, "flex items-center w-full gap-4")}>
-                {props.prefix && <Span className="text-hint shrink-0">{props.prefix}</Span>}
+              <Container className={clsx(classes, "flex items-center w-full")}>
+                {props.prefix && <Span className="flex text-hint shrink-0">{props.prefix}</Span>}
                 <Input
                   {...props}
                   ref={ref}
@@ -189,7 +189,7 @@ export const Field = createElement<"input", FieldProps>(({ containerClassName, i
                     })
                   }
                 />
-                {props.suffix && <Span className="text-hint shrink-0">{props.suffix}</Span>}
+                {props.suffix && <Span className="flex text-hint shrink-0">{props.suffix}</Span>}
               </Container>
             );
           }

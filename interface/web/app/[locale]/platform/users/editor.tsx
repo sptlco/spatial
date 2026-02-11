@@ -66,7 +66,7 @@ export const Editor = createElement<typeof Sheet.Content, { user: User; onUpdate
 
   return (
     <Sheet.Content {...props} ref={ref} title={user.account.name} description="Update this user's account." closeButton>
-      <Form className="flex flex-col w-full sm:w-screen max-w-sm gap-10" onSubmit={edit}>
+      <Form className="flex flex-col w-full sm:w-screen sm:max-w-sm gap-10" onSubmit={edit}>
         <Field
           type="text"
           id="name"

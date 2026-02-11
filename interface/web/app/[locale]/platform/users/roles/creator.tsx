@@ -51,7 +51,7 @@ export const Creator = createElement<typeof Sheet.Content, { onCreate?: (role: R
 
   return (
     <Sheet.Content {...props} ref={ref} title="New role" description="Create a new group of users." closeButton>
-      <Form className="flex flex-col w-full sm:w-screen max-w-sm gap-10" onSubmit={create}>
+      <Form className="flex flex-col w-full sm:w-screen sm:max-w-sm gap-10" onSubmit={create}>
         <Field
           type="text"
           id="name"

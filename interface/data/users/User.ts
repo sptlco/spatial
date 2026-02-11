@@ -1,8 +1,8 @@
 // Copyright © Spatial Corporation. All rights reserved.
 
-import { Account } from "@/accounts";
-import { Principal } from "@/principals";
-import { Session } from "@/sessions";
+import { Account } from "../accounts";
+import { Principal } from "../principals";
+import { Session } from "../sessions";
 
 /**
  * Contains data for a registered user.

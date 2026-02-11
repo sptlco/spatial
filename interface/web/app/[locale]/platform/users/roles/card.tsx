@@ -5,7 +5,7 @@
 import { Spatial } from "@sptlco/client";
 import { clsx } from "clsx";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import useSWR from "swr";
 
 import { Creator, Editor as RoleEditor } from ".";
@@ -14,20 +14,27 @@ import { Editor as PermissionEditor } from "../permissions";
 import {
   Button,
   Card,
+  Checkbox,
   Container,
   Dialog,
   Dropdown,
   Form,
   Icon,
+  LI,
   Monogram,
   Pagination,
   Paragraph,
+  ScrollArea,
   Sheet,
   Span,
   Spinner,
   Table,
-  toast
+  toast,
+  Tooltip,
+  UL
 } from "@sptlco/design";
+import { Role } from "@sptlco/data";
+import { createPortal } from "react-dom";
 
 /**
  * A dynamic list of roles.
@@ -37,6 +44,44 @@ export const Roles = () => {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
+
+  const [selection, setSelection] = useState<string[]>([]);
+
+  const selectOne = (role: Role, selected: boolean) => {
+    setSelection((s) => [...s.filter((x) => x !== role.id), ...(selected ? [role.id] : [])]);
+  };
+
+  const selectAll = (selected: boolean) => {
+    setSelection(selected ? paginatedData.map((r) => r.id) : []);
+  };
+
+  const deleteMany = (list: Role[]) => {
+    toast.promise(Promise.all(list.map((r) => Spatial.roles.del(r.id))), {
+      loading: `Deleting ${list.length} user${list.length === 1 ? "" : "s"}`,
+      success: async (responses) => {
+        const failed = responses.filter((r) => r.error);
+        await roles.mutate();
+        setSelection([]);
+
+        if (failed.length === 0) {
+          return {
+            message: "Users deleted",
+            description: `${list.length} user${list.length === 1 ? "" : "s"} deleted.`
+          };
+        }
+
+        return {
+          type: "error",
+          message: "Partial failure",
+          description: `${failed.length} user${failed.length === 1 ? "" : "s"} failed to delete.`
+        };
+      },
+      error: {
+        message: "Delete failed",
+        description: "Something went wrong while deleting users."
+      }
+    });
+  };
 
   const roles = useSWR("platform/identity/roles/list", async (_) => {
     const response = await Spatial.roles.list();
@@ -92,7 +137,7 @@ export const Roles = () => {
     router.replace(`${pathname}?${params.toString()}`, { scroll: false });
   };
 
-  const [creating, setCreating] = useState(false);
+  const selectedRoles = useMemo(() => roles.data?.filter((r) => selection.includes(r.id)) ?? [], [roles.data, selection]);
 
   const Body = () => {
     if (roles.isLoading || !roles.data) {
@@ -100,6 +145,9 @@ export const Roles = () => {
         <>
           {[...Array(10)].map((_, i) => (
             <Table.Row key={i}>
+              <Table.Cell>
+                <Span className="flex size-7 rounded-lg animate-pulse bg-background-surface" />
+              </Table.Cell>
               <Table.Cell>
                 <Container className="flex items-center gap-5 w-full">
                   <Span className="rounded-full shrink-0 size-12 animate-pulse bg-background-surface" />
@@ -131,6 +179,9 @@ export const Roles = () => {
 
           return (
             <Table.Row key={i}>
+              <Table.Cell>
+                <Checkbox checked={selection.includes(role.id)} onCheckedChange={(checked: boolean) => selectOne(role, checked)} />
+              </Table.Cell>
               <Table.Cell>
                 <Button intent="none" shape="square" size="fit" onClick={() => setEditing(true)} className="text-left">
                   <Monogram text={role.name} className="shrink-0 size-12" style={{ color: role.color }} />
@@ -255,6 +306,14 @@ export const Roles = () => {
     );
   };
 
+  useEffect(() => {
+    if (!selection.every((r) => paginatedData.some((x) => x.id === r))) {
+      setSelection((v) => v.filter((r) => paginatedData.some((x) => x.id === r)));
+    }
+  }, [paginatedData]);
+
+  const [creating, setCreating] = useState(false);
+
   return (
     <>
       <Card.Root className="gap-0!">
@@ -291,6 +350,9 @@ export const Roles = () => {
           <Table.Root className="w-full table-fixed border-separate border-spacing-y-10">
             <Table.Header>
               <Table.Row>
+                <Table.Column className="w-12 xl:w-16">
+                  <Checkbox checked={paginatedData.length > 0 && paginatedData.every((r) => selection.includes(r.id))} onCheckedChange={selectAll} />
+                </Table.Column>
                 <Table.Column className="text-left">Name</Table.Column>
                 <Table.Column className="text-center hidden xl:table-cell">Permissions</Table.Column>
                 <Table.Column className="text-center hidden xl:table-cell">Assignments</Table.Column>
@@ -303,11 +365,95 @@ export const Roles = () => {
           </Table.Root>
           <Pagination page={page} pages={pages} className="self-center" onPageChange={navigate} />
         </Card.Content>
-      </Card.Root>
 
-      <Sheet.Root open={creating} onOpenChange={setCreating}>
-        <Creator onCreate={(_) => roles.mutate()} />
-      </Sheet.Root>
+        {selection.length > 0 &&
+          createPortal(
+            <Container
+              className={clsx(
+                "bg-blue shadow-base",
+                "pointer-events-auto ml-auto flex items-center gap-2 rounded-2xl p-2 animate-in zoom-in-95 slide-in-from-right-50 fade-in duration-500",
+                "xl:mx-auto xl:slide-in-from-bottom-50 xl:slide-in-from-right-0"
+              )}
+            >
+              <Dialog.Root>
+                <Dialog.Trigger asChild>
+                  <Container>
+                    <Tooltip.Root>
+                      <Tooltip.Trigger asChild>
+                        <Button intent="ghost" className="size-10! p-0!">
+                          <Icon symbol="delete" />
+                        </Button>
+                      </Tooltip.Trigger>
+                      <Tooltip.Content side="top" sideOffset={20}>
+                        Delete
+                      </Tooltip.Content>
+                    </Tooltip.Root>
+                  </Container>
+                </Dialog.Trigger>
+
+                <Dialog.Content
+                  title={`Delete ${selection.length} user${selection.length === 1 ? "" : "s"}`}
+                  description="Please confirm this action. This cannot be undone."
+                >
+                  <Form
+                    className="flex flex-col gap-10"
+                    onSubmit={(e) => {
+                      e.preventDefault();
+                      deleteMany(selectedRoles);
+                    }}
+                  >
+                    <ScrollArea.Root>
+                      <ScrollArea.Viewport className="max-h-48">
+                        <UL className="flex flex-col gap-4">
+                          {selectedRoles.map((role) => (
+                            <LI key={role.id} className="flex items-center gap-4">
+                              <Monogram text={role.name} className="shrink-0 size-12" style={{ color: role.color }} />
+                              <Container className="flex flex-col truncate">
+                                <Span className="font-semibold truncate">{role.name}</Span>
+                              </Container>
+                            </LI>
+                          ))}
+                        </UL>
+                      </ScrollArea.Viewport>
+                      <ScrollArea.Scrollbar />
+                    </ScrollArea.Root>
+
+                    <Paragraph className="text-sm text-foreground-secondary">
+                      These accounts and all associated data will be deleted immediately.
+                    </Paragraph>
+
+                    <Container className="flex w-full justify-end gap-4">
+                      <Dialog.Close asChild>
+                        <Button type="button" intent="ghost">
+                          Cancel
+                        </Button>
+                      </Dialog.Close>
+                      <Button type="submit" intent="destructive">
+                        Delete
+                      </Button>
+                    </Container>
+                  </Form>
+                </Dialog.Content>
+              </Dialog.Root>
+
+              <Tooltip.Root>
+                <Tooltip.Trigger asChild>
+                  <Button intent="ghost" className="size-10! p-0!" onClick={() => setSelection([])}>
+                    <Icon symbol="close" fill />
+                  </Button>
+                </Tooltip.Trigger>
+                <Tooltip.Content side="top" sideOffset={20}>
+                  Clear
+                </Tooltip.Content>
+              </Tooltip.Root>
+            </Container>,
+            document.getElementById("actions")!
+          )}
+
+        <Sheet.Root open={creating} onOpenChange={setCreating}>
+          <Creator onCreate={(_) => roles.mutate()} />
+        </Sheet.Root>
+      </Card.Root>
     </>
   );
 };

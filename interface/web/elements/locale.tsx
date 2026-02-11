@@ -56,7 +56,7 @@ export const LocaleSwitcher = ({ compact = false }: { compact?: boolean }) => {
               <Dropdown.RadioItem key={i} value={locale} className="flex items-center gap-10">
                 <Container className="flex flex-col grow">
                   <Span className="text-sm font-bold">{t("name", { locale: locale.replace("-", "_") })}</Span>
-                  <Span className="text-xs">{t("origin", { locale: locale.replace("-", "_") })}</Span>
+                  <Span className="text-xs text-foreground-secondary">{t("origin", { locale: locale.replace("-", "_") })}</Span>
                 </Container>
                 <Dropdown.ItemIndicator className="text-xs flex items-center justify-center">
                   <Icon symbol="check" fill />

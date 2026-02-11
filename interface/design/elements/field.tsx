@@ -6,7 +6,8 @@ import { clsx } from "clsx";
 import { OTPInput, OTPInputContext, OTPInputProps } from "input-otp";
 import { ReactNode, useContext, useEffect, useRef, useState } from "react";
 import { HexColorPicker, HexColorInput } from "react-colorful";
-import { Button, Container, createElement, Dropdown, Icon, Input, Label, Paragraph, Span, toast } from "..";
+
+import { Button, Container, createElement, Dropdown, Icon, Input, Label, Paragraph, Select, Span, toast } from "..";
 
 /**
  * Common configurable options for a field.
@@ -56,6 +57,18 @@ export type TextFieldProps = {
    * An optional suffix.
    */
   suffix?: string;
+};
+
+/**
+ * Configurable options for an option field.
+ */
+export type OptionFieldProps = {
+  /**
+   * The field's data type.
+   */
+  type: "option";
+
+  // ...
 };
 
 /**
@@ -122,7 +135,7 @@ export type ColorFieldProps = {
 /**
  * Configurable options for a specific field type.
  */
-export type FieldTypeProps = TextFieldProps | OTPFieldProps | MetaFieldProps | ColorFieldProps;
+export type FieldTypeProps = TextFieldProps | OptionFieldProps | OTPFieldProps | MetaFieldProps | ColorFieldProps;
 
 /**
  * Configurable options for a field.
@@ -212,7 +225,7 @@ export const Field = createElement<"input", FieldProps>(({ inset = true, ...prop
                   loading: "Copying value",
                   success: (_) => ({
                     message: "Value copied",
-                    description: "The field's value was copied to your clipboard."
+                    description: props.value
                   })
                 });
               }}
@@ -223,6 +236,14 @@ export const Field = createElement<"input", FieldProps>(({ inset = true, ...prop
         ) : (
           input()
         );
+      case "option": {
+        return (
+          <Select.Root>
+            <Select.Trigger></Select.Trigger>
+            <Select.Content>{/** */}</Select.Content>
+          </Select.Root>
+        );
+      }
       case "otp": {
         const { onValueChange, ...rest } = props;
 
@@ -243,7 +264,7 @@ export const Field = createElement<"input", FieldProps>(({ inset = true, ...prop
           <Container className="relative w-full flex items-center gap-4">
             <Dropdown.Root open={open} onOpenChange={setOpen}>
               <Dropdown.Trigger className="flex absolute left-4 shrink-0 size-6 items-center justify-center cursor-pointer">
-                <Span className="size-full rounded-lg" style={{ backgroundColor: rest.value }} />
+                <Span className="size-full rounded-full" style={{ backgroundColor: rest.value }} />
               </Dropdown.Trigger>
               <Dropdown.Content className="bg-transparent! shadow-none! z-80! w-fit!">
                 <HexColorPicker color={rest.value} onChange={onValueChange} />

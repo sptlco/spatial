@@ -4,9 +4,7 @@
     "description": "Ingia ili kuendelea kwenye Spatial.",
 
     "email": {
-      "label": "Anwani ya Barua Pepe",
-      "placeholder": "jina@kampuni.com",
-      "description": "Jifunze kuhusu mbinu yetu ya uthibitishaji salama, <link>bila nenosiri</link> katika nyaraka za umma."
+      "label": "Anwani ya Barua Pepe"
     },
 
     "continue": "Endelea",

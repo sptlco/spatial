@@ -4,9 +4,7 @@
     "description": "Melden Sie sich an, um mit Spatial fortzufahren.",
 
     "email": {
-      "label": "E-Mail-Adresse",
-      "placeholder": "name@unternehmen.com",
-      "description": "Erfahren Sie in der öffentlichen Dokumentation mehr über unseren Ansatz für sichere, <link>passwortlose Authentifizierung</link>."
+      "label": "E-Mail-Adresse"
     },
 
     "continue": "Weiter",

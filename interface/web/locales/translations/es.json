@@ -4,9 +4,7 @@
     "description": "Inicia sesión para continuar en Spatial.",
 
     "email": {
-      "label": "Dirección de correo electrónico",
-      "placeholder": "nombre@empresa.com",
-      "description": "Obtén más información sobre nuestro enfoque de <link>autenticación sin contraseña</link> segura en la documentación pública."
+      "label": "Dirección de correo electrónico"
     },
 
     "continue": "Continuar",

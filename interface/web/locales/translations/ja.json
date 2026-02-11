@@ -4,9 +4,7 @@
     "description": "Spatial を続行するにはサインインしてください。",
 
     "email": {
-      "label": "メールアドレス",
-      "placeholder": "name@company.com",
-      "description": "公開ドキュメントで、安全かつ <link>パスワードレス認証</link> の仕組みをご確認ください。"
+      "label": "メールアドレス"
     },
 
     "continue": "続行",

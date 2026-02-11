@@ -18,12 +18,12 @@ const classes = cva({
       top: ["inset-x-0 top-0 h-auto sm:rounded-b-4xl", "data-[state=open]:slide-in-from-top", "data-[state=closed]:slide-out-to-top"],
       bottom: ["inset-x-0 bottom-0 h-auto sm:rounded-t-4xl", "data-[state=open]:slide-in-from-bottom", "data-[state=closed]:slide-out-to-bottom"],
       right: [
-        "inset-y-0 right-0 w-full sm:w-auto sm:max-w-full h-full sm:rounded-l-4xl",
+        "inset-y-0 right-0 w-full sm:w-fit max-w-full h-full sm:rounded-l-4xl",
         "data-[state=open]:slide-in-from-right",
         "data-[state=closed]:slide-out-to-right"
       ],
       left: [
-        "inset-y-0 left-0 w-full sm:w-auto sm:max-w-full h-full sm:rounded-r-4xl",
+        "inset-y-0 left-0 w-full sm:w-fit max-w-full h-full sm:rounded-r-4xl",
         "data-[state=open]:slide-in-from-left",
         "data-[state=closed]:slide-out-to-left"
       ]
@@ -37,12 +37,17 @@ const classes = cva({
  */
 export const Sheet = {
   Root: createElement<typeof Primitive.Root, Primitive.DialogProps>((props, _) => <Primitive.Root {...props} />),
+
   Trigger: createElement<typeof Primitive.Trigger, Primitive.DialogTriggerProps>((props, ref) => (
     <Primitive.Trigger {...props} ref={ref} data-slot="sheet-trigger" />
   )),
+
   Close: createElement<typeof Primitive.Close, Primitive.DialogCloseProps>((props, ref) => <Primitive.Close {...props} ref={ref} />),
+
   Portal: createElement<typeof Primitive.Portal, Primitive.DialogPortalProps>((props, _) => <Primitive.Portal {...props} />),
+
   Overlay: createElement<typeof Primitive.Overlay, Primitive.DialogOverlayProps>((props, ref) => <Primitive.Overlay {...props} ref={ref} />),
+
   Content: createElement<
     typeof Primitive.Content,
     Primitive.DialogContentProps & { title?: ReactNode; description?: ReactNode; side?: "top" | "right" | "bottom" | "left"; closeButton?: boolean }
@@ -66,12 +71,12 @@ export const Sheet = {
             <ScrollArea.Viewport className="max-h-screen">
               <Container className="flex flex-col p-10 gap-10">
                 <Container className="flex gap-10">
-                  <Container className="flex flex-col grow">
+                  <Container className="grow flex flex-col">
                     <Optional value={props.title}>
-                      <Primitive.Title className="font-bold text-lg">{props.title}</Primitive.Title>
+                      <Primitive.Title className="font-bold text-lg max-w-xs truncate">{props.title}</Primitive.Title>
                     </Optional>
                     <Optional value={props.description}>
-                      <Primitive.Description className="text-foreground-secondary max-w-sm">{props.description}</Primitive.Description>
+                      <Primitive.Description className="text-foreground-secondary max-w-xs truncate">{props.description}</Primitive.Description>
                     </Optional>
                   </Container>
                   {closeButton && (

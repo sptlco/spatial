@@ -1,8 +1,13 @@
 // Copyright © Spatial Corporation. All rights reserved.
 
-import { Container, createElement } from "..";
+import { createElement, Icon } from "..";
 import * as Primitive from "@radix-ui/react-dropdown-menu";
 import { clsx } from "clsx";
+
+const item = clsx(
+  "py-2 px-4 gap-4 cursor-pointer transition-all rounded-lg flex items-center",
+  "hover:text-white hover:bg-button-highlight-hover active:bg-button-highlight-active"
+);
 
 /**
  * A menu such as a set of actions or functions, triggered by a button.
@@ -57,15 +62,13 @@ export const Dropdown = {
    * The component that contains the dropdown menu items.
    */
   Item: createElement<typeof Primitive.Item, Primitive.DropdownMenuItemProps>((props, ref) => (
-    <Primitive.Item
-      {...props}
-      ref={ref}
-      className={clsx(
-        "py-2 px-4 cursor-pointer transition-all rounded-lg flex items-center hover:bg-button-hover active:bg-button-active",
-        props.className
-      )}
-    />
+    <Primitive.Item {...props} ref={ref} className={clsx(item, props.className)} />
   )),
+
+  /**
+   * A visual indicator for dropdown items.
+   */
+  Icon: createElement<typeof Icon>((props, ref) => <Icon {...props} ref={ref} size={20} className={clsx(props.className)} />),
 
   /**
    * Used to group multiple dropdown menu items.
@@ -81,14 +84,7 @@ export const Dropdown = {
    * An item that can be controlled and rendered like a checkbox.
    */
   CheckboxItem: createElement<typeof Primitive.CheckboxItem>((props, ref) => (
-    <Primitive.CheckboxItem
-      {...props}
-      ref={ref}
-      className={clsx(
-        "py-2 px-4 cursor-pointer transition-all rounded-lg flex items-center hover:bg-button-hover active:bg-button-active",
-        props.className
-      )}
-    />
+    <Primitive.CheckboxItem {...props} ref={ref} className={clsx(item, props.className)} />
   )),
 
   /**
@@ -102,14 +98,7 @@ export const Dropdown = {
    * An item that can be controlled and rendered like a radio.
    */
   RadioItem: createElement<typeof Primitive.RadioItem, Primitive.DropdownMenuRadioItemProps>((props, ref) => (
-    <Primitive.RadioItem
-      {...props}
-      ref={ref}
-      className={clsx(
-        "py-2 px-4 cursor-pointer transition-all rounded-lg flex items-center hover:bg-button-hover active:bg-button-active",
-        props.className
-      )}
-    />
+    <Primitive.RadioItem {...props} ref={ref} className={clsx(item, props.className)} />
   )),
 
   /**
@@ -129,7 +118,7 @@ export const Dropdown = {
   /**
    * Contains all the parts of a submenu.
    */
-  Sub: createElement<typeof Primitive.Sub, Primitive.DropdownMenuSubProps>((props, ref) => <Primitive.Sub {...props} />),
+  Sub: createElement<typeof Primitive.Sub, Primitive.DropdownMenuSubProps>((props, _) => <Primitive.Sub {...props} />),
 
   /**
    * An item that opens a submenu.

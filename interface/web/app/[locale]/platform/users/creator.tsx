@@ -56,8 +56,8 @@ export const Creator = createElement<typeof Sheet.Content, { onCreate?: (account
   };
 
   return (
-    <Sheet.Content {...props} ref={ref} title="Create a new user" description="Grant access to a family member, friend, or colleague." closeButton>
-      <Form className="flex flex-col gap-10 w-full max-w-sm" onSubmit={create}>
+    <Sheet.Content {...props} ref={ref} title="New user" description="Grant a user access to Spatial." closeButton>
+      <Form className="flex flex-col w-full sm:w-screen max-w-sm gap-10" onSubmit={create}>
         <Field
           type="text"
           id="name"
@@ -75,7 +75,6 @@ export const Creator = createElement<typeof Sheet.Content, { onCreate?: (account
           name="email"
           label="User ID"
           suffix={`@${domain}`}
-          placeholder="name"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           disabled={creating}
@@ -92,6 +91,7 @@ export const Creator = createElement<typeof Sheet.Content, { onCreate?: (account
           inset={false}
           required={false}
         />
+        <Field type="option" id="roles" name="roles" label="Roles" disabled={creating} inset={false} required={false} />
         <Container className="flex items-center gap-4">
           <Button type="submit" disabled={creating || !name || !email}>
             Create

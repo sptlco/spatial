@@ -125,6 +125,7 @@ export const Editor = createElement<typeof Sheet.Content, { user: User; onUpdate
             });
           }}
         />
+        <Field type="option" id="roles" name="roles" label="Roles" disabled={updating} inset={false} required={false} />
         <Container className="flex items-center gap-4">
           <Button type="submit" disabled={updating || !update.account.name || !update.account.email}>
             Update

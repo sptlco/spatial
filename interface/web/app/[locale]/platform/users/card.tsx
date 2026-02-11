@@ -360,118 +360,110 @@ export const Users = () => {
     );
   };
 
-  const Row = createElement<typeof Table.Row, { user: User }>(({ user, ...props }, ref) => (
-    <Table.Row {...props} ref={ref}>
-      <Table.Cell>
-        <Checkbox checked={selection.includes(user.account.id)} onCheckedChange={(checked: boolean) => selectOne(user, checked)} />
-      </Table.Cell>
-      <Table.Cell>
-        <Sheet.Root>
-          <Sheet.Trigger asChild>
-            <Container className="cursor-pointer flex items-center gap-5">
-              <Avatar src={user.account.avatar} alt={user.account.name} className="shrink-0 size-12" />
-              <Container className="flex flex-col truncate">
-                <Span className="font-semibold truncate">{highlight(user.account.name, keywords)}</Span>
-                <Span className="text-foreground-secondary truncate">{highlight(user.account.email, keywords)}</Span>
-              </Container>
-              {user.account.id === (account?.id ?? "") && (
-                <Span className="hidden xl:flex px-4 py-2 bg-background-highlight rounded-xl text-xs font-bold">You</Span>
-              )}
+  const Row = createElement<typeof Table.Row, { user: User }>(({ user, ...props }, ref) => {
+    const [editing, setEditing] = useState(false);
+    const [deleting, setDeleting] = useState(false);
+
+    return (
+      <Table.Row {...props} ref={ref}>
+        <Table.Cell>
+          <Checkbox checked={selection.includes(user.account.id)} onCheckedChange={(checked: boolean) => selectOne(user, checked)} />
+        </Table.Cell>
+        <Table.Cell>
+          <Button intent="none" shape="square" size="fit" onClick={() => setEditing(true)} className="text-left">
+            <Avatar src={user.account.avatar} alt={user.account.name} className="shrink-0 size-12" />
+            <Container className="flex flex-col truncate">
+              <Span className="font-semibold truncate">{highlight(user.account.name, keywords)}</Span>
+              <Span className="text-foreground-secondary truncate">{highlight(user.account.email, keywords)}</Span>
             </Container>
-          </Sheet.Trigger>
+            {user.account.id === (account?.id ?? "") && (
+              <Span className="hidden xl:flex px-4 py-2 bg-background-highlight rounded-xl text-xs font-bold">You</Span>
+            )}
+          </Button>
+        </Table.Cell>
+        <Table.Cell className="hidden xl:table-cell">
+          <UL className="flex flex-wrap gap-4">
+            {!roles.isLoading &&
+              user.principal.roles
+                .sort((a: string, b: string) => (a < b ? -1 : 1))
+                .map((role: string, i: number) => (
+                  <LI
+                    key={i}
+                    className="inline-flex w-fit items-center justify-center gap-3 "
+                    style={{ color: Object.values(roles.data!).find((r) => r.name == role)?.color ?? "currentColor" }}
+                  >
+                    <Span className="size-2 flex rounded-full bg-current" />
+                    <Span className="text-sm text-foreground-primary font-medium">{highlight(role, keywords)}</Span>
+                  </LI>
+                ))}
+          </UL>
+        </Table.Cell>
+        <Table.Cell className="hidden xl:table-cell">
+          <Span className="text-foreground-tertiary">{format.relativeTime(new Date(user.account.created), now)}</Span>
+        </Table.Cell>
+        <Table.Cell>
+          <Dropdown.Root>
+            <Dropdown.Trigger asChild>
+              <Button intent="ghost" className="ml-auto! size-10! p-0! data-[state=open]:bg-button-ghost-active">
+                <Icon symbol="more_vert" />
+              </Button>
+            </Dropdown.Trigger>
+            <Dropdown.Content align="end">
+              <Dropdown.Item onSelect={() => setEditing(true)}>
+                <Dropdown.Icon symbol="person_edit" fill />
+                <Span>Edit</Span>
+              </Dropdown.Item>
+              <Dropdown.Item onSelect={() => exportMany([user])}>
+                <Dropdown.Icon symbol="download" fill />
+                <Span>Export</Span>
+              </Dropdown.Item>
+              <Dropdown.Item onSelect={() => setDeleting(true)}>
+                <Dropdown.Icon symbol="close" fill />
+                <Span>Delete</Span>
+              </Dropdown.Item>
+            </Dropdown.Content>
+          </Dropdown.Root>
+        </Table.Cell>
+
+        <Sheet.Root open={editing} onOpenChange={setEditing}>
           <Editor user={user} onUpdate={(_) => users.mutate()} />
         </Sheet.Root>
-      </Table.Cell>
-      <Table.Cell className="hidden xl:table-cell">
-        <UL className="flex flex-wrap gap-4">
-          {!roles.isLoading &&
-            user.principal.roles
-              .sort((a: string, b: string) => (a < b ? -1 : 1))
-              .map((role: string, i: number) => (
-                <LI
-                  key={i}
-                  className="inline-flex w-fit items-center justify-center gap-3 "
-                  style={{ color: Object.values(roles.data!).find((r) => r.name == role)?.color ?? "currentColor" }}
-                >
-                  <Span className="size-2 flex rounded-full bg-current" />
-                  <Span className="text-sm text-foreground-primary font-medium">{highlight(role, keywords)}</Span>
-                </LI>
-              ))}
-        </UL>
-      </Table.Cell>
-      <Table.Cell className="hidden xl:table-cell">
-        <Span className="text-foreground-tertiary">{format.relativeTime(new Date(user.account.created), now)}</Span>
-      </Table.Cell>
-      <Table.Cell>
-        <Dropdown.Root>
-          <Dropdown.Trigger asChild>
-            <Button intent="ghost" className="ml-auto! size-10! p-0! data-[state=open]:bg-button-ghost-active">
-              <Icon symbol="more_vert" />
-            </Button>
-          </Dropdown.Trigger>
-          <Dropdown.Content align="end">
-            <Dropdown.Item asChild>
-              <Sheet.Root>
-                <Sheet.Trigger asChild>
-                  <Button intent="ghost" className="w-full" align="left">
-                    <Icon symbol="person_edit" fill />
-                    <Span>Edit</Span>
+
+        <Dialog.Root open={deleting} onOpenChange={setDeleting}>
+          <Dialog.Content title="Delete user" description="Please confirm this action.">
+            <Form
+              className="flex flex-col gap-10"
+              onSubmit={(e) => {
+                e.preventDefault();
+                deleteMany([user]);
+              }}
+            >
+              <Container className="flex items-center gap-5">
+                <Avatar src={user.account.avatar} alt={user.account.name} className="shrink-0 size-12" />
+                <Container className="flex flex-col truncate">
+                  <Span className="font-semibold truncate">{user.account.name}</Span>
+                  <Span className="text-foreground-secondary truncate">{user.account.email}</Span>
+                </Container>
+              </Container>
+              <Paragraph className="text-sm text-foreground-secondary">
+                This user and all of their account data will be lost immediately upon deletion.
+              </Paragraph>
+              <Container className="flex w-full items-center justify-end gap-4">
+                <Dialog.Close asChild>
+                  <Button type="button" intent="ghost">
+                    Cancel
                   </Button>
-                </Sheet.Trigger>
-                <Editor user={user} onUpdate={(_) => users.mutate()} />
-              </Sheet.Root>
-            </Dropdown.Item>
-            <Dropdown.Item asChild>
-              <Button intent="ghost" className="w-full" align="left" onClick={() => exportMany([user])}>
-                <Icon symbol="download" fill />
-                <Span>Export</Span>
-              </Button>
-            </Dropdown.Item>
-            <Dropdown.Item asChild>
-              <Dialog.Root>
-                <Dialog.Trigger asChild>
-                  <Button intent="ghost" className="w-full" align="left">
-                    <Icon symbol="close" fill />
-                    <Span>Delete</Span>
-                  </Button>
-                </Dialog.Trigger>
-                <Dialog.Content title="Delete user" description="Please confirm this action.">
-                  <Form
-                    className="flex flex-col gap-10"
-                    onSubmit={(e) => {
-                      e.preventDefault();
-                      deleteMany([user]);
-                    }}
-                  >
-                    <Container className="flex items-center gap-5">
-                      <Avatar src={user.account.avatar} alt={user.account.name} className="shrink-0 size-12" />
-                      <Container className="flex flex-col truncate">
-                        <Span className="font-semibold truncate">{user.account.name}</Span>
-                        <Span className="text-foreground-secondary truncate">{user.account.email}</Span>
-                      </Container>
-                    </Container>
-                    <Paragraph className="text-sm text-foreground-secondary">
-                      This user and all of their account data will be lost immediately upon deletion.
-                    </Paragraph>
-                    <Container className="flex w-full items-center justify-end gap-4">
-                      <Dialog.Close asChild>
-                        <Button type="button" intent="ghost">
-                          Cancel
-                        </Button>
-                      </Dialog.Close>
-                      <Button type="submit" intent="destructive" className="shrink truncate">
-                        Delete
-                      </Button>
-                    </Container>
-                  </Form>
-                </Dialog.Content>
-              </Dialog.Root>
-            </Dropdown.Item>
-          </Dropdown.Content>
-        </Dropdown.Root>
-      </Table.Cell>
-    </Table.Row>
-  ));
+                </Dialog.Close>
+                <Button type="submit" intent="destructive" className="shrink truncate">
+                  Delete
+                </Button>
+              </Container>
+            </Form>
+          </Dialog.Content>
+        </Dialog.Root>
+      </Table.Row>
+    );
+  });
 
   useEffect(() => {
     setSearch(keywords.join(" "));
@@ -494,11 +486,13 @@ export const Users = () => {
       (direction || checked) && (
         <Span className="flex items-center justify-center text-hint gap-0.5">
           {direction && <Icon size={16} symbol={direction} className="font-normal" />}
-          {checked && <Span className="text-xs font-extrabold">{index + 1}</Span>}
+          {order.length > 1 && checked && <Span className="text-xs font-extrabold">{index + 1}</Span>}
         </Span>
       )
     );
   };
+
+  const [creating, setCreating] = useState(false);
 
   return (
     <Card.Root>
@@ -517,16 +511,9 @@ export const Users = () => {
               </Button>
             </Dropdown.Trigger>
             <Dropdown.Content>
-              <Dropdown.Item asChild>
-                <Sheet.Root>
-                  <Sheet.Trigger asChild>
-                    <Button intent="ghost" className="w-full" align="left">
-                      <Icon symbol="add" />
-                      <Span>Create</Span>
-                    </Button>
-                  </Sheet.Trigger>
-                  <Creator onCreate={(_) => users.mutate()} />
-                </Sheet.Root>
+              <Dropdown.Item onSelect={() => setCreating(true)}>
+                <Icon symbol="add" />
+                <Span>Create</Span>
               </Dropdown.Item>
             </Dropdown.Content>
           </Dropdown.Root>
@@ -543,7 +530,7 @@ export const Users = () => {
           </Sheet.Root>
         </Card.Gutter>
       </Card.Header>
-      <Card.Content className="w-full flex flex-col relative">
+      <Card.Content className={clsx("w-full flex flex-col relative", { "mask-b-from-20% mask-b-to-80%": !users.data })}>
         <Container className="flex flex-col xl:flex-row w-full items-start xl:items-center gap-5">
           <Form
             className="relative w-full max-w-sm flex items-center"
@@ -603,7 +590,7 @@ export const Users = () => {
                         return (
                           <Dropdown.CheckboxItem
                             key={i}
-                            className="group flex items-center gap-4 pr-5"
+                            className="group flex items-center pr-5"
                             checked={checked}
                             onSelect={(e) => e.preventDefault()}
                             onCheckedChange={(value) => filter(role.name, value)}
@@ -668,7 +655,7 @@ export const Users = () => {
                       {(direction || checked) && (
                         <Span className="flex items-center justify-center gap-0.5">
                           {direction && <Icon size={16} symbol={direction} className="text-hint font-normal" />}
-                          {checked && <Span className="text-xs font-extrabold text-hint">{index + 1}</Span>}
+                          {order.length > 1 && checked && <Span className="text-xs font-extrabold text-hint">{index + 1}</Span>}
                         </Span>
                       )}
                     </Dropdown.CheckboxItem>
@@ -723,7 +710,6 @@ export const Users = () => {
           </Table.Body>
         </Table.Root>
         <Pagination page={page} pages={pages} className="self-center" onPageChange={navigate} />
-        {!users.data && <Span className="absolute pointer-events-none inset-0 size-full bg-linear-to-b from-transparent to-background-subtle" />}
         <Container
           className={clsx("forwards", "opacity-0", "fixed bottom-10  left-1/2 -translate-1/2", "p-10 bg-background-surface shadow-base rounded-2xl", {
             "animate-in slide-in-from-bottom fade-in": selection.length > 0
@@ -732,7 +718,13 @@ export const Users = () => {
       </Card.Content>
       {selection.length > 0 &&
         createPortal(
-          <Container className="pointer-events-auto ml-auto flex items-center gap-2 bg-blue rounded-2xl p-2 animate-in zoom-in-95 slide-in-from-right-50 fade-in duration-500">
+          <Container
+            className={clsx(
+              "bg-blue shadow-base",
+              "pointer-events-auto ml-auto flex items-center gap-2 rounded-2xl p-2 animate-in zoom-in-95 slide-in-from-right-50 fade-in duration-500",
+              "xl:mx-auto xl:slide-in-from-bottom-50 xl:slide-in-from-right-0"
+            )}
+          >
             <Tooltip.Root>
               <Tooltip.Trigger asChild>
                 <Button intent="ghost" className="size-10! p-0!" onClick={() => exportMany(selectedUsers)}>
@@ -814,6 +806,10 @@ export const Users = () => {
           </Container>,
           document.getElementById("actions")!
         )}
+
+      <Sheet.Root open={creating} onOpenChange={setCreating}>
+        <Creator onCreate={(_) => users.mutate()} />
+      </Sheet.Root>
     </Card.Root>
   );
 };

@@ -11,17 +11,17 @@ export type ButtonProps = {
   /**
    * The button's intent.
    */
-  intent?: "default" | "ghost" | "highlight" | "destructive";
+  intent?: "default" | "ghost" | "highlight" | "destructive" | "none";
 
   /**
    * The shape of the button.
    */
-  shape?: "round" | "pill";
+  shape?: "square" | "round" | "pill";
 
   /**
    * The size of the button.
    */
-  size?: "small" | "medium";
+  size?: "small" | "medium" | "fit";
 
   /**
    * The horizontal alignment of the button's content.
@@ -35,21 +35,24 @@ export type ButtonProps = {
 };
 
 const styles = cva({
-  base: "w-fit flex items-center transition-all cursor-pointer truncate disabled:opacity-50 disabled:pointer-events-none",
+  base: "w-fit flex gap-4 items-center transition-all cursor-pointer truncate disabled:opacity-50 disabled:pointer-events-none",
   variants: {
     intent: {
       default: "bg-button hover:bg-button-hover active:bg-button-active",
       destructive: "bg-button-destructive hover:bg-button-destructive-hover active:bg-button-destructive-active",
       ghost: "bg-button-ghost hover:bg-button-ghost-hover active:bg-button-ghost-active",
-      highlight: "bg-button-highlight hover:bg-button-highlight-hover active:bg-button-highlight-active"
+      highlight: "bg-button-highlight hover:bg-button-highlight-hover active:bg-button-highlight-active",
+      none: ""
     },
     shape: {
+      square: "rounded-none",
       round: "rounded-lg",
       pill: "rounded-full"
     },
     size: {
-      small: "px-4 py-1.5 gap-4 text-sm",
-      medium: "px-8 py-2 gap-4 text-base"
+      small: "px-4 py-1.5 text-sm",
+      medium: "px-8 py-2 text-base",
+      fit: ""
     },
     align: {
       left: "pl-2.5! justify-start",

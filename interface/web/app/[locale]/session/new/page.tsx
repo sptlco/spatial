@@ -124,14 +124,6 @@ export default function Page() {
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           suffix={`@${domain}`}
-          placeholder="name"
-          description={t.rich("email.description", {
-            link: (chunks) => (
-              <Link href="/docs" target="_blank">
-                {chunks}
-              </Link>
-            )
-          })}
         />
         <Button type="submit" className="w-full">
           <Span>{t("continue")}</Span>

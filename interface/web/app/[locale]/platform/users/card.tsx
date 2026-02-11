@@ -557,7 +557,7 @@ export const Users = () => {
 
             <Icon symbol="search" className="absolute left-3" />
 
-            {search.length > 0 ? (
+            {keywords.length > 0 ? (
               <Button type="button" intent="ghost" className="absolute right-1 size-8! p-0!" onClick={clearKeywords}>
                 <Icon symbol="close" />
               </Button>

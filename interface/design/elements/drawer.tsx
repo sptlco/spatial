@@ -1,8 +1,11 @@
 // Copyright © Spatial Corporation. All rights reserved.
 
+"use client";
+
 import { Container, createElement, Hidden, Icon, Span } from "..";
 import { clsx } from "clsx";
-import { ComponentProps, FC, PropsWithChildren, ReactNode } from "react";
+import { ComponentProps, FC, PropsWithChildren, ReactNode, useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 import { Drawer as Primitive } from "vaul";
 
 export const Drawer = {
@@ -66,4 +69,27 @@ export const Drawer = {
       </Primitive.Portal>
     );
   })
+};
+
+/**
+ * Consume a drawer.
+ * @param drawer The drawer to consume.
+ * @returns Controls for the drawer.
+ */
+export const useDrawer = (drawer: ReactNode) => {
+  const [open, setOpen] = useState(false);
+
+  useEffect(() => {
+    createPortal(
+      <Drawer.Root open={open} onOpenChange={setOpen}>
+        {drawer}
+      </Drawer.Root>,
+      document.body
+    );
+  }, []);
+
+  return {
+    open: () => setOpen(true),
+    close: () => setOpen(false)
+  };
 };

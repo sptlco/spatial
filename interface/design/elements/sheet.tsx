@@ -1,10 +1,13 @@
 // Copyright © Spatial Corporation. All rights reserved.
 
+"use client";
+
 import { Container, createElement, Hidden, Icon, ScrollArea } from "..";
 import * as Primitive from "@radix-ui/react-dialog";
 import { clsx } from "clsx";
 import { cva } from "cva";
-import { FC, PropsWithChildren, ReactNode } from "react";
+import { FC, PropsWithChildren, ReactNode, useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 
 const classes = cva({
   base: [
@@ -97,4 +100,27 @@ export const Sheet = {
       </Sheet.Portal>
     );
   })
+};
+
+/**
+ * Consume a sheet.
+ * @param sheet The sheet to consume.
+ * @returns Controls for the sheet.
+ */
+export const useSheet = (sheet: ReactNode) => {
+  const [open, setOpen] = useState(false);
+
+  useEffect(() => {
+    createPortal(
+      <Sheet.Root open={open} onOpenChange={setOpen}>
+        {sheet}
+      </Sheet.Root>,
+      document.body
+    );
+  }, []);
+
+  return {
+    open: () => setOpen(true),
+    close: () => setOpen(false)
+  };
 };

@@ -1,9 +1,12 @@
 // Copyright © Spatial Corporation. All rights reserved.
 
+"use client";
+
 import { Container, createElement, Hidden, Icon, ScrollArea } from "..";
 import * as Primitive from "@radix-ui/react-dialog";
 import { clsx } from "clsx";
-import { FC, PropsWithChildren, ReactNode } from "react";
+import { FC, PropsWithChildren, ReactNode, useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 
 /**
  * A window overlaid on either the primary window or another
@@ -91,4 +94,27 @@ export const Dialog = {
       </Primitive.Portal>
     );
   })
+};
+
+/**
+ * Consume a dialog.
+ * @param dialog The dialog to consume.
+ * @returns Controls for the dialog.
+ */
+export const useDialog = (dialog: ReactNode) => {
+  const [open, setOpen] = useState(false);
+
+  useEffect(() => {
+    createPortal(
+      <Dialog.Root open={open} onOpenChange={setOpen}>
+        {dialog}
+      </Dialog.Root>,
+      document.body
+    );
+  }, []);
+
+  return {
+    open: () => setOpen(true),
+    close: () => setOpen(false)
+  };
 };

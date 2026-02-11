@@ -298,8 +298,7 @@ export default function Layout(props: { children: ReactNode }) {
           </Sheet.Trigger>
           <Sheet.Content title={t("modals.account.title")} description={t("modals.account.description")} closeButton side="right">
             <Button
-              destructive
-              className="w-full"
+              size="fill"
               disabled={user.loading}
               onClick={async () => {
                 await user.logout();

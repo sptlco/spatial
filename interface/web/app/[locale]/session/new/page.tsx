@@ -115,20 +115,22 @@ export default function Page() {
             <Paragraph className="text-foreground-secondary">{t("description")}</Paragraph>
           </Container>
         </Container>
-        <Field
-          type="text"
-          label={t("email.label")}
-          name="email"
-          id="email"
-          disabled={state !== "idle"}
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          suffix={`@${domain}`}
-        />
-        <Button type="submit" className="w-full">
-          <Span>{t("continue")}</Span>
-          {processing ? <Spinner className="size-4 m-1 text-foreground-tertiary" /> : <Icon symbol="arrow_right_alt" />}
-        </Button>
+        <Container className="w-full flex items-end gap-6">
+          <Field
+            type="text"
+            label={t("email.label")}
+            name="email"
+            id="email"
+            disabled={state !== "idle"}
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            suffix={`@${domain}`}
+            containerClassName="flex-1 min-w-0"
+          />
+          <Button type="submit" size="fit" className="w-10! h-10 shrink-0!" shape="pill">
+            {processing ? <Spinner className="size-4 text-foreground-tertiary" /> : <Icon symbol="arrow_right_alt" />}
+          </Button>
+        </Container>
       </Form>
       <CompactFooter className="col-span-3 row-start-3 place-self-center" />
       <Dialog.Root

@@ -2,7 +2,7 @@
 
 "use client";
 
-import { Container, createElement, Hidden, Icon, ScrollArea } from "..";
+import { Container, createElement, Hidden, Icon, Paragraph, ScrollArea } from "..";
 import * as Primitive from "@radix-ui/react-dialog";
 import { clsx } from "clsx";
 import { cva } from "cva";
@@ -72,22 +72,26 @@ export const Sheet = {
         <Primitive.Content {...props} data-slot="sheet-content" className={clsx(classes({ side }), props.className)} ref={ref}>
           <ScrollArea.Root className="h-full rounded-[inherit]" fade>
             <ScrollArea.Viewport className="max-h-screen">
-              <Container className="flex flex-col p-10 gap-10">
-                <Container className="flex gap-10">
-                  <Container className="grow flex flex-col">
-                    <Optional value={props.title}>
-                      <Primitive.Title className="font-bold text-lg max-w-xs truncate">{props.title}</Primitive.Title>
-                    </Optional>
+              <Container className="w-full flex flex-col p-10 gap-10">
+                <Optional value={props.title || props.description || closeButton}>
+                  <Container className="w-full flex flex-col gap-2.5">
+                    <Container className="flex items-center">
+                      <Optional value={props.title}>
+                        <Primitive.Title className="font-bold text-lg flex-1 min-w-0 truncate">{props.title}</Primitive.Title>
+                      </Optional>
+                      <Optional value={closeButton}>
+                        <Primitive.Close className="cursor-pointer size-7 items-center justify-center">
+                          <Icon symbol="close" />
+                        </Primitive.Close>
+                      </Optional>
+                    </Container>
                     <Optional value={props.description}>
-                      <Primitive.Description className="text-foreground-secondary max-w-xs truncate">{props.description}</Primitive.Description>
+                      <Primitive.Description className="text-foreground-secondary w-full sm:max-w-sm" asChild>
+                        <Paragraph>{props.description}</Paragraph>
+                      </Primitive.Description>
                     </Optional>
                   </Container>
-                  {closeButton && (
-                    <Primitive.Close className="cursor-pointer flex size-7 items-center justify-center">
-                      <Icon symbol="close" />
-                    </Primitive.Close>
-                  )}
-                </Container>
+                </Optional>
                 {props.children}
               </Container>
             </ScrollArea.Viewport>

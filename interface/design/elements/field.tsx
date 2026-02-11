@@ -145,7 +145,7 @@ export type FieldProps = SharedFieldProps & FieldTypeProps;
 /**
  * Part of a form collecting user data.
  */
-export const Field = createElement<"input", FieldProps>(({ inset = true, ...props }, ref) => {
+export const Field = createElement<"input", FieldProps>(({ containerClassName, inset = true, ...props }, ref) => {
   const render = () => {
     const classes = clsx(
       "disabled:opacity-50",
@@ -177,7 +177,7 @@ export const Field = createElement<"input", FieldProps>(({ inset = true, ...prop
                   {...props}
                   ref={ref}
                   autoComplete="off"
-                  className="placeholder:text-hint grow truncate"
+                  className="placeholder:text-hint flex-1 min-w-0 truncate"
                   value={value}
                   onChange={(e) =>
                     props.onChange?.({
@@ -372,9 +372,9 @@ export const Field = createElement<"input", FieldProps>(({ inset = true, ...prop
               </Container>
             ))}
 
-            <Button type="button" intent="ghost" className={clsx("bg-transparent! text-hint! px-4!")} disabled={props.disabled} onClick={add}>
-              <Icon symbol="add_diamond" className="font-light" />
-              <Span className="text-foreground-primary!">Add property</Span>
+            <Button type="button" intent="none" size="fit" className={clsx("px-4 py-2")} disabled={props.disabled} onClick={add}>
+              <Icon symbol="add_diamond" className="font-light text-hint" />
+              <Span>Add property</Span>
             </Button>
           </Container>
         );
@@ -382,7 +382,7 @@ export const Field = createElement<"input", FieldProps>(({ inset = true, ...prop
   };
 
   return (
-    <Container className={clsx("group flex flex-col space-y-4 w-full", props.containerClassName)}>
+    <Container className={clsx("group flex flex-col space-y-4 w-full", containerClassName)}>
       {(props.label || props.required === false) && (
         <Container className="flex items-center">
           {props.label && (

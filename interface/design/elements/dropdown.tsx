@@ -5,7 +5,7 @@ import * as Primitive from "@radix-ui/react-dropdown-menu";
 import { clsx } from "clsx";
 
 const item = clsx(
-  "py-2 px-4 gap-4 cursor-pointer transition-all rounded-lg flex items-center",
+  "p-4 gap-4 cursor-pointer transition-all flex items-center",
   "hover:text-white hover:bg-button-highlight-hover active:bg-button-highlight-active"
 );
 
@@ -35,17 +35,19 @@ export const Dropdown = {
   /**
    * The component that pops out when the dropdown menu is open.
    */
-  Content: createElement<typeof Primitive.Content, Primitive.DropdownMenuContentProps>((props, ref) => (
+  Content: createElement<typeof Primitive.Content, Primitive.DropdownMenuContentProps>(({ sticky = "always", ...props }, ref) => (
     <Dropdown.Portal>
       <Primitive.Content
         {...props}
         ref={ref}
         sideOffset={20}
         collisionPadding={40}
+        sticky={sticky}
+        hideWhenDetached
         avoidCollisions
         className={clsx(
-          "flex flex-col gap-3 p-3",
-          "bg-background-surface text-sm shadow-base rounded-xl w-fit md:w-screen md:max-w-3xs",
+          "flex flex-col",
+          "bg-background-surface text-sm shadow-base rounded-xl overflow-x-hidden w-fit md:w-screen md:max-w-3xs",
           "data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2",
           props.className
         )}

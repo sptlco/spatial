@@ -5,11 +5,13 @@
 import { CompactFooter, LocaleSwitcher } from "@/elements";
 import { useUser } from "@/stores";
 import { SESSION_COOKIE_NAME, Spatial } from "@sptlco/client";
-import { Button, Container, Dialog, Field, Form, H1, Icon, Link, Logo, Main, OTP, Paragraph, Span, Spinner, toast } from "@sptlco/design";
+import { clsx } from "clsx";
 import cookies from "js-cookie";
 import { useTranslations } from "next-intl";
 import { FormEvent, useEffect, useState } from "react";
 import { getDomain } from "tldts";
+
+import { Button, Container, Dialog, Field, Form, H1, Icon, Link, Logo, Main, OTP, Paragraph, Span, Spinner, toast } from "@sptlco/design";
 
 const KEY_LENGTH = 4;
 
@@ -127,10 +129,17 @@ export default function Page() {
             suffix={`@${domain}`}
             containerClassName="flex-1 min-w-0"
           />
-          <Button type="submit" size="fit" className="w-10! h-10 shrink-0!" shape="pill">
-            {processing ? <Spinner className="size-4 text-foreground-tertiary" /> : <Icon symbol="arrow_right_alt" />}
-          </Button>
         </Container>
+        <Button
+          type="submit"
+          size="fill"
+          intent="ghost"
+          disabled={!email}
+          className={clsx("transition-all duration-300", { "opacity-0!": !email, "bg-button-ghost-hover": state !== "idle" })}
+        >
+          <Span>Continue</Span>
+          {processing ? <Spinner className="size-4 text-foreground-tertiary" /> : <Icon symbol="arrow_right_alt" />}
+        </Button>
       </Form>
       <CompactFooter className="col-span-3 row-start-3 place-self-center" />
       <Dialog.Root

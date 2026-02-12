@@ -12,7 +12,7 @@ export default function Page() {
   return (
     <Card.Root>
       <Card.Header className="px-10">
-        <Card.Title className="text-3xl xl:text-6xl font-extrabold">Identity</Card.Title>
+        <Card.Title className="text-3xl xl:text-7xl font-extrabold">Identity</Card.Title>
         <Card.Description className="xl:text-xl font-light">Grant access to managed users.</Card.Description>
       </Card.Header>
       <Card.Content>

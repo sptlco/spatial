@@ -248,7 +248,7 @@ export default function Layout(props: { children: ReactNode }) {
                         <Link
                           href={page.path}
                           className={clsx(
-                            "transition-all",
+                            "transition-all relative",
                             "flex items-center justify-center size-16",
                             "rounded-2xl bg-button-ghost text-foreground-primary",
                             "hover:bg-button-ghost-hover active:bg-button-ghost-active",
@@ -257,6 +257,7 @@ export default function Layout(props: { children: ReactNode }) {
                           )}
                         >
                           <Icon symbol={page.icon} className={highlight ? "animate-fill" : "animate-outline"} />
+                          {highlight && <Span className="absolute bottom-2.5 size-1 translate-y-1/4 rounded-full bg-blue" />}
                         </Link>
                       </Tooltip.Trigger>
                       <Tooltip.Content side="right" sideOffset={20}>

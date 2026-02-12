@@ -13,7 +13,7 @@ export const Checkbox = createElement<typeof Primitive.Root>((props, ref) => (
     ref={ref}
     className={clsx(
       "cursor-pointer transition-all",
-      "flex size-7 items-center justify-center rounded-lg",
+      "flex shrink-0 size-7 items-center justify-center rounded-lg",
       "bg-button hover:bg-button-hover",
       "data-[state=checked]:bg-blue",
       props.className

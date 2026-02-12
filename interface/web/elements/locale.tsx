@@ -55,7 +55,7 @@ export const LocaleSwitcher = ({ compact = false }: { compact?: boolean }) => {
             {routing.locales.map((locale, i) => (
               <Dropdown.RadioItem key={i} value={locale} className="flex items-center gap-10">
                 <Container className="flex flex-col grow">
-                  <Span className="text-sm font-bold">{t("name", { locale: locale.replace("-", "_") })}</Span>
+                  <Span className="text-sm">{t("name", { locale: locale.replace("-", "_") })}</Span>
                   <Span className="text-xs text-foreground-secondary">{t("origin", { locale: locale.replace("-", "_") })}</Span>
                 </Container>
                 <Dropdown.ItemIndicator className="text-xs flex items-center justify-center">

@@ -29,9 +29,9 @@ import {
   Form,
   Icon,
   LI,
-  Monogram,
   Pagination,
   Paragraph,
+  Select,
   Sheet,
   Span,
   Spinner,
@@ -571,7 +571,52 @@ export const Users = () => {
             {roles.isLoading || !roles.data ? (
               <Span className="w-32 h-4 rounded-full bg-background-surface animate-pulse" />
             ) : (
-              <Dropdown.Root>
+              <Select.Root multiple>
+                <Select.Trigger asChild>
+                  <Button intent="ghost" className={clsx("data-[state=open]:bg-button-ghost-active")}>
+                    <Span>Filter</Span>
+                    <Icon symbol="keyboard_arrow_down" />
+                    {filters.length > 0 && <Span className="size-2 bg-blue rounded-full flex" />}
+                  </Button>
+                </Select.Trigger>
+                <Select.Content searchPlaceholder="Search" position="popper">
+                  <Select.Group label="Role">
+                    {[...Array(100)].map((_, i) => (
+                      <Select.Item
+                        key={i}
+                        value={`${i}`}
+                        icon={<Icon symbol="emergency_home" size={20} />}
+                        label={`Item ${i}`}
+                        description="This describes the item."
+                      />
+                    ))}
+                  </Select.Group>
+                </Select.Content>
+              </Select.Root>
+            )}
+            <Select.Root multiple>
+              <Select.Trigger asChild>
+                <Button intent="ghost" className={clsx("data-[state=open]:bg-button-ghost-active")}>
+                  <Span>Sort</Span>
+                  <Icon symbol="keyboard_arrow_down" />
+                  {order.length > 0 && <Span className="size-2 bg-blue rounded-full flex" />}
+                </Button>
+              </Select.Trigger>
+              <Select.Content searchPlaceholder="Search" position="popper">
+                <Select.Group label="Field">
+                  {[...Array(100)].map((_, i) => (
+                    <Select.Item
+                      key={i}
+                      value={`${i}`}
+                      icon={<Icon symbol="emergency_home" size={20} />}
+                      label={`Item ${i}`}
+                      description="This describes the item."
+                    />
+                  ))}
+                </Select.Group>
+              </Select.Content>
+            </Select.Root>
+            {/* <Dropdown.Root>
                 <Dropdown.Trigger asChild>
                   <Button intent="ghost" className={clsx("px-5! data-[state=open]:bg-button-ghost-active relative")}>
                     <Span>Filter</Span>
@@ -617,9 +662,8 @@ export const Users = () => {
                     </Span>
                   </Dropdown.Item>
                 </Dropdown.Content>
-              </Dropdown.Root>
-            )}
-            <Dropdown.Root>
+              </Dropdown.Root> */}
+            {/* <Dropdown.Root>
               <Dropdown.Trigger asChild>
                 <Button intent="ghost" className="px-5! data-[state=open]:bg-button-ghost-active">
                   <Span>Sort</Span>
@@ -672,7 +716,7 @@ export const Users = () => {
                   </Span>
                 </Dropdown.Item>
               </Dropdown.Content>
-            </Dropdown.Root>
+            </Dropdown.Root> */}
           </Container>
         </Container>
         <Table.Root className="w-full table-fixed border-separate border-spacing-y-10">

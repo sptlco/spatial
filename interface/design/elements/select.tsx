@@ -82,7 +82,7 @@ export const Select = {
     ({ searchPlaceholder, position = "item-aligned", align = "center", sticky = "always", searchable = true, ...props }, ref) => {
       const content = cva({
         base: [
-          "bg-background-surface shadow-base text-sm relative",
+          "bg-background-surface shadow-base relative",
           "data-open:animate-in data-open:fade-in-0 data-open:zoom-in-95",
           "data-closed:animate-out data-closed:fade-out-0 data-closed:zoom-out-95",
           "w-fit rounded-xl duration-100 z-50 overflow-x-hidden",
@@ -161,7 +161,7 @@ export const Select = {
             props.className
           )}
         >
-          {multiple && <Checkbox className="size-6!" />}
+          {multiple && <Checkbox checked />}
           {props.icon}
           <Span className="flex flex-col flex-1 min-w-0">
             {props.label && (
@@ -170,7 +170,7 @@ export const Select = {
               </Primitive.ItemText>
             )}
             {props.description && (
-              <Span ref={ref} className={clsx("text-xs text-foreground-secondary whitespace-nowrap", props.className)}>
+              <Span ref={ref} className={clsx("text-sm text-foreground-secondary whitespace-nowrap", props.className)}>
                 {props.description}
               </Span>
             )}

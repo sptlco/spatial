@@ -143,7 +143,7 @@ export const Editor = createElement<typeof Sheet.Content, { data: Role; onUpdate
                         <Container className={clsx("flex flex-col grow gap-2 transition-all", { "opacity-50": !can(scope.tag) })}>
                           <Container className="flex flex-col">
                             <Span className="font-bold">{scope.name}</Span>
-                            <Span className="text-xs text-foreground-secondary font-semibold">{scope.tag}</Span>
+                            <Span className="text-sm text-foreground-secondary">{scope.tag}</Span>
                           </Container>
                           <Paragraph className="text-hint">{scope.description}</Paragraph>
                         </Container>

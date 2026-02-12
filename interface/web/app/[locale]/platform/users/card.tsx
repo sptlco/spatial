@@ -316,7 +316,7 @@ export const Users = () => {
           {[...Array(10)].map((_, i) => (
             <Table.Row key={i}>
               <Table.Cell>
-                <Span className="flex size-7 rounded-lg animate-pulse bg-background-surface" />
+                <Span className="flex size-6 rounded-lg animate-pulse bg-background-surface" />
               </Table.Cell>
               <Table.Cell>
                 <Container className="flex items-center gap-5 w-full">
@@ -333,11 +333,9 @@ export const Users = () => {
                     <LI
                       key={i}
                       className={clsx(
-                        "rounded-xl animate-pulse bg-background-surface text-xs font-bold inline-flex w-20 h-4 items-center justify-center px-5 py-2 gap-3"
+                        "rounded-xl animate-pulse bg-background-surface text-sm font-bold inline-flex w-20 h-4 items-center justify-center px-5 py-2 gap-3"
                       )}
-                    >
-                      <Span className="text-foreground-primary" />
-                    </LI>
+                    />
                   ))}
                 </UL>
               </Table.Cell>
@@ -374,7 +372,7 @@ export const Users = () => {
             <Avatar src={user.account.avatar} alt={user.account.name} className="shrink-0 size-12" />
             <Container className="flex flex-col truncate">
               <Span className="font-semibold truncate">{highlight(user.account.name, keywords)}</Span>
-              <Span className="text-foreground-secondary truncate">{highlight(user.account.email, keywords)}</Span>
+              <Span className="text-sm text-foreground-secondary truncate">{highlight(user.account.email, keywords)}</Span>
             </Container>
             {user.account.id === (account?.id ?? "") && (
               <Span className="hidden xl:flex px-4 py-2 bg-background-highlight rounded-xl text-xs font-bold">You</Span>
@@ -393,7 +391,7 @@ export const Users = () => {
                     style={{ color: Object.values(roles.data!).find((r) => r.name == role)?.color ?? "currentColor" }}
                   >
                     <Span className="size-2 flex rounded-full bg-current" />
-                    <Span className="text-sm text-foreground-primary font-medium">{highlight(role, keywords)}</Span>
+                    <Span className="text-foreground-primary font-medium">{highlight(role, keywords)}</Span>
                   </LI>
                 ))}
           </UL>
@@ -442,7 +440,7 @@ export const Users = () => {
                 <Avatar src={user.account.avatar} alt={user.account.name} className="shrink-0 size-12" />
                 <Container className="flex flex-col truncate">
                   <Span className="font-semibold truncate">{user.account.name}</Span>
-                  <Span className="text-foreground-secondary truncate">{user.account.email}</Span>
+                  <Span className="text-sm text-foreground-secondary truncate">{user.account.email}</Span>
                 </Container>
               </Container>
               <Paragraph className="text-sm text-foreground-secondary">
@@ -585,7 +583,7 @@ export const Users = () => {
                       <Select.Item
                         key={i}
                         value={`${i}`}
-                        icon={<Icon symbol="emergency_home" size={20} />}
+                        icon={<Icon symbol="emergency_home" />}
                         label={`Item ${i}`}
                         description="This describes the item."
                       />
@@ -608,7 +606,7 @@ export const Users = () => {
                     <Select.Item
                       key={i}
                       value={`${i}`}
-                      icon={<Icon symbol="emergency_home" size={20} />}
+                      icon={<Icon symbol="emergency_home" />}
                       label={`Item ${i}`}
                       description="This describes the item."
                     />
@@ -813,7 +811,7 @@ export const Users = () => {
                         <Avatar src={user.account.avatar} alt={user.account.name} className="shrink-0 size-12" />
                         <Container className="flex flex-col truncate">
                           <Span className="font-semibold truncate">{user.account.name}</Span>
-                          <Span className="text-foreground-secondary truncate">{user.account.email}</Span>
+                          <Span className="text-sm text-foreground-secondary truncate">{user.account.email}</Span>
                         </Container>
                       </LI>
                     ))}

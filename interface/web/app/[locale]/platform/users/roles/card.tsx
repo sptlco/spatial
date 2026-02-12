@@ -146,7 +146,7 @@ export const Roles = () => {
           {[...Array(10)].map((_, i) => (
             <Table.Row key={i}>
               <Table.Cell>
-                <Span className="flex size-7 rounded-lg animate-pulse bg-background-surface" />
+                <Span className="flex size-6 rounded-lg animate-pulse bg-background-surface" />
               </Table.Cell>
               <Table.Cell>
                 <Container className="flex items-center gap-5 w-full">

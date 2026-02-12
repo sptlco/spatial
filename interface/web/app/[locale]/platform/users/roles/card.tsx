@@ -180,7 +180,9 @@ export const Roles = () => {
           return (
             <Table.Row key={i}>
               <Table.Cell>
-                <Checkbox checked={selection.includes(role.id)} onCheckedChange={(checked: boolean) => selectOne(role, checked)} />
+                <Checkbox className="relative" checked={selection.includes(role.id)} onCheckedChange={(checked: boolean) => selectOne(role, checked)}>
+                  <Span className="absolute flex w-px h-16 bottom-full left-1/2 -translate-x-1/2 bg-input" />
+                </Checkbox>
               </Table.Cell>
               <Table.Cell>
                 <Button intent="none" shape="square" size="fit" onClick={() => setEditing(true)} className="text-left">
@@ -350,13 +352,13 @@ export const Roles = () => {
           <Table.Root className="w-full table-fixed border-separate border-spacing-y-10">
             <Table.Header>
               <Table.Row>
-                <Table.Column className="w-12 xl:w-16">
+                <Table.Column className="size-12 xl:w-16">
                   <Checkbox checked={paginatedData.length > 0 && paginatedData.every((r) => selection.includes(r.id))} onCheckedChange={selectAll} />
                 </Table.Column>
                 <Table.Column className="text-left">Name</Table.Column>
                 <Table.Column className="text-center hidden xl:table-cell">Permissions</Table.Column>
                 <Table.Column className="text-center hidden xl:table-cell">Assignments</Table.Column>
-                <Table.Column className="w-12 xl:w-16" />
+                <Table.Column className="size-12 xl:w-16" />
               </Table.Row>
             </Table.Header>
             <Table.Body className="relative">

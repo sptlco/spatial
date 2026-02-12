@@ -365,7 +365,13 @@ export const Users = () => {
     return (
       <Table.Row {...props} ref={ref}>
         <Table.Cell>
-          <Checkbox checked={selection.includes(user.account.id)} onCheckedChange={(checked: boolean) => selectOne(user, checked)} />
+          <Checkbox
+            className="relative"
+            checked={selection.includes(user.account.id)}
+            onCheckedChange={(checked: boolean) => selectOne(user, checked)}
+          >
+            <Span className="absolute flex w-px h-16 bottom-full left-1/2 -translate-x-1/2 bg-input" />
+          </Checkbox>
         </Table.Cell>
         <Table.Cell>
           <Button intent="none" shape="square" size="fit" onClick={() => setEditing(true)} className="text-left">
@@ -720,7 +726,7 @@ export const Users = () => {
         <Table.Root className="w-full table-fixed border-separate border-spacing-y-10">
           <Table.Header>
             <Table.Row>
-              <Table.Column className="w-12 xl:w-16">
+              <Table.Column className="size-12 xl:w-16">
                 <Checkbox
                   checked={paginatedData.length > 0 && paginatedData.every((u) => selection.includes(u.account.id))}
                   onCheckedChange={selectAll}
@@ -744,7 +750,7 @@ export const Users = () => {
                   {indicator("created")}
                 </Span>
               </Table.Column>
-              <Table.Column className="w-12 xl:w-16" />
+              <Table.Column className="size-12 xl:w-16" />
             </Table.Row>
           </Table.Header>
           <Table.Body className="relative">

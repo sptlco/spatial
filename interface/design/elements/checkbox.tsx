@@ -14,7 +14,7 @@ export const Checkbox = createElement<typeof Primitive.Root>((props, ref) => (
     className={clsx(
       "cursor-pointer transition-all",
       "flex shrink-0 size-6 items-center justify-center rounded-lg",
-      "bg-button hover:bg-button-hover",
+      "bg-input hover:bg-button-hover",
       "data-[state=checked]:bg-blue",
       props.className
     )}
@@ -22,5 +22,6 @@ export const Checkbox = createElement<typeof Primitive.Root>((props, ref) => (
     <Primitive.Indicator className="items-center justify-center hidden data-[state=checked]:flex">
       <Icon symbol="check" size={20} className="font-normal" />
     </Primitive.Indicator>
+    {props.children}
   </Primitive.Root>
 ));

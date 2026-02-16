@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.8.0](https://github.com/sptlco/spatial/compare/spatial-interface-client-1.7.0...spatial-interface-client-1.8.0) (2026-02-16)
+
+
+### Features
+
+* Added a role selector ([#147](https://github.com/sptlco/spatial/issues/147)) ([bc7a7ff](https://github.com/sptlco/spatial/commit/bc7a7ffc112654f5ba45fbb57ab5cee00deb5eb6))
+
+
+### Bug Fixes
+
+* Reverted to relative imports ([#137](https://github.com/sptlco/spatial/issues/137)) ([8996739](https://github.com/sptlco/spatial/commit/8996739a177c86322db362ee7ec691daf0dca50e))
+
 ## [1.7.0](https://github.com/sptlco/spatial/compare/spatial-interface-client-1.6.0...spatial-interface-client-1.7.0) (2026-02-02)
 
 

@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.25.0](https://github.com/sptlco/spatial/compare/spatial-cloud-1.24.0...spatial-cloud-1.25.0) (2026-02-16)
+
+
+### Features
+
+* Added a role selector ([#147](https://github.com/sptlco/spatial/issues/147)) ([bc7a7ff](https://github.com/sptlco/spatial/commit/bc7a7ffc112654f5ba45fbb57ab5cee00deb5eb6))
+* Added support for PWA ([#137](https://github.com/sptlco/spatial/issues/137)) ([3e68068](https://github.com/sptlco/spatial/commit/3e680683156c3cb0037bdceb8e3175c998780d1b))
+
 ## [1.24.0](https://github.com/sptlco/spatial/compare/spatial-cloud-1.23.0...spatial-cloud-1.24.0) (2026-02-09)
 
 

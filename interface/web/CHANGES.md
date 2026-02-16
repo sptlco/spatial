@@ -1,5 +1,25 @@
 # Changelog
 
+## [1.21.0](https://github.com/sptlco/spatial/compare/spatial-interface-web-1.20.0...spatial-interface-web-1.21.0) (2026-02-16)
+
+
+### Features
+
+* Added a role selector ([#147](https://github.com/sptlco/spatial/issues/147)) ([bc7a7ff](https://github.com/sptlco/spatial/commit/bc7a7ffc112654f5ba45fbb57ab5cee00deb5eb6))
+* Added support for PWA ([#137](https://github.com/sptlco/spatial/issues/137)) ([3e68068](https://github.com/sptlco/spatial/commit/3e680683156c3cb0037bdceb8e3175c998780d1b))
+* Added user actions ([#146](https://github.com/sptlco/spatial/issues/146)) ([b81aad4](https://github.com/sptlco/spatial/commit/b81aad4fbb8d254b11c72b0aa9c2f372d934c105))
+* Added user search ([#143](https://github.com/sptlco/spatial/issues/143)) ([fdb7c08](https://github.com/sptlco/spatial/commit/fdb7c08abde51f68b0aedf82573f4d3e1956766b))
+* Designed a combobox ([#147](https://github.com/sptlco/spatial/issues/147)) ([333e806](https://github.com/sptlco/spatial/commit/333e806be3797b28f006e62e4d13f7494d59db66))
+* Designed a selector ([#147](https://github.com/sptlco/spatial/issues/147)) ([6c6c5a1](https://github.com/sptlco/spatial/commit/6c6c5a15ac0901b114fd805c0199a8567ca45f28))
+* Users can sign out ([#137](https://github.com/sptlco/spatial/issues/137)) ([3175bd6](https://github.com/sptlco/spatial/commit/3175bd66f4786393bb80527049f16a5dd1dd18a3))
+
+
+### Bug Fixes
+
+* Removed field gap ([#137](https://github.com/sptlco/spatial/issues/137)) ([ac6059f](https://github.com/sptlco/spatial/commit/ac6059f4b19219103a10754153a415d45dd874e6))
+* Updated start port ([#137](https://github.com/sptlco/spatial/issues/137)) ([7d2b067](https://github.com/sptlco/spatial/commit/7d2b0678ab3e7bcb055ad21635c174f1f030d564))
+* Updated user search ([#143](https://github.com/sptlco/spatial/issues/143)) ([d7ec6a7](https://github.com/sptlco/spatial/commit/d7ec6a79c00bc2bc7ac93a22d95bb32a7402650b))
+
 ## [1.20.0](https://github.com/sptlco/spatial/compare/spatial-interface-web-1.19.0...spatial-interface-web-1.20.0) (2026-02-09)
 
 

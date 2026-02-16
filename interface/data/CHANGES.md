@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.6.1](https://github.com/sptlco/spatial/compare/spatial-interface-data-1.6.0...spatial-interface-data-1.6.1) (2026-02-16)
+
+
+### Bug Fixes
+
+* Reverted to relative imports ([#137](https://github.com/sptlco/spatial/issues/137)) ([8996739](https://github.com/sptlco/spatial/commit/8996739a177c86322db362ee7ec691daf0dca50e))
+
 ## [1.6.0](https://github.com/sptlco/spatial/compare/spatial-interface-data-1.5.0...spatial-interface-data-1.6.0) (2026-02-09)
 
 

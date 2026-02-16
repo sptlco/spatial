@@ -1,5 +1,23 @@
 # Changelog
 
+## [1.14.0](https://github.com/sptlco/spatial/compare/spatial-interface-design-1.13.0...spatial-interface-design-1.14.0) (2026-02-16)
+
+
+### Features
+
+* Added a role selector ([#147](https://github.com/sptlco/spatial/issues/147)) ([bc7a7ff](https://github.com/sptlco/spatial/commit/bc7a7ffc112654f5ba45fbb57ab5cee00deb5eb6))
+* Added helpers ([#137](https://github.com/sptlco/spatial/issues/137)) ([a3cc9e1](https://github.com/sptlco/spatial/commit/a3cc9e1e0814720ee295d8a3a1214c06eacbd266))
+* Added support for PWA ([#137](https://github.com/sptlco/spatial/issues/137)) ([3e68068](https://github.com/sptlco/spatial/commit/3e680683156c3cb0037bdceb8e3175c998780d1b))
+* Designed a combobox ([#147](https://github.com/sptlco/spatial/issues/147)) ([333e806](https://github.com/sptlco/spatial/commit/333e806be3797b28f006e62e4d13f7494d59db66))
+* Designed a selector ([#147](https://github.com/sptlco/spatial/issues/147)) ([6c6c5a1](https://github.com/sptlco/spatial/commit/6c6c5a15ac0901b114fd805c0199a8567ca45f28))
+
+
+### Bug Fixes
+
+* Corrected popover scroll behavior ([#137](https://github.com/sptlco/spatial/issues/137)) ([0b09308](https://github.com/sptlco/spatial/commit/0b09308eb4bb5b058bc9a35ff3f173a043b35ba8))
+* Removed field gap ([#137](https://github.com/sptlco/spatial/issues/137)) ([ac6059f](https://github.com/sptlco/spatial/commit/ac6059f4b19219103a10754153a415d45dd874e6))
+* Reverted to relative imports ([#137](https://github.com/sptlco/spatial/issues/137)) ([8996739](https://github.com/sptlco/spatial/commit/8996739a177c86322db362ee7ec691daf0dca50e))
+
 ## [1.13.0](https://github.com/sptlco/spatial/compare/spatial-interface-design-1.12.0...spatial-interface-design-1.13.0) (2026-02-09)
 
 

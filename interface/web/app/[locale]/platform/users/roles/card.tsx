@@ -187,13 +187,13 @@ export const Roles = () => {
                 />
               </Table.Cell>
               <Table.Cell>
-                <Button intent="none" shape="square" size="fit" onClick={() => setEditing(true)} className="text-left">
+                <Container onClick={() => setEditing(true)} className="cursor-pointer flex items-center w-full gap-4">
                   <Monogram text={role.name} className="shrink-0 size-12" style={{ color: role.color }} />
                   <Container className="flex flex-col truncate">
                     <Span className="font-semibold truncate">{role.name}</Span>
                     {role.description && <Span className="text-sm text-foreground-secondary truncate">{role.description}</Span>}
                   </Container>
-                </Button>
+                </Container>
               </Table.Cell>
               <Table.Cell className="hidden xl:table-cell">
                 {permissions.isLoading || !permissions.data ? (

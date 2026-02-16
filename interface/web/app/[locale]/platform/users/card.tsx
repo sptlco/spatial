@@ -334,7 +334,7 @@ export const Users = () => {
           />
         </Table.Cell>
         <Table.Cell>
-          <Button intent="none" shape="square" size="fit" onClick={() => setEditing(true)} className="text-left">
+          <Container onClick={() => setEditing(true)} className="cursor-pointer flex items-center w-full gap-4">
             <Avatar src={user.account.avatar} alt={user.account.name} className="shrink-0 size-12" />
             <Container className="flex flex-col truncate">
               <Span className="font-semibold truncate">{highlight(user.account.name, keywords)}</Span>
@@ -343,7 +343,7 @@ export const Users = () => {
             {user.account.id === (account?.id ?? "") && (
               <Span className="hidden xl:flex px-4 py-2 bg-background-highlight rounded-xl text-xs font-bold">You</Span>
             )}
-          </Button>
+          </Container>
         </Table.Cell>
         <Table.Cell className="hidden xl:table-cell">
           <UL className="flex flex-wrap gap-4">

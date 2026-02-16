@@ -476,7 +476,7 @@ export const Field = createElement<"input", FieldProps>(({ containerClassName, i
             ))}
 
             <Button type="button" intent="none" size="fit" className={clsx("px-4 py-2")} disabled={props.disabled} onClick={add}>
-              <Icon symbol="add_diamond" className="font-light text-hint" />
+              <Icon symbol="prompt_suggestion" className="font-light text-hint" />
               <Span>Add property</Span>
             </Button>
           </Container>

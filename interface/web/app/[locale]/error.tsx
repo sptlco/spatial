@@ -32,7 +32,7 @@ export default function Reporter({ error, reset }: { error: Error & { digest?: s
           <Container className="row-start-2 col-span-full place-self-center flex flex-col items-center justify-center w-full md:max-w-md gap-10">
             <Logo mode="symbol" className="w-12" />
             <H1 className="text-4xl xl:text-6xl font-extrabold">{error.name}</H1>
-            <Paragraph className="xl:text-xl text-foreground-secondary text-center">{error.message}</Paragraph>
+            <Paragraph className="w-full xl:text-xl text-foreground-secondary text-center">{error.message}</Paragraph>
             {error.stack && <Paragraph className="rounded-xl p-10 bg-black/15">{error.stack}</Paragraph>}
             <Button onClick={reset}>
               <Icon symbol="restart_alt" />

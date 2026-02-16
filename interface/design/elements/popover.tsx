@@ -38,7 +38,6 @@ export const Popover = {
           ref={ref}
           sideOffset={20}
           collisionPadding={40}
-          hideWhenDetached
           avoidCollisions
           className={clsx(content({ side: props.side }), props.className)}
           style={{ overflowY: "hidden" }}
@@ -52,7 +51,7 @@ export const Popover = {
    */
   Viewport: createElement<typeof ScrollArea.Viewport>((props, ref) => (
     <ScrollArea.Root className="grow" type="auto" fade>
-      <ScrollArea.Viewport {...props} ref={ref}/>
+      <ScrollArea.Viewport {...props} ref={ref} />
       <ScrollArea.Scrollbar />
     </ScrollArea.Root>
   ))

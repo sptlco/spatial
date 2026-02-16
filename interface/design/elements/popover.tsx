@@ -15,10 +15,11 @@ export const Popover = {
   Content: createElement<typeof Primitive.Content>((props, ref) => {
     const content = cva({
       base: [
-        "w-fit rounded-xl duration-100 z-50 overflow-x-hidden",
+        "w-fit rounded-xl duration-100 z-60 overflow-x-hidden",
         "bg-background-surface shadow-base relative",
         "data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:zoom-in-95",
         "data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95",
+        "min-w-(--radix-popover-trigger-width)",
         "max-h-(--radix-popover-content-available-height) origin-(--radix-popover-content-transform-origin)"
       ],
       variants: {

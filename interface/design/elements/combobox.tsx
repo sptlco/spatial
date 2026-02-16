@@ -111,7 +111,7 @@ export const Combobox = {
     const [value, setValue] = useState("");
 
     return (
-      <Popover.Content {...props} ref={ref} onOpenAutoFocus={(e) => e.preventDefault()}>
+      <Popover.Content {...props} ref={ref}>
         <Container className="flex items-center gap-4 p-4">
           <Icon symbol="search" size={20} />
           <Input

@@ -14,4 +14,13 @@ export class AssignmentController extends Controller {
   public list = () => {
     return this.get<Assignment[]>("assignments/list");
   };
+
+  /**
+   * Patch a user's assignments.
+   * @param user The user whose assignments to patch.
+   * @param roles A list of roles.
+   */
+  public patchMany = (user: string, roles: string[]) => {
+    return this.patch(`assignments/${user}`, roles);
+  };
 }

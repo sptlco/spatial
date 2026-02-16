@@ -189,14 +189,14 @@ export const Users = () => {
     setSelection(selected ? paginatedData.map((u) => u.account.id) : []);
   };
 
-  const exportMany = (list: User[]) => {
+  const downloadMany = (list: User[]) => {
     toast.promise(
       (async () => {
         const json = JSON.stringify(list, null, 2);
         await navigator.clipboard.writeText(json);
       })(),
       {
-        loading: `Exporting ${list.length} user${list.length === 1 ? "" : "s"}`,
+        loading: `Downloading ${list.length} user${list.length === 1 ? "" : "s"}`,
         success: `Copied ${list.length} user${list.length === 1 ? "" : "s"} to clipboard`,
         error: "Failed to export users"
       }
@@ -377,9 +377,9 @@ export const Users = () => {
                 <Dropdown.Icon symbol="person_edit" fill />
                 <Span>Edit</Span>
               </Dropdown.Item>
-              <Dropdown.Item onSelect={() => exportMany([user])}>
+              <Dropdown.Item onSelect={() => downloadMany([user])}>
                 <Dropdown.Icon symbol="download" fill />
-                <Span>Export</Span>
+                <Span>Download</Span>
               </Dropdown.Item>
               <Dropdown.Item onSelect={() => setDeleting(true)}>
                 <Dropdown.Icon symbol="close" fill />
@@ -485,15 +485,10 @@ export const Users = () => {
           </Dropdown.Root>
         </Card.Gutter>
         <Card.Gutter className="hidden xl:flex">
-          <Sheet.Root>
-            <Sheet.Trigger asChild>
-              <Button>
-                <Icon symbol="add" />
-                <Span>Create</Span>
-              </Button>
-            </Sheet.Trigger>
-            <Creator onCreate={(_) => users.mutate()} />
-          </Sheet.Root>
+          <Button onClick={() => setCreating(true)}>
+            <Icon symbol="add" />
+            <Span>Create</Span>
+          </Button>
         </Card.Gutter>
       </Card.Header>
       <Card.Content className={clsx("w-full flex flex-col relative", { "mask-b-from-20% mask-b-to-80%": !users.data })}>
@@ -585,7 +580,7 @@ export const Users = () => {
                         key={key}
                         value={key}
                         label={field.name}
-                        icon={<Icon symbol={field.icon} size={20} />}
+                        icon={<Icon symbol={field.icon} className="text-hint font-normal" size={20} />}
                         indicator={
                           direction && (
                             <Span className="inline-flex items-center gap-1 text-hint">
@@ -654,12 +649,12 @@ export const Users = () => {
           >
             <Tooltip.Root>
               <Tooltip.Trigger asChild>
-                <Button intent="ghost" className="size-10! p-0!" onClick={() => exportMany(selectedUsers)}>
+                <Button intent="ghost" className="size-10! p-0!" onClick={() => downloadMany(selectedUsers)}>
                   <Icon symbol="download" />
                 </Button>
               </Tooltip.Trigger>
               <Tooltip.Content side="top" sideOffset={20}>
-                Export
+                Download
               </Tooltip.Content>
             </Tooltip.Root>
 
@@ -735,7 +730,12 @@ export const Users = () => {
         )}
 
       <Sheet.Root open={creating} onOpenChange={setCreating}>
-        <Creator onCreate={(_) => users.mutate()} />
+        <Creator
+          onCreate={(_) => {
+            users.mutate();
+            setCreating(false);
+          }}
+        />
       </Sheet.Root>
     </Card.Root>
   );
@@ -748,11 +748,11 @@ const properties: Record<string, { name: string; icon: string }> = {
   },
   roles: {
     name: "Roles",
-    icon: "assignment"
+    icon: "match_case"
   },
   created: {
     name: "Created",
-    icon: "history"
+    icon: "123"
   }
 };
 

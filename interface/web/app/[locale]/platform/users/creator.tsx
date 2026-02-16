@@ -6,6 +6,7 @@ import { Spatial } from "@sptlco/client";
 import { Account } from "@sptlco/data";
 import { FormEvent, useEffect, useState } from "react";
 import { getDomain } from "tldts";
+import useSWR from "swr";
 
 import { Button, Container, createElement, Field, Form, Icon, Sheet, Span, Spinner, toast } from "@sptlco/design";
 
@@ -14,7 +15,18 @@ export const Creator = createElement<typeof Sheet.Content, { onCreate?: (account
   const [email, setEmail] = useState("");
   const [domain, setDomain] = useState("");
   const [metadata, setMetadata] = useState<Record<string, string>>();
+  const [selectedRoles, setSelectedRoles] = useState<string[]>([]);
   const [creating, setCreating] = useState(false);
+
+  const roles = useSWR("platform/users/creator/roles", async (_) => {
+    const response = await Spatial.roles.list();
+
+    if (response.error) {
+      throw response.error;
+    }
+
+    return response.data;
+  });
 
   useEffect(() => {
     setDomain(getDomain(window.location.host) || "");
@@ -28,10 +40,15 @@ export const Creator = createElement<typeof Sheet.Content, { onCreate?: (account
     toast.promise(Spatial.accounts.create({ name, email, metadata }), {
       loading: "Creating user",
       description: "We are creating a new account with the information you provided.",
-      success: (response) => {
+      success: async (response) => {
         setCreating(false);
 
         if (!response.error) {
+          await Spatial.assignments.patchMany(
+            response.data.id,
+            selectedRoles.map((r) => roles.data!.find((d) => d.name === r)!.id)
+          );
+
           if (onCreate) {
             onCreate(response.data);
           }
@@ -91,7 +108,43 @@ export const Creator = createElement<typeof Sheet.Content, { onCreate?: (account
           inset={false}
           required={false}
         />
-        <Field type="option" id="roles" name="roles" label="Roles" disabled={creating} inset={false} required={false} />
+        <Field
+          type="option"
+          id="roles"
+          name="roles"
+          label="Roles"
+          placeholder="Member"
+          disabled={creating}
+          inset={false}
+          required={false}
+          multiple
+          options={
+            roles.data
+              ?.sort((a, b) => a.name.localeCompare(b.name))
+              .map((role) => ({
+                value: role.name,
+                label: role.name,
+                icon: <Span className="flex size-4 rounded-full" style={{ backgroundColor: role.color }} />,
+                chip: (
+                  <Span key={role.id} className="flex h-6 items-center gap-2">
+                    <Span className="flex size-2 rounded-full" style={{ backgroundColor: role.color }} />
+                    <Span className="text-xs font-bold">{role.name}</Span>
+                  </Span>
+                ),
+                description: role.description
+              })) ?? []
+          }
+          selection={selectedRoles}
+          onValueChange={(value) =>
+            setSelectedRoles((selected) => {
+              if (selected.includes(value)) {
+                return selected.filter((r) => r !== value);
+              }
+
+              return [...selected, value];
+            })
+          }
+        />
         <Container className="flex items-center gap-4">
           <Button type="submit" disabled={creating || !name || !email}>
             Create

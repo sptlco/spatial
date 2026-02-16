@@ -7,7 +7,7 @@ import { OTPInput, OTPInputContext, OTPInputProps } from "input-otp";
 import { ReactNode, useContext, useEffect, useRef, useState } from "react";
 import { HexColorPicker, HexColorInput } from "react-colorful";
 
-import { Button, Container, createElement, Dropdown, Icon, Input, Label, Paragraph, Select, Span, toast } from "..";
+import { Button, Combobox, Container, createElement, Dropdown, Icon, Input, Label, Paragraph, Select, Span, toast, UL } from "..";
 
 /**
  * Common configurable options for a field.
@@ -62,13 +62,92 @@ export type TextFieldProps = {
 /**
  * Configurable options for an option field.
  */
-export type OptionFieldProps = {
+export type OptionFieldProps = SharedOptionFieldProps & (SingleOptionFieldProps | MultiOptionFieldProps);
+
+/**
+ * Configurable options shared by all option fields.
+ */
+export type SharedOptionFieldProps = {
   /**
    * The field's data type.
    */
   type: "option";
 
-  // ...
+  /**
+   * The field's options.
+   */
+  options: Option[];
+
+  /**
+   * An optional selection handler.
+   * @param value The selected value.
+   */
+  onValueChange?: (value: string) => void;
+};
+
+/**
+ * Configurable options for a single-selection option field.
+ */
+export type SingleOptionFieldProps = {
+  /**
+   * Whether or not the field supports multiple selections.
+   */
+  multiple?: false;
+
+  /**
+   * The selected option.
+   */
+  selection?: string;
+};
+
+/**
+ * Configurable options for a multi-selection option field.
+ */
+export type MultiOptionFieldProps = {
+  /**
+   * Whether or not the field supports multiple selections.
+   */
+  multiple: true;
+
+  /**
+   * The selected options.
+   */
+  selection?: string[];
+};
+
+/**
+ * An option
+ */
+export type Option = {
+  /**
+   * The option's value.
+   */
+  value: string;
+
+  /**
+   * The option's label.
+   */
+  label: string;
+
+  /**
+   * An optional icon.
+   */
+  icon?: ReactNode;
+
+  /**
+   * An optional description.
+   */
+  description?: string;
+
+  /**
+   * An optional indicator.
+   */
+  indicator?: ReactNode;
+
+  /**
+   * Displayed when the option has been selected.
+   */
+  chip?: ReactNode;
 };
 
 /**
@@ -151,6 +230,7 @@ export const Field = createElement<"input", FieldProps>(({ containerClassName, i
       "disabled:opacity-50",
       "px-4 py-2 bg-input placeholder-hint rounded-lg transition-all",
       "outline-2 outline-offset-3 outline-transparent focus:outline-line-input-focus focus-within:outline-line-input-focus",
+      "data-[state=open]:outline-line-input-focus",
       props.className
     );
 
@@ -237,11 +317,34 @@ export const Field = createElement<"input", FieldProps>(({ containerClassName, i
           input()
         );
       case "option": {
+        const trigger = () => {
+          if (!props.selection || (props.selection as string[])?.length <= 0) {
+            return <Span className="text-hint">{props.placeholder}</Span>;
+          }
+
+          if (props.multiple) {
+            return <UL className="inline-flex flex-wrap gap-4">{props.selection.map((s) => props.options.find((o) => o.value === s)?.chip)}</UL>;
+          }
+
+          return props.options.find((o) => o.value === props.selection)?.label;
+        };
+
         return (
-          <Select.Root>
-            <Select.Trigger></Select.Trigger>
-            <Select.Content>{/** */}</Select.Content>
-          </Select.Root>
+          <Combobox.Root {...props} onSelect={props.onValueChange}>
+            <Combobox.Trigger asChild>
+              <Button intent="none" size="fit" className={clsx(classes, "group items-start justify-between! w-full!")}>
+                {trigger()}
+                <Icon symbol="keyboard_arrow_down" className="transition-all duration-100 group-data-[state=open]:-rotate-180" />
+              </Button>
+            </Combobox.Trigger>
+            <Combobox.Content>
+              <Combobox.List>
+                {props.options.map((option, i) => (
+                  <Combobox.Item key={i} {...option} />
+                ))}
+              </Combobox.List>
+            </Combobox.Content>
+          </Combobox.Root>
         );
       }
       case "otp": {

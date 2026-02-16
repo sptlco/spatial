@@ -455,7 +455,12 @@ export const Roles = () => {
           )}
 
         <Sheet.Root open={creating} onOpenChange={setCreating}>
-          <Creator onCreate={(_) => roles.mutate()} />
+          <Creator
+            onCreate={(_) => {
+              roles.mutate();
+              setCreating(false);
+            }}
+          />
         </Sheet.Root>
       </Card.Root>
     </>

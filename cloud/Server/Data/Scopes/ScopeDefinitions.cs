@@ -33,6 +33,24 @@ public partial class Scope
     }
 
     /// <summary>
+    /// Scopes related to assignments.
+    /// </summary>
+    public class Assignments
+    {
+        /// <summary>
+        /// Get a list of assignments.
+        /// </summary>
+        [Metadata("Get a list of assignments.")]
+        public const string List = "assignments.list";
+
+        /// <summary>
+        /// Patch role assignments.
+        /// </summary>
+        [Metadata("Patch role assignments.")]
+        public const string Patch = "assignments.patch";
+    }
+
+    /// <summary>
     /// Scopes related to permissions.
     /// </summary>
     public class Permissions

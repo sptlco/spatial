@@ -5,6 +5,7 @@ export * from "./body";
 export * from "./button";
 export * from "./card";
 export * from "./checkbox";
+export * from "./combobox";
 export * from "./command";
 export * from "./container";
 export * from "./dialog";

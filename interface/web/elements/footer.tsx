@@ -9,9 +9,9 @@ import { useTranslations } from "next-intl";
 import useSWR from "swr";
 
 /**
- * A minimal footer used for interactive pages.
+ * A footer displayed at the bottom of the page.
  */
-export const CompactFooter = createElement<typeof Container>((props, ref) => {
+export const Footer = createElement<typeof Container>((props, ref) => {
   const t = useTranslations("footer");
 
   const version = useSWR("footer/version", async () => {
@@ -30,7 +30,7 @@ export const CompactFooter = createElement<typeof Container>((props, ref) => {
       ref={ref}
       className={clsx("w-full flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-10 text-sm", props.className)}
     >
-      <Link className="text-foreground-tertiary" href={`https://github.com/sptlco/spatial/tree/spatial-cloud-${version.data}`} target="_blank">
+      <Span className="text-foreground-tertiary inline-flex items-center gap-4">
         <Span
           className={clsx(
             "size-2 rounded-full flex bg-green",
@@ -43,13 +43,7 @@ export const CompactFooter = createElement<typeof Container>((props, ref) => {
         ) : (
           <>Mark {version.data}</>
         )}
-      </Link>
-      <Link className="text-foreground-tertiary" href="#" target="_blank">
-        {t("legal.users")}
-      </Link>
-      <Link className="text-foreground-tertiary" href="#" target="_blank">
-        {t("legal.privacy")}
-      </Link>
+      </Span>
     </Container>
   );
 });

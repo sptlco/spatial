@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "next dev --turbopack -H 0.0.0.0",
     "build": "next build --turbopack",
-    "start": "next start --port 80"
+    "start": "next start --port 3000"
   },
   "dependencies": {
     "@sptlco/client": "*",

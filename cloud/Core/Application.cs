@@ -39,6 +39,7 @@ public class Application
 {
     private static Application _instance;
 
+    private readonly CancellationTokenSource _shutdown;
     private readonly Space _space;
     private readonly WebApplication _wapp;
     private Time _time;
@@ -53,6 +54,7 @@ public class Application
     public Application()
     {
         _instance = this;
+        _shutdown = new();
         _space = Space.Empty();
         _wapp = CreateWebApplication();
         _computer = new Computer();
@@ -113,11 +115,16 @@ public class Application
     public double Ticks => _ticks;
 
     /// <summary>
+    /// The application's shutdown token.
+    /// </summary>
+    public CancellationToken ShutdownToken => _shutdown.Token;
+
+    /// <summary>
     /// Run an <see cref="Application"/>.
     /// </summary>
     /// <typeparam name="T">The type of <see cref="Application"/> to run.</typeparam>
     /// <param name="cancellationToken">An optional <see cref="CancellationToken"/>.</param>
-    public static async void Run<T>(CancellationToken cancellationToken = default) where T : Application, new()
+    public static async Task Run<T>(CancellationToken cancellationToken = default) where T : Application, new()
     {
         try
         {
@@ -136,28 +143,28 @@ public class Application
                 application._wapp.Start();
                 application._computer.Run();
 
-                if (cancellationToken == default)
-                {
-                    cancellationToken = CreateCancellationToken();
-                }
+                var token_base = cancellationToken.CanBeCanceled ? cancellationToken : CreateCancellationToken();
+                using var linked = CancellationTokenSource.CreateLinkedTokenSource(token_base, application._shutdown.Token);
+                var token = linked.Token;
 
                 if (application.Configuration.TickRate > 0)
                 {
                     INFO("Application running at {TickRate} tps.", application.Configuration.TickRate);
 
-                    Ticker.Run(application.TryTick, 1000.0D / application.Configuration.TickRate, cancellationToken);
+                    Ticker.Run(application.TryTick, 1000.0D / application.Configuration.TickRate, token);
                 }
                 else
                 {
                     INFO("Application running as fast as possible.");
 
-                    Ticker.Run(application.TryTick, cancellationToken);
+                    Ticker.Run(application.TryTick, token);
                 }
 
                 INFO("Shutting down the application.");
 
+                application._shutdown.Cancel();
                 application.Shutdown();
-                await application._wapp.StopAsync(CancellationToken.None);
+                await application._wapp.StopAsync(token);
                 application._space.Dispose();
                 application._computer.Shutdown();
                 application._network.Close();

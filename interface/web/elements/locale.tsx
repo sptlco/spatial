@@ -2,13 +2,14 @@
 
 "use client";
 
-import { Button, Container, Dropdown, Icon, Span, Spinner } from "@sptlco/design";
 import { usePathname, useRouter } from "@/locales/navigation";
 import { routing } from "@/locales/routing";
 import { clsx } from "clsx";
 import { useTransition } from "react";
 import { Locale, useLocale, useTranslations } from "next-intl";
 import { useSearchParams } from "next/navigation";
+
+import { Button, Combobox, Icon, Span, Spinner } from "@sptlco/design";
 
 /**
  * A dropdown menu that allows the user to change locales.
@@ -31,8 +32,8 @@ export const LocaleSwitcher = ({ compact = false }: { compact?: boolean }) => {
   };
 
   return (
-    <Dropdown.Root>
-      <Dropdown.Trigger asChild>
+    <Combobox.Root selection={locale} onSelect={change}>
+      <Combobox.Trigger asChild>
         <Button
           intent="ghost"
           className={clsx("group data-[state=open]:bg-button-ghost-active", { "px-2! sm:px-4! rounded-lg sm:rounded-full": compact })}
@@ -48,24 +49,19 @@ export const LocaleSwitcher = ({ compact = false }: { compact?: boolean }) => {
             </>
           )}
         </Button>
-      </Dropdown.Trigger>
-      <Dropdown.Portal>
-        <Dropdown.Content asChild>
-          <Dropdown.RadioGroup value={locale} onValueChange={change}>
-            {routing.locales.map((locale, i) => (
-              <Dropdown.RadioItem key={i} value={locale} className="flex items-center gap-10">
-                <Container className="flex flex-col grow">
-                  <Span>{t("name", { locale: locale.replace("-", "_") })}</Span>
-                  <Span className="text-sm text-foreground-secondary">{t("origin", { locale: locale.replace("-", "_") })}</Span>
-                </Container>
-                <Dropdown.ItemIndicator className="flex items-center justify-center">
-                  <Icon symbol="check" size={20} />
-                </Dropdown.ItemIndicator>
-              </Dropdown.RadioItem>
-            ))}
-          </Dropdown.RadioGroup>
-        </Dropdown.Content>
-      </Dropdown.Portal>
-    </Dropdown.Root>
+      </Combobox.Trigger>
+      <Combobox.Content>
+        <Combobox.List>
+          {routing.locales.map((locale, i) => (
+            <Combobox.Item
+              key={i}
+              value={locale}
+              label={t("name", { locale: locale.replace("-", "_") })}
+              description={t("origin", { locale: locale.replace("-", "_") })}
+            />
+          ))}
+        </Combobox.List>
+      </Combobox.Content>
+    </Combobox.Root>
   );
 };

@@ -154,6 +154,10 @@
     align-items: center;
     justify-content: center;
   }
+
+  html.error {
+    @apply bg-state-error!;
+  }
 }
 
 @utility fill {

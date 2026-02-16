@@ -33,7 +33,7 @@ export const Monogram = createElement<typeof Svg, { text: string }>((props, ref)
         textAnchor="middle"
         dominantBaseline="central"
         fontSize="40"
-        fontWeight="600"
+        fontWeight="700"
         fill={contrast(props.style?.color || "#FFFFFF")}
       >
         {initials.toUpperCase()}

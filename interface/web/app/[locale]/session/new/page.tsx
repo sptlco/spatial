@@ -2,7 +2,7 @@
 
 "use client";
 
-import { CompactFooter, LocaleSwitcher } from "@/elements";
+import { Footer, LocaleSwitcher } from "@/elements";
 import { useUser } from "@/stores";
 import { SESSION_COOKIE_NAME, Spatial } from "@sptlco/client";
 import { clsx } from "clsx";
@@ -11,7 +11,7 @@ import { useTranslations } from "next-intl";
 import { FormEvent, useEffect, useState } from "react";
 import { getDomain } from "tldts";
 
-import { Button, Container, Dialog, Field, Form, H1, Icon, Link, Logo, Main, OTP, Paragraph, Span, Spinner, toast } from "@sptlco/design";
+import { Button, Container, Dialog, Field, Form, H1, Icon, Link, Logo, Main, OTP, Paragraph, ScrollArea, Span, Spinner, toast } from "@sptlco/design";
 
 const KEY_LENGTH = 4;
 
@@ -102,81 +102,80 @@ export default function Page() {
   }, [state]);
 
   return (
-    <Main className="grid grid-cols-[1fr_auto_1fr] grid-rows-[auto_1fr_auto] p-10 gap-y-20 w-full min-h-screen">
-      <Container className="row-start-1 col-start-2 sm:col-start-3 sm:justify-self-end h-10 flex items-center justify-center">
-        <LocaleSwitcher />
-      </Container>
-      <Form
-        className="row-start-2 col-span-full place-self-center flex flex-col items-center justify-center w-full sm:max-w-sm space-y-10"
-        onSubmit={request}
-      >
-        <Container className="flex flex-col w-full items-center space-y-10">
-          <Logo className="fill-current h-8" mode="symbol" />
-          <Container className="w-full flex flex-col text-center">
-            <H1 className="font-medium">{t("title")}</H1>
-            <Paragraph className="text-foreground-secondary">{t("description")}</Paragraph>
+    <ScrollArea.Root className="size-full">
+      <ScrollArea.Viewport className="max-h-screen">
+        <Main className="grid grid-cols-[1fr_auto_1fr] grid-rows-[auto_1fr_auto] p-10 gap-y-20 w-full min-h-screen">
+          <Container className="row-start-1 col-start-2 sm:col-start-3 sm:justify-self-end h-10 flex items-center justify-center">
+            <LocaleSwitcher />
           </Container>
-        </Container>
-        <Container className="w-full flex items-end gap-6">
-          <Field
-            type="text"
-            label={t("email.label")}
-            name="email"
-            id="email"
-            disabled={state !== "idle"}
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            suffix={`@${domain}`}
-            containerClassName="flex-1 min-w-0"
-          />
-        </Container>
-        <Button
-          type="submit"
-          size="fill"
-          intent="ghost"
-          disabled={!email}
-          className={clsx("transition-all duration-300", { "opacity-0!": !email, "bg-button-ghost-hover": state !== "idle" })}
-        >
-          <Span>Continue</Span>
-          {processing ? <Spinner className="size-4 text-foreground-tertiary" /> : <Icon symbol="arrow_right_alt" />}
-        </Button>
-      </Form>
-      <CompactFooter className="col-span-3 row-start-3 place-self-center" />
-      <Dialog.Root
-        open={open}
-        onOpenChange={(open) => {
-          if (!open) {
-            setState("idle");
-            setCode("");
-          }
-        }}
-      >
-        <Dialog.Content title={t("verification.title")} description={<>{t("verification.description")}</>}>
-          <Logo className="fill-current h-8" mode="symbol" />
-          <Field
-            type="otp"
-            maxLength={KEY_LENGTH}
-            label={t("verification.label")}
-            value={code}
-            onValueChange={(value) => setCode(value.toUpperCase())}
-            onComplete={verify}
-            disabled={state === "verifying" || state === "authenticated"}
-            autoFocus
-            description={t.rich("verification.help", { link: (chunks) => <Link href="#">{chunks}</Link> })}
-            containerClassName="items-center text-center"
-            className="justify-center"
+          <Form
+            className="row-start-2 col-span-full place-self-center flex flex-col items-center justify-center w-full sm:max-w-sm space-y-10"
+            onSubmit={request}
           >
-            <OTP.Group className="justify-center">
-              {[...Array(KEY_LENGTH)].map((_, index) => (
-                <OTP.Slot key={index} index={index} />
-              ))}
-            </OTP.Group>
-          </Field>
-          <Container className="inline-flex w-full h-6 items-center justify-center">
-            {processing && <Spinner className="size-6 text-foreground-tertiary" />}
-          </Container>
-        </Dialog.Content>
-      </Dialog.Root>
-    </Main>
+            <Container className="flex flex-col w-full items-center space-y-10">
+              <Logo className="h-8" mode="symbol" />
+              <Container className="w-full flex flex-col text-center">
+                <H1 className="font-medium">{t("title")}</H1>
+                <Paragraph className="text-foreground-secondary">{t("description")}</Paragraph>
+              </Container>
+            </Container>
+            <Container className="w-full flex items-end gap-6">
+              <Field
+                type="text"
+                label={t("email.label")}
+                name="email"
+                id="email"
+                disabled={state !== "idle"}
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                suffix={`@${domain}`}
+                containerClassName="flex-1 min-w-0"
+              />
+            </Container>
+            <Button type="submit" size="pad" intent="ghost" disabled={!email}>
+              <Span>Continue</Span>
+              {processing ? <Spinner className="size-4 text-foreground-tertiary" /> : <Icon symbol="arrow_right_alt" />}
+            </Button>
+          </Form>
+          <Footer className="col-span-3 row-start-3 place-self-center" />
+          <Dialog.Root
+            open={open}
+            onOpenChange={(open) => {
+              if (!open) {
+                setState("idle");
+                setCode("");
+              }
+            }}
+          >
+            <Dialog.Content title={t("verification.title")} description={<>{t("verification.description")}</>}>
+              <Logo className="h-8" mode="symbol" />
+              <Field
+                type="otp"
+                maxLength={KEY_LENGTH}
+                label={t("verification.label")}
+                value={code}
+                onValueChange={(value) => setCode(value.toUpperCase())}
+                onComplete={verify}
+                disabled={state === "verifying" || state === "authenticated"}
+                autoFocus
+                description={t.rich("verification.help", { link: (chunks) => <Link href="#">{chunks}</Link> })}
+                containerClassName="items-center text-center"
+                className="justify-center"
+              >
+                <OTP.Group className="justify-center">
+                  {[...Array(KEY_LENGTH)].map((_, index) => (
+                    <OTP.Slot key={index} index={index} />
+                  ))}
+                </OTP.Group>
+              </Field>
+              <Container className="inline-flex w-full h-6 items-center justify-center">
+                {processing && <Spinner className="size-6 text-foreground-tertiary" />}
+              </Container>
+            </Dialog.Content>
+          </Dialog.Root>
+        </Main>
+      </ScrollArea.Viewport>
+      <ScrollArea.Scrollbar />
+    </ScrollArea.Root>
   );
 }

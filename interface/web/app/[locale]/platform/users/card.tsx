@@ -21,6 +21,7 @@ import {
   Button,
   Card,
   Checkbox,
+  Combobox,
   Container,
   createElement,
   Dialog,
@@ -31,7 +32,6 @@ import {
   LI,
   Pagination,
   Paragraph,
-  Select,
   Sheet,
   Span,
   Spinner,
@@ -83,8 +83,8 @@ export const Users = () => {
       .map((k) => k.trim())
       .filter(Boolean) ?? [];
 
-  const filters = searchParams.get("filters")?.split(",").filter(Boolean) ?? [];
-  const order = searchParams.get("order")?.split(",").filter(Boolean) ?? [];
+  const [filters, setFilters] = useState(searchParams.get("filters")?.split(",").filter(Boolean) ?? []);
+  const [order, setOrder] = useState(searchParams.get("order")?.split(",").filter(Boolean) ?? []);
 
   const commitKeywords = (value: string) => {
     const params = new URLSearchParams(searchParams.toString());
@@ -125,61 +125,31 @@ export const Users = () => {
     return keys.some((k) => haystack.includes(k.toLowerCase()));
   };
 
-  const filter = (role: string, checked: boolean) => {
-    const params = new URLSearchParams(searchParams.toString());
-    const next = new Set(filters);
-
-    if (checked) {
-      next.add(role);
-    } else {
-      next.delete(role);
-    }
-
-    if (next.size > 0) {
-      params.set("filters", Array.from(next).join(","));
-    } else {
-      params.delete("filters");
-    }
-
-    router.replace(`${pathname}?${params.toString()}`, { scroll: false });
-  };
-
-  const unfilter = () => {
-    const params = new URLSearchParams(searchParams.toString());
-
-    params.delete("filters");
-    router.replace(`${pathname}?${params.toString()}`, { scroll: false });
-  };
+  const filter = (role: string) => setFilters((value) => (value.includes(role) ? value.filter((r) => r !== role) : [...value, role]));
 
   const getOrderForProperty = (property: string) => order.find((o) => o.startsWith(`${property}-`));
-
   const getOrderIndex = (property: string) => order.findIndex((o) => o.startsWith(`${property}-`));
 
-  const toggleSort = (property: string) => {
-    const params = new URLSearchParams(searchParams.toString());
-    const next = [...order];
+  const toggleSort = (property: string) =>
+    setOrder((value) => {
+      const asc = `${property}-asc`;
+      const desc = `${property}-desc`;
 
-    const asc = `${property}-asc`;
-    const desc = `${property}-desc`;
+      const ascIndex = value.findIndex((v) => v === asc);
+      const descIndex = value.findIndex((v) => v === desc);
 
-    const index = next.findIndex((o) => o === asc || o === desc);
+      let next = [...value];
 
-    if (index === -1) {
-      next.push(asc);
-    } else if (next[index] === asc) {
-      next[index] = desc;
-    } else {
-      next.splice(index, 1);
-    }
+      if (ascIndex >= 0) {
+        next[ascIndex] = desc;
+      } else if (descIndex >= 0) {
+        next = next.filter((v) => v !== desc);
+      } else {
+        next = [...next, asc];
+      }
 
-    if (next.length > 0) {
-      params.set("order", next.join(","));
-    } else {
-      params.delete("order");
-    }
-
-    router.replace(`${pathname}?${params.toString()}`, { scroll: false });
-  };
+      return next;
+    });
 
   const sort = (users: User[]): User[] => {
     if (order.length === 0) {
@@ -197,13 +167,6 @@ export const Users = () => {
 
       return 0;
     });
-  };
-
-  const unsort = () => {
-    const params = new URLSearchParams(searchParams.toString());
-
-    params.delete("order");
-    router.replace(`${pathname}?${params.toString()}`, { scroll: false });
   };
 
   const navigate = (page: number) => {
@@ -290,22 +253,21 @@ export const Users = () => {
     return Object.fromEntries(response.data.map((r) => [r.name, r]));
   });
 
-  const data =
-    (filters.length === 0 ? users.data : users.data?.filter((u) => filters.every((t) => u.principal.roles.includes(t))))?.filter((u) =>
+  const PAGE_SIZE = 20;
+  const PAGE = useMemo(() => Math.max(1, Number(searchParams.get("users") ?? 1)), [searchParams]);
+
+  const paginatedData = useMemo(() => {
+    const start = (PAGE - 1) * PAGE_SIZE;
+    return users.data?.slice(start, start + PAGE_SIZE) ?? [];
+  }, [users.data, PAGE]);
+
+  const filteredData =
+    (filters.length === 0 ? paginatedData : paginatedData?.filter((u) => filters.every((t) => u.principal.roles.includes(t))))?.filter((u) =>
       matchesKeywords(u, keywords)
     ) ?? [];
 
-  const sortedData = useMemo(() => sort([...data]), [data, order]);
-
-  const PAGE_SIZE = 20;
-
-  const page = useMemo(() => Math.max(1, Number(searchParams.get("users") ?? 1)), [searchParams]);
+  const sortedData = useMemo(() => sort([...filteredData]), [filteredData, order]);
   const pages = Math.ceil(sortedData.length / PAGE_SIZE);
-
-  const paginatedData = useMemo(() => {
-    const start = (page - 1) * PAGE_SIZE;
-    return sortedData.slice(start, start + PAGE_SIZE);
-  }, [sortedData, page]);
 
   const selectedUsers = useMemo(() => users.data?.filter((u) => selection.includes(u.account.id)) ?? [], [users.data, selection]);
 
@@ -351,7 +313,7 @@ export const Users = () => {
 
     return (
       <>
-        {paginatedData.map((user) => (
+        {sortedData.map((user) => (
           <Row key={user.account.id} user={user} />
         ))}
       </>
@@ -369,9 +331,7 @@ export const Users = () => {
             className="relative"
             checked={selection.includes(user.account.id)}
             onCheckedChange={(checked: boolean) => selectOne(user, checked)}
-          >
-            <Span className="absolute flex w-px h-16 bottom-full left-1/2 -translate-x-1/2 bg-input" />
-          </Checkbox>
+          />
         </Table.Cell>
         <Table.Cell>
           <Button intent="none" shape="square" size="fit" onClick={() => setEditing(true)} className="text-left">
@@ -482,15 +442,17 @@ export const Users = () => {
   const indicator = (property: string) => {
     const ordering = getOrderForProperty(property);
     const index = getOrderIndex(property);
-    const checked = Boolean(ordering);
-
-    const direction = ordering?.endsWith("asc") ? "arrow_upward" : ordering?.endsWith("desc") ? "arrow_downward" : null;
+    const direction = ordering?.endsWith("asc") ? (
+      <Icon symbol="sort" size={16} className="font-normal -scale-x-100 rotate-90" />
+    ) : ordering?.endsWith("desc") ? (
+      <Icon symbol="sort" size={16} className="font-normal -rotate-90" />
+    ) : null;
 
     return (
-      (direction || checked) && (
-        <Span className="flex items-center justify-center text-hint gap-0.5">
-          {direction && <Icon size={16} symbol={direction} className="font-normal" />}
-          {order.length > 1 && checked && <Span className="text-xs font-extrabold">{index + 1}</Span>}
+      direction && (
+        <Span className="flex items-center justify-center text-hint gap-1">
+          {direction}
+          {order.length > 1 && <Span className="text-xs font-extrabold">{index + 1}</Span>}
         </Span>
       )
     );
@@ -504,7 +466,7 @@ export const Users = () => {
         <Card.Title className="text-2xl font-bold flex gap-3 items-center">
           <Span>Users</Span>
           <Span className="bg-translucent shrink-0 size-10 font-normal rounded-full text-sm inline-flex items-center justify-center">
-            {users.isValidating || !users.data ? <Spinner className="size-3 text-foreground-secondary" /> : data.length}
+            {users.isValidating || !users.data ? <Spinner className="size-3 text-foreground-secondary" /> : filteredData.length}
           </Span>
         </Card.Title>
         <Card.Gutter className="flex xl:hidden">
@@ -575,152 +537,69 @@ export const Users = () => {
             {roles.isLoading || !roles.data ? (
               <Span className="w-32 h-4 rounded-full bg-background-surface animate-pulse" />
             ) : (
-              <Select.Root multiple>
-                <Select.Trigger asChild>
+              <Combobox.Root multiple selection={filters} onSelect={filter}>
+                <Combobox.Trigger asChild>
                   <Button intent="ghost" className={clsx("data-[state=open]:bg-button-ghost-active")}>
                     <Span>Filter</Span>
                     <Icon symbol="keyboard_arrow_down" />
                     {filters.length > 0 && <Span className="size-2 bg-blue rounded-full flex" />}
                   </Button>
-                </Select.Trigger>
-                <Select.Content searchPlaceholder="Search" position="popper">
-                  <Select.Group label="Role">
-                    {[...Array(100)].map((_, i) => (
-                      <Select.Item
-                        key={i}
-                        value={`${i}`}
-                        icon={<Icon symbol="emergency_home" />}
-                        label={`Item ${i}`}
-                        description="This describes the item."
-                      />
-                    ))}
-                  </Select.Group>
-                </Select.Content>
-              </Select.Root>
+                </Combobox.Trigger>
+                <Combobox.Content>
+                  <Combobox.List label="Role">
+                    {Object.values(roles.data)
+                      .sort((a, b) => a.name.localeCompare(b.name))
+                      .map((role) => (
+                        <Combobox.Item
+                          key={role.id}
+                          value={role.name}
+                          label={role.name}
+                          icon={<Span className="flex size-4 rounded-full" style={{ backgroundColor: role.color }} />}
+                        />
+                      ))}
+                  </Combobox.List>
+                </Combobox.Content>
+              </Combobox.Root>
             )}
-            <Select.Root multiple>
-              <Select.Trigger asChild>
+            <Combobox.Root multiple selection={order.map((o) => o.replace(/-.*/, ""))} onSelect={toggleSort}>
+              <Combobox.Trigger asChild>
                 <Button intent="ghost" className={clsx("data-[state=open]:bg-button-ghost-active")}>
                   <Span>Sort</Span>
                   <Icon symbol="keyboard_arrow_down" />
                   {order.length > 0 && <Span className="size-2 bg-blue rounded-full flex" />}
                 </Button>
-              </Select.Trigger>
-              <Select.Content searchPlaceholder="Search" position="popper">
-                <Select.Group label="Field">
-                  {[...Array(100)].map((_, i) => (
-                    <Select.Item
-                      key={i}
-                      value={`${i}`}
-                      icon={<Icon symbol="emergency_home" />}
-                      label={`Item ${i}`}
-                      description="This describes the item."
-                    />
-                  ))}
-                </Select.Group>
-              </Select.Content>
-            </Select.Root>
-            {/* <Dropdown.Root>
-                <Dropdown.Trigger asChild>
-                  <Button intent="ghost" className={clsx("px-5! data-[state=open]:bg-button-ghost-active relative")}>
-                    <Span>Filter</Span>
-                    <Icon symbol="keyboard_arrow_down" />
-                    {filters.length > 0 && <Span className="size-2 bg-blue rounded-full flex" />}
-                  </Button>
-                </Dropdown.Trigger>
-                <Dropdown.Content className="pb-4">
-                  <Container className="flex flex-col gap-1">
-                    <Dropdown.Label className="px-4 py-2 text-foreground-tertiary font-bold">Role</Dropdown.Label>
-                    {Object.values(roles.data)
-                      .sort((a, b) => (a.name < b.name ? -1 : 1))
-                      .map((role, i) => {
-                        const checked = filters.includes(role.name);
+              </Combobox.Trigger>
+              <Combobox.Content>
+                <Combobox.List label="Field">
+                  {Object.entries(properties).map(([key, field]) => {
+                    const ordering = getOrderForProperty(key);
+                    const index = getOrderIndex(key);
+                    const direction = ordering?.endsWith("asc") ? (
+                      <Icon symbol="sort" size={16} className="font-normal -scale-x-100 rotate-90" />
+                    ) : ordering?.endsWith("desc") ? (
+                      <Icon symbol="sort" size={16} className="font-normal -rotate-90" />
+                    ) : null;
 
-                        return (
-                          <Dropdown.CheckboxItem
-                            key={i}
-                            className="group flex items-center pr-5"
-                            checked={checked}
-                            onSelect={(e) => e.preventDefault()}
-                            onCheckedChange={(value) => filter(role.name, value)}
-                          >
-                            <Span className="relative flex items-center justify-center shrink-0 rounded-md size-5">
-                              <Dropdown.ItemIndicator className="absolute flex items-center justify-center">
-                                <Span className="flex size-2 rounded-full bg-blue" />
-                              </Dropdown.ItemIndicator>
+                    return (
+                      <Combobox.Item
+                        key={key}
+                        value={key}
+                        label={field.name}
+                        icon={<Icon symbol={field.icon} size={20} />}
+                        indicator={
+                          direction && (
+                            <Span className="inline-flex items-center gap-1 text-hint">
+                              {direction}
+                              {order.length > 1 && <Span className="text-xs font-extrabold">{index + 1}</Span>}
                             </Span>
-                            <Monogram text={role.name} style={{ color: role.color }} className="size-8" />
-                            <Span className="font-bold">{role.name}</Span>
-                          </Dropdown.CheckboxItem>
-                        );
-                      })}
-                  </Container>
-                  <Dropdown.Item
-                    onSelect={(e) => e.preventDefault()}
-                    onClick={unfilter}
-                    className={clsx("gap-4 py-5 pointer-events-none bg-transparent!")}
-                  >
-                    <Span className="font-medium text-hint gap-2 flex items-center mx-auto pointer-events-auto">
-                      <Icon symbol="close" size={16} />
-                      <Span>Clear</Span>
-                    </Span>
-                  </Dropdown.Item>
-                </Dropdown.Content>
-              </Dropdown.Root> */}
-            {/* <Dropdown.Root>
-              <Dropdown.Trigger asChild>
-                <Button intent="ghost" className="px-5! data-[state=open]:bg-button-ghost-active">
-                  <Span>Sort</Span>
-                  <Icon symbol="keyboard_arrow_down" />
-                  {order.length > 0 && <Span className="size-2 bg-blue rounded-full flex" />}
-                </Button>
-              </Dropdown.Trigger>
-              <Dropdown.Content className="pb-4">
-                <Dropdown.Label className="px-4 py-2 text-foreground-tertiary font-bold">Property</Dropdown.Label>
-                {Object.entries(properties).map(([key, field]) => {
-                  const ordering = getOrderForProperty(key);
-                  const index = getOrderIndex(key);
-                  const checked = Boolean(ordering);
-
-                  const direction = ordering?.endsWith("asc") ? "arrow_upward" : ordering?.endsWith("desc") ? "arrow_downward" : null;
-
-                  return (
-                    <Dropdown.CheckboxItem
-                      key={key}
-                      checked={checked}
-                      onSelect={(e) => e.preventDefault()}
-                      onCheckedChange={() => toggleSort(key)}
-                      className="group flex items-center gap-4"
-                    >
-                      <Span className="relative flex items-center justify-center shrink-0 rounded-md size-5">
-                        <Dropdown.ItemIndicator className="absolute flex items-center justify-center">
-                          <Span className="flex size-2 rounded-full bg-blue" />
-                        </Dropdown.ItemIndicator>
-                      </Span>
-                      <Icon size={16} symbol={field.icon} className="text-hint font-light" />
-                      <Span className="font-bold">{field.name}</Span>
-                      <Span className="flex-1" />
-                      {(direction || checked) && (
-                        <Span className="flex items-center justify-center gap-0.5">
-                          {direction && <Icon size={16} symbol={direction} className="text-hint font-normal" />}
-                          {order.length > 1 && checked && <Span className="text-xs font-extrabold text-hint">{index + 1}</Span>}
-                        </Span>
-                      )}
-                    </Dropdown.CheckboxItem>
-                  );
-                })}
-                <Dropdown.Item
-                  onSelect={(e) => e.preventDefault()}
-                  onClick={unsort}
-                  className={clsx("gap-4 py-5 pointer-events-none bg-transparent!")}
-                >
-                  <Span className="font-medium text-hint gap-2 flex items-center mx-auto pointer-events-auto">
-                    <Icon symbol="close" size={16} />
-                    <Span>Clear</Span>
-                  </Span>
-                </Dropdown.Item>
-              </Dropdown.Content>
-            </Dropdown.Root> */}
+                          )
+                        }
+                      />
+                    );
+                  })}
+                </Combobox.List>
+              </Combobox.Content>
+            </Combobox.Root>
           </Container>
         </Container>
         <Table.Root className="w-full table-fixed border-separate border-spacing-y-10">
@@ -757,7 +636,7 @@ export const Users = () => {
             <Body />
           </Table.Body>
         </Table.Root>
-        <Pagination page={page} pages={pages} className="self-center" onPageChange={navigate} />
+        <Pagination page={PAGE} pages={pages} className="self-center" onPageChange={navigate} />
         <Container
           className={clsx("forwards", "opacity-0", "fixed bottom-10  left-1/2 -translate-1/2", "p-10 bg-background-surface shadow-base rounded-2xl", {
             "animate-in slide-in-from-bottom fade-in": selection.length > 0
@@ -865,7 +744,7 @@ export const Users = () => {
 const properties: Record<string, { name: string; icon: string }> = {
   name: {
     name: "Name",
-    icon: "text_fields"
+    icon: "match_case"
   },
   roles: {
     name: "Roles",

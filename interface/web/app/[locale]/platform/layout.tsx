@@ -2,7 +2,7 @@
 
 "use client";
 
-import { CompactFooter, LocaleSwitcher } from "@/elements";
+import { Footer, LocaleSwitcher } from "@/elements";
 import { useUser } from "@/stores";
 import { Spatial } from "@sptlco/client";
 import { Account } from "@sptlco/data";
@@ -100,15 +100,17 @@ export default function Layout(props: { children: ReactNode }) {
   const locale = useLocale();
   const path = usePathname().replace(`/${locale}`, "");
 
-  const user = useUser(
-    useShallow((state) => ({
-      loading: state.loading,
-      authenticated: state.authenticated,
-      account: state.account,
-      update: state.update,
-      logout: state.logout
-    }))
-  );
+  const user = {
+    ...useUser(
+      useShallow((state) => ({
+        loading: state.loading,
+        account: state.account
+      }))
+    ),
+    authenticated: useUser((state) => state.authenticated),
+    update: useUser((state) => state.update),
+    logout: useUser((state) => state.logout)
+  };
 
   const active = (href: string): boolean => {
     if (href === BASE_URL) {
@@ -159,10 +161,12 @@ export default function Layout(props: { children: ReactNode }) {
   const [update, setUpdate] = useState<Account>();
 
   useEffect(() => {
-    if (!user.loading && user.authenticated()) {
-      setTimeout(() => {
-        setRequirements((value) => ({ ...value, name: !user.account.name }));
-      }, 1000);
+    if (!user.loading) {
+      if (user.authenticated()) {
+        setTimeout(() => {
+          setRequirements((value) => ({ ...value, name: !user.account.name }));
+        }, 1000);
+      }
     }
   }, [user.loading, user.account, user.authenticated]);
 
@@ -199,8 +203,15 @@ export default function Layout(props: { children: ReactNode }) {
     });
   };
 
+  const logout = async () => {
+    await user.logout();
+    window.location.reload();
+  };
+
+  const loading = user.loading || !user.authenticated();
+
   return (
-    <Main className={clsx("grid w-full h-screen xl:overflow-hidden", "grid-cols-1 xl:grid-cols-[auto_1fr]", "grid-rows-[auto_minmax(0,1fr)]")}>
+    <Main className={clsx("grid w-full h-screen", "grid-cols-1 xl:grid-cols-[auto_1fr]", "grid-rows-[auto_minmax(0,1fr)]")}>
       <Dialog.Root open={requirements.name}>
         <Dialog.Content title="Information required" description="We need to know the following." closeButton={false}>
           <Form className="flex flex-col items-center gap-10" onSubmit={submit}>
@@ -234,7 +245,7 @@ export default function Layout(props: { children: ReactNode }) {
       >
         <Container className="flex h-full gap-0 xl:gap-10">
           <Container className="flex flex-col h-full gap-10">
-            <Link href="/" className="relative flex items-center justify-center size-10 xl:w-16!">
+            <Link href={BASE_URL} className="relative flex items-center justify-center size-10 xl:w-16!">
               <Logo mode="symbol" className="w-10 fill-foreground-primary" />
             </Link>
             <UL className="hidden xl:flex grow flex-col items-center justify-center gap-6">
@@ -287,7 +298,7 @@ export default function Layout(props: { children: ReactNode }) {
         </Container>
         <Sheet.Root>
           <Sheet.Trigger className="cursor-pointer group">
-            {user.loading || !user.authenticated() ? (
+            {loading ? (
               <Span className="flex bg-background-surface size-10 rounded-full animate-pulse" />
             ) : (
               <Avatar
@@ -298,17 +309,10 @@ export default function Layout(props: { children: ReactNode }) {
             )}
           </Sheet.Trigger>
           <Sheet.Content title={t("modals.account.title")} description={t("modals.account.description")} closeButton side="right">
-            <Button
-              size="fill"
-              disabled={user.loading}
-              onClick={async () => {
-                await user.logout();
-                window.location.reload();
-              }}
-            >
+            <Button size="fill" disabled={loading} onClick={logout}>
               <Span>Logout</Span>
               <Span className="flex size-5 items-center justify-center">
-                {user.loading ? <Spinner className="size-3.5 text-hint" /> : <Icon symbol="arrow_right_alt" size={20} />}
+                {loading ? <Spinner className="size-3.5 text-hint" /> : <Icon symbol="arrow_right_alt" size={20} />}
               </Span>
             </Button>
           </Sheet.Content>
@@ -317,7 +321,7 @@ export default function Layout(props: { children: ReactNode }) {
       <ScrollArea.Root>
         <ScrollArea.Viewport ref={scroller} className={clsx("xl:pr-10", "row-start-2 col-start-1", "xl:col-start-2")}>
           <Container className="flex flex-col relative xl:min-h-[calc(100vh-(var(--layout-pad)*2)-140px)]">{props.children}</Container>
-          <CompactFooter className="p-10" />
+          <Footer className="p-10" />
         </ScrollArea.Viewport>
         <ScrollArea.Scrollbar />
         <ScrollArea.Corner />

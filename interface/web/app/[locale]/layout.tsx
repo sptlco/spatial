@@ -1,7 +1,7 @@
 // Copyright © Spatial Corporation. All rights reserved.
 
-import { User } from "@/elements";
-import { Body, Favicon, Head, Html, Toaster, Tooltip } from "@sptlco/design";
+import { Service, User } from "@/elements";
+import { Body, Html, Toaster, Tooltip } from "@sptlco/design";
 import type { Metadata } from "next";
 import { NextIntlClientProvider } from "next-intl";
 
@@ -25,14 +25,12 @@ export default async function Layout(props: { children: React.ReactNode; params:
 
   return (
     <Html lang={locale} suppressHydrationWarning>
-      <Head>
-        <Favicon href="/assets/favicon.ico" />
-      </Head>
-      <Body>
+      <Body className="overflow-hidden">
         <Tooltip.Provider>
           <NextIntlClientProvider>{props.children}</NextIntlClientProvider>
         </Tooltip.Provider>
         <Toaster />
+        <Service />
         <User />
       </Body>
     </Html>

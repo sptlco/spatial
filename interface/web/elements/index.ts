@@ -2,4 +2,5 @@
 
 export * from "./footer";
 export * from "./locale";
+export * from "./service";
 export * from "./user";

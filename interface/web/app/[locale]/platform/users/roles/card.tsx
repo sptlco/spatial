@@ -180,9 +180,11 @@ export const Roles = () => {
           return (
             <Table.Row key={i}>
               <Table.Cell>
-                <Checkbox className="relative" checked={selection.includes(role.id)} onCheckedChange={(checked: boolean) => selectOne(role, checked)}>
-                  <Span className="absolute flex w-px h-16 bottom-full left-1/2 -translate-x-1/2 bg-input" />
-                </Checkbox>
+                <Checkbox
+                  className="relative"
+                  checked={selection.includes(role.id)}
+                  onCheckedChange={(checked: boolean) => selectOne(role, checked)}
+                />
               </Table.Cell>
               <Table.Cell>
                 <Button intent="none" shape="square" size="fit" onClick={() => setEditing(true)} className="text-left">

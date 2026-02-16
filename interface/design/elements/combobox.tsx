@@ -128,7 +128,7 @@ export const Combobox = {
             }}
           />
         </Container>
-        {props.children}
+        <Popover.Viewport className="max-h-[calc(var(--radix-popover-content-available-height)-52px)]">{props.children}</Popover.Viewport>
       </Popover.Content>
     );
   }),

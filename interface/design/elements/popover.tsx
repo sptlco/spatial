@@ -9,13 +9,12 @@ import { createElement, ScrollArea } from "..";
 /**
  * Displays rich content in a portal, triggered by a button.
  */
-export const Popover: typeof Primitive = {
+export const Popover = {
   ...Primitive,
 
   Content: createElement<typeof Primitive.Content>((props, ref) => {
     const content = cva({
       base: [
-        "flex flex-col",
         "w-fit rounded-xl duration-100 z-50 overflow-x-hidden",
         "bg-background-surface shadow-base relative",
         "data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:zoom-in-95",
@@ -42,12 +41,19 @@ export const Popover: typeof Primitive = {
           hideWhenDetached
           avoidCollisions
           className={clsx(content({ side: props.side }), props.className)}
-        >
-          <ScrollArea.Root className="grow" type="auto" fade>
-            <ScrollArea.Viewport className="max-h-[calc(var(--radix-popover-content-available-height)-52px)]">{props.children}</ScrollArea.Viewport>
-          </ScrollArea.Root>
-        </Primitive.Content>
+          style={{ overflowY: "hidden" }}
+        />
       </Primitive.Portal>
     );
-  })
+  }),
+
+  /**
+   * Contains the scrollable parts of a popover.
+   */
+  Viewport: createElement<typeof ScrollArea.Viewport>((props, ref) => (
+    <ScrollArea.Root className="grow" type="auto" fade>
+      <ScrollArea.Viewport {...props} ref={ref}/>
+      <ScrollArea.Scrollbar />
+    </ScrollArea.Root>
+  ))
 };

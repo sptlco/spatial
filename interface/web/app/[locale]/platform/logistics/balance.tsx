@@ -18,13 +18,13 @@ export const Balance = createElement<typeof Span>((props, ref) => {
   const balance = data && !data.error ? data.data : undefined;
 
   return isLoading ? (
-    <Span className="flex flex-col gap-2">
-      <Span className="rounded-full flex bg-translucent w-1/3 h-10 ml-10 animate-pulse" />
-      <Span className="rounded-full flex bg-translucent w-3/4 h-32 animate-pulse" />
+    <Span className="flex flex-col gap-2 px-10">
+      <Span className="rounded-full flex bg-translucent w-1/3 h-10 xl:ml-10 animate-pulse" />
+      <Span className="rounded-full flex bg-translucent w-full xl:w-3/4 h-10 xl:h-32 animate-pulse" />
     </Span>
   ) : (
-    <Span className="w-full flex flex-col gap-2">
-      <Span className="text-sm xl:text-2xl font-bold">Balance</Span>
+    <Span className="w-full flex flex-col gap-2 px-10">
+      <Span className="text-sm xl:text-xl font-bold">Balance</Span>
       <Span className="text-2xl xl:text-9xl font-extrabold xl:-ml-2 truncate">{balance} ETH</Span>
     </Span>
   );

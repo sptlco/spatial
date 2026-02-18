@@ -19,7 +19,7 @@ export const Footer = createElement<typeof Container>((props, ref) => {
     <Container
       {...props}
       ref={ref}
-      className={clsx("w-full flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-10 text-sm", props.className)}
+      className={clsx("w-full flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-10 text-sm font-semibold", props.className)}
     >
       <Span className="text-foreground-tertiary inline-flex items-center gap-4">
         <Span

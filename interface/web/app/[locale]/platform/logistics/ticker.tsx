@@ -51,7 +51,7 @@ export const Ticker = createElement<typeof Container>((props, ref) => {
   );
 
   return (
-    <Container {...props} ref={ref} className="relative w-full h-10 overflow-hidden xl:mask-l-from-80% xl:mask-r-from-80%">
+    <Container {...props} ref={ref} className="relative w-full h-9 overflow-hidden xl:mask-l-from-80% xl:mask-r-from-80%">
       <Container className="absolute inset-0 w-max ticker-track whitespace-nowrap flex text-2xl xl:text-4xl font-extrabold uppercase">
         {content}
         {content}

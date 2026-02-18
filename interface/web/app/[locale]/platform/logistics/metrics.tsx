@@ -19,7 +19,7 @@ export const Metrics = createElement<typeof Container>((props, ref) => {
   ];
 
   return (
-    <Container {...props} ref={ref} className="grid grid-cols-1 xl:grid-cols-4 gap-10">
+    <Container {...props} ref={ref} className="grid grid-cols-1 xl:grid-cols-4 xl:gap-10">
       {metrics.map((metric) => (
         <Link
           href={metric.href}
@@ -27,7 +27,7 @@ export const Metrics = createElement<typeof Container>((props, ref) => {
           className={clsx(
             "group relative",
             "flex flex-col text-foreground-primary items-start justify-center",
-            "p-10 gap-2! bg-background-subtle xl:rounded-4xl transition-all duration-200",
+            "p-10 gap-2! xl:bg-button xl:rounded-4xl transition-all duration-200",
             "hover:bg-button-highlight-hover hover:text-white!",
             "active:bg-button-highlight-active active:text-white!"
           )}
@@ -36,7 +36,7 @@ export const Metrics = createElement<typeof Container>((props, ref) => {
           <Span className="text-3xl font-extrabold">{metric.value}</Span>
           <Span
             className={clsx(
-              "absolute right-10 xl:opacity-0",
+              "absolute right-10 xl:opacity-0 xl:-rotate-30",
               "group-hover:opacity-100 group-hover:animate-in text-hint xl:text-white group-hover:fade-in group-hover:slide-in-from-right-2"
             )}
           >

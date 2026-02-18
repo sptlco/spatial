@@ -17,16 +17,18 @@ export const Logistics = createElement<typeof Card.Root>((props, ref) => {
   const { name } = usePlatform();
 
   return (
-    <Card.Root {...props} ref={ref} className="relative flex flex-col grow gap-0! xl:gap-10 pb-10">
-      <Ticker />
-      <Card.Header className="px-10 pt-10">
+    <Card.Root {...props} ref={ref} className="relative flex flex-col grow ">
+      <Card.Header className="px-10">
         <Card.Title className="col-span-full text-5xl xl:text-9xl xl:-translate-x-2 font-extrabold leading-snug!">Logistics</Card.Title>
         <Card.Description className="xl:text-xl font-light">Monitor and manage {name}&apos;s operations.</Card.Description>
       </Card.Header>
-      <Card.Content className="flex flex-col grow justify-center gap-10 xl:gap-20! mt-10!">
+      <Card.Content className="flex flex-col grow justify-center gap-10 xl:gap-20! pt-10 bg-background-subtle xl:bg-transparent">
         <Balance />
         <Metrics />
       </Card.Content>
+      <Card.Footer>
+        <Ticker />
+      </Card.Footer>
     </Card.Root>
   );
 });

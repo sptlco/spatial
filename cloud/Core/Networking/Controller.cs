@@ -68,6 +68,13 @@ public abstract class Controller : Microsoft.AspNetCore.Mvc.Controller
     }
 
     /// <summary>
+    /// The result of a network request. 
+    /// </summary>
+    public interface IResult : IActionResult
+    {
+    }
+
+    /// <summary>
     /// A command issued over the private network.
     /// </summary>
     [AttributeUsage(AttributeTargets.Method)]

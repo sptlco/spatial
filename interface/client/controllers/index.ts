@@ -4,6 +4,7 @@ import { AccountController } from "./AccountController";
 import { AssignmentController } from "./AssignmentController";
 import { IndexController } from "./IndexController";
 import { KeyController } from "./KeyController";
+import { MarketController } from "./MarketController";
 import { PermissionController } from "./PermissionController";
 import { RoleController } from "./RoleController";
 import { ScopeController } from "./ScopeController";
@@ -14,6 +15,7 @@ export * from "./AccountController";
 export * from "./AssignmentController";
 export * from "./IndexController";
 export * from "./KeyController";
+export * from "./MarketController";
 export * from "./PermissionController";
 export * from "./RoleController";
 export * from "./ScopeController";
@@ -25,6 +27,7 @@ export const Spatial = {
   accounts: new AccountController(),
   assignments: new AssignmentController(),
   keys: new KeyController(),
+  market: new MarketController(),
   permissions: new PermissionController(),
   roles: new RoleController(),
   scopes: new ScopeController(),

@@ -128,6 +128,15 @@
       opacity: 0;
     }
   }
+
+  @keyframes ticker-scroll {
+    from {
+      transform: translateX(0);
+    }
+    to {
+      transform: translateX(-50%);
+    }
+  }
 }
 
 @layer base {
@@ -157,6 +166,10 @@
 
   html.error {
     @apply bg-state-error!;
+  }
+
+  .ticker-track {
+    animation: ticker-scroll 30s linear infinite;
   }
 }
 

@@ -2,11 +2,10 @@
 
 "use client";
 
-import { Spatial } from "@sptlco/client";
-import { createElement, Container, Link, Span } from "@sptlco/design";
+import { usePlatform } from "@/utilities";
+import { createElement, Container, Span } from "@sptlco/design";
 import { clsx } from "clsx";
 import { useTranslations } from "next-intl";
-import useSWR from "swr";
 
 /**
  * A footer displayed at the bottom of the page.
@@ -14,15 +13,7 @@ import useSWR from "swr";
 export const Footer = createElement<typeof Container>((props, ref) => {
   const t = useTranslations("footer");
 
-  const version = useSWR("footer/version", async () => {
-    const response = await Spatial.version();
-
-    if (response.error) {
-      throw response.error;
-    }
-
-    return response.data;
-  });
+  const { __version, version } = usePlatform();
 
   return (
     <Container
@@ -34,14 +25,14 @@ export const Footer = createElement<typeof Container>((props, ref) => {
         <Span
           className={clsx(
             "size-2 rounded-full flex bg-green",
-            { "bg-yellow!": version.isLoading || version.isValidating },
-            { "bg-red!": version.error }
+            { "bg-yellow!": __version.isLoading || __version.isValidating },
+            { "bg-red!": __version.error }
           )}
         />
-        {version.isLoading || version.isValidating ? (
+        {__version.isLoading || __version.isValidating ? (
           <Span className="h-4 w-20 rounded-full bg-background-surface animate-pulse" />
         ) : (
-          <>Mark {version.data}</>
+          <>Mark {version}</>
         )}
       </Span>
     </Container>

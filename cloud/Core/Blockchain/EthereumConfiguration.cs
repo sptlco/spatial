@@ -1,7 +1,5 @@
 // Copyright © Spatial Corporation. All rights reserved.
 
-using System.ComponentModel.DataAnnotations;
-
 namespace Spatial.Blockchain;
 
 /// <summary>

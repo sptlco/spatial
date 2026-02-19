@@ -35,7 +35,5 @@ export const Tabs = {
   /**
    * Content displayed on a user management tab.
    */
-  Content: createElement<typeof Primitive.Content>((props, ref) => (
-    <Primitive.Content {...props} ref={ref} className={clsx("p-10 bg-background-subtle xl:rounded-[40px]", props.className)} />
-  ))
+  Content: createElement<typeof Primitive.Content>((props, ref) => <Primitive.Content {...props} ref={ref} className={clsx(props.className)} />)
 };

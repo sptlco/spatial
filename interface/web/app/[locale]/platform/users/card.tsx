@@ -462,7 +462,7 @@ export const Users = () => {
 
   return (
     <Card.Root>
-      <Card.Header>
+      <Card.Header className="px-10">
         <Card.Title className="text-2xl font-bold flex gap-3 items-center">
           <Span>Users</Span>
           <Span className="bg-translucent shrink-0 size-10 font-normal rounded-full text-sm inline-flex items-center justify-center">
@@ -491,8 +491,8 @@ export const Users = () => {
           </Button>
         </Card.Gutter>
       </Card.Header>
-      <Card.Content className={clsx("w-full flex flex-col relative", { "mask-b-from-20% mask-b-to-80%": !users.data })}>
-        <Container className="flex flex-col xl:flex-row w-full items-start xl:items-center gap-5">
+      <Card.Content className={clsx("w-full flex flex-col relative gap-10!", { "mask-b-from-20% mask-b-to-80%": !users.data })}>
+        <Container className="px-10 flex flex-col xl:flex-row w-full items-start xl:items-center gap-5">
           <Form
             className="relative w-full max-w-sm flex items-center"
             onSubmit={(e) => {
@@ -597,7 +597,7 @@ export const Users = () => {
             </Combobox.Root>
           </Container>
         </Container>
-        <Table.Root className="w-full table-fixed border-separate border-spacing-y-10">
+        <Table.Root className="w-full px-10 table-fixed border-separate border-spacing-y-10">
           <Table.Header>
             <Table.Row>
               <Table.Column className="size-12 xl:w-16">
@@ -607,19 +607,28 @@ export const Users = () => {
                 />
               </Table.Column>
               <Table.Column className="text-left">
-                <Span className="cursor-pointer flex items-center gap-2" onClick={() => toggleSort("name")}>
+                <Span
+                  className="cursor-pointer text-sm text-foreground-quaternary font-semibold flex items-center gap-2"
+                  onClick={() => toggleSort("name")}
+                >
                   <Span>Name</Span>
                   {indicator("name")}
                 </Span>
               </Table.Column>
               <Table.Column className="w-md text-left hidden xl:table-cell">
-                <Span className="cursor-pointer flex items-center gap-2" onClick={() => toggleSort("roles")}>
+                <Span
+                  className="cursor-pointer text-sm text-foreground-quaternary font-semibold flex items-center gap-2"
+                  onClick={() => toggleSort("roles")}
+                >
                   <Span>Roles</Span>
                   {indicator("roles")}
                 </Span>
               </Table.Column>
               <Table.Column className="w-xs text-left hidden xl:table-cell">
-                <Span className="cursor-pointer flex items-center gap-2" onClick={() => toggleSort("created")}>
+                <Span
+                  className="cursor-pointer text-sm text-foreground-quaternary font-semibold flex items-center gap-2"
+                  onClick={() => toggleSort("created")}
+                >
                   <Span>Created</Span>
                   {indicator("created")}
                 </Span>

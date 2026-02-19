@@ -10,7 +10,7 @@
 @theme inline {
   --color-*: initial;
 
-  --color-black: #000000;
+  --color-black: #0a0a0a;
   --color-smoke: #d9d9d9;
   --color-white: #ffffff;
 
@@ -21,8 +21,8 @@
   --color-gray-5: #666666;
   --color-gray-6: #4d4d4d;
   --color-gray-7: #333333;
-  --color-gray-8: #1a1a1a;
-  --color-gray-9: #0d0d0d;
+  --color-gray-8: #161616;
+  --color-gray-9: #101010;
 
   --color-blue: #0364ff;
   --color-lime: #bbe022;
@@ -44,12 +44,14 @@
   --color-foreground-primary: var(--color-white);
   --color-foreground-secondary: --alpha(var(--color-white) / 70%);
   --color-foreground-tertiary: --alpha(var(--color-white) / 50%);
+  --color-foreground-quaternary: --alpha(var(--color-white) / 40%);
   --color-foreground-inverse: var(--color-black);
   --color-foreground-accent: var(--color-blue);
 
   --color-hint: --alpha(var(--color-white) / 40%);
 
   --color-line-subtle: var(--color-translucent);
+  --color-line-faint: --alpha(var(--color-white) / 12%);
   --color-line-base: --alpha(var(--color-white) / 20%);
   --color-line-strong: --alpha(var(--color-white) / 50%);
   --color-line-accent: var(--color-blue);
@@ -175,4 +177,12 @@
 
 @utility fill {
   font-variation-settings: "FILL" 1;
+}
+
+@utility bg-grid {
+  background-image: radial-gradient(circle, var(--color-line-faint) 1px, transparent 1px);
+  background-size: 16px 16px;
+
+  -webkit-mask-image: radial-gradient(circle at center, black 60%, transparent 100%);
+  mask-image: radial-gradient(circle at center, black 60%, transparent 100%);
 }

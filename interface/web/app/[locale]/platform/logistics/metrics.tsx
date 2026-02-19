@@ -12,10 +12,10 @@ type Metric = {
 
 export const Metrics = createElement<typeof Container>((props, ref) => {
   const metrics: Metric[] = [
-    { label: "Active Shipments", value: 128, href: "/platform/shipments" },
-    { label: "Pending Orders", value: 42, href: "/platform/orders" },
-    { label: "Inventory Units", value: 12482, href: "/platform/inventory" },
-    { label: "Active Trades", value: 7, href: "/platform/trades" }
+    { label: "Active Shipments", value: 128, href: "/platform/logistics/shipments" },
+    { label: "Pending Orders", value: 42, href: "/platform/logistics/orders" },
+    { label: "Inventory Units", value: 12482, href: "/platform/logistics/inventory" },
+    { label: "Active Trades", value: 7, href: "/platform/logistics/trades" }
   ];
 
   return (
@@ -34,12 +34,7 @@ export const Metrics = createElement<typeof Container>((props, ref) => {
         >
           <Span className="text-hint text-xs font-extrabold uppercase">{metric.label}</Span>
           <Span className="text-3xl font-extrabold">{metric.value}</Span>
-          <Span
-            className={clsx(
-              "absolute right-10 xl:opacity-0 xl:-rotate-30",
-              "group-hover:opacity-100 group-hover:animate-in text-hint xl:text-white group-hover:fade-in group-hover:slide-in-from-right-2"
-            )}
-          >
+          <Span className="absolute right-10 xl:-rotate-30">
             <Icon symbol="arrow_right_alt" size={32} />
           </Span>
         </Link>

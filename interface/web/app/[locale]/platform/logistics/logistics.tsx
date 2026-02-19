@@ -22,13 +22,10 @@ export const Logistics = createElement<typeof Card.Root>((props, ref) => {
         <Card.Title className="col-span-full text-5xl xl:text-9xl xl:-translate-x-2 font-extrabold leading-snug!">Logistics</Card.Title>
         <Card.Description className="xl:text-xl font-light">Monitor and manage {name}&apos;s operations.</Card.Description>
       </Card.Header>
-      <Card.Content className="flex flex-col grow justify-center gap-10 xl:gap-20! pt-10 bg-background-subtle xl:bg-transparent">
+      <Card.Content className="flex flex-col grow justify-center gap-10 xl:gap-20! pt-10">
         <Balance />
         <Metrics />
       </Card.Content>
-      <Card.Footer>
-        <Ticker />
-      </Card.Footer>
     </Card.Root>
   );
 });

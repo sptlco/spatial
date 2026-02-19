@@ -321,7 +321,7 @@ export const Roles = () => {
   return (
     <>
       <Card.Root className="gap-0!">
-        <Card.Header>
+        <Card.Header className="px-10">
           <Card.Title className="text-2xl font-bold flex gap-3 items-center">
             <Span>Roles</Span>
             <Span className="bg-translucent size-10 font-normal rounded-full text-sm inline-flex items-center justify-center">
@@ -350,8 +350,8 @@ export const Roles = () => {
             </Button>
           </Card.Gutter>
         </Card.Header>
-        <Card.Content className={clsx("w-full flex flex-col relative", { "mask-b-from-20% mask-b-to-80%": !roles.data })}>
-          <Table.Root className="w-full table-fixed border-separate border-spacing-y-10">
+        <Card.Content className={clsx("w-full flex flex-col relative gap-10!", { "mask-b-from-20% mask-b-to-80%": !roles.data })}>
+          <Table.Root className="w-full px-10 table-fixed border-separate border-spacing-y-10">
             <Table.Header>
               <Table.Row>
                 <Table.Column className="size-12 xl:w-16">

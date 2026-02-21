@@ -53,6 +53,11 @@ public static class Resource<T> where T : Resource
     }
 
     /// <summary>
+    /// The collection that contains the resource.
+    /// </summary>
+    public static IMongoCollection<T> Collection => GetCollection();
+
+    /// <summary>
     /// Store a <see cref="Resource"/> of type <typeparamref name="T"/>.
     /// </summary>
     /// <param name="record">The <see cref="Resource"/> to store.</param>
@@ -153,7 +158,7 @@ public static class Resource<T> where T : Resource
             if (_collection.TimeSeries)
             {
                 options.TimeSeriesOptions = new TimeSeriesOptions(
-                    timeField: _collection.TimeField!,
+                    timeField: _collection.TimeField,
                     metaField: _collection.MetaField,
                     granularity: _collection.Granularity switch {
                         Granularity.Seconds => TimeSeriesGranularity.Seconds,
@@ -163,6 +168,13 @@ public static class Resource<T> where T : Resource
                     });
 
                 database.CreateCollection(_collection.Name, options);
+
+                var collection = database.GetCollection<T>(_collection.Name);
+                var keys = Builders<T>.IndexKeys
+                    .Ascending($"{_collection.MetaField}.name")
+                    .Ascending(_collection.TimeField);
+
+                collection.Indexes.CreateOne(new CreateIndexModel<T>(keys));
             }
             else
             {

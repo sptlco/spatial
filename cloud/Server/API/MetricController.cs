@@ -1,5 +1,7 @@
 // Copyright © Spatial Corporation. All rights reserved.
 
+using MongoDB.Bson;
+using MongoDB.Driver;
 using Spatial.Cloud.Data.Metrics;
 using Spatial.Cloud.Data.Scopes;
 using Spatial.Extensions;
@@ -21,6 +23,7 @@ public class MetricController : Controller
     /// <param name="from">Optional start timestamp (UTC).</param>
     /// <param name="to">Optional end timestamp (UTC).</param>
     /// <param name="limit">Optional maximum number of records to return.</param>
+    /// <param name="resolution">Optional search resolution.</param>
     /// <returns>A list of matching <see cref="Metric"/> records.</returns>
     [GET]
     [Path("{name}")]
@@ -29,21 +32,93 @@ public class MetricController : Controller
         string name,
         [Query] DateTime? from = null,
         [Query] DateTime? to = null,
-        [Query] int? limit = null)
+        [Query] int? limit = null,
+        [Query] string? resolution = null)
     {
-        var metrics = Resource<Metric>.List(metric => metric.Metadata[nameof(name)] == name);
+        var collection = Resource<Metric>.Collection;
+        var filterBuilder = Builders<Metric>.Filter;
+        var filter = filterBuilder.Eq(m => m.Metadata[nameof(name)], name);
 
         if (from.HasValue)
         {
-            metrics = metrics.Filter(metric => metric.Timestamp >= from);
+            filter &= filterBuilder.Gte(m => m.Timestamp, from.Value);
         }
 
         if (to.HasValue)
         {
-            metrics = metrics.Filter(metric => metric.Timestamp <= to);
+            filter &= filterBuilder.Lte(m => m.Timestamp, to.Value);
         }
 
-        return limit.HasValue ? [..metrics.Take(limit.Value)] : metrics;
+        if (string.IsNullOrEmpty(resolution) && from.HasValue && to.HasValue)
+        {
+            var range = to.Value - from.Value;
+
+            if (range > TimeSpan.FromDays(180))
+            {
+                resolution = "1d";
+            }    
+            else if (range > TimeSpan.FromDays(30))
+            {
+                resolution = "1h";
+            }
+            else if (range > TimeSpan.FromDays(7))
+            {
+                resolution = "15m";
+            }
+            else
+            {
+                resolution = "1m";
+            }
+        }
+
+        if (resolution == "1m" || string.IsNullOrEmpty(resolution))
+        {
+            IFindFluent<Metric, Metric> query = collection.Find(filter).SortBy(m => m.Timestamp);
+
+            if (limit.HasValue)
+            {
+                query = query.Limit(limit.Value);
+            }
+
+            return await query.ToListAsync();
+        }
+
+        var (unit, binSize) = resolution switch
+        {
+            "5m" => ("minute", 5),
+            "15m" => ("minute", 15),
+            "1h" => ("hour", 1),
+            "4h" => ("hour", 4),
+            "1d" => ("day", 1),
+            _ => ("minute", 1)
+        };
+
+        var pipeline = new[]
+        {
+            new BsonDocument("$match", filter.Render(new RenderArgs<Metric> {
+                DocumentSerializer = collection.DocumentSerializer,
+                SerializerRegistry = collection.Settings.SerializerRegistry
+            })),
+            new BsonDocument("$sort", new BsonDocument("Timestamp", 1)),
+            new BsonDocument("$group", new BsonDocument
+            {
+                {
+                    "_id",
+                    new BsonDocument("$dateTrunc", new BsonDocument
+                    {
+                        { "date", "$Timestamp" },
+                        { "unit", unit },
+                        { "binSize", binSize }
+                    })
+                },
+                { "last", new BsonDocument("$last", "$$ROOT") }
+            }),
+            new BsonDocument("$replaceRoot", new BsonDocument("newRoot", "$last")),
+            new BsonDocument("$sort", new BsonDocument("Timestamp", 1)),
+            new BsonDocument("$limit", limit ?? 5000)
+        };
+
+        return await collection.Aggregate<Metric>(pipeline).ToListAsync();
     }
 
     /// <summary>

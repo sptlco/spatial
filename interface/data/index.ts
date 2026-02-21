@@ -4,6 +4,7 @@ export * from "./accounts";
 export * from "./assignments";
 export * from "./keys";
 export * from "./market";
+export * from "./metrics";
 export * from "./permissions";
 export * from "./principals";
 export * from "./roles";

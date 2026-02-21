@@ -350,16 +350,16 @@ export const Roles = () => {
             </Button>
           </Card.Gutter>
         </Card.Header>
-        <Card.Content className={clsx("w-full flex flex-col relative gap-10!", { "mask-b-from-20% mask-b-to-80%": !roles.data })}>
+        <Card.Content className={clsx("w-full flex flex-col relative xl:gap-10!", { "mask-b-from-20% mask-b-to-80%": !roles.data })}>
           <Table.Root className="w-full px-10 table-fixed border-separate border-spacing-y-10">
             <Table.Header>
               <Table.Row>
                 <Table.Column className="size-12 xl:w-16">
                   <Checkbox checked={paginatedData.length > 0 && paginatedData.every((r) => selection.includes(r.id))} onCheckedChange={selectAll} />
                 </Table.Column>
-                <Table.Column className="text-left">Name</Table.Column>
-                <Table.Column className="text-center hidden xl:table-cell">Permissions</Table.Column>
-                <Table.Column className="text-center hidden xl:table-cell">Assignments</Table.Column>
+                <Table.Column className="text-left text-sm text-foreground-quaternary font-semibold">Name</Table.Column>
+                <Table.Column className="text-center hidden xl:table-cell text-sm text-foreground-quaternary font-semibold">Permissions</Table.Column>
+                <Table.Column className="text-center hidden xl:table-cell text-sm text-foreground-quaternary font-semibold">Assignments</Table.Column>
                 <Table.Column className="size-12 xl:w-16" />
               </Table.Row>
             </Table.Header>

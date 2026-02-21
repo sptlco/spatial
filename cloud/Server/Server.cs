@@ -100,7 +100,7 @@ internal class Server : Application
                     continue;
                 }
 
-                if (field.GetCustomAttribute<Data.Scopes.MetadataAttribute>() is not Data.Scopes.MetadataAttribute metadata)
+                if (field.GetCustomAttribute<MetadataAttribute>() is not MetadataAttribute metadata)
                 {
                     continue;
                 }

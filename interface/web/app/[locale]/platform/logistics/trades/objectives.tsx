@@ -17,46 +17,14 @@ type Objective = {
  */
 export const Objectives = createElement<typeof Container>((props, ref) => {
   const objectives: Objective[] = [
-    { label: "Trades", value: 54, diff: 0.0604 },
-    { label: "Lots", value: 286, diff: -0.042 },
-    { label: "Average RRR", value: 0.0 },
-    {
-      label: "Win Rate",
-      value: (
-        <>
-          65.39<Span className="text-foreground-tertiary">%</Span>
-        </>
-      )
-    },
-    {
-      label: "Trading Days",
-      value: 15,
-      diff: 0.042
-    },
-    {
-      label: "Live Profit Share",
-      value: (
-        <>
-          80<Span className="text-foreground-tertiary">%</Span>
-        </>
-      )
-    },
-    {
-      label: "Avg. Winning Trade",
-      value: (
-        <>
-          <Span className="text-foreground-tertiary">USD</Span> 458.<Span className="text-foreground-tertiary">06</Span>
-        </>
-      )
-    },
-    {
-      label: "Avg. Losing Trade",
-      value: (
-        <>
-          <Span className="text-foreground-tertiary">-USD</Span> 1021.<Span className="text-foreground-tertiary">06</Span>
-        </>
-      )
-    }
+    { label: "Trades", value: formatNumber(54), diff: 0.0604 },
+    { label: "Lots", value: formatNumber(286), diff: -0.042 },
+    { label: "Average RRR", value: formatNumber(0.0), tip: "Testing 1, 2" },
+    { label: "Win Rate", value: formatNumber(65.39) + "%" },
+    { label: "Trading Days", value: formatNumber(15), diff: 0.042 },
+    { label: "Live Profit Share", value: formatNumber(80) + "%" },
+    { label: "Avg. Winning Trade", value: formatCurrency(458.06) },
+    { label: "Avg. Losing Trade", value: formatCurrency(-1021.06) }
   ];
 
   return (
@@ -67,12 +35,14 @@ export const Objectives = createElement<typeof Container>((props, ref) => {
           <Container key={i} className="grow flex flex-col gap-4 p-10 whitespace-nowrap">
             <Span className="text-sm text-foreground-quaternary font-semibold flex items-center gap-2">
               <Span>{objective.label}</Span>
-              <Tooltip.Root>
-                <Tooltip.Trigger className="flex">
-                  <Icon symbol="info" className="font-semibold" size={20} fill />
-                </Tooltip.Trigger>
-                <Tooltip.Content />
-              </Tooltip.Root>
+              {objective.tip && (
+                <Tooltip.Root>
+                  <Tooltip.Trigger className="flex cursor-pointer">
+                    <Icon symbol="info" className="font-semibold" size={20} fill />
+                  </Tooltip.Trigger>
+                  <Tooltip.Content sideOffset={20}>{objective.tip}</Tooltip.Content>
+                </Tooltip.Root>
+              )}
             </Span>
             <Span className="text-4xl flex items-center gap-4 whitespace-nowrap">
               <Span>{objective.value}</Span>
@@ -89,3 +59,20 @@ export const Objectives = createElement<typeof Container>((props, ref) => {
     </Container>
   );
 });
+
+function formatCurrency(value?: number) {
+  if (value == null) return "-";
+
+  return new Intl.NumberFormat("en-US", {
+    style: "currency",
+    currency: "USD",
+    currencyDisplay: "code",
+    currencySign: "accounting",
+    maximumFractionDigits: 2
+  }).format(value);
+}
+
+function formatNumber(value?: number) {
+  if (value == null) return "-";
+  return new Intl.NumberFormat("en-US").format(value);
+}

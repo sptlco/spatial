@@ -42,7 +42,7 @@ public class Resource
 public static class Resource<T> where T : Resource
 {
     private static MongoClient _client;
-    private static string? _collection;
+    private static CollectionAttribute? _collection;
 
     /// <summary>
     /// Create a new <see cref="Resource{T}"/>.
@@ -138,19 +138,39 @@ public static class Resource<T> where T : Resource
 
     private static IMongoCollection<T> GetCollection()
     {
-        return GetDatabase().GetCollection<T>(_collection ??= GetCollectionName());
-    }
+        _collection ??= typeof(T).GetCustomAttribute<CollectionAttribute>() ?? throw new InvalidOperationException("Specify a collection for this document using the Collection attribute.");
+        
+        var database = GetDatabase();
 
-    private static string GetCollectionName()
-    {
-        var collection = typeof(T).GetCustomAttribute<CollectionAttribute>()?.Name;
-
-        if (string.IsNullOrEmpty(collection))
+        if (!database.ListCollectionNames()
+            .ToList()
+            .Contains(_collection.Name))
         {
-            throw new InvalidOperationException("Specify a collection for this document using the Collection attribute.");
+            var options = new CreateCollectionOptions {
+                ExpireAfter = _collection.TTL
+            };
+
+            if (_collection.TimeSeries)
+            {
+                options.TimeSeriesOptions = new TimeSeriesOptions(
+                    timeField: _collection.TimeField!,
+                    metaField: _collection.MetaField,
+                    granularity: _collection.Granularity switch {
+                        Granularity.Seconds => TimeSeriesGranularity.Seconds,
+                        Granularity.Minutes => TimeSeriesGranularity.Minutes,
+                        Granularity.Hours => TimeSeriesGranularity.Hours,
+                        _ => TimeSeriesGranularity.Seconds
+                    });
+
+                database.CreateCollection(_collection.Name, options);
+            }
+            else
+            {
+                database.CreateCollection(_collection.Name);
+            }
         }
 
-        return collection;
+        return database.GetCollection<T>(_collection.Name);
     }
 
     private static MongoClient CreateClient()

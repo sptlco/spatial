@@ -29,6 +29,7 @@ export const Profits = createElement<typeof Container>((props, ref) => {
           <Tooltip.Root key={day.id} delayDuration={0}>
             <Tooltip.Trigger>
               <Container
+                suppressHydrationWarning
                 className={clsx("cursor-pointer w-8 h-8 rounded-lg transition-colors duration-200", getColor(day.value))}
                 style={{ opacity: 0.2 + Math.min(Math.abs(day.value) / max, 1) * 0.8 }}
               />

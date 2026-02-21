@@ -47,4 +47,16 @@ public static class CollectionExtensions
             action(element);
         }
     }
+
+    /// <summary>
+    /// Filter a collection.
+    /// </summary>
+    /// <typeparam name="T">The type of elements to filter.</typeparam>
+    /// <param name="collection">A collection of elements.</param>
+    /// <param name="predicate">A filtration predicate.</param>
+    /// <returns>A filtered list.</returns>
+    public static List<T> Filter<T>(this IEnumerable<T> collection, Func<T, bool> predicate)
+    {
+        return [.. collection.Where(predicate)];
+    }
 }

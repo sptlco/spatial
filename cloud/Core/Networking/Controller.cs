@@ -68,6 +68,14 @@ public abstract class Controller : Microsoft.AspNetCore.Mvc.Controller
     }
 
     /// <summary>
+    /// Indicates that a parameter is read from a query parameter.
+    /// </summary>
+    public class QueryAttribute : FromQueryAttribute
+    {
+        
+    }
+
+    /// <summary>
     /// The result of a network request. 
     /// </summary>
     public interface IResult : IActionResult

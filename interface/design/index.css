@@ -183,6 +183,5 @@
   background-image: radial-gradient(circle, var(--color-line-faint) 1px, transparent 1px);
   background-size: 16px 16px;
 
-  -webkit-mask-image: radial-gradient(circle at center, black 60%, transparent 100%);
-  mask-image: radial-gradient(circle at center, black 60%, transparent 100%);
+  @apply mask-t-from-80% mask-b-from-80% mask-l-from-80% mask-r-from-80%;
 }

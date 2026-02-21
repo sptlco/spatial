@@ -27,9 +27,9 @@ export const Metrics = createElement<typeof Container>((props, ref) => {
           className={clsx(
             "group relative",
             "flex flex-col text-foreground-primary items-start justify-center",
-            "p-10 gap-2! xl:bg-button xl:rounded-4xl transition-all duration-200",
-            "hover:bg-button-highlight-hover hover:text-white!",
-            "active:bg-button-highlight-active active:text-white!"
+            "p-10 gap-2! bg-button-ghost xl:rounded-4xl transition-all duration-200",
+            "hover:bg-button-ghost-hover hover:text-white!",
+            "active:bg-button-ghost-active active:text-white!"
           )}
         >
           <Span className="text-hint text-xs font-extrabold uppercase">{metric.label}</Span>

@@ -25,8 +25,9 @@ function formatCurrency(value?: number) {
  */
 export const Balance = createElement<typeof Span>((props, ref) => {
   const market = useSWR("platform/logistics/ticker/market", Spatial.market.current);
+
   const { data, isLoading } = useSWR("platform/logistics/assets/balance", Spatial.market.balance, {
-    refreshInterval: 30000, // only poll every 30s
+    refreshInterval: 30000,
     dedupingInterval: 15000
   });
 

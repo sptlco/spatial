@@ -5,7 +5,6 @@ using Spatial.Blockchain;
 using Spatial.Blockchain.Helpers;
 using Spatial.Cloud.Data.Scopes;
 using Spatial.Identity.Authorization;
-using System.Numerics;
 
 namespace Spatial.Cloud.API;
 

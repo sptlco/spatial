@@ -63,6 +63,24 @@ public partial class Scope
     }
 
     /// <summary>
+    /// Scopes related to metric data.
+    /// </summary>
+    public class Metrics
+    {
+        /// <summary>
+        /// Read metric data points.
+        /// </summary>
+        [Metadata("Read metric data points.")]
+        public const string Read = "metrics.read";
+
+        /// <summary>
+        /// Write metric data points.
+        /// </summary>
+        [Metadata("Write metric data points.")]
+        public const string Write = "metrics.write";
+    }
+
+    /// <summary>
     /// Scopes related to permissions.
     /// </summary>
     public class Permissions

@@ -491,7 +491,7 @@ export const Users = () => {
           </Button>
         </Card.Gutter>
       </Card.Header>
-      <Card.Content className={clsx("w-full flex flex-col relative gap-10!", { "mask-b-from-20% mask-b-to-80%": !users.data })}>
+      <Card.Content className={clsx("w-full flex flex-col relative xl:gap-10!", { "mask-b-from-20% mask-b-to-80%": !users.data })}>
         <Container className="px-10 flex flex-col xl:flex-row w-full items-start xl:items-center gap-5">
           <Form
             className="relative w-full max-w-sm flex items-center"

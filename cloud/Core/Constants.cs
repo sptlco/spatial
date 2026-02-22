@@ -136,7 +136,7 @@ internal class Constants
         /// </summary>
         /// <param name="coins">The coins whose data to get.</param>
         /// <returns>The Coin Gecko market data API.</returns>
-        public static string Markets(params string[] coins) => $"https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&ids={string.Join(",", coins)}";
+        public static string Markets(params string[] coins) => $"https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd{(coins.Length > 0 ? "&ids=" : "")}{string.Join(",", coins)}";
     }
 
     /// <summary>

@@ -152,7 +152,7 @@ public static class Resource<T> where T : Resource
             .Contains(_collection.Name))
         {
             var options = new CreateCollectionOptions {
-                ExpireAfter = _collection.TTL
+                ExpireAfter = _collection.TTL != Expiration.None ? TimeSpan.FromMilliseconds((long) _collection.TTL) : null
             };
 
             if (_collection.TimeSeries)

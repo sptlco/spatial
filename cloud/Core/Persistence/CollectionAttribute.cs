@@ -45,7 +45,7 @@ public class CollectionAttribute : Attribute
     /// <summary>
     /// The amount of time documents in the collection will live for.
     /// </summary>
-    public TimeSpan TTL { get; set; }
+    public Expiration TTL { get; set; } = Expiration.None;
 }
 
 

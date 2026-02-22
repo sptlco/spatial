@@ -11,7 +11,7 @@ import useSWR from "swr";
 
 import { PERIODS } from "./trades";
 
-import { Container, createElement, H2, Span } from "@sptlco/design";
+import { Container, createElement, H2, Icon, Span } from "@sptlco/design";
 
 export const Balance = createElement<typeof Container, { period: keyof typeof PERIODS }>((props, ref) => {
   const from = useMemo(() => {
@@ -54,9 +54,9 @@ export const Balance = createElement<typeof Container, { period: keyof typeof PE
         <Span className="flex items-center gap-4">
           <Span className="text-7xl font-bold">{now && formatCurrency(value(now))}</Span>
           {diff != 0 && (
-            <Span className={clsx("text-2xl", diff > 0 ? "text-green" : "text-red")}>
-              {diff > 0 ? "+" : "-"}
-              {(diff * 100).toFixed(2)}%
+            <Span className={clsx("inline-flex items-center text-2xl", diff > 0 ? "text-green" : "text-red")}>
+              {diff > 0 ? <Icon symbol="arrow_drop_up" size={40} /> : <Icon symbol="arrow_drop_down" size={40} />}
+              <Span>{(diff * 100).toFixed(2)}%</Span>
             </Span>
           )}
         </Span>

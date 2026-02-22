@@ -2,10 +2,8 @@
 
 using Microsoft.Extensions.Hosting;
 using Nethereum.Web3;
-using Polly;
-using Polly.Retry;
 using Spatial.Blockchain.Helpers;
-using Spatial.Extensions;
+using Spatial.Persistence;
 
 namespace Spatial.Blockchain;
 
@@ -15,8 +13,6 @@ namespace Spatial.Blockchain;
 public class Trader : BackgroundService
 {
     private readonly Ethereum _ethereum;
-    private readonly ResiliencePipeline _retry;
-    private CoinGecko.Coin _coin;
 
     /// <summary>
     /// Create a new <see cref="Trader"/>.
@@ -24,9 +20,6 @@ public class Trader : BackgroundService
     public Trader()
     {
         _ethereum = Ethereum.CreateClient();
-        _retry = new ResiliencePipelineBuilder()
-            .AddRetry(new RetryStrategyOptions())
-            .Build();
     }
 
     /// <summary>
@@ -41,39 +34,35 @@ public class Trader : BackgroundService
 
             try
             {
-                _coin = (await CoinGecko.GetMarketsAsync(["ethereum"]))[0];
+                // Start by fetching market data from CoinGecko.
+                // Query all the supported coins with price, market cap, volume and market related data.
 
-                // Take a snapshot of the current account balance.
+                var coins = await CoinGecko.GetMarketsAsync();
+                var balance = await _ethereum.GetBalanceAsync();
+
+                INFO("{@Coins}", coins);
+
+                // ...
+
+                // Take a snapshot of the current state.
                 // Use Polly to ensure success.
 
-                await _retry.Execute(Snapshot);
+                Resource<Metric>.Store(new Metric {
+                    Metadata = new Dictionary<string, string> { ["name"] = "ethereum" },
+                    Value = new Dictionary<string, decimal> {
+                        ["balance"] = Web3.Convert.FromWei(balance),
+                        ["price"] = 0
+                    }
+                });
             }
             catch (Exception e)
             {
-                WARN(e, "Trader failed to execute due to a transient error.");
+                WARN(e, "Failed to execute trade due to a transient error.");
             }
             finally
             {
-                await Task.Delay(next - DateTime.UtcNow, token);
+                await Task.Delay(TimeSpan.FromMilliseconds(Math.Max((next - DateTime.UtcNow).TotalMilliseconds, 10)), token);
             }
         }
-    }
-
-    private async Task Snapshot()
-    {
-        var wei = await _ethereum.GetBalanceAsync();
-        var eth = Web3.Convert.FromWei(wei);
-
-        var metric = new Metric { 
-            Metadata = new Dictionary<string, string> {
-                { "name", "ethereum" },
-            },
-            Value = new Dictionary<string, decimal> {
-                { "balance", eth },
-                { "price", _coin.Price }
-            }
-        };
-
-        metric.Store();
     }
 }

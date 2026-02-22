@@ -11,7 +11,8 @@ namespace Spatial;
     TimeSeries = true,
     TimeField = nameof(Timestamp),
     MetaField = nameof(Metadata),
-    Granularity = Granularity.Seconds)]
+    Granularity = Granularity.Seconds,
+    TTL = Expiration.Year)]
 public class Metric : Resource
 {
     /// <summary>

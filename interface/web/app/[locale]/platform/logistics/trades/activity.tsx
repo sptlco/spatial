@@ -18,19 +18,18 @@ export const Activity = createElement<typeof Container>((props, ref) => {
   const [search, setSearch] = useState("");
 
   const metrics: Metric[] = [
-    { name: "Order ID" },
+    { name: "Order" },
     { name: "Created" },
     { name: "Transaction" },
-    { name: "Trade ID" },
+    { name: "Trade" },
     { name: "Status" },
     { name: "Direction" },
     { name: "Pair" },
-    { name: "Amount" },
+    { name: "Volume" },
     { name: "Price" },
     { name: "Slippage" },
     { name: "Gas Fee" },
-    { name: "Gas Price" },
-    { name: "Error" }
+    { name: "Gas Price" }
   ];
 
   return (

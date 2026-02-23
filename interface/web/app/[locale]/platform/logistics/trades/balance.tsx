@@ -141,7 +141,7 @@ export const Balance = createElement<typeof Container>((props, ref) => {
                 <ToggleGroup.Item
                   key={i}
                   value={period[0]}
-                  className="px-5 py-2 uppercase font-extrabold text-hint rounded-lg data-[state=on]:bg-button data-[state=on]:text-foreground-primary"
+                  className="px-5 py-2 uppercase font-bold text-hint rounded-lg data-[state=on]:bg-button data-[state=on]:text-foreground-primary"
                 >
                   {period[1]}
                 </ToggleGroup.Item>
@@ -150,7 +150,7 @@ export const Balance = createElement<typeof Container>((props, ref) => {
           </Container>
 
           <Span className="flex items-center gap-4">
-            <Span className="text-7xl font-bold">
+            <Span className="text-7xl font-extrabold">
               {!now ? (
                 <Container className="flex items-center h-18">
                   <Span className="bg-background-surface rounded-full h-10 w-sm animate-pulse flex" />

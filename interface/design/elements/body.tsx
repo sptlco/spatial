@@ -7,5 +7,5 @@ import { createElement } from "..";
  * The main content of an HTML document.
  */
 export const Body = createElement<"body">((props, ref) => (
-  <body {...props} ref={ref} className={clsx("w-full min-h-screen group/body", props.className)} />
+  <body {...props} ref={ref} className={clsx("w-full min-h-screen overflow-hidden group/body", props.className)} />
 ));

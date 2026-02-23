@@ -120,9 +120,9 @@ export const Profits = createElement<typeof Container>((props, ref) => {
       ref={ref}
       className={clsx("flex flex-col justify-center items-center gap-16 rounded-4xl duration-500 animate-in fade-in zoom-in-95", props.className)}
     >
-      <Container className="flex flex-col gap-6">
-        <H2 className="text-2xl font-bold">Annual Profit / Loss</H2>
-        <Span className={clsx("text-5xl font-extrabold", total > 0 ? "text-green" : "text-red")}>{formatCurrency(total)}</Span>
+      <Container className="flex text-center flex-col gap-10">
+        <H2 className="text-2xl font-bold">Annual {total > 0 ? "Gain" : "Loss"}</H2>
+        <Span className={clsx("text-7xl font-extrabold", total > 0 ? "text-green" : "text-red")}>{formatCurrency(total)}</Span>
       </Container>
 
       <Container className="grid grid-rows-7 grid-flow-col gap-1">

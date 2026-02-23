@@ -173,6 +173,11 @@
   .ticker-track {
     animation: ticker-scroll 30s linear infinite;
   }
+
+  body {
+    overscroll-behavior: none;
+    touch-action: pan-y;
+  }
 }
 
 @utility fill {

@@ -15,29 +15,42 @@ export const ScrollArea = {
   /**
    * Contains all the parts of a scroll area.
    */
-  Root: createElement<typeof Primitive.Root, Primitive.ScrollAreaProps & { fade?: boolean; fadeClassName?: string }>(
-    ({ fade = false, ...props }, ref) => {
-      const [viewport, setViewport] = useState<HTMLElement | null>(null);
-      const { up, down } = useScrollFade(viewport);
-
-      return (
-        <ScrollAreaViewportContext.Provider value={setViewport}>
-          <Primitive.Root
-            {...props}
-            ref={ref}
-            data-slot="scroll-area"
-            style={
-              {
-                "--fade-top": `${up}%`,
-                "--fade-bottom": `${down}%`
-              } as React.CSSProperties
-            }
-            className={clsx("relative flex overflow-hidden", { "mask-t-from-(--fade-top) mask-b-from-(--fade-bottom)": fade }, props.className)}
-          />
-        </ScrollAreaViewportContext.Provider>
-      );
+  Root: createElement<
+    typeof Primitive.Root,
+    Primitive.ScrollAreaProps & {
+      fade?: boolean;
+      fadeOrientation?: "vertical" | "horizontal" | "both";
     }
-  ),
+  >(({ fade = false, fadeOrientation = "vertical", ...props }, ref) => {
+    const [viewport, setViewport] = useState<HTMLElement | null>(null);
+    const { top, bottom, left, right } = useScrollFade(viewport);
+
+    const mask =
+      fade &&
+      clsx({
+        "mask-t-from-(--fade-top) mask-b-from-(--fade-bottom)": fadeOrientation === "vertical" || fadeOrientation === "both",
+        "mask-l-from-(--fade-left) mask-r-from-(--fade-right)": fadeOrientation === "horizontal" || fadeOrientation === "both"
+      });
+
+    return (
+      <ScrollAreaViewportContext.Provider value={setViewport}>
+        <Primitive.Root
+          {...props}
+          ref={ref}
+          data-slot="scroll-area"
+          style={
+            {
+              "--fade-top": `${top}%`,
+              "--fade-bottom": `${bottom}%`,
+              "--fade-left": `${left}%`,
+              "--fade-right": `${right}%`
+            } as React.CSSProperties
+          }
+          className={clsx("relative flex overflow-hidden", mask, props.className)}
+        />
+      </ScrollAreaViewportContext.Provider>
+    );
+  }),
 
   /**
    * The viewport area of the scroll area.
@@ -114,14 +127,14 @@ const ScrollAreaViewportContext = createContext<((el: HTMLElement | null) => voi
 
 function useScrollFade(viewport?: HTMLElement | null) {
   const [state, setState] = useState({
-    up: 0,
-    down: 0
+    top: 100,
+    bottom: 100,
+    left: 100,
+    right: 100
   });
 
   useEffect(() => {
-    if (!viewport) {
-      return;
-    }
+    if (!viewport) return;
 
     const FADE_DISTANCE = 40;
     const FADE_POSITION = 10;
@@ -129,12 +142,17 @@ function useScrollFade(viewport?: HTMLElement | null) {
     const clamp = (v: number) => Math.max(0, Math.min(FADE_POSITION, v));
 
     const update = () => {
-      const { scrollTop, scrollHeight, clientHeight } = viewport;
+      const { scrollTop, scrollLeft, scrollHeight, scrollWidth, clientHeight, clientWidth } = viewport;
 
       const top = 100 - clamp((scrollTop / FADE_DISTANCE) * FADE_POSITION);
+
       const bottom = 100 - clamp(((scrollHeight - clientHeight - scrollTop) / FADE_DISTANCE) * FADE_POSITION);
 
-      setState({ up: top, down: bottom });
+      const left = 100 - clamp((scrollLeft / FADE_DISTANCE) * FADE_POSITION);
+
+      const right = 100 - clamp(((scrollWidth - clientWidth - scrollLeft) / FADE_DISTANCE) * FADE_POSITION);
+
+      setState({ top, bottom, left, right });
     };
 
     update();

@@ -5,21 +5,23 @@
 import { Spatial } from "@sptlco/client";
 import useSWR from "swr";
 
-import { createElement, Field, H2, Icon, Span } from "@sptlco/design";
+import { Container, createElement, Field, H2, Span } from "@sptlco/design";
 
 export const Address = createElement<typeof Span>(() => {
   const response = useSWR("platform/logistics/trades/address", Spatial.address);
   const address = response.data && !response.data.error ? response.data.data : undefined;
 
   return (
-    <Field
-      type="text"
-      readOnly
-      inset={false}
-      label={<H2 className="inline-flex text-2xl font-extrabold">Address</H2>}
-      className="bg-transparent"
-      containerClassName="ml-10 py-10 gap-10 w-full flex-row items-center max-w-xl"
-      value={address}
-    />
+    <Container className="flex w-full max-w-screen px-10">
+      <Field
+        type="text"
+        readOnly
+        inset={false}
+        label={<H2 className="inline-flex text-2xl font-extrabold">Address</H2>}
+        className="text-sm xl:text-base bg-transparent px-0! min-w-0"
+        containerClassName="py-5 xl:py-10 xl:gap-10 xl:flex-row xl:items-center max-w-sm min-w-0"
+        value={address}
+      />
+    </Container>
   );
 });

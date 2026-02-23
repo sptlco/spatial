@@ -121,12 +121,16 @@ export const Balance = createElement<typeof Container>((props, ref) => {
   }, [data]);
 
   return (
-    <Container {...props} ref={ref} className={clsx("flex flex-col gap-10", props.className)}>
+    <Container {...props} ref={ref} className={clsx("flex flex-col gap-10 w-screen xl:w-auto", props.className)}>
       <Container className="flex flex-col gap-10">
-        <Container className="flex flex-col pl-10 gap-6">
-          <Container className="flex items-start">
+        <Container className="flex flex-col px-10 xl:pr-0 gap-6">
+          <Container className="flex flex-col sm:flex-row gap-5 items-start">
             <Container className="flex grow items-center justify-start gap-4">
               <H2 className="inline-flex text-2xl font-extrabold">Balance</H2>
+              <Span className={clsx("inline-flex items-center gap-1 text-sm text-hint", !hovered && "text-yellow")}>
+                <Icon symbol={point ? (isForecastHover ? "online_prediction" : "history") : "bolt"} className="font-light" size={20} fill />
+                <Span className="font-bold">{formatDate(displayDate, period, hovered != null)}</Span>
+              </Span>
             </Container>
 
             <ToggleGroup.Root
@@ -150,7 +154,7 @@ export const Balance = createElement<typeof Container>((props, ref) => {
           </Container>
 
           <Span className="flex items-center gap-4">
-            <Span className="text-9xl font-extrabold truncate">
+            <Span className="text-4xl xl:text-9xl font-extrabold truncate">
               {!now ? (
                 <Container className="flex items-center h-32">
                   <Span className="bg-background-surface rounded-full h-10 w-sm animate-pulse flex" />
@@ -166,14 +170,9 @@ export const Balance = createElement<typeof Container>((props, ref) => {
               </Span>
             )}
           </Span>
-          <Span className={clsx("inline-flex items-center gap-1 text-sm text-hint", !hovered && "text-yellow")}>
-            <Icon symbol={point ? (isForecastHover ? "online_prediction" : "history") : "bolt"} className="font-light" size={20} fill />
-            <Span className="font-bold">{formatDate(displayDate, period, hovered != null)}</Span>
-          </Span>
         </Container>
-        <ResponsiveContainer className="bg-grid mask-l-from-80% mask-r-from-80%" height={310}>
+        <ResponsiveContainer className="bg-grid mask-l-from-80% mask-r-from-80%" width="100%" aspect={2.5} maxHeight={256}>
           <Container className="relative h-full w-full">
-            <Container className="absolute inset-0 pointer-events-none size-full" />
             <LineChart
               accessibilityLayer
               data={combinedData}

@@ -28,9 +28,9 @@ export const Objectives = createElement<typeof Container>((props, ref) => {
   ];
 
   return (
-    <Container {...props} ref={ref} className={clsx("flex flex-col gap-6", props.className)}>
+    <Container {...props} ref={ref} className={clsx("flex w-screen xl:w-auto flex-col gap-6", props.className)}>
       <H2 className="px-10 text-2xl font-bold">Objectives</H2>
-      <Container className="flex w-full rounded-4xl bg-background-subtle">
+      <Container className="flex flex-wrap w-full xl:rounded-4xl xl:bg-background-surface">
         {objectives.map((objective, i) => (
           <Container key={i} className="grow flex flex-col gap-4 p-10 whitespace-nowrap">
             <Span className="text-sm text-foreground-quaternary font-semibold flex items-center gap-2">

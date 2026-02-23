@@ -6,7 +6,7 @@ import { Spatial } from "@sptlco/client";
 import { clsx } from "clsx";
 import useSWR from "swr";
 
-import { Container, createElement, H2, Span, Spinner, Tooltip } from "@sptlco/design";
+import { Container, createElement, H2, ScrollArea, Span, Spinner, Tooltip } from "@sptlco/design";
 import { Metric } from "@sptlco/data";
 
 type Bucket = {
@@ -110,28 +110,57 @@ export const Profits = createElement<typeof Container>((props, ref) => {
     }
   }
 
+  const days = weeks.flat();
+
   return (
     <Container
       {...props}
       ref={ref}
       className={clsx(
-        "flex flex-col justify-between items-start gap-16 rounded-[56px] p-10 bg-background-subtle duration-500 animate-in fade-in zoom-in-95",
+        "flex flex-col justify-between items-start gap-10 w-screen xl:w-auto xl:rounded-[56px] p-10 bg-background-subtle duration-500 animate-in fade-in zoom-in-95",
         props.className
       )}
     >
-      <Container className="flex flex-col gap-10">
-        <H2 className="text-2xl font-bold">Annual Profit / Loss</H2>
-        <Span className={clsx("text-9xl font-extrabold truncate", total > 0 ? "text-green" : "text-red")}>{formatCurrency(total)}</Span>
+      <Container className="flex flex-col w-full gap-10">
+        <H2 className="text-2xl inline-flex justify-between items-center gap-2.5 font-bold">
+          <Span>Annual Profit / Loss</Span>
+          <Span className="text-hint font-normal">{fiscalStartYear}</Span>
+        </H2>
+        <Span className={clsx("text-4xl xl:text-9xl font-extrabold truncate", total > 0 ? "text-green" : "text-red")}>{formatCurrency(total)}</Span>
       </Container>
 
-      <Container className="grid grid-rows-7 grid-flow-col gap-1">
+      <Container className="w-full grid grid-cols-21 gap-1 xl:hidden">
+        {days.map((day, i) => (
+          <Tooltip.Root key={i} delayDuration={0}>
+            <Tooltip.Trigger>
+              <Container
+                suppressHydrationWarning
+                className={clsx(
+                  "rounded-xs aspect-square w-full transition-colors duration-200",
+                  day.date ? getColor(day.value) : "bg-background-surface"
+                )}
+              />
+            </Tooltip.Trigger>
+            {day.date && (
+              <Tooltip.Content className="flex items-center gap-1">
+                <Span>{day.date.toDateString()}</Span>
+                <Span className={clsx("flex items-center", day.value > 0 ? "text-green" : day.value < 0 ? "text-red" : "text-hint")}>
+                  <Span>{formatCurrency(day.value)}</Span>
+                </Span>
+              </Tooltip.Content>
+            )}
+          </Tooltip.Root>
+        ))}
+      </Container>
+
+      <Container className="hidden xl:grid grid-rows-7 grid-flow-col gap-1">
         {weeks.map((days, column) =>
           days.map((day, row) => (
             <Tooltip.Root key={`${column}-${row}`} delayDuration={0} disableHoverableContent>
               <Tooltip.Trigger>
                 <Container
                   suppressHydrationWarning
-                  className={clsx("rounded-xs size-2.5 transition-colors duration-200", day.date ? getColor(day.value) : "bg-background-subtle")}
+                  className={clsx("rounded-xs size-2.5 transition-colors duration-200", day.date ? getColor(day.value) : "bg-background-surface")}
                 />
               </Tooltip.Trigger>
               {day.date && (

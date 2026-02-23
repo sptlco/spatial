@@ -1,6 +1,7 @@
 // Copyright © Spatial Corporation. All rights reserved.
 
 using Spatial.Persistence;
+using System.Text.Json;
 
 namespace Spatial;
 
@@ -24,4 +25,11 @@ public class Metric : Resource
     /// The time the metric's value occurred.
     /// </summary>
     public DateTime Timestamp { get; set; } = DateTime.UtcNow;
+
+    public static Metric Write(string name, object? value, object? metadata = null)
+    {
+        return Resource<Metric>.Store(new Metric {
+            Value = JsonSerializer.Deserialize<Dictionary<string, decimal>>(JsonSerializer.Serialize(value))!
+        });
+    }
 }

@@ -22,13 +22,13 @@ export const Trades = createElement<typeof Card.Root>((props, ref) => {
       </Container>
       <Card.Header className="px-10">
         <Card.Title className="col-span-full text-5xl xl:text-9xl font-extrabold leading-snug!">Trader</Card.Title>
-        <Card.Description className="xl:text-xl font-light">Automated trade analysis and execution.</Card.Description>
+        <Card.Description className="xl:text-xl font-light">Automated Ethereum analysis and trading.</Card.Description>
       </Card.Header>
       <Card.Content className="flex flex-col gap-10">
         <Address />
-        <Container className="flex w-full gap-10">
-          <Balance className="grow" />
-          <Profits />
+        <Container className="flex flex-col gap-10 w-full xl:flex-row">
+          <Balance className="w-full xl:grow" />
+          <Profits className="w-full xl:w-auto" />
         </Container>
         <Objectives />
         <Activity />

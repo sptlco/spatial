@@ -61,9 +61,11 @@ public static class Resource<T> where T : Resource
     /// Store a <see cref="Resource"/> of type <typeparamref name="T"/>.
     /// </summary>
     /// <param name="record">The <see cref="Resource"/> to store.</param>
-    public static void Store(in T record)
+    public static T Store(in T record)
     {
         GetCollection().InsertOne(record);
+
+        return record;
     }
 
     /// <summary>

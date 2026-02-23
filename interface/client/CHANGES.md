@@ -1,5 +1,14 @@
 # Changelog
 
+## [1.9.0](https://github.com/sptlco/spatial/compare/spatial-interface-client-1.8.0...spatial-interface-client-1.9.0) (2026-02-23)
+
+
+### Features
+
+* Added a ticker ([#137](https://github.com/sptlco/spatial/issues/137)) ([fbaae44](https://github.com/sptlco/spatial/commit/fbaae442c89c6e6a5c127d57c48e0ef074762faf))
+* Added profit heatmap ([#137](https://github.com/sptlco/spatial/issues/137)) ([77cc914](https://github.com/sptlco/spatial/commit/77cc9143f7f71992285b4140a883d5b73ee628d8))
+* Added time-series metrics ([#137](https://github.com/sptlco/spatial/issues/137)) ([5e45565](https://github.com/sptlco/spatial/commit/5e455651d48ba444886493b975220f50a823c59a))
+
 ## [1.8.0](https://github.com/sptlco/spatial/compare/spatial-interface-client-1.7.0...spatial-interface-client-1.8.0) (2026-02-16)
 
 

@@ -1,5 +1,23 @@
 # Changelog
 
+## [1.22.0](https://github.com/sptlco/spatial/compare/spatial-interface-web-1.21.0...spatial-interface-web-1.22.0) (2026-02-23)
+
+
+### Features
+
+* Added a logistics page ([#137](https://github.com/sptlco/spatial/issues/137)) ([620cd4e](https://github.com/sptlco/spatial/commit/620cd4edf15ffd2d8d83f8420080fc1bbd194d56))
+* Added a ticker ([#137](https://github.com/sptlco/spatial/issues/137)) ([fbaae44](https://github.com/sptlco/spatial/commit/fbaae442c89c6e6a5c127d57c48e0ef074762faf))
+* Added a trader UX ([#137](https://github.com/sptlco/spatial/issues/137)) ([8d3062a](https://github.com/sptlco/spatial/commit/8d3062aa741e8e7fae101e34e0d83b61034a1fe1))
+* Added forecasting ([#137](https://github.com/sptlco/spatial/issues/137)) ([978ada3](https://github.com/sptlco/spatial/commit/978ada315b7c32d6e2e052ab2a66dfaba32d55c9))
+* Added profit heatmap ([#137](https://github.com/sptlco/spatial/issues/137)) ([77cc914](https://github.com/sptlco/spatial/commit/77cc9143f7f71992285b4140a883d5b73ee628d8))
+* Added time-series metrics ([#137](https://github.com/sptlco/spatial/issues/137)) ([5e45565](https://github.com/sptlco/spatial/commit/5e455651d48ba444886493b975220f50a823c59a))
+* Updated controller API ([#137](https://github.com/sptlco/spatial/issues/137)) ([568e076](https://github.com/sptlco/spatial/commit/568e076e89648b4b6c93f9c83de5bcc97dc78c91))
+
+
+### Bug Fixes
+
+* Use UTC time in heatmap ([#137](https://github.com/sptlco/spatial/issues/137)) ([c6b5977](https://github.com/sptlco/spatial/commit/c6b5977a0576436e4545b37c6624d9092f7d48b7))
+
 ## [1.21.0](https://github.com/sptlco/spatial/compare/spatial-interface-web-1.20.0...spatial-interface-web-1.21.0) (2026-02-16)
 
 

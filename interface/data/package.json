@@ -1,6 +1,6 @@
 {
   "name": "@sptlco/data",
-  "version": "1.6.1",
+  "version": "1.7.0",
   "description": "Data types and contract definitions.",
   "main": "index.ts",
   "author": "Spatial Corporation",

@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.7.0](https://github.com/sptlco/spatial/compare/spatial-interface-data-1.6.1...spatial-interface-data-1.7.0) (2026-02-23)
+
+
+### Features
+
+* Added a ticker ([#137](https://github.com/sptlco/spatial/issues/137)) ([fbaae44](https://github.com/sptlco/spatial/commit/fbaae442c89c6e6a5c127d57c48e0ef074762faf))
+* Added time-series metrics ([#137](https://github.com/sptlco/spatial/issues/137)) ([5e45565](https://github.com/sptlco/spatial/commit/5e455651d48ba444886493b975220f50a823c59a))
+
 ## [1.6.1](https://github.com/sptlco/spatial/compare/spatial-interface-data-1.6.0...spatial-interface-data-1.6.1) (2026-02-16)
 
 

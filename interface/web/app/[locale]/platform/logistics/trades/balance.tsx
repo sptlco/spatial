@@ -167,8 +167,8 @@ export const Balance = createElement<typeof Container>((props, ref) => {
             )}
           </Span>
           <Span className="inline-flex items-center gap-1 text-sm text-hint">
-            <Icon symbol={point ? (isForecastHover ? "update" : "history") : "bolt"} size={20} fill />
-            <Span>{formatDate(displayDate, period, hovered != null)}</Span>
+            <Icon symbol={point ? (isForecastHover ? "online_prediction" : "history") : "bolt"} className="font-light" size={20} fill />
+            <Span className="font-bold">{formatDate(displayDate, period, hovered != null)}</Span>
           </Span>
         </Container>
         <ResponsiveContainer className="bg-grid mask-l-from-80% mask-r-from-80%" height={310}>

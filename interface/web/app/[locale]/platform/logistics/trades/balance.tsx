@@ -150,9 +150,9 @@ export const Balance = createElement<typeof Container>((props, ref) => {
           </Container>
 
           <Span className="flex items-center gap-4">
-            <Span className="text-7xl font-extrabold">
+            <Span className="text-9xl font-extrabold">
               {!now ? (
-                <Container className="flex items-center h-18">
+                <Container className="flex items-center h-32">
                   <Span className="bg-background-surface rounded-full h-10 w-sm animate-pulse flex" />
                 </Container>
               ) : (

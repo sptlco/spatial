@@ -255,7 +255,7 @@ export default function Layout(props: { children: ReactNode }) {
         >
           <Container className="flex h-full gap-0 xl:gap-10">
             <Container className="flex flex-col h-full gap-10">
-              <Link href={BASE_URL} className="relative flex items-center justify-center size-10 xl:w-16!">
+              <Link href="/" className="relative flex items-center justify-center size-10 xl:w-16!">
                 <Logo mode="symbol" className="w-10 fill-foreground-primary" />
               </Link>
               <UL className="hidden xl:flex grow flex-col items-center justify-center gap-6">

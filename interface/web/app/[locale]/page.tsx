@@ -2,7 +2,7 @@
 
 "use client";
 
-import { Logo, Main } from "@sptlco/design";
+import { Button, Container, Icon, Link, Logo, Main, Span } from "@sptlco/design";
 
 /**
  * Create a new landing page component.
@@ -10,8 +10,17 @@ import { Logo, Main } from "@sptlco/design";
  */
 export default function Page() {
   return (
-    <Main className="flex flex-col w-full h-screen items-center justify-center gap-10">
-      <Logo mode="wordmark" className="h-6 md:h-12 fill-white" />
+    <Main className="grid grid-cols-[1fr_auto_1fr] grid-rows-[auto_1fr_auto] w-full h-screen gap-10">
+      <Container className="col-start-3 row-start-1 place-self-end p-10"></Container>
+      <Container className="col-span-full place-self-center flex flex-col gap-10 items-center justify-center">
+        <Logo mode="wordmark" className="h-9 md:h-12 fill-white" />
+        <Link href="/platform" className="text-foreground-primary!">
+          <Button intent="ghost">
+            <Span>Platform</Span>
+            <Icon symbol="arrow_right_alt" />
+          </Button>
+        </Link>
+      </Container>
     </Main>
   );
 }

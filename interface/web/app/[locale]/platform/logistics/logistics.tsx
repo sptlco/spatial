@@ -5,7 +5,6 @@
 import { usePlatform } from "@/utilities";
 import { Balance } from "./balance";
 import { Metrics } from "./metrics";
-import { Ticker } from "./ticker";
 
 import { Card, createElement } from "@sptlco/design";
 

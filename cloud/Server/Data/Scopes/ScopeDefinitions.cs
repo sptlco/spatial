@@ -51,18 +51,6 @@ public partial class Scope
     }
 
     /// <summary>
-    /// Scopes related to the market.
-    /// </summary>
-    public class Market
-    {
-        /// <summary>
-        /// Fetch the current market data.
-        /// </summary>
-        [Metadata("Fetch the current market data.")]
-        public const string Fetch = "market.fetch";
-    }
-
-    /// <summary>
     /// Scopes related to metric data.
     /// </summary>
     public class Metrics

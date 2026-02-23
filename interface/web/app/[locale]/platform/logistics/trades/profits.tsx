@@ -2,53 +2,150 @@
 
 "use client";
 
+import { Spatial } from "@sptlco/client";
 import { clsx } from "clsx";
+import useSWR from "swr";
 
-import { Container, createElement, H2, Span, Tooltip } from "@sptlco/design";
+import { Container, createElement, H2, Icon, Span, Spinner, Tooltip } from "@sptlco/design";
+import { Metric } from "@sptlco/data";
+
+type Bucket = {
+  date: Date | null; // null = outside year padding
+  value: number;
+};
 
 export const Profits = createElement<typeof Container>((props, ref) => {
-  const data = Array.from({ length: 90 }).map((_, i) => ({ id: i, value: (Math.random() - 0.5) * 500 }));
-  const max = Math.max(...data.map((d) => Math.abs(d.value)));
+  const now = new Date();
+  const currentYear = now.getFullYear();
+  const currentMonth = now.getMonth();
+
+  const fiscalStartYear = currentMonth < 6 ? currentYear - 1 : currentYear;
+
+  const startOfYear = new Date(fiscalStartYear, 6, 1);
+  const endOfYear = new Date(fiscalStartYear + 1, 5, 30);
+
+  const history = useSWR(["profits", fiscalStartYear], () => Spatial.metrics.read("ethereum", startOfYear, undefined, undefined, "1d"), {
+    refreshInterval: 10000,
+    dedupingInterval: 15000
+  });
+
+  if (!history.data || history.data.error) {
+    return (
+      <Container
+        {...props}
+        key="spinner"
+        ref={ref}
+        className={clsx("flex flex-col items-center justify-center basis-1/4 gap-8 rounded-4xl", props.className)}
+      >
+        <Spinner className="size-5" />
+      </Container>
+    );
+  }
+
+  const metrics: Metric[] = history.data.data ?? [];
+  const map = new Map<string, number>();
+
+  const equity = (m: Metric) => m.value.balance * m.value.price;
+
+  metrics.forEach((m, i) => {
+    if (i === 0) {
+      return;
+    }
+
+    const prev = metrics[i - 1];
+    const key = getKey(new Date(m.timestamp));
+    const delta = equity(m) - equity(prev);
+
+    map.set(key, delta);
+  });
+
+  const buckets: Bucket[] = [];
+  const gridStart = new Date(startOfYear);
+
+  let cursor = new Date(gridStart);
+
+  while (cursor <= endOfYear) {
+    buckets.push({
+      date: new Date(cursor),
+      value: map.get(getKey(cursor)) ?? 0
+    });
+
+    cursor.setDate(cursor.getDate() + 1);
+  }
+
+  const total = metrics.length >= 2 ? equity(metrics[metrics.length - 1]) - equity(metrics[0]) : 0;
+  const max = Math.max(...buckets.map((d) => Math.abs(d.value)), 1);
 
   function getColor(value: number) {
     if (value === 0) {
-      return "bg-background-subtle";
+      return "bg-background-surface";
     }
 
-    return value > 0 ? "bg-green" : "bg-red";
+    const intensity = Math.abs(value) / max;
+
+    if (value > 0) {
+      if (intensity > 0.75) return "bg-green";
+      if (intensity > 0.5) return "bg-green/60";
+      if (intensity > 0.25) return "bg-green/30";
+      return "bg-green/10";
+    } else {
+      if (intensity > 0.75) return "bg-red";
+      if (intensity > 0.5) return "bg-red/60";
+      if (intensity > 0.25) return "bg-red/30";
+      return "bg-red/10";
+    }
   }
 
   return (
-    <Container {...props} ref={ref} className={clsx("flex flex-col p-10 gap-8 rounded-4xl bg-background-surface", props.className)}>
+    <Container
+      {...props}
+      ref={ref}
+      className={clsx(
+        "flex flex-col justify-center items-center gap-16 rounded-4xl duration-500 animate-in fade-in slide-in-from-right-10",
+        props.className
+      )}
+    >
       <Container className="flex flex-col gap-6">
-        <H2 className="text-2xl font-bold">Profit / Loss</H2>
-        <Span className="text-5xl font-bold">{formatCurrency(7216.47)}</Span>
+        <H2 className="text-2xl font-bold">Annual Profit / Loss</H2>
+        <Span className="text-5xl font-extrabold">{formatCurrency(total)}</Span>
       </Container>
-      <Container className="grid grid-flow-col auto-cols-[32px] grid-rows-7 gap-1.5 overflow-hidden">
-        {data.map((day) => (
-          <Tooltip.Root key={day.id} delayDuration={0}>
-            <Tooltip.Trigger>
-              <Container
-                suppressHydrationWarning
-                className={clsx("cursor-pointer w-8 h-8 rounded-lg transition-colors duration-200", getColor(day.value))}
-                style={{ opacity: 0.2 + Math.min(Math.abs(day.value) / max, 1) * 0.8 }}
-              />
-            </Tooltip.Trigger>
-            <Tooltip.Content className="flex items-center gap-4">
-              <Span className="text-hint">{day.id}</Span>
-              <Span>{formatCurrency(day.value)}</Span>
-            </Tooltip.Content>
-          </Tooltip.Root>
-        ))}
+
+      <Container className="grid grid-rows-7 grid-flow-col gap-1">
+        {buckets.map((day, i) => {
+          if (!day.date) {
+            return <Container key={i} style={{ width: 12, height: 12 }} />;
+          }
+
+          return (
+            <Tooltip.Root key={i} delayDuration={0} disableHoverableContent>
+              <Tooltip.Trigger>
+                <Container suppressHydrationWarning className={clsx("rounded-xs size-2.5 transition-colors duration-200", getColor(day.value))} />
+              </Tooltip.Trigger>
+              <Tooltip.Content className="flex items-center gap-1">
+                <Span>{day.date.toDateString()}</Span>
+                <Span className={clsx("flex items-center", day.value > 0 ? "text-green" : day.value < 0 ? "text-red" : "text-hint")}>
+                  {day.value != 0 && <Icon symbol={day.value > 0 ? "arrow_drop_up" : "arrow_drop_down"} />}
+                  <Span>{formatCurrency(day.value)}</Span>
+                </Span>
+              </Tooltip.Content>
+            </Tooltip.Root>
+          );
+        })}
       </Container>
     </Container>
   );
 });
 
+// ======================================================
+// HELPERS
+// ======================================================
+
+function getKey(date: Date) {
+  return date.toISOString().slice(0, 10);
+}
+
 function formatCurrency(value?: number) {
-  if (value == null) {
-    return "-";
-  }
+  if (value == null) return "-";
 
   return new Intl.NumberFormat("en-US", {
     style: "currency",

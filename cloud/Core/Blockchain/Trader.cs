@@ -39,8 +39,7 @@ public class Trader : BackgroundService
 
                 var coins = await CoinGecko.GetMarketsAsync();
                 var balance = await _ethereum.GetBalanceAsync();
-
-                INFO("{@Coins}", coins);
+                var ethereum = coins.First(coin => coin.Id.Equals("ethereum"));
 
                 // ...
 
@@ -51,7 +50,7 @@ public class Trader : BackgroundService
                     Metadata = new Dictionary<string, string> { ["name"] = "ethereum" },
                     Value = new Dictionary<string, decimal> {
                         ["balance"] = Web3.Convert.FromWei(balance),
-                        ["price"] = 0
+                        ["price"] = ethereum.Price
                     }
                 });
             }

@@ -12,7 +12,7 @@ export class MetricController extends Controller {
    * @param limit Optional maximum number of records.
    * @returns Matching data points.
    */
-  public read = (name: string, from?: Date, to?: Date, limit?: number) => {
+  public read = (name: string, from?: Date, to?: Date, limit?: number, resolution?: string) => {
     const params = new URLSearchParams();
 
     if (from) {
@@ -25,6 +25,10 @@ export class MetricController extends Controller {
 
     if (limit != null) {
       params.append("limit", limit.toString());
+    }
+
+    if (resolution) {
+      params.append("resolution", resolution);
     }
 
     const query = params.toString();

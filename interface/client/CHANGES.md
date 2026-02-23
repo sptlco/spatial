@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.10.0](https://github.com/sptlco/spatial/compare/spatial-interface-client-1.9.0...spatial-interface-client-1.10.0) (2026-02-23)
+
+
+### Features
+
+* Added an address field ([#137](https://github.com/sptlco/spatial/issues/137)) ([bfc470d](https://github.com/sptlco/spatial/commit/bfc470d7f541e580825526d6ecadc99040699c17))
+
 ## [1.9.0](https://github.com/sptlco/spatial/compare/spatial-interface-client-1.8.0...spatial-interface-client-1.9.0) (2026-02-23)
 
 

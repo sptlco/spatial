@@ -420,9 +420,6 @@ public class Application
 
         builder.Services.AddSingleton<IAuthorizationHandler, PermissionHandler>();
 
-        builder.Services
-            .AddHostedService<Blockchain.Trader>();
-
         var application = builder.Build();
 
         application

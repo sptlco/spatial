@@ -6,11 +6,11 @@ import { Spatial } from "@sptlco/client";
 import { clsx } from "clsx";
 import useSWR from "swr";
 
-import { Container, createElement, H2, Icon, Span, Spinner, Tooltip } from "@sptlco/design";
+import { Container, createElement, H2, Span, Spinner, Tooltip } from "@sptlco/design";
 import { Metric } from "@sptlco/data";
 
 type Bucket = {
-  date: Date | null; // null = outside year padding
+  date: Date | null;
   value: number;
 };
 
@@ -21,8 +21,8 @@ export const Profits = createElement<typeof Container>((props, ref) => {
 
   const fiscalStartYear = currentMonth < 6 ? currentYear - 1 : currentYear;
 
-  const startOfYear = new Date(fiscalStartYear, 6, 1);
-  const endOfYear = new Date(fiscalStartYear + 1, 5, 30);
+  const startOfYear = new Date(Date.UTC(fiscalStartYear, 6, 1));
+  const endOfYear = new Date(Date.UTC(fiscalStartYear + 1, 5, 30));
 
   const history = useSWR(["profits", fiscalStartYear], () => Spatial.metrics.read("ethereum", startOfYear, undefined, undefined, "1d"), {
     refreshInterval: 10000,
@@ -60,39 +60,35 @@ export const Profits = createElement<typeof Container>((props, ref) => {
     map.set(key, delta);
   });
 
-  const buckets: Bucket[] = [];
+  const weeks: Bucket[][] = [];
 
-  // 0 = Monday, 6 = Sunday
   const weekday = (date: Date) => {
-    const d = date.getDay();
-    return d === 0 ? 6 : d - 1;
+    const day = date.getDay();
+    return day === 0 ? 6 : day - 1;
   };
 
-  const weeks: Bucket[][] = [];
   let week: Bucket[] = Array(7).fill({ date: null, value: 0 });
-
   let cursor = new Date(startOfYear);
 
   while (cursor <= endOfYear) {
-    const dayIndex = weekday(cursor); // 0 = Monday, 6 = Sunday
-    week[dayIndex] = { date: new Date(cursor), value: map.get(getKey(cursor)) ?? 0 };
+    const day = weekday(cursor);
 
-    // If Sunday, push the week and start new
-    if (dayIndex === 6) {
+    week[day] = { date: new Date(cursor), value: map.get(getKey(cursor)) ?? 0 };
+
+    if (day === 6) {
       weeks.push(week);
       week = Array(7).fill({ date: null, value: 0 });
     }
 
-    cursor.setDate(cursor.getDate() + 1);
+    cursor.setUTCDate(cursor.getUTCDate() + 1);
   }
 
-  // Push last partial week
   if (week.some((d) => d.date !== null)) {
     weeks.push(week);
   }
 
   const total = metrics.length >= 2 ? equity(metrics[metrics.length - 1]) - equity(metrics[0]) : 0;
-  const max = Math.max(...buckets.map((d) => Math.abs(d.value)), 1);
+  const max = Math.max(...weeks.flat().map((d) => Math.abs(d.value)), 1);
 
   function getColor(value: number) {
     if (value === 0) {
@@ -121,14 +117,14 @@ export const Profits = createElement<typeof Container>((props, ref) => {
       className={clsx("flex flex-col justify-center items-center gap-16 rounded-4xl duration-500 animate-in fade-in zoom-in-95", props.className)}
     >
       <Container className="flex text-center flex-col gap-10">
-        <H2 className="text-2xl font-bold">Annual {total > 0 ? "Gain" : "Loss"}</H2>
+        <H2 className="text-2xl font-bold">Annual {total > 0 ? "Profit" : "Loss"}</H2>
         <Span className={clsx("text-7xl font-extrabold", total > 0 ? "text-green" : "text-red")}>{formatCurrency(total)}</Span>
       </Container>
 
       <Container className="grid grid-rows-7 grid-flow-col gap-1">
-        {weeks.map((week, colIndex) =>
-          week.map((day, rowIndex) => (
-            <Tooltip.Root key={`${colIndex}-${rowIndex}`} delayDuration={0} disableHoverableContent>
+        {weeks.map((days, column) =>
+          days.map((day, row) => (
+            <Tooltip.Root key={`${column}-${row}`} delayDuration={0} disableHoverableContent>
               <Tooltip.Trigger>
                 <Container
                   suppressHydrationWarning
@@ -151,19 +147,18 @@ export const Profits = createElement<typeof Container>((props, ref) => {
   );
 });
 
-// ======================================================
-// HELPERS
-// ======================================================
-
 function getKey(date: Date) {
-  const year = date.getFullYear();
-  const month = String(date.getMonth() + 1).padStart(2, "0"); // getMonth() is 0-based
-  const day = String(date.getDate()).padStart(2, "0");
+  const year = date.getUTCFullYear();
+  const month = String(date.getUTCMonth() + 1).padStart(2, "0");
+  const day = String(date.getUTCDate()).padStart(2, "0");
+
   return `${year}-${month}-${day}`;
 }
 
 function formatCurrency(value?: number) {
-  if (value == null) return "-";
+  if (value == null) {
+    return "-";
+  }
 
   return new Intl.NumberFormat("en-US", {
     style: "currency",

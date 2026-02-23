@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.23.0](https://github.com/sptlco/spatial/compare/spatial-interface-web-1.22.0...spatial-interface-web-1.23.0) (2026-02-23)
+
+
+### Features
+
+* Added an address field ([#137](https://github.com/sptlco/spatial/issues/137)) ([bfc470d](https://github.com/sptlco/spatial/commit/bfc470d7f541e580825526d6ecadc99040699c17))
+* Added mobile display ([#137](https://github.com/sptlco/spatial/issues/137)) ([68f250a](https://github.com/sptlco/spatial/commit/68f250aeff90cb3d0be780789fd9de02a42c0f5c))
+
 ## [1.22.0](https://github.com/sptlco/spatial/compare/spatial-interface-web-1.21.0...spatial-interface-web-1.22.0) (2026-02-23)
 
 

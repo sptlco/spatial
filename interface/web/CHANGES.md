@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.24.0](https://github.com/sptlco/spatial/compare/spatial-interface-web-1.23.0...spatial-interface-web-1.24.0) (2026-02-23)
+
+
+### Features
+
+* Added a platform button to the landing page ([#137](https://github.com/sptlco/spatial/issues/137)) ([558938d](https://github.com/sptlco/spatial/commit/558938d296c24b298c895e253926385543389e37))
+
+
+### Bug Fixes
+
+* Redirected the navigation logo ([#137](https://github.com/sptlco/spatial/issues/137)) ([b0ccba4](https://github.com/sptlco/spatial/commit/b0ccba47c84dfd25109c8b14eecb64cc63ae118f))
+
 ## [1.23.0](https://github.com/sptlco/spatial/compare/spatial-interface-web-1.22.0...spatial-interface-web-1.23.0) (2026-02-23)
 
 

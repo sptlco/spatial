@@ -53,24 +53,42 @@ export const Profits = createElement<typeof Container>((props, ref) => {
     }
 
     const prev = metrics[i - 1];
-    const key = getKey(new Date(m.timestamp));
+    const date = new Date(m.timestamp);
+    const key = getKey(date);
     const delta = equity(m) - equity(prev);
 
     map.set(key, delta);
   });
 
   const buckets: Bucket[] = [];
-  const gridStart = new Date(startOfYear);
 
-  let cursor = new Date(gridStart);
+  // 0 = Monday, 6 = Sunday
+  const weekday = (date: Date) => {
+    const d = date.getDay();
+    return d === 0 ? 6 : d - 1;
+  };
+
+  const weeks: Bucket[][] = [];
+  let week: Bucket[] = Array(7).fill({ date: null, value: 0 });
+
+  let cursor = new Date(startOfYear);
 
   while (cursor <= endOfYear) {
-    buckets.push({
-      date: new Date(cursor),
-      value: map.get(getKey(cursor)) ?? 0
-    });
+    const dayIndex = weekday(cursor); // 0 = Monday, 6 = Sunday
+    week[dayIndex] = { date: new Date(cursor), value: map.get(getKey(cursor)) ?? 0 };
+
+    // If Sunday, push the week and start new
+    if (dayIndex === 6) {
+      weeks.push(week);
+      week = Array(7).fill({ date: null, value: 0 });
+    }
 
     cursor.setDate(cursor.getDate() + 1);
+  }
+
+  // Push last partial week
+  if (week.some((d) => d.date !== null)) {
+    weeks.push(week);
   }
 
   const total = metrics.length >= 2 ? equity(metrics[metrics.length - 1]) - equity(metrics[0]) : 0;
@@ -108,25 +126,26 @@ export const Profits = createElement<typeof Container>((props, ref) => {
       </Container>
 
       <Container className="grid grid-rows-7 grid-flow-col gap-1">
-        {buckets.map((day, i) => {
-          if (!day.date) {
-            return null;
-          }
-
-          return (
-            <Tooltip.Root key={i} delayDuration={0} disableHoverableContent>
+        {weeks.map((week, colIndex) =>
+          week.map((day, rowIndex) => (
+            <Tooltip.Root key={`${colIndex}-${rowIndex}`} delayDuration={0} disableHoverableContent>
               <Tooltip.Trigger>
-                <Container suppressHydrationWarning className={clsx("rounded-xs size-2.5 transition-colors duration-200", getColor(day.value))} />
+                <Container
+                  suppressHydrationWarning
+                  className={clsx("rounded-xs size-2.5 transition-colors duration-200", day.date ? getColor(day.value) : "bg-background-subtle")}
+                />
               </Tooltip.Trigger>
-              <Tooltip.Content className="flex items-center gap-1">
-                <Span>{day.date.toDateString()}</Span>
-                <Span className={clsx("flex items-center", day.value > 0 ? "text-green" : day.value < 0 ? "text-red" : "text-hint")}>
-                  <Span>{formatCurrency(day.value)}</Span>
-                </Span>
-              </Tooltip.Content>
+              {day.date && (
+                <Tooltip.Content className="flex items-center gap-1">
+                  <Span>{day.date.toDateString()}</Span>
+                  <Span className={clsx("flex items-center", day.value > 0 ? "text-green" : day.value < 0 ? "text-red" : "text-hint")}>
+                    <Span>{formatCurrency(day.value)}</Span>
+                  </Span>
+                </Tooltip.Content>
+              )}
             </Tooltip.Root>
-          );
-        })}
+          ))
+        )}
       </Container>
     </Container>
   );
@@ -137,7 +156,10 @@ export const Profits = createElement<typeof Container>((props, ref) => {
 // ======================================================
 
 function getKey(date: Date) {
-  return date.toISOString().slice(0, 10);
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0"); // getMonth() is 0-based
+  const day = String(date.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
 }
 
 function formatCurrency(value?: number) {

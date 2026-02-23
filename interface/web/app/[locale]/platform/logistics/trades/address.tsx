@@ -18,7 +18,7 @@ export const Address = createElement<typeof Span>(() => {
         readOnly
         inset={false}
         label={<H2 className="inline-flex text-2xl font-extrabold">Address</H2>}
-        className="text-sm xl:text-base bg-transparent px-0! min-w-0"
+        className="text-sm xl:text-base min-w-0"
         containerClassName="py-5 xl:py-10 xl:gap-10 xl:flex-row xl:items-center max-w-sm min-w-0"
         value={address}
       />

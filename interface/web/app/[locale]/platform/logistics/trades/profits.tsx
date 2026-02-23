@@ -35,7 +35,7 @@ export const Profits = createElement<typeof Container>((props, ref) => {
         {...props}
         key="spinner"
         ref={ref}
-        className={clsx("flex flex-col items-center justify-center basis-1/4 gap-8 rounded-4xl", props.className)}
+        className={clsx("flex flex-col items-center justify-center basis-[738px] gap-8 rounded-4xl", props.className)}
       >
         <Spinner className="size-5" />
       </Container>
@@ -78,7 +78,7 @@ export const Profits = createElement<typeof Container>((props, ref) => {
 
   function getColor(value: number) {
     if (value === 0) {
-      return "bg-background-surface";
+      return "bg-background-subtle";
     }
 
     const intensity = Math.abs(value) / max;
@@ -100,20 +100,17 @@ export const Profits = createElement<typeof Container>((props, ref) => {
     <Container
       {...props}
       ref={ref}
-      className={clsx(
-        "flex flex-col justify-center items-center gap-16 rounded-4xl duration-500 animate-in fade-in slide-in-from-right-10",
-        props.className
-      )}
+      className={clsx("flex flex-col justify-center items-center gap-16 rounded-4xl duration-500 animate-in fade-in zoom-in-95", props.className)}
     >
       <Container className="flex flex-col gap-6">
         <H2 className="text-2xl font-bold">Annual Profit / Loss</H2>
-        <Span className="text-5xl font-extrabold">{formatCurrency(total)}</Span>
+        <Span className={clsx("text-5xl font-extrabold", total > 0 ? "text-green" : "text-red")}>{formatCurrency(total)}</Span>
       </Container>
 
       <Container className="grid grid-rows-7 grid-flow-col gap-1">
         {buckets.map((day, i) => {
           if (!day.date) {
-            return <Container key={i} style={{ width: 12, height: 12 }} />;
+            return null;
           }
 
           return (
@@ -124,7 +121,6 @@ export const Profits = createElement<typeof Container>((props, ref) => {
               <Tooltip.Content className="flex items-center gap-1">
                 <Span>{day.date.toDateString()}</Span>
                 <Span className={clsx("flex items-center", day.value > 0 ? "text-green" : day.value < 0 ? "text-red" : "text-hint")}>
-                  {day.value != 0 && <Icon symbol={day.value > 0 ? "arrow_drop_up" : "arrow_drop_down"} />}
                   <Span>{formatCurrency(day.value)}</Span>
                 </Span>
               </Tooltip.Content>

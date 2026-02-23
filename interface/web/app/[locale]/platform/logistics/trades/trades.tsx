@@ -1,9 +1,9 @@
 // Copyright © Spatial Corporation. All rights reserved.
 
 import { Objectives } from "./objectives";
+import { Activity } from "./activity";
 import { Balance } from "./balance";
 import { Profits } from "./profits";
-import { History } from "./history";
 
 import { Card, Container, createElement, Icon, Link, Span } from "@sptlco/design";
 
@@ -29,7 +29,7 @@ export const Trades = createElement<typeof Card.Root>((props, ref) => {
           <Profits />
         </Container>
         <Objectives />
-        <History />
+        <Activity />
       </Card.Content>
     </Card.Root>
   );

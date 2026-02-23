@@ -15,7 +15,7 @@ export const Metrics = createElement<typeof Container>((props, ref) => {
     { label: "Active Shipments", value: 128, href: "/platform/logistics/shipments" },
     { label: "Pending Orders", value: 42, href: "/platform/logistics/orders" },
     { label: "Inventory Units", value: 12482, href: "/platform/logistics/inventory" },
-    { label: "Active Trades", value: 7, href: "/platform/logistics/trades" }
+    { label: "Open Trades", value: 7, href: "/platform/logistics/trades" }
   ];
 
   return (

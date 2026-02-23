@@ -35,21 +35,17 @@ public class MetricController : Controller
         [Query] int? limit = null,
         [Query] string? resolution = null)
     {
+        from ??= DateTime.UnixEpoch;
+        to ??= DateTime.UtcNow;
+
         var collection = Resource<Metric>.Collection;
         var filterBuilder = Builders<Metric>.Filter;
         var filter = filterBuilder.Eq(m => m.Metadata[nameof(name)], name);
 
-        if (from.HasValue)
-        {
-            filter &= filterBuilder.Gte(m => m.Timestamp, from.Value);
-        }
+        filter &= filterBuilder.Gte(m => m.Timestamp, from.Value);
+        filter &= filterBuilder.Lte(m => m.Timestamp, to.Value);
 
-        if (to.HasValue)
-        {
-            filter &= filterBuilder.Lte(m => m.Timestamp, to.Value);
-        }
-
-        if (string.IsNullOrEmpty(resolution) && from.HasValue && to.HasValue)
+        if (string.IsNullOrEmpty(resolution))
         {
             var range = to.Value - from.Value;
 
@@ -71,20 +67,9 @@ public class MetricController : Controller
             }
         }
 
-        if (resolution == "1m" || string.IsNullOrEmpty(resolution))
-        {
-            IFindFluent<Metric, Metric> query = collection.Find(filter).SortBy(m => m.Timestamp);
-
-            if (limit.HasValue)
-            {
-                query = query.Limit(limit.Value);
-            }
-
-            return await query.ToListAsync();
-        }
-
         var (unit, binSize) = resolution switch
         {
+            "1m" => ("minute", 1),
             "5m" => ("minute", 5),
             "15m" => ("minute", 15),
             "1h" => ("hour", 1),

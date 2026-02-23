@@ -23,14 +23,14 @@ export const Objectives = createElement<typeof Container>((props, ref) => {
     { label: "Win Rate", value: formatNumber(65.39) + "%" },
     { label: "Trading Days", value: formatNumber(15), diff: 0.042 },
     { label: "Live Profit Share", value: formatNumber(80) + "%" },
-    { label: "Avg. Winning Trade", value: formatCurrency(458.06) },
-    { label: "Avg. Losing Trade", value: formatCurrency(-1021.06) }
+    { label: "Average Win", value: formatCurrency(458.06) },
+    { label: "Average Loss", value: formatCurrency(-1021.06) }
   ];
 
   return (
     <Container {...props} ref={ref} className={clsx("flex flex-col gap-6", props.className)}>
       <H2 className="px-10 text-2xl font-bold">Objectives</H2>
-      <Container className="flex w-full rounded-4xl bg-background-surface">
+      <Container className="flex w-full rounded-4xl bg-background-subtle">
         {objectives.map((objective, i) => (
           <Container key={i} className="grow flex flex-col gap-4 p-10 whitespace-nowrap">
             <Span className="text-sm text-foreground-quaternary font-semibold flex items-center gap-2">
@@ -47,9 +47,9 @@ export const Objectives = createElement<typeof Container>((props, ref) => {
             <Span className="text-4xl flex items-center gap-4 whitespace-nowrap">
               <Span>{objective.value}</Span>
               {objective.diff && (
-                <Span className={clsx("text-xl", objective.diff > 0 ? "text-green" : "text-red")}>
-                  {objective.diff > 0 ? "+" : "-"}
-                  {(objective.diff * 100).toFixed(2)}%
+                <Span className={clsx("inline-flex items-center text-xl", objective.diff > 0 ? "text-green" : "text-red")}>
+                  {objective.diff > 0 ? <Icon symbol="arrow_drop_up" size={32} /> : <Icon symbol="arrow_drop_down" size={32} />}
+                  {(Math.abs(objective.diff) * 100).toFixed(2)}%
                 </Span>
               )}
             </Span>

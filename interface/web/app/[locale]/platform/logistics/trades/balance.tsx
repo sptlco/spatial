@@ -123,7 +123,7 @@ export const Balance = createElement<typeof Container>((props, ref) => {
   return (
     <Container {...props} ref={ref} className={clsx("flex flex-col gap-10", props.className)}>
       <Container className="flex flex-col gap-10">
-        <Container className="flex flex-col gap-6">
+        <Container className="flex flex-col pl-10 gap-6">
           <Container className="flex items-start">
             <Container className="flex grow items-center justify-start gap-4">
               <H2 className="inline-flex text-2xl font-extrabold">Balance</H2>
@@ -150,7 +150,7 @@ export const Balance = createElement<typeof Container>((props, ref) => {
           </Container>
 
           <Span className="flex items-center gap-4">
-            <Span className="text-9xl font-extrabold">
+            <Span className="text-9xl font-extrabold truncate">
               {!now ? (
                 <Container className="flex items-center h-32">
                   <Span className="bg-background-surface rounded-full h-10 w-sm animate-pulse flex" />
@@ -166,7 +166,7 @@ export const Balance = createElement<typeof Container>((props, ref) => {
               </Span>
             )}
           </Span>
-          <Span className="inline-flex items-center gap-1 text-sm text-hint">
+          <Span className={clsx("inline-flex items-center gap-1 text-sm text-hint", !hovered && "text-yellow")}>
             <Icon symbol={point ? (isForecastHover ? "online_prediction" : "history") : "bolt"} className="font-light" size={20} fill />
             <Span className="font-bold">{formatDate(displayDate, period, hovered != null)}</Span>
           </Span>
@@ -264,7 +264,7 @@ function formatCurrency(value?: number) {
 }
 
 function formatDate(date?: Date | null, period?: keyof typeof PERIODS, isHovering?: boolean) {
-  if (!isHovering) return "Now";
+  if (!isHovering) return "Live";
   if (!date) {
     return "";
   }

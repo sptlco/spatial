@@ -1,6 +1,7 @@
 // Copyright © Spatial Corporation. All rights reserved.
 
 using Microsoft.Extensions.Hosting;
+using Nethereum.JsonRpc.Client;
 using Nethereum.Web3;
 using Spatial.Blockchain.Helpers;
 using Spatial.Persistence;
@@ -54,9 +55,9 @@ public class Trader : BackgroundService
                     }
                 });
             }
-            catch (Exception e)
+            catch (RpcClientUnknownException)
             {
-                WARN(e, "Failed to execute trade due to a transient error.");
+                WARN("Failed to execute trade due to a transient error.");
             }
             finally
             {

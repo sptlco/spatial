@@ -32,6 +32,16 @@ export interface SharedFieldProps {
    * Optional classes for the field's container.
    */
   containerClassName?: string;
+
+  /**
+   * Optional classes for the field's label.
+   */
+  labelClassName?: string;
+
+  /**
+   * Optional classes for the field's description.
+   */
+  descriptionClassName?: string;
 }
 
 /**
@@ -251,7 +261,7 @@ export const Field = createElement<"input", FieldProps>(({ containerClassName, i
         const input = () => {
           if (props.prefix || props.suffix) {
             return (
-              <Container className={clsx(classes, "flex items-center w-full")}>
+              <Container className={clsx(classes, "flex items-center w-full", props.className)}>
                 {props.prefix && <Span className="flex text-hint shrink-0">{props.prefix}</Span>}
                 <Input
                   {...props}
@@ -279,7 +289,7 @@ export const Field = createElement<"input", FieldProps>(({ containerClassName, i
               {...props}
               ref={ref}
               autoComplete="off"
-              className={clsx(classes, "w-full")}
+              className={clsx(classes, "w-full", props.className)}
               value={value}
               onChange={(e) =>
                 props.onChange?.({
@@ -295,23 +305,25 @@ export const Field = createElement<"input", FieldProps>(({ containerClassName, i
         };
 
         return props.readOnly ? (
-          <Span className="w-full truncate flex items-center gap-4 px-4 py-2 bg-input rounded-lg">
+          <Span className={clsx("w-full truncate flex items-center gap-4 px-4 py-2 bg-input rounded-lg", props.className)}>
             <Span className="grow truncate">{props.value}</Span>
-            <Button
-              intent="ghost"
-              className="p-0! size-8! shrink-0"
-              onClick={() => {
-                toast.promise(navigator.clipboard.writeText(props.value?.toString() ?? ""), {
-                  loading: "Copying value",
-                  success: (_) => ({
-                    message: "Value copied",
-                    description: props.value
-                  })
-                });
-              }}
-            >
-              <Icon symbol="copy_all" className="cursor-pointer font-light" size={20} />
-            </Button>
+            {props.value && (
+              <Button
+                intent="ghost"
+                className="p-0! size-8! shrink-0"
+                onClick={() => {
+                  toast.promise(navigator.clipboard.writeText(props.value?.toString() ?? ""), {
+                    loading: "Copying value",
+                    success: (_) => ({
+                      message: "Value copied",
+                      description: props.value
+                    })
+                  });
+                }}
+              >
+                <Icon symbol="copy_all" className="cursor-pointer font-light" size={20} />
+              </Button>
+            )}
           </Span>
         ) : (
           input()
@@ -485,11 +497,11 @@ export const Field = createElement<"input", FieldProps>(({ containerClassName, i
   };
 
   return (
-    <Container className={clsx("group flex flex-col space-y-4 w-full", containerClassName)}>
+    <Container className={clsx("group flex flex-col gap-4 w-full", containerClassName)}>
       {(props.label || props.required === false) && (
         <Container className="flex items-center">
           {props.label && (
-            <Label className={clsx("font-medium transition-all grow", { "px-4": inset })} htmlFor={props.id}>
+            <Label className={clsx("font-medium transition-all grow", { "px-4": inset }, props.labelClassName)} htmlFor={props.id}>
               {props.label}
             </Label>
           )}
@@ -498,7 +510,9 @@ export const Field = createElement<"input", FieldProps>(({ containerClassName, i
       )}
       {render()}
       {props.description && (
-        <Paragraph className={clsx("text-sm transition-all text-foreground-secondary", { "px-4": inset })}>{props.description}</Paragraph>
+        <Paragraph className={clsx("text-sm transition-all text-foreground-secondary", { "px-4": inset }, props.descriptionClassName)}>
+          {props.description}
+        </Paragraph>
       )}
     </Container>
   );

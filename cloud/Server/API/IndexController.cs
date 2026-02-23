@@ -1,5 +1,7 @@
 // Copyright © Spatial Corporation. All rights reserved.
 
+using Spatial.Blockchain;
+
 namespace Spatial.Cloud.API;
 
 /// <summary>
@@ -8,6 +10,17 @@ namespace Spatial.Cloud.API;
 [Path("/")]
 public class IndexController : Controller
 {
+    /// <summary>
+    /// Get the server's Ethereum address.
+    /// </summary>
+    /// <returns>The server's Ethereum address.</returns>
+    [GET]
+    [Path("address")]
+    public async Task<string> GetAddressAsync()
+    {
+        return Ethereum.CreateClient().Account.Address;
+    }
+    
     /// <summary>
     /// Get the server's name.
     /// </summary>

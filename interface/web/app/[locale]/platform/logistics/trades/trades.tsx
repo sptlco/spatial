@@ -1,5 +1,6 @@
 // Copyright © Spatial Corporation. All rights reserved.
 
+import { Address } from "./address";
 import { Objectives } from "./objectives";
 import { Activity } from "./activity";
 import { Balance } from "./balance";
@@ -24,7 +25,8 @@ export const Trades = createElement<typeof Card.Root>((props, ref) => {
         <Card.Description className="xl:text-xl font-light">Automated trade analysis and execution.</Card.Description>
       </Card.Header>
       <Card.Content className="flex flex-col gap-10">
-        <Container className="flex w-full px-10 gap-10">
+        <Address />
+        <Container className="flex w-full gap-10">
           <Balance className="grow" />
           <Profits />
         </Container>

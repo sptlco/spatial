@@ -7,6 +7,14 @@ import { Controller } from "..";
  */
 export class IndexController extends Controller {
   /**
+   * Get the server's Ethereum address.
+   * @returns The server's Ethereum address.
+   */
+  public address = async () => {
+    return this.get<string>("address");
+  };
+
+  /**
    * Get the server's name.
    * @returns The server's name.
    */

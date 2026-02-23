@@ -92,7 +92,7 @@ export const Profits = createElement<typeof Container>((props, ref) => {
 
   function getColor(value: number) {
     if (value === 0) {
-      return "bg-background-subtle";
+      return "bg-background-surface";
     }
 
     const intensity = Math.abs(value) / max;
@@ -114,11 +114,14 @@ export const Profits = createElement<typeof Container>((props, ref) => {
     <Container
       {...props}
       ref={ref}
-      className={clsx("flex flex-col justify-center items-center gap-16 rounded-4xl duration-500 animate-in fade-in zoom-in-95", props.className)}
+      className={clsx(
+        "flex flex-col justify-between items-start gap-16 rounded-[56px] p-10 bg-background-subtle duration-500 animate-in fade-in zoom-in-95",
+        props.className
+      )}
     >
-      <Container className="flex text-center flex-col gap-10">
-        <H2 className="text-2xl font-bold">Annual {total > 0 ? "Profit" : "Loss"}</H2>
-        <Span className={clsx("text-7xl font-extrabold", total > 0 ? "text-green" : "text-red")}>{formatCurrency(total)}</Span>
+      <Container className="flex flex-col gap-10">
+        <H2 className="text-2xl font-bold">Annual Profit / Loss</H2>
+        <Span className={clsx("text-9xl font-extrabold truncate", total > 0 ? "text-green" : "text-red")}>{formatCurrency(total)}</Span>
       </Container>
 
       <Container className="grid grid-rows-7 grid-flow-col gap-1">

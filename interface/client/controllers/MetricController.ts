@@ -1,6 +1,6 @@
 // Copyright © Spatial Corporation. All rights reserved.
 
-import { Metric, WriteMetricOptions } from "@sptlco/data";
+import { Metric } from "@sptlco/data";
 import { Controller } from "..";
 
 export class MetricController extends Controller {
@@ -34,14 +34,5 @@ export class MetricController extends Controller {
     const query = params.toString();
 
     return this.get<Metric[]>(query ? `metrics/${name}?${query}` : `metrics/${name}`);
-  };
-
-  /**
-   * Create a new metric data point.
-   * @param options Configurable options for the metric.
-   * @returns The created metric data point.
-   */
-  public write = (options: WriteMetricOptions) => {
-    return this.post<Metric>("metrics", options);
   };
 }

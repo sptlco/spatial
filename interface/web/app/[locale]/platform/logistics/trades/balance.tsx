@@ -98,6 +98,8 @@ export const Balance = createElement<typeof Container>((props, ref) => {
     return connector ? [...history, connector, ...forecastData] : history;
   }, [data, forecastData]);
 
+  console.log(metrics);
+
   const base = metrics && metrics.length ? getValue(metrics[0]) : 0;
   const hovered = point != null ? combinedData[point] : null;
   const hoveredValue = hovered?.historyValue ?? hovered?.forecastValue ?? null;

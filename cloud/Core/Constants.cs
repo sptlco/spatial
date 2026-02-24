@@ -88,6 +88,11 @@ internal class Constants
     public const string StaticFilePath = "wwwroot";
 
     /// <summary>
+    /// The name of the metric key field.
+    /// </summary>
+    public const string MetricKey = "Name";
+
+    /// <summary>
     /// Log property names.
     /// </summary>
     public static class Properties

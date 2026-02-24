@@ -45,14 +45,11 @@ public class Trader : BackgroundService
                 // ...
 
                 // Take a snapshot of the current state.
-                // Use Polly to ensure success.
+                // Use the new Metric API.
 
-                Resource<Metric>.Store(new Metric {
-                    Metadata = new Dictionary<string, string> { ["name"] = "ethereum" },
-                    Value = new Dictionary<string, decimal> {
-                        ["balance"] = Web3.Convert.FromWei(balance),
-                        ["price"] = ethereum.Price
-                    }
+                Metric.Write("ethereum", new {
+                    Balance = Web3.Convert.FromWei(balance),
+                    ethereum.Price
                 });
             }
             catch (RpcClientUnknownException)

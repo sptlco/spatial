@@ -13,17 +13,9 @@ namespace Spatial.Persistence;
 public class Resource
 {
     /// <summary>
-    /// Create a new <see cref="Resource"/>.
-    /// </summary>
-    public Resource()
-    {
-        Id = ObjectId.GenerateNewId().ToString();
-    }
-
-    /// <summary>
     /// The document's identification number.
     /// </summary>
-    public string Id { get; set; }
+    public string Id { get; set; } = ObjectId.GenerateNewId().ToString();
 
     /// <summary>
     /// The <see cref="DateTime"/> the <see cref="Resource"/> was created.
@@ -64,6 +56,17 @@ public static class Resource<T> where T : Resource
     public static T Store(in T record)
     {
         GetCollection().InsertOne(record);
+
+        return record;
+    }
+
+    /// <summary>
+    /// Store a <see cref="Resource"/> of type <typeparamref name="T"/>.
+    /// </summary>
+    /// <param name="record">The <see cref="Resource"/> to store.</param>
+    public static async Task<T> StoreAsync(T record)
+    {
+        await GetCollection().InsertOneAsync(record);
 
         return record;
     }
@@ -173,7 +176,7 @@ public static class Resource<T> where T : Resource
 
                 var collection = database.GetCollection<T>(_collection.Name);
                 var keys = Builders<T>.IndexKeys
-                    .Ascending($"{_collection.MetaField}.name")
+                    .Ascending($"{_collection.MetaField}.{Constants.MetricKey}")
                     .Ascending(_collection.TimeField);
 
                 collection.Indexes.CreateOne(new CreateIndexModel<T>(keys));

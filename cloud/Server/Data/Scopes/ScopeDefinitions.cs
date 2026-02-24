@@ -60,12 +60,6 @@ public partial class Scope
         /// </summary>
         [Metadata("Read metric data points.")]
         public const string Read = "metrics.read";
-
-        /// <summary>
-        /// Write metric data points.
-        /// </summary>
-        [Metadata("Write metric data points.")]
-        public const string Write = "metrics.write";
     }
 
     /// <summary>

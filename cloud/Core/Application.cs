@@ -6,7 +6,6 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
@@ -14,6 +13,9 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.JsonWebTokens;
 using Microsoft.IdentityModel.Tokens;
+using MongoDB.Bson;
+using MongoDB.Bson.Serialization;
+using MongoDB.Bson.Serialization.Serializers;
 using Serilog;
 using Serilog.Context;
 using Serilog.Events;
@@ -28,6 +30,7 @@ using System.Net;
 using System.Reflection;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
+using System.Text.Json;
 using System.Text.RegularExpressions;
 
 namespace Spatial;
@@ -321,6 +324,8 @@ public class Application
 
         Log.Logger = logger.CreateLogger();
 
+        BsonSerializer.RegisterSerializer(typeof(decimal), new DecimalSerializer(BsonType.Decimal128));
+
         builder.WebHost.ConfigureKestrel(options => {
 
             foreach (var endpoint in Regex.Replace(configuration.Endpoints, @"\s+", "").Split(","))
@@ -416,7 +421,11 @@ public class Application
             .AddSerilog()
             .AddExceptionHandler<FaultIndicator>()
             .AddProblemDetails()
-            .AddControllers();
+            .AddControllers()
+            .AddJsonOptions(options => {
+                options.JsonSerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
+                options.JsonSerializerOptions.DictionaryKeyPolicy = JsonNamingPolicy.CamelCase;
+            });
 
         builder.Services.AddSingleton<IAuthorizationHandler, PermissionHandler>();
 

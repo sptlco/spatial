@@ -59,4 +59,24 @@ public static class CollectionExtensions
     {
         return [.. collection.Where(predicate)];
     }
+
+    /// <summary>
+    /// Map the elements of a collection to a list.
+    /// </summary>
+    /// <typeparam name="T">The type of elements in the collection.</typeparam>
+    /// <typeparam name="R">The type of elements in the list.</typeparam>
+    /// <param name="collection">The collection to map.</param>
+    /// <param name="mapper">A mapping function.</param>
+    /// <returns>The mapped list.</returns>
+    public static List<R> Map<T, R>(this IEnumerable<T> collection, Func<T, R> mapper)
+    {
+        var list = new List<R>();
+
+        foreach (var item in collection)
+        {
+            list.Add(mapper(item));
+        }
+
+        return list;
+    }
 }

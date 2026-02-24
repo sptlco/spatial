@@ -10,6 +10,11 @@ namespace Spatial.Compute;
 public class Graph : IDisposable
 {
     /// <summary>
+    /// The job's identification number.
+    /// </summary>
+    public string Id { get; internal set; } = Guid.NewGuid().ToString("N");
+    
+    /// <summary>
     /// The graph's handle.
     /// </summary>
     public Handle Handle { get; set; } = null!;

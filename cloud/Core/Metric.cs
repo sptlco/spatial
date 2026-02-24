@@ -172,14 +172,17 @@ public class Metric : Resource
     private static Metric Create(string name, object value, object? metadata = null)
     {
         var meta = new Dictionary<string, string> { [Constants.MetricKey] = name };
+        var options = new JsonSerializerOptions {
+          DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,  
+        };
 
-        foreach (var pair in JsonSerializer.Deserialize<Dictionary<string, string>>(JsonSerializer.Serialize(metadata)) ?? [])
+        foreach (var pair in JsonSerializer.Deserialize<Dictionary<string, string>>(JsonSerializer.Serialize(metadata, options)) ?? [])
         {
             meta[pair.Key] = pair.Value;
         }
 
         return new Metric {
-            Value = value as Dictionary<string, decimal> ?? JsonSerializer.Deserialize<Dictionary<string, decimal>>(JsonSerializer.Serialize(value)) ?? [],
+            Value = value as Dictionary<string, decimal> ?? JsonSerializer.Deserialize<Dictionary<string, decimal>>(JsonSerializer.Serialize(value, options)) ?? [],
             Metadata = meta,
             Timestamp = DateTime.UtcNow
         };

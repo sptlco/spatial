@@ -42,7 +42,7 @@ public abstract class ParallelJob : CommandJob
     {
         if (Interlocked.Add(ref _completed, iterations) >= _iterations)
         {
-            Status = JobStatus.Complete;
+            Status = JobStatus.Completed;
             return true;
         }
 

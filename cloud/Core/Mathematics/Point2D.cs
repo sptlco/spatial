@@ -7,8 +7,6 @@ namespace Spatial.Mathematics;
 /// </summary>
 public class Point2D
 {
-    private readonly Tensor _tensor;
-
     /// <summary>
     /// Get a <see cref="Point2D"/> at the origin.
     /// </summary>
@@ -20,7 +18,7 @@ public class Point2D
     /// <param name="scalar"></param>
     public Point2D(double scalar = 0.0F)
     {
-        _tensor = Tensor.Create([2], _ => scalar);
+        X = Y = scalar;
     }
 
     /// <summary>
@@ -30,29 +28,19 @@ public class Point2D
     /// <param name="y">The point's Y-component.</param>
     public Point2D(double x, double y)
     {
-        _tensor = Tensor.Zero([2]);
-
-        _tensor[0] = x;
-        _tensor[1] = y;
+        X = x;
+        Y = y;
     }
 
     /// <summary>
     /// The point's X-component.
     /// </summary>
-    public double X
-    {
-        get => _tensor[0];
-        set => _tensor[0] = value;
-    }
+    public double X { get; set; }
 
     /// <summary>
     /// The point's Y-component.
     /// </summary>
-    public double Y
-    {
-        get => _tensor[1];
-        set => _tensor[1] = value;
-    }
+    public double Y { get; set; }
 
     /// <summary>
     /// Add two points.

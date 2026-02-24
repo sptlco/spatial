@@ -19,17 +19,16 @@ public sealed class ParallelForJob : ParallelJob
     /// <param name="iterations">The number of iterations to perform.</param>
     /// <param name="batchSize">The number of iterations to perform per job.</param>
     /// <param name="function">A processing function.</param>
-    /// <param name="batchStrategy">The job's <see cref="BatchStrategy"/>.</param>
-    public ParallelForJob(int iterations, int batchSize, Action<int> function, BatchStrategy batchStrategy = BatchStrategy.Auto) : base(iterations)
+    public ParallelForJob(int iterations, int batchSize, Action<int> function) : base(iterations)
     {
-        _batchSize = CalculateBatchSize(iterations, batchSize, batchStrategy);
+        _batchSize = batchSize;
         _function = function;
     }
 
     /// <summary>
     /// The number of iterations to perform per job.
     /// </summary>
-    public int BatchSize => _batchSize;
+    public int BatchSize => CalculateBatchSize(_iterations, _batchSize, Options.BatchStrategy);
 
     /// <summary>
     /// Calculate the batch size for a <see cref="ParallelForJob"/>.
@@ -85,6 +84,16 @@ internal sealed class BatchJob : CommandJob
     /// The size of the <see cref="BatchJob"/>.
     /// </summary>
     public int Size => _end - _start;
+
+    /// <summary>
+    /// The batch's start index.
+    /// </summary>
+    public int Start => _start;
+
+    /// <summary>
+    /// The batch's end index.
+    /// </summary>
+    public int End => _end;
 
     /// <summary>
     /// The parent <see cref="ParallelJob"/>.

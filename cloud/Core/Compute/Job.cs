@@ -28,9 +28,19 @@ public abstract partial class Job : IDisposable
     public Time Timeout { get; set; } = Time.FromMinutes(10);
 
     /// <summary>
+    /// The time the job was submitted.
+    /// </summary>
+    public Time Submitted { get; set; }
+
+    /// <summary>
     /// The <see cref="Time"/> the system started executing the <see cref="Job"/>.
     /// </summary>
-    public Time Started { get; set; }
+    public Time Executed { get; set; }
+
+    /// <summary>
+    /// The <see cref="Time"/> the job was terminated.
+    /// </summary>
+    public Time Terminated { get; set; }
 
     /// <summary>
     /// The <see cref="Compute.Graph"/> the <see cref="Job"/> belongs to.
@@ -41,6 +51,11 @@ public abstract partial class Job : IDisposable
     /// The operational status of the <see cref="Job"/>.
     /// </summary>
     internal JobStatus Status { get; set; } = JobStatus.Submitted;
+
+    /// <summary>
+    /// Configurable options for the <see cref="Job"/>.
+    /// </summary>
+    internal JobOptions Options { get; set; }
 
     /// <summary>
     /// Create a new <see cref="Accelerator"/>.
@@ -63,10 +78,10 @@ public abstract partial class Job : IDisposable
     /// </summary>
     /// <param name="collection">A collection to enumerate.</param>
     /// <param name="function">The function to execute.</param>
-    /// <param name="batchStrategy">The job's <see cref="BatchStrategy"/>.</param>
-    public static Handle ParallelFor<T>(IEnumerable<T> collection, Action<T> function, BatchStrategy batchStrategy = BatchStrategy.Auto)
+    /// <param name="options">Configurable options for the job.</param>
+    public static Handle ParallelFor<T>(IEnumerable<T> collection, Action<T> function, JobOptions? options = default)
     {
-        return ParallelFor(collection.Count(), 0, (i) => function(collection.ElementAt(i)), batchStrategy);
+        return ParallelFor(collection.Count(), 0, (i) => function(collection.ElementAt(i)), options);
     }
 
     /// <summary>
@@ -74,10 +89,10 @@ public abstract partial class Job : IDisposable
     /// </summary>
     /// <param name="collection">A collection to enumerate.</param>
     /// <param name="function">The function to execute.</param>
-    /// <param name="batchStrategy">The job's <see cref="BatchStrategy"/>.</param>
-    public static Handle ParallelFor<T>(IReadOnlyCollection<T> collection, Action<T> function, BatchStrategy batchStrategy = BatchStrategy.Auto)
+    /// <param name="options">Configurable options for the job.</param>
+    public static Handle ParallelFor<T>(IReadOnlyCollection<T> collection, Action<T> function, JobOptions? options = default)
     {
-        return ParallelFor(collection.Count, 0, (i) => function(collection.ElementAt(i)), batchStrategy);
+        return ParallelFor(collection.Count, 0, (i) => function(collection.ElementAt(i)), options);
     }
 
     /// <summary>
@@ -85,13 +100,13 @@ public abstract partial class Job : IDisposable
     /// </summary>
     /// <param name="collection">A collection to enumerate.</param>
     /// <param name="function">The function to execute.</param>
-    /// <param name="batchStrategy">The job's <see cref="BatchStrategy"/>.</param>
-    public static Handle ParallelFor<TKey, TValue>(IDictionary<TKey, TValue> collection, Action<TKey, TValue> function, BatchStrategy batchStrategy = BatchStrategy.Auto)
+    /// <param name="options">Configurable options for the job.</param>
+    public static Handle ParallelFor<TKey, TValue>(IDictionary<TKey, TValue> collection, Action<TKey, TValue> function, JobOptions? options = default)
     {
         return ParallelFor(
             iterations: collection.Count,
             batchSize: 0,
-            batchStrategy: batchStrategy,
+            options: options,
             function: (i) => {
                 var (key, value) = collection.ElementAt(i);
                 function(key, value);
@@ -103,10 +118,10 @@ public abstract partial class Job : IDisposable
     /// </summary>
     /// <param name="count">The number of iterations to perform.</param>
     /// <param name="function">The function to execute.</param>
-    /// <param name="batchStrategy">The job's <see cref="BatchStrategy"/>.</param>
-    public static Handle ParallelFor(int count, Action<int> function, BatchStrategy batchStrategy = BatchStrategy.Auto)
+    /// <param name="options">Configurable options for the job.</param>
+    public static Handle ParallelFor(int count, Action<int> function, JobOptions? options = default)
     {
-        return ParallelFor(count, 0, function, batchStrategy);
+        return ParallelFor(count, 0, function, options);
     }
 
     /// <summary>
@@ -115,10 +130,14 @@ public abstract partial class Job : IDisposable
     /// <param name="iterations">The number of iterations to perform.</param>
     /// <param name="batchSize">The number of iterations to process per job.</param>
     /// <param name="function">The function to execute.</param>
-    /// <param name="batchStrategy">The job's <see cref="BatchStrategy"/>.</param>
-    public static Handle ParallelFor(int iterations, int batchSize, Action<int> function, BatchStrategy batchStrategy = BatchStrategy.Preferred)
+    /// <param name="options">Configurable options for the job.</param>
+    public static Handle ParallelFor(int iterations, int batchSize, Action<int> function, JobOptions? options = default)
     {
-        return Schedule(new ParallelForJob(iterations, batchSize, function, batchStrategy));
+        return Schedule(new ParallelForJob(iterations, batchSize, function) {
+            Options = options ?? new JobOptions {
+                BatchStrategy = BatchStrategy.Preferred
+            }
+        });
     }
 
     /// <summary>
@@ -127,10 +146,10 @@ public abstract partial class Job : IDisposable
     /// <param name="width">The size of the first dimension.</param>
     /// <param name="height">The size of the second dimension.</param>
     /// <param name="function">The function to execute.</param>
-    /// <param name="batchStrategy">The job's <see cref="BatchStrategy"/>.</param>
-    public static Handle ParallelFor2D(int width, int height, Action<int, int> function, BatchStrategy batchStrategy = BatchStrategy.Auto)
+    /// <param name="options">Configurable options for the job.</param>
+    public static Handle ParallelFor2D(int width, int height, Action<int, int> function, JobOptions? options = default)
     {
-        return ParallelFor2D(width, height, 0, 0, function, batchStrategy);
+        return ParallelFor2D(width, height, 0, 0, function, options);
     }
 
     /// <summary>
@@ -141,19 +160,26 @@ public abstract partial class Job : IDisposable
     /// <param name="batchSizeX">The number of iterations to perform per job in the first dimension.</param>
     /// <param name="batchSizeY">The number of iterations to perform per job in the second dimension.</param>
     /// <param name="function">The function to execute.</param>
-    /// <param name="batchStrategy">The job's <see cref="BatchStrategy"/>.</param>
-    public static Handle ParallelFor2D(int width, int height, int batchSizeX, int batchSizeY, Action<int, int> function, BatchStrategy batchStrategy = BatchStrategy.Preferred)
+    /// <param name="options">Configurable options for the job.</param>
+    public static Handle ParallelFor2D(int width, int height, int batchSizeX, int batchSizeY, Action<int, int> function, JobOptions? options = default)
     {
-        return Schedule(new ParallelFor2DJob(width, height, batchSizeX, batchSizeY, function, batchStrategy));
+        return Schedule(new ParallelFor2DJob(width, height, batchSizeX, batchSizeY, function) {
+            Options = options ?? new JobOptions {
+                BatchStrategy = BatchStrategy.Preferred
+            }
+        });
     }
 
     /// <summary>
     /// Schedule an <see cref="Action"/>.
     /// </summary>
     /// <param name="action">The <see cref="Action"/> to perform.</param>
-    public static Handle Schedule(Action action)
+    /// <param name="options">Configurable options for the job.</param>
+    public static Handle Schedule(Action action, JobOptions? options = default)
     {
-        return Schedule(new CommandJob(action));
+        return Schedule(new CommandJob(action) {
+            Options = options ?? new()
+        });
     }
 
     /// <summary>
@@ -208,7 +234,7 @@ public enum JobStatus
     /// <summary>
     /// The <see cref="Job"/> was executed.
     /// </summary>
-    Complete,
+    Completed,
     
     /// <summary>
     /// The system failed to execute the <see cref="Job"/>.
@@ -241,4 +267,20 @@ public enum JobAccelerator
     /// The system will choose the CPU.
     /// </summary>
     CPU
+}
+
+/// <summary>
+/// Configurable options for a <see cref="Job"/>.
+/// </summary>
+public class JobOptions
+{
+    /// <summary>
+    /// Whether or not to enable metrics for the job.
+    /// </summary>
+    public bool EnableMetrics { get; set; } = false;
+
+    /// <summary>
+    /// The job's batching strategy.
+    /// </summary>
+    public BatchStrategy BatchStrategy { get; set; } = BatchStrategy.Auto;
 }

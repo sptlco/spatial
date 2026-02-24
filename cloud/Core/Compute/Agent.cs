@@ -1,5 +1,6 @@
 // Copyright © Spatial Corporation. All rights reserved.
 
+using Spatial.Compute.Acceleration;
 using Spatial.Compute.Commands;
 using Spatial.Structures;
 using System.Diagnostics.CodeAnalysis;
@@ -134,14 +135,14 @@ internal class Agent : IDisposable
 
     private void Execute(CommandJob job)
     {
-        job.Started = Time.Now;
+        job.Executed = Time.Now;
         job.Status = JobStatus.Running;
 
         try
         {
             new Driver(job).Run();
 
-            job.Status = JobStatus.Complete;
+            job.Status = JobStatus.Completed;
         }
         catch (Exception e)
         {

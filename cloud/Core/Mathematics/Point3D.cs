@@ -7,8 +7,6 @@ namespace Spatial.Mathematics;
 /// </summary>
 public class Point3D
 {
-    private readonly Tensor _tensor;
-
     /// <summary>
     /// Get a <see cref="Point3D"/> at the origin.
     /// </summary>
@@ -20,7 +18,7 @@ public class Point3D
     /// <param name="scalar"></param>
     public Point3D(double scalar = 0.0F)
     {
-        _tensor = Tensor.Create([3], _ => scalar);
+        X = Y = Z = scalar;
     }
 
     /// <summary>
@@ -31,39 +29,25 @@ public class Point3D
     /// <param name="z">The point's Z-component.</param>
     public Point3D(double x, double y, double z)
     {
-        _tensor = Tensor.Zero([3]);
-
-        _tensor[0] = x;
-        _tensor[1] = y;
-        _tensor[2] = z;
+        X = x;
+        Y = y;
+        Z = z;
     }
 
     /// <summary>
     /// The point's X-component.
     /// </summary>
-    public double X
-    {
-        get => _tensor[0];
-        set => _tensor[0] = value;
-    }
+    public double X { get; set; }
 
     /// <summary>
     /// The point's Y-component.
     /// </summary>
-    public double Y
-    {
-        get => _tensor[1];
-        set => _tensor[1] = value;
-    }
+    public double Y { get; set; }
 
     /// <summary>
     /// The point's Z-component.
     /// </summary>
-    public double Z
-    {
-        get => _tensor[2];
-        set => _tensor[2] = value;
-    }
+    public double Z { get; set; }
 
     /// <summary>
     /// Add two points.

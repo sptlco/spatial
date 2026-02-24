@@ -22,19 +22,17 @@ public sealed class ParallelFor2DJob : ParallelJob
     /// <param name="batchSizeX">The number of iterations to perform per job in the first dimension.</param>
     /// <param name="batchSizeY">The number of iterations to perform per job in the second dimension.</param>
     /// <param name="function">A processing function.</param>
-    /// <param name="batchStrategy">The job's <see cref="BatchStrategy"/>.</param>
     public ParallelFor2DJob(
         int width,
         int height,
         int batchSizeX,
         int batchSizeY,
-        Action<int, int> function,
-        BatchStrategy batchStrategy = BatchStrategy.Auto) : base(width * height)
+        Action<int, int> function) : base(width * height)
     {
         _width = width;
         _height = height;
-        _batchSizeX = ParallelForJob.CalculateBatchSize(_width, batchSizeX, batchStrategy);
-        _batchSizeY = ParallelForJob.CalculateBatchSize(_height, batchSizeY, batchStrategy);
+        _batchSizeX = batchSizeX;
+        _batchSizeY = batchSizeY;
         _function = function;
     }
 
@@ -51,12 +49,12 @@ public sealed class ParallelFor2DJob : ParallelJob
     /// <summary>
     /// The number of iterations to perform per job in the first dimension.
     /// </summary>
-    public int BatchSizeX => _batchSizeX;
+    public int BatchSizeX => ParallelForJob.CalculateBatchSize(_width, _batchSizeX, Options.BatchStrategy);
 
     /// <summary>
     /// The number of iterations to perform per job in the second dimension.
     /// </summary>
-    public int BatchSizeY => _batchSizeY;
+    public int BatchSizeY => ParallelForJob.CalculateBatchSize(_height, _batchSizeY, Options.BatchStrategy);
 
     /// <summary>
     /// Execute the <see cref="ParallelFor2DJob"/>.
@@ -98,6 +96,26 @@ internal sealed class Batch2DJob : CommandJob
     /// The number of iterations performed by the <see cref="Batch2DJob"/>.
     /// </summary>
     public int Size => (_endX - _startX) * (_endY - _startY);
+
+    /// <summary>
+    /// The batch's starting X index.
+    /// </summary>
+    public int StartX => _startX;
+
+    /// <summary>
+    /// The batch's starting Y index.
+    /// </summary>
+    public int StartY => _startY;
+
+    /// <summary>
+    /// The batch's ending X index.
+    /// </summary>
+    public int EndX => _endX;
+
+    /// <summary>
+    /// The batch's ending Y index.
+    /// </summary>
+    public int EndY => _endY;
 
     /// <summary>
     /// The job's parent <see cref="ParallelFor2DJob"/>.

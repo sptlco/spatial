@@ -28,6 +28,8 @@ public class Computer
     {
         _instance = this;
         _agents = new Agent[Environment.ProcessorCount];
+        _jobs = [];
+        _dependencies = [];
     }
 
     /// <summary>
@@ -50,8 +52,8 @@ public class Computer
             return;
         }
 
-        _jobs = [];
-        _dependencies = [];
+        _jobs.Clear();
+        _dependencies.Clear();
 
         for (var i = 0; i < _agents.Length; i++)
         {
@@ -123,6 +125,8 @@ public class Computer
     {
         if (_jobs.TryRemove(jobId, out var job))
         {
+            job.Terminated = Time.Now;
+
             switch (job)
             {
                 case BatchJob batch1D:
@@ -155,15 +159,30 @@ public class Computer
                     }
                     
                     job.Graph.Handle.Signal();
+
                     break;
             }
 
+            if (job.Options.EnableMetrics)
+            {
+                _ = Metric.WriteAsync(
+                        name: "job",
+                        value: CreateJobMetric(job),
+                        metadata: new {
+                            job.Id,
+                            Graph = job.Graph?.Id,
+                            Parent = (job as BatchJob)?.Parent.Id ?? (job as Batch2DJob)?.Parent.Id,
+                            Type = job.GetType().Name,
+                            Status = job.Status.ToString()});
+            }
+            
             job.Dispose();
         }
     }
 
     private void Submit(Job job)
     {
+        job.Submitted = Time.Now;
         job.Status = JobStatus.Submitted;
         
         _jobs[job.Id] = job;
@@ -184,6 +203,12 @@ public class Computer
 
     private void Process(Job job)
     {
+        if (job is ParallelJob parallel && parallel.Complete(0))
+        {
+            Finalize(parallel.Id);
+            return;
+        }
+
         switch (job)
         {
             case ParallelForJob job1D:
@@ -191,7 +216,9 @@ public class Computer
                 {
                     var start = i * job1D.BatchSize;
                     var end = Math.Min(start + job1D.BatchSize, job1D.Iterations);
-                    var batch = new BatchJob(job1D, start, end);
+                    var batch = new BatchJob(job1D, start, end) {
+                        Options = job1D.Options
+                    };
 
                     Submit(batch);
                 }
@@ -209,7 +236,9 @@ public class Computer
                         var endX = Math.Min(startX + job2D.BatchSizeX, job2D.Width);
                         var startY = by * job2D.BatchSizeY;
                         var endY = Math.Min(startY + job2D.BatchSizeY, job2D.Height);
-                        var batch = new Batch2DJob(job2D, startX, endX, startY, endY);
+                        var batch = new Batch2DJob(job2D, startX, endX, startY, endY) {
+                            Options = job2D.Options
+                        };
 
                         Submit(batch);
                     }
@@ -229,6 +258,28 @@ public class Computer
         var agent = _agents[Interlocked.Increment(ref _next) % _agents.Length];
 
         agent.Queue.Enqueue(job);
-        agent.Wake();
+        agent.Wake();   
+    }
+
+    private object CreateJobMetric(Job job)
+    {
+        return new {
+            (job as ParallelJob)?.Iterations,
+            (job as ParallelForJob)?.BatchSize,
+            (job as ParallelFor2DJob)?.BatchSizeX,
+            (job as ParallelFor2DJob)?.BatchSizeY,
+            (job as ParallelFor2DJob)?.Width,
+            (job as ParallelFor2DJob)?.Height,
+            Size = (job as BatchJob)?.Size ?? (job as Batch2DJob)?.Size,
+            (job as BatchJob)?.Start,
+            (job as BatchJob)?.End,
+            (job as Batch2DJob)?.StartX,
+            (job as Batch2DJob)?.StartY,
+            (job as Batch2DJob)?.EndX,
+            (job as Batch2DJob)?.EndY,
+            Submitted = (double) job.Submitted,
+            Executed = (double?) (job.Executed > 0 ? job.Executed : null),
+            Terminated = (double) job.Terminated
+        };
     }
 }

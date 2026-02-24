@@ -95,6 +95,9 @@ public class Hypersolver : System
 
             _synapsesById[(_synapsesByEntity[entity] = record).Id] = entity;
         }
+
+        INFO("Neurons: {Neurons}", _neuronsById.Count);
+        INFO("Synapses: {Synapses}", _synapsesById.Count);
     }
 
     /// <summary>
@@ -137,7 +140,6 @@ public class Hypersolver : System
         });
 
         space.Mutate(_neurons, (Future future, in Entity entity, ref Components.Neuron neuron) => {
-
             var input = _inputs.GetValueOrDefault(entity);
 
             switch (neuron.Type)

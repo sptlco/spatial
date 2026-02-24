@@ -10,29 +10,6 @@ import { Fragment, ReactNode } from "react";
 import { Container, createElement, Icon, ScrollArea, Span } from "..";
 
 /**
- * Shared options for a select element.
- */
-export type SharedSelectProps = {
-  /**
-   * Whether or not the menu is open.
-   */
-  open?: boolean;
-
-  /**
-   *
-   * @param open An optional change event handler.
-   * @returns
-   */
-  onOpenChange?: (open: boolean) => void;
-
-  /**
-   * An optional selection event handler.
-   * @param value The selected value.
-   */
-  onSelect?: (value: string) => void;
-};
-
-/**
  * Configurable options for a select element.
  */
 export type SelectProps = {

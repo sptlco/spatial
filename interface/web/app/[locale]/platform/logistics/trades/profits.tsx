@@ -6,8 +6,9 @@ import { Spatial } from "@sptlco/client";
 import { clsx } from "clsx";
 import useSWR from "swr";
 
-import { Container, createElement, H2, ScrollArea, Span, Spinner, Tooltip } from "@sptlco/design";
+import { Button, Container, createElement, H2, Icon, Select, Span, Spinner, Tooltip } from "@sptlco/design";
 import { Metric } from "@sptlco/data";
+import { useState } from "react";
 
 type Bucket = {
   date: Date | null;
@@ -16,15 +17,16 @@ type Bucket = {
 
 export const Profits = createElement<typeof Container>((props, ref) => {
   const now = new Date();
-  const currentYear = now.getFullYear();
-  const currentMonth = now.getMonth();
 
-  const fiscalStartYear = currentMonth < 6 ? currentYear - 1 : currentYear;
+  const y = now.getFullYear();
+  const m = now.getMonth();
 
-  const startOfYear = new Date(Date.UTC(fiscalStartYear, 6, 1));
-  const endOfYear = new Date(Date.UTC(fiscalStartYear + 1, 5, 30));
+  const [year, setYear] = useState(m < 6 ? y - 1 : y);
 
-  const history = useSWR(["profits", fiscalStartYear], () => Spatial.metrics.read("ethereum", startOfYear, undefined, undefined, "1d"), {
+  const start = new Date(Date.UTC(year, 6, 1));
+  const end = new Date(Date.UTC(year + 1, 6, 1));
+
+  const history = useSWR(["profits", year], () => Spatial.metrics.read("ethereum", start, end, undefined, "1d"), {
     refreshInterval: 10000,
     dedupingInterval: 15000
   });
@@ -63,14 +65,16 @@ export const Profits = createElement<typeof Container>((props, ref) => {
   const weeks: Bucket[][] = [];
 
   const weekday = (date: Date) => {
-    const day = date.getDay();
+    const day = date.getUTCDay();
     return day === 0 ? 6 : day - 1;
   };
 
   let week: Bucket[] = Array(7).fill({ date: null, value: 0 });
-  let cursor = new Date(startOfYear);
+  let cursor = new Date(start);
 
-  while (cursor <= endOfYear) {
+  cursor.setUTCDate(cursor.getUTCDate() + 1);
+
+  while (cursor <= end) {
     const day = weekday(cursor);
 
     week[day] = { date: new Date(cursor), value: map.get(getKey(cursor)) ?? 0 };
@@ -122,13 +126,36 @@ export const Profits = createElement<typeof Container>((props, ref) => {
       )}
     >
       <Container className="flex flex-col w-full gap-10">
-        <H2 className="text-2xl inline-flex justify-between items-center gap-2.5 font-bold">
-          <Span>Annual Profit / Loss</Span>
-          <Span className="text-hint font-normal">{fiscalStartYear}</Span>
+        <H2 className="text-2xl inline-flex items-center gap-5 font-bold">
+          <Span>Profit / Loss</Span>
+          <Select.Root value={year.toString()} onValueChange={(value) => setYear(Number(value))}>
+            <Select.Trigger asChild>
+              <Button intent="ghost" className="data-[state=open]:bg-button-ghost-active px-4! font-semibold! text-hint!">
+                <Span>{year}</Span>
+                <Icon symbol="keyboard_arrow_down" />
+              </Button>
+            </Select.Trigger>
+            <Select.Content>
+              {[...Array(3)].map((_, i) => {
+                const value = (m < 6 ? y - 1 : y) - i;
+
+                const s = new Date(Date.UTC(value, 6, 1));
+                const e = new Date(Date.UTC(value + 1, 5, 30));
+
+                return (
+                  <Select.Item
+                    key={i}
+                    value={value.toString()}
+                    label={`FY ${value.toString()}`}
+                    description={`${s.toLocaleDateString(undefined, { timeZone: "UTC", month: "short", day: "2-digit", year: "numeric" })} - ${e.toLocaleDateString(undefined, { timeZone: "UTC", month: "short", day: "2-digit", year: "numeric" })}`}
+                  />
+                );
+              })}
+            </Select.Content>
+          </Select.Root>
         </H2>
         <Span className={clsx("text-4xl xl:text-9xl font-extrabold truncate", total > 0 ? "text-green" : "text-red")}>{formatCurrency(total)}</Span>
       </Container>
-
       <Container className="w-full grid grid-cols-21 gap-1 xl:hidden">
         {days.map((day, i) => (
           <Tooltip.Root key={i} delayDuration={0}>
@@ -152,28 +179,44 @@ export const Profits = createElement<typeof Container>((props, ref) => {
           </Tooltip.Root>
         ))}
       </Container>
-
-      <Container className="hidden xl:grid grid-rows-7 grid-flow-col gap-1">
-        {weeks.map((days, column) =>
-          days.map((day, row) => (
-            <Tooltip.Root key={`${column}-${row}`} delayDuration={0} disableHoverableContent>
-              <Tooltip.Trigger>
-                <Container
-                  suppressHydrationWarning
-                  className={clsx("rounded-xs size-2.5 transition-colors duration-200", day.date ? getColor(day.value) : "bg-background-surface")}
-                />
-              </Tooltip.Trigger>
-              {day.date && (
-                <Tooltip.Content className="flex items-center gap-1">
-                  <Span>{day.date.toDateString()}</Span>
-                  <Span className={clsx("flex items-center", day.value > 0 ? "text-green" : day.value < 0 ? "text-red" : "text-hint")}>
-                    <Span>{formatCurrency(day.value)}</Span>
-                  </Span>
-                </Tooltip.Content>
-              )}
-            </Tooltip.Root>
-          ))
-        )}
+      <Container className="flex gap-2">
+        <Container className="grid grid-rows-7 text-xs">
+          {["", "", "Mon", "", "Wed", "", "Fri", ""].map((label, i) => (
+            <Span key={i} className="flex h-2.5 leading-[10px]">
+              {label}
+            </Span>
+          ))}
+        </Container>
+        <Container className="flex flex-col gap-1">
+          <Container className="w-full grid grid-cols-12">
+            {" "}
+            {[...Array(12)].map((_, i) => (
+              <Span className="text-xs">{new Date(year, (start.getUTCMonth() + i) % 12).toLocaleDateString(undefined, { month: "short" })}</Span>
+            ))}{" "}
+          </Container>
+          <Container className="hidden xl:grid grid-rows-7 grid-flow-col gap-1">
+            {weeks.map((days, column) =>
+              days.map((day, row) => (
+                <Tooltip.Root key={`${column}-${row}`} delayDuration={0} disableHoverableContent>
+                  <Tooltip.Trigger>
+                    <Container
+                      suppressHydrationWarning
+                      className={clsx("rounded-xs size-2.5 transition-colors duration-200", day.date ? getColor(day.value) : "bg-background-surface")}
+                    />
+                  </Tooltip.Trigger>
+                  {day.date && (
+                    <Tooltip.Content className="flex items-center gap-1">
+                      <Span>{day.date.toDateString()}</Span>
+                      <Span className={clsx("flex items-center", day.value > 0 ? "text-green" : day.value < 0 ? "text-red" : "text-hint")}>
+                        <Span>{formatCurrency(day.value)}</Span>
+                      </Span>
+                    </Tooltip.Content>
+                  )}
+                </Tooltip.Root>
+              ))
+            )}
+          </Container>
+        </Container>
       </Container>
     </Container>
   );

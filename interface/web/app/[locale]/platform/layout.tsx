@@ -4,9 +4,10 @@
 
 import { Footer, LocaleSwitcher } from "@/elements";
 import { useUser } from "@/stores";
-import { Spatial } from "@sptlco/client";
+import { SESSION_COOKIE_NAME, Spatial } from "@sptlco/client";
 import { Account } from "@sptlco/data";
 import { clsx } from "clsx";
+import cookies from "js-cookie";
 import { useLocale, useTranslations } from "next-intl";
 import { usePathname } from "next/navigation";
 import { FormEvent, ReactNode, useEffect, useRef, useState } from "react";
@@ -167,6 +168,12 @@ export default function Layout(props: { children: ReactNode }) {
         setTimeout(() => {
           setRequirements((value) => ({ ...value, name: !user.account.name }));
         }, 1000);
+      } else {
+        // remove the session cookie
+        // reload the page to trigger authentication
+
+        cookies.remove(SESSION_COOKIE_NAME);
+        window.location.reload();
       }
     }
   }, [user.loading, user.account, user.authenticated]);

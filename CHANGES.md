@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.22.0](https://github.com/sptlco/spatial/compare/spatial-1.21.0...spatial-1.22.0) (2026-02-24)
+
+
+### Features
+
+* New metrics API ([#137](https://github.com/sptlco/spatial/issues/137)) ([af254f0](https://github.com/sptlco/spatial/commit/af254f0460cfc8bdbed01f6ac922156238716597))
+
 ## [1.21.0](https://github.com/sptlco/spatial/compare/spatial-1.20.0...spatial-1.21.0) (2026-02-23)
 
 

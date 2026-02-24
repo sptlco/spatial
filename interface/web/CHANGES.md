@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.25.0](https://github.com/sptlco/spatial/compare/spatial-interface-web-1.24.0...spatial-interface-web-1.25.0) (2026-02-24)
+
+
+### Features
+
+* New metrics API ([#137](https://github.com/sptlco/spatial/issues/137)) ([af254f0](https://github.com/sptlco/spatial/commit/af254f0460cfc8bdbed01f6ac922156238716597))
+
 ## [1.24.0](https://github.com/sptlco/spatial/compare/spatial-interface-web-1.23.0...spatial-interface-web-1.24.0) (2026-02-23)
 
 

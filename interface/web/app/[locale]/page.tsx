@@ -2,7 +2,7 @@
 
 "use client";
 
-import { Container, Icon, Link, Logo, Main, Span } from "@sptlco/design";
+import { Container, Link, Logo, Main } from "@sptlco/design";
 
 /**
  * Create a new landing page component.
@@ -16,20 +16,16 @@ export default function Page() {
         <Logo mode="wordmark" className="h-9 md:h-12 fill-white" />
         <Container className="flex flex-col md:flex-row items-center uppercase text-hint gap-5 md:gap-10 text-xs md:text-sm">
           <Link href="/blog" className="text-inherit! inline-flex items-center">
-            <Span>Research</Span>
-            <Icon symbol="arrow_outward" size={16} className="flex font-light" />
+            Research
           </Link>
           <Link href="/blog" className="text-inherit! inline-flex items-center">
-            <Span>Conference</Span>
-            <Icon symbol="arrow_outward" size={16} className="flex font-light" />
+            Conference
           </Link>
           <Link href="/store" className="text-inherit! inline-flex items-center">
-            <Span>Storefront</Span>
-            <Icon symbol="arrow_outward" size={16} className="flex font-light" />
+            Storefront
           </Link>
           <Link href="/platform" className="text-inherit! inline-flex items-center">
-            <Span>Platform</Span>
-            <Icon symbol="arrow_outward" size={16} className="flex font-light" />
+            Platform
           </Link>
         </Container>
       </Container>

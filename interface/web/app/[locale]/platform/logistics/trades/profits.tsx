@@ -180,19 +180,18 @@ export const Profits = createElement<typeof Container>((props, ref) => {
         ))}
       </Container>
       <Container className="flex gap-2">
-        <Container className="grid grid-rows-7 text-xs">
+        <Container className="grid grid-rows-7 text-xs text-hint">
           {["", "", "Mon", "", "Wed", "", "Fri", ""].map((label, i) => (
             <Span key={i} className="flex h-2.5 leading-[10px]">
               {label}
             </Span>
           ))}
         </Container>
-        <Container className="flex flex-col gap-1">
-          <Container className="w-full grid grid-cols-12">
-            {" "}
+        <Container className="flex flex-col gap-1.5">
+          <Container className="w-full grid grid-cols-12 text-foreground-quaternary font-semibold">
             {[...Array(12)].map((_, i) => (
               <Span className="text-xs">{new Date(year, (start.getUTCMonth() + i) % 12).toLocaleDateString(undefined, { month: "short" })}</Span>
-            ))}{" "}
+            ))}
           </Container>
           <Container className="hidden xl:grid grid-rows-7 grid-flow-col gap-1">
             {weeks.map((days, column) =>

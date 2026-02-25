@@ -15,9 +15,13 @@ export const Trades = createElement<typeof Card.Root>((props, ref) => {
   return (
     <Card.Root {...props} ref={ref}>
       <Container className="px-10">
-        <Link href="/platform/logistics" className="group text-hint! flex gap-4">
-          <Icon symbol="arrow_left_alt" className="transition-all duration-300 group-hover:-translate-x-1.5 group-active:-translate-x-1.5" />
-          <Span>Logistics</Span>
+        <Link href="/platform/logistics" className="group rounded-xl text-hint/20! flex gap-4">
+          <Icon
+            symbol="arrow_left_alt"
+            size={36}
+            className="font-light transition-all duration-300 group-hover:-translate-x-1.5 group-active:-translate-x-1.5"
+          />
+          <Span className="font-extrabold text-sm xl:text-3xl">Logistics</Span>
         </Link>
       </Container>
       <Card.Header className="px-10">

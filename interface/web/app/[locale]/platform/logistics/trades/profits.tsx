@@ -26,7 +26,7 @@ export const Profits = createElement<typeof Container>((props, ref) => {
   const start = new Date(Date.UTC(year, 6, 1));
   const end = new Date(Date.UTC(year + 1, 6, 1));
 
-  const history = useSWR(["profits", year], () => Spatial.metrics.read("ethereum", start, end, undefined, "1d"), {
+  const history = useSWR(["profits", year], () => Spatial.metrics.read("ethereum", start, end, undefined), {
     refreshInterval: 10000,
     dedupingInterval: 15000
   });
@@ -91,7 +91,11 @@ export const Profits = createElement<typeof Container>((props, ref) => {
     weeks.push(week);
   }
 
-  const total = metrics.length >= 2 ? equity(metrics[metrics.length - 1]) - equity(metrics[0]) : 0;
+  const first = metrics[0];
+  const latest = metrics[metrics.length - 1];
+
+  const total = metrics.slice(1).reduce((sum, m, i) => sum + (equity(m) - equity(metrics[i])), 0);
+  const diff = (equity(latest) - equity(first)) / equity(first);
   const max = Math.max(...weeks.flat().map((d) => Math.abs(d.value)), 1);
 
   function getColor(value: number) {
@@ -130,7 +134,7 @@ export const Profits = createElement<typeof Container>((props, ref) => {
           <Span>Profit / Loss</Span>
           <Select.Root value={year.toString()} onValueChange={(value) => setYear(Number(value))}>
             <Select.Trigger asChild>
-              <Button intent="ghost" className="data-[state=open]:bg-button-ghost-active px-4! font-semibold! text-hint!">
+              <Button intent="ghost" shape="pill" className="data-[state=open]:bg-button-ghost-active px-4! font-semibold! text-hint!">
                 <Span>{year}</Span>
                 <Icon symbol="keyboard_arrow_down" />
               </Button>
@@ -146,7 +150,7 @@ export const Profits = createElement<typeof Container>((props, ref) => {
                   <Select.Item
                     key={i}
                     value={value.toString()}
-                    label={`FY ${value.toString()}`}
+                    label={value.toString()}
                     description={`${s.toLocaleDateString(undefined, { timeZone: "UTC", month: "short", day: "2-digit", year: "numeric" })} - ${e.toLocaleDateString(undefined, { timeZone: "UTC", month: "short", day: "2-digit", year: "numeric" })}`}
                   />
                 );
@@ -154,7 +158,16 @@ export const Profits = createElement<typeof Container>((props, ref) => {
             </Select.Content>
           </Select.Root>
         </H2>
-        <Span className={clsx("text-4xl xl:text-9xl font-extrabold truncate", total > 0 ? "text-green" : "text-red")}>{formatCurrency(total)}</Span>
+
+        <Span className={clsx("flex items-center gap-4", total > 0 ? "text-green" : "text-red")}>
+          <Span className={clsx("text-4xl xl:text-8xl font-extrabold truncate")}>{formatCurrency(total)}</Span>
+          {diff != 0 && (
+            <Span className={clsx("inline-flex items-center text-2xl")}>
+              {diff > 0 ? <Icon symbol="arrow_drop_up" size={40} /> : <Icon symbol="arrow_drop_down" size={40} />}{" "}
+              <Span>{(Math.abs(diff) * 100).toFixed(2)}%</Span>{" "}
+            </Span>
+          )}
+        </Span>
       </Container>
       <Container className="w-full grid grid-cols-21 gap-1 xl:hidden">
         {days.map((day, i) => (
@@ -179,21 +192,23 @@ export const Profits = createElement<typeof Container>((props, ref) => {
           </Tooltip.Root>
         ))}
       </Container>
-      <Container className="flex gap-2">
-        <Container className="grid grid-rows-7 text-xs text-hint">
+      <Container className="hidden xl:flex gap-1">
+        <Container className="grid grid-rows-8 gap-1 text-xs text-foreground-quaternary font-semibold">
           {["", "", "Mon", "", "Wed", "", "Fri", ""].map((label, i) => (
-            <Span key={i} className="flex h-2.5 leading-[10px]">
+            <Span key={i} className="flex h-2.5 items-center">
               {label}
             </Span>
           ))}
         </Container>
-        <Container className="flex flex-col gap-1.5">
-          <Container className="w-full grid grid-cols-12 text-foreground-quaternary font-semibold">
+        <Container className="flex flex-col gap-1">
+          <Container className="grid grid-cols-12 gap-1 text-xs text-foreground-quaternary font-semibold">
             {[...Array(12)].map((_, i) => (
-              <Span className="text-xs">{new Date(year, (start.getUTCMonth() + i) % 12).toLocaleDateString(undefined, { month: "short" })}</Span>
+              <Span key={i} className="flex h-2.5 items-center">
+                {new Date(year, (start.getUTCMonth() + i) % 12).toLocaleDateString(undefined, { month: "short" })}
+              </Span>
             ))}
           </Container>
-          <Container className="hidden xl:grid grid-rows-7 grid-flow-col gap-1">
+          <Container className="grid grid-rows-7 grid-flow-col gap-1">
             {weeks.map((days, column) =>
               days.map((day, row) => (
                 <Tooltip.Root key={`${column}-${row}`} delayDuration={0} disableHoverableContent>

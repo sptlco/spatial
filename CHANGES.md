@@ -1,5 +1,18 @@
 # Changelog
 
+## [1.24.0](https://github.com/sptlco/spatial/compare/spatial-1.23.1...spatial-1.24.0) (2026-02-26)
+
+
+### Features
+
+* Finished the allocator ([#137](https://github.com/sptlco/spatial/issues/137)) ([5458d75](https://github.com/sptlco/spatial/commit/5458d751cf4fb215017f0b6857e205c5435d7f41))
+* Upgraded the allocator ([#137](https://github.com/sptlco/spatial/issues/137)) ([f80a73c](https://github.com/sptlco/spatial/commit/f80a73c2475322ea81892868d90ed13d7a214f7e))
+
+
+### Bug Fixes
+
+* Ditched CoinGecko ([#137](https://github.com/sptlco/spatial/issues/137)) ([99597df](https://github.com/sptlco/spatial/commit/99597dfff119fb0828f83ad07ca07e6147a9da6e))
+
 ## [1.23.1](https://github.com/sptlco/spatial/compare/spatial-1.23.0...spatial-1.23.1) (2026-02-26)
 
 

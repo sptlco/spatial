@@ -130,15 +130,15 @@ public class Allocator : BackgroundService
                     Duration = (decimal) (Time.Now - timestamp),
                     Volume = amount,
                     Price = price,
-                    Gas = Web3.Convert.FromWei(0) * price
+                    Gas = Web3.Convert.FromWei(receipt.GasUsed.Value * receipt.EffectiveGasPrice.Value) * price
                 },
                 metadata: new {
-                    Hash = "0x012345566611",
+                    Hash = receipt.TransactionHash,
                     Direction = "BUY",
                     Pair = "USDC/ETH"
                 });
             
-            INFO("Purchased Ethereum: {Transaction}", "0x012345566611");
+            INFO("Purchased Ethereum: {Transaction}", receipt.TransactionHash);
         }
         catch (Exception e)
         {
@@ -179,15 +179,15 @@ public class Allocator : BackgroundService
                     Duration = (decimal) (Time.Now - timestamp),
                     Volume = -amount,
                     Price = price,
-                    Gas = Web3.Convert.FromWei(0) * price
+                    Gas = Web3.Convert.FromWei(receipt.GasUsed.Value * receipt.EffectiveGasPrice.Value) * price
                 },
                 metadata: new {
-                    Hash = "0x012345566611",
+                    Hash = receipt.TransactionHash,
                     Direction = "SELL",
                     Pair = "ETH/USDC"
                 });
 
-            INFO("Sold Ethereum for USDC: {Transaction}", "0x012345566611");
+            INFO("Sold Ethereum for USDC: {Transaction}", receipt.TransactionHash);
         }
         catch (Exception e)
         {

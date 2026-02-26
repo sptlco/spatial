@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.26.1](https://github.com/sptlco/spatial/compare/spatial-interface-web-1.26.0...spatial-interface-web-1.26.1) (2026-02-26)
+
+
+### Bug Fixes
+
+* Correct date timezone ([#137](https://github.com/sptlco/spatial/issues/137)) ([8fce4ed](https://github.com/sptlco/spatial/commit/8fce4edc7631d5832ecaaca7e715634f6e6c3c91))
+
 ## [1.26.0](https://github.com/sptlco/spatial/compare/spatial-interface-web-1.25.0...spatial-interface-web-1.26.0) (2026-02-26)
 
 

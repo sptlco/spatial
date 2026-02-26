@@ -1,5 +1,18 @@
 # Changelog
 
+## [1.29.0](https://github.com/sptlco/spatial/compare/spatial-cloud-1.28.0...spatial-cloud-1.29.0) (2026-02-26)
+
+
+### Features
+
+* Added a capital allocator ([#137](https://github.com/sptlco/spatial/issues/137)) ([efe6b29](https://github.com/sptlco/spatial/commit/efe6b294e9a82ccc2a60aae9ab0d4ee7850aa1b2))
+* Added job metrics  ([#137](https://github.com/sptlco/spatial/issues/137)) ([3d39dea](https://github.com/sptlco/spatial/commit/3d39dea781eca0bef4af40e6ff62cfbdafbe3a0f))
+
+
+### Bug Fixes
+
+* Aligned benchmarks with new job API ([#137](https://github.com/sptlco/spatial/issues/137)) ([78d7452](https://github.com/sptlco/spatial/commit/78d7452fb7594677aeb7cd080a1e7da44acc8b99))
+
 ## [1.28.0](https://github.com/sptlco/spatial/compare/spatial-cloud-1.27.0...spatial-cloud-1.28.0) (2026-02-24)
 
 

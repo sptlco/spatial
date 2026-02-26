@@ -1,5 +1,21 @@
 # Changelog
 
+## [1.23.0](https://github.com/sptlco/spatial/compare/spatial-1.22.0...spatial-1.23.0) (2026-02-26)
+
+
+### Features
+
+* Added a capital allocator ([#137](https://github.com/sptlco/spatial/issues/137)) ([efe6b29](https://github.com/sptlco/spatial/commit/efe6b294e9a82ccc2a60aae9ab0d4ee7850aa1b2))
+* Added a diff indicator ([#137](https://github.com/sptlco/spatial/issues/137)) ([d4315fe](https://github.com/sptlco/spatial/commit/d4315fe2fb0ac83e53bc0677da90b6a1360fbd42))
+* Added job metrics  ([#137](https://github.com/sptlco/spatial/issues/137)) ([3d39dea](https://github.com/sptlco/spatial/commit/3d39dea781eca0bef4af40e6ff62cfbdafbe3a0f))
+* Added Markdown support ([#137](https://github.com/sptlco/spatial/issues/137)) ([6fa409b](https://github.com/sptlco/spatial/commit/6fa409b563f2bd7f84bb9013daeda3f19780b11b))
+* Added profit axis labels ([#137](https://github.com/sptlco/spatial/issues/137)) ([d99edb0](https://github.com/sptlco/spatial/commit/d99edb0df58696cf6ae9b2500d4f6fd9cf8abd4a))
+
+
+### Bug Fixes
+
+* Aligned benchmarks with new job API ([#137](https://github.com/sptlco/spatial/issues/137)) ([78d7452](https://github.com/sptlco/spatial/commit/78d7452fb7594677aeb7cd080a1e7da44acc8b99))
+
 ## [1.22.0](https://github.com/sptlco/spatial/compare/spatial-1.21.0...spatial-1.22.0) (2026-02-24)
 
 

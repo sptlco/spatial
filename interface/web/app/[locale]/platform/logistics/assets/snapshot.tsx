@@ -33,22 +33,20 @@ export const Snapshot = createElement<typeof Container, { period: keyof typeof P
 
   const tradeCount = trades.length;
   const volume = trades.reduce((sum, t) => sum + t.value.volume, 0);
-  const slippage = trades.reduce((sum, t) => sum + t.value.slippage, 0) / tradeCount || 0;
-  const gas = trades.reduce((sum, t) => sum + t.value.gas, 0) / tradeCount || 0;
+  const gas = trades.reduce((sum, t) => sum + t.value.gas, 0);
 
   const metrics: Metric[] = [
     { label: "Trades", value: formatNumber(tradeCount) },
-    { label: "Volume", value: formatCurrency(volume) },
-    { label: "Average Slippage", value: formatPercent(slippage) },
-    { label: "Average Gas", value: formatCurrency(gas) }
+    { label: "Total Volume", value: formatCurrency(volume) },
+    { label: "Total Gas", value: formatCurrency(gas) }
   ];
 
   return (
     <Container {...props} ref={ref} className={clsx("flex w-screen xl:w-auto flex-col gap-6", props.className)}>
       <H2 className="px-10 text-2xl font-bold">Snapshot</H2>
-      <Container className="flex flex-col xl:flex-row w-full xl:rounded-4xl xl:bg-background-surface">
+      <Container className="flex flex-col xl:flex-row xl:justify-between w-full xl:rounded-4xl xl:bg-background-surface">
         {metrics.map((metric, i) => (
-          <Container key={i} className="grow flex flex-col gap-4 p-10 whitespace-nowrap">
+          <Container key={i} className="grow flex flex-col xl:items-center gap-4 p-10 whitespace-nowrap">
             <Span className="text-sm text-foreground-quaternary font-semibold flex items-center gap-2">
               <Span>{metric.label}</Span>
               {metric.tip && (

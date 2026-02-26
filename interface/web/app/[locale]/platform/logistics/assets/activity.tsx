@@ -95,19 +95,18 @@ export const Activity = createElement<typeof Container>((props, ref) => {
     },
     {
       name: "Volume",
-      renderer: (metric) => <Span>{highlight(formatCurrency(metric.value.volume), keywords)}</Span>
-    },
-    {
-      name: "Price",
-      renderer: (metric) => <Span>{highlight(formatCurrency(metric.value.price), keywords)}</Span>
+      renderer: (metric) => (
+        <Span className={clsx("flex items-center", metric.value.volume > 0 ? "text-green" : "text-red")}>
+          <Span className="inline-flex items-center justify-center">
+            {metric.value.volume > 0 ? <Icon symbol="arrow_drop_up" size={32} /> : <Icon symbol="arrow_drop_down" size={32} />}
+          </Span>
+          <Span className="font-semibold text-sm">{highlight(formatCurrency(metric.value.volume), keywords)}</Span>
+        </Span>
+      )
     },
     {
       name: "Gas",
       renderer: (metric) => <Span>{highlight(formatCurrency(metric.value.gas), keywords)}</Span>
-    },
-    {
-      name: "Slippage",
-      renderer: (metric) => <Span>{highlight(`${(metric.value.slippage * 100).toFixed(2)}%`, keywords)}</Span>
     }
   ];
 
@@ -203,6 +202,8 @@ export const Activity = createElement<typeof Container>((props, ref) => {
     setSearch(keywords.join(" "));
   }, [searchParams]);
 
+  console.log(entries);
+
   return (
     <Container {...props} ref={ref} className={clsx("flex flex-col gap-10 w-screen xl:w-auto", props.className)}>
       <H2 className="px-10 text-2xl font-bold">Activity</H2>
@@ -277,7 +278,7 @@ export const Activity = createElement<typeof Container>((props, ref) => {
   );
 });
 
-function formatCurrency(value?: number) {
+function formatCurrency(value?: number, currency?: string) {
   if (value == null || isNaN(value)) {
     return "-";
   }
@@ -289,7 +290,7 @@ function formatCurrency(value?: number) {
       maximumFractionDigits: 2
     }).format(num);
 
-    return `${value < 0 ? "-" : ""}${formatted}${suffix} USD`;
+    return `${value < 0 ? "-" : ""}${formatted}${suffix} ${currency ?? "USD"}`;
   };
 
   if (abs >= 1_000_000_000_000) {
@@ -311,5 +312,5 @@ function formatCurrency(value?: number) {
   return `${new Intl.NumberFormat("en-US", {
     minimumFractionDigits: 0,
     maximumFractionDigits: 2
-  }).format(value)} USD`;
+  }).format(value)} ${currency ?? "USD"}`;
 }

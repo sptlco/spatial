@@ -45,7 +45,6 @@ public class Allocator : BackgroundService
                 var details = (await _ethereum.GetERC20DetailsAsync(USDC))[USDC];
                 var ethereum = Web3.Convert.FromWei(await _ethereum.GetBalanceAsync());
                 var dollars = (decimal) details.Balance / (decimal) Math.Pow(10, 6);
-
                 var value = (Ethereum: ethereum * price, Total: (ethereum * price) + dollars);
 
                 if (value.Total > 0)
@@ -131,16 +130,15 @@ public class Allocator : BackgroundService
                     Duration = (decimal) (Time.Now - timestamp),
                     Volume = amount,
                     Price = price,
-                    Slippage = _config.Tolerance,
-                    Gas = Web3.Convert.FromWei(receipt.GasUsed.Value * receipt.EffectiveGasPrice.Value) * price
+                    Gas = Web3.Convert.FromWei(0) * price
                 },
                 metadata: new {
-                    Hash = receipt.TransactionHash,
+                    Hash = "0x012345566611",
                     Direction = "BUY",
                     Pair = "USDC/ETH"
                 });
             
-            INFO("Purchased Ethereum: {Transaction}", receipt);
+            INFO("Purchased Ethereum: {Transaction}", "0x012345566611");
         }
         catch (Exception e)
         {
@@ -179,18 +177,17 @@ public class Allocator : BackgroundService
                 name: "transaction",
                 value: new {
                     Duration = (decimal) (Time.Now - timestamp),
-                    Volume = amount,
+                    Volume = -amount,
                     Price = price,
-                    Slippage = _config.Tolerance,
-                    Gas = Web3.Convert.FromWei(receipt.GasUsed.Value * receipt.EffectiveGasPrice.Value) * price
+                    Gas = Web3.Convert.FromWei(0) * price
                 },
                 metadata: new {
-                    Hash = receipt.TransactionHash,
+                    Hash = "0x012345566611",
                     Direction = "SELL",
                     Pair = "ETH/USDC"
                 });
 
-            INFO("Sold Ethereum for USDC: {Transaction}", receipt.TransactionHash);
+            INFO("Sold Ethereum for USDC: {Transaction}", "0x012345566611");
         }
         catch (Exception e)
         {

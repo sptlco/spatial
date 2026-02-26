@@ -19,11 +19,11 @@ export const PERIODS = {
 };
 
 export const Balance = createElement<typeof Container, { period: keyof typeof PERIODS; onPeriodChange: (period: keyof typeof PERIODS) => void }>(
-  (props, ref) => {
+  ({ onPeriodChange, ...props }, ref) => {
     const [point, setPoint] = useState<number | null>(null);
 
     useEffect(() => {
-      props.onPeriodChange(props.period);
+      onPeriodChange(props.period);
     }, [props.period]);
 
     const from = useMemo(() => {
@@ -150,7 +150,7 @@ export const Balance = createElement<typeof Container, { period: keyof typeof PE
                 type="single"
                 value={props.period}
                 onValueChange={(value) => {
-                  if (value) props.onPeriodChange(value as keyof typeof PERIODS);
+                  if (value) onPeriodChange(value as keyof typeof PERIODS);
                 }}
               >
                 {Object.entries(PERIODS).map((period, i) => (

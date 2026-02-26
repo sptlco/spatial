@@ -16,13 +16,14 @@ public class LatestRoundDataFunction : FunctionMessage
 /// <summary>
 /// Output from the <see cref="LatestRoundDataFunction"/>.
 /// </summary>
+[FunctionOutput]
 public class LatestRoundDataOutputDTO : IFunctionOutputDTO
 {
     /// <summary>
     /// The round's ID.
     /// </summary>
     [Parameter("uint80", "roundId", 1)]
-    public ulong RoundId { get; set; }
+    public BigInteger RoundId { get; set; }
 
     /// <summary>
     /// The price of the token.
@@ -46,5 +47,5 @@ public class LatestRoundDataOutputDTO : IFunctionOutputDTO
     /// ...
     /// </summary>
     [Parameter("uint80", "answeredInRound", 5)]
-    public ulong AnsweredInRound { get; set; }
+    public BigInteger AnsweredInRound { get; set; }
 }

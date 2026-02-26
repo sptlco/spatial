@@ -1,5 +1,15 @@
 # Changelog
 
+## [1.26.0](https://github.com/sptlco/spatial/compare/spatial-interface-web-1.25.0...spatial-interface-web-1.26.0) (2026-02-26)
+
+
+### Features
+
+* Added a capital allocator ([#137](https://github.com/sptlco/spatial/issues/137)) ([efe6b29](https://github.com/sptlco/spatial/commit/efe6b294e9a82ccc2a60aae9ab0d4ee7850aa1b2))
+* Added a diff indicator ([#137](https://github.com/sptlco/spatial/issues/137)) ([d4315fe](https://github.com/sptlco/spatial/commit/d4315fe2fb0ac83e53bc0677da90b6a1360fbd42))
+* Added Markdown support ([#137](https://github.com/sptlco/spatial/issues/137)) ([6fa409b](https://github.com/sptlco/spatial/commit/6fa409b563f2bd7f84bb9013daeda3f19780b11b))
+* Added profit axis labels ([#137](https://github.com/sptlco/spatial/issues/137)) ([d99edb0](https://github.com/sptlco/spatial/commit/d99edb0df58696cf6ae9b2500d4f6fd9cf8abd4a))
+
 ## [1.25.0](https://github.com/sptlco/spatial/compare/spatial-interface-web-1.24.0...spatial-interface-web-1.25.0) (2026-02-24)
 
 

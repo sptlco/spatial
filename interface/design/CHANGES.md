@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.17.0](https://github.com/sptlco/spatial/compare/spatial-interface-design-1.16.0...spatial-interface-design-1.17.0) (2026-02-26)
+
+
+### Features
+
+* Added a capital allocator ([#137](https://github.com/sptlco/spatial/issues/137)) ([efe6b29](https://github.com/sptlco/spatial/commit/efe6b294e9a82ccc2a60aae9ab0d4ee7850aa1b2))
+* Added profit axis labels ([#137](https://github.com/sptlco/spatial/issues/137)) ([d99edb0](https://github.com/sptlco/spatial/commit/d99edb0df58696cf6ae9b2500d4f6fd9cf8abd4a))
+
 ## [1.16.0](https://github.com/sptlco/spatial/compare/spatial-interface-design-1.15.0...spatial-interface-design-1.16.0) (2026-02-23)
 
 

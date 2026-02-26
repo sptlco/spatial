@@ -8,17 +8,40 @@ import useSWR from "swr";
 import { createElement, Span } from "@sptlco/design";
 
 function formatCurrency(value?: number) {
-  if (value == null) {
+  if (value == null || isNaN(value)) {
     return "-";
   }
 
-  return new Intl.NumberFormat("en-US", {
-    style: "currency",
-    currency: "USD",
-    currencyDisplay: "code",
-    currencySign: "accounting",
+  const abs = Math.abs(value);
+  const format = (num: number, suffix = "") => {
+    const formatted = new Intl.NumberFormat("en-US", {
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 2
+    }).format(num);
+
+    return `${value < 0 ? "-" : ""}${formatted}${suffix} USD`;
+  };
+
+  if (abs >= 1_000_000_000_000) {
+    return format(abs / 1_000_000_000_000, "T");
+  }
+
+  if (abs >= 1_000_000_000) {
+    return format(abs / 1_000_000_000, "B");
+  }
+
+  if (abs >= 1_000_000) {
+    return format(abs / 1_000_000, "M");
+  }
+
+  if (abs >= 1_000) {
+    return format(abs / 1_000, "K");
+  }
+
+  return `${new Intl.NumberFormat("en-US", {
+    minimumFractionDigits: 0,
     maximumFractionDigits: 2
-  }).format(value);
+  }).format(value)} USD`;
 }
 
 /**

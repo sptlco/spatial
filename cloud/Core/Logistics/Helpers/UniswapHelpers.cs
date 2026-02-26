@@ -1,8 +1,9 @@
 // Copyright © Spatial Corporation. All rights reserved.
 
 using System.Numerics;
+using Nethereum.RPC.Eth.DTOs;
 
-namespace Spatial.Blockchain.Helpers;
+namespace Spatial.Logistics.Helpers;
 
 /// <summary>
 /// Helper methods for Uniswap.
@@ -18,7 +19,7 @@ public static class Uniswap
     /// <param name="to">Recipient of the output tokens.</param>
     /// <param name="deadline">Unix timestamp after which the transaction will revert.</param>
     /// <returns>The input token amount and all subsequent output token amounts.</returns>
-    public static async Task<string> SwapExactETHForTokensAsync(
+    public static async Task<TransactionReceipt> SwapExactETHForTokensAsync(
         BigInteger amountIn,
         BigInteger amountOutMin,
         string[] path,
@@ -42,7 +43,7 @@ public static class Uniswap
     /// <param name="to">Recipient of the ETH.</param>
     /// <param name="deadline">Unix timestamp after which the transaction will revert.</param>
     /// <returns>The input token amount and all subsequent output token amounts.</returns>
-    public static async Task<string> SwapExactTokensForETHAsync(
+    public static async Task<TransactionReceipt> SwapExactTokensForETHAsync(
         BigInteger amountIn,
         BigInteger amountOutMin,
         string[] path,

@@ -19,7 +19,7 @@ export default async function Page({ params }: { params: Promise<{ slug: string 
  * @returns The pages to pre-render.
  */
 export function generateStaticParams() {
-  return config.posts.map((post) => ({ slug: post.slug }));
+  return config.posts.filter((post) => process.env.NODE_ENV !== "production" || post.public).map((post) => ({ slug: post.slug }));
 }
 
 export const dynamicParams = false;

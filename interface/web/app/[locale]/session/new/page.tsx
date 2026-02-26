@@ -105,6 +105,10 @@ export default function Page() {
     <ScrollArea.Root className="size-full">
       <ScrollArea.Viewport className="max-h-screen">
         <Main className="grid grid-cols-[1fr_auto_1fr] grid-rows-[auto_1fr_auto] p-10 gap-y-20 w-full min-h-screen">
+          <Link href="" className="row-start-1 col-start-1 text-inherit!" onClick={() => window.history.back()}>
+            <Icon symbol="arrow_left_alt" />
+            <Span className="hidden md:inline-flex">Go back</Span>
+          </Link>
           <Container className="row-start-1 col-start-2 sm:col-start-3 sm:justify-self-end h-10 flex items-center justify-center">
             <LocaleSwitcher />
           </Container>

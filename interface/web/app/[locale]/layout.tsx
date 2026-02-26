@@ -12,7 +12,7 @@ import "./global.css";
  * Top-level application metadata for improved SEO and web shareability.
  */
 export const metadata: Metadata = {
-  title: "Spatial",
+  title: "Spatial Corporation",
   description: "Leading industrial research and development."
 };
 

@@ -17,7 +17,7 @@ public static class ResourceExtensions
     /// <param name="record">The <see cref="Resource"/> to store.</param>
     public static T Store<T>(this T record) where T : Resource
     {
-        Resource<T>.Store(record);
+        Resource<T>.StoreOne(record);
 
         return record;
     }

@@ -2,7 +2,7 @@
 
 using Stripe;
 
-namespace Spatial.Billing;
+namespace Spatial.Logistics;
 
 /// <summary>
 /// A means of interaction with Stripe.

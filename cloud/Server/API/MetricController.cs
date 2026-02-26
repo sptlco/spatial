@@ -2,6 +2,7 @@
 
 using Spatial.Cloud.Data.Scopes;
 using Spatial.Identity.Authorization;
+using Spatial.Persistence;
 
 namespace Spatial.Cloud.API;
 

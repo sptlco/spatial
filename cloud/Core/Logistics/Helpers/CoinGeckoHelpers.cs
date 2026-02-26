@@ -3,7 +3,7 @@
 using Spatial.Helpers;
 using System.Text.Json;
 
-namespace Spatial.Blockchain.Helpers;
+namespace Spatial.Logistics.Helpers;
 
 /// <summary>
 /// Helpers methods for CoinGecko.

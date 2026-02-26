@@ -1,6 +1,6 @@
 // Copyright © Spatial Corporation. All rights reserved.
 
-namespace Spatial.Communication;
+namespace Spatial.Networking;
 
 /// <summary>
 /// Configurable options for SMTP.

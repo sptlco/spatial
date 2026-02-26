@@ -6,10 +6,10 @@ import { Spatial } from "@sptlco/client";
 import { Metric } from "@sptlco/data";
 import { clsx } from "clsx";
 import { useMemo, useState } from "react";
-import { Line, LineChart, ReferenceLine, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
+import { Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 import useSWR from "swr";
 
-import { Container, createElement, H2, Icon, Span, ToggleGroup } from "@sptlco/design";
+import { Container, createElement, H2, Icon, Path, Portal, Span, Svg, ToggleGroup } from "@sptlco/design";
 
 const PERIODS = {
   "24h": "24H",
@@ -26,12 +26,12 @@ export const Balance = createElement<typeof Container>((props, ref) => {
     return getFromDate(period);
   }, [period]);
 
-  const history = useSWR(["platform/logistics/trades/balance/history", period], () => Spatial.metrics.read("ethereum", from), {
+  const ethereum = useSWR(["platform/logistics/trades/balance/ethereum", period], () => Spatial.metrics.read("ethereum", from), {
     refreshInterval: 10000,
     dedupingInterval: 15000
   });
 
-  const metrics = history.data && !history.data.error ? history.data.data : undefined;
+  const metrics = ethereum.data && !ethereum.data.error ? ethereum.data.data : undefined;
   const now = metrics && metrics[metrics.length - 1];
 
   const data = useMemo(() => {
@@ -98,8 +98,6 @@ export const Balance = createElement<typeof Container>((props, ref) => {
     return connector ? [...history, connector, ...forecastData] : history;
   }, [data, forecastData]);
 
-  console.log(metrics);
-
   const base = metrics && metrics.length ? getValue(metrics[0]) : 0;
   const hovered = point != null ? combinedData[point] : null;
   const hoveredValue = hovered?.historyValue ?? hovered?.forecastValue ?? null;
@@ -110,7 +108,7 @@ export const Balance = createElement<typeof Container>((props, ref) => {
 
   const color = useMemo(() => {
     if (!data || data.length < 2) {
-      return "var(--color-blue)";
+      return "var(--color-foreground-primary)";
     }
 
     const first = data[0].value;
@@ -119,15 +117,23 @@ export const Balance = createElement<typeof Container>((props, ref) => {
     if (last > first) return "var(--color-green)";
     if (last < first) return "var(--color-red)";
 
-    return "var(--color-blue)";
+    return "var(--color-foreground-primary)";
   }, [data]);
 
   return (
     <Container {...props} ref={ref} className={clsx("flex flex-col gap-10 w-screen xl:w-auto", props.className)}>
-      <Container className="flex flex-col gap-10">
-        <Container className="flex flex-col px-10 xl:pr-0 gap-6">
-          <Container className="flex flex-col sm:flex-row gap-5 items-start">
-            <Container className="flex grow items-center justify-start gap-4">
+      {metrics && (
+        <Portal container={document.getElementById("title")!}>
+          <Container className="flex items-center gap-2.5 md:gap-4 font-extrabold truncate text-sm md:text-base">
+            <Ethereum className="h-5 md:h-6" />
+            <Span className="truncate">{formatCurrency(metrics[metrics.length - 1].value.price)}</Span>
+          </Container>
+        </Portal>
+      )}
+      <Container className="flex flex-col gap-10 pb-10 xl:p-10 xl:rounded-[56px]">
+        <Container className="flex flex-col gap-6 px-10 xl:p-0">
+          <Container className="flex flex-col sm:flex-row gap-5 xl:gap-10 items-start xl:items-center">
+            <Container className="flex items-center justify-start gap-4">
               <H2 className="inline-flex text-2xl font-extrabold">Balance</H2>
               <Span className={clsx("inline-flex items-center gap-1 text-sm text-hint", !hovered && "text-yellow")}>
                 <Icon symbol={point ? (isForecastHover ? "online_prediction" : "history") : "bolt"} className="font-light" size={20} fill />
@@ -155,8 +161,8 @@ export const Balance = createElement<typeof Container>((props, ref) => {
             </ToggleGroup.Root>
           </Container>
 
-          <Span className="flex items-center gap-4">
-            <Span className="text-4xl xl:text-9xl font-extrabold truncate">
+          <Span className="flex flex-col md:flex-row md:items-center gap-4">
+            <Span className="text-5xl xl:text-9xl font-extrabold truncate">
               {!now ? (
                 <Container className="flex items-center h-32">
                   <Span className="bg-background-surface rounded-full h-10 w-sm animate-pulse flex" />
@@ -166,14 +172,14 @@ export const Balance = createElement<typeof Container>((props, ref) => {
               )}
             </Span>
             {diff != 0 && (
-              <Span className={clsx("inline-flex items-center text-2xl", diff > 0 ? "text-green" : "text-red")}>
+              <Span className={clsx("inline-flex items-center text-xl xl:text-2xl", diff > 0 ? "text-green" : "text-red")}>
                 {diff > 0 ? <Icon symbol="arrow_drop_up" size={40} /> : <Icon symbol="arrow_drop_down" size={40} />}{" "}
                 <Span>{(Math.abs(diff) * 100).toFixed(2)}%</Span>{" "}
               </Span>
             )}
           </Span>
         </Container>
-        <ResponsiveContainer className="bg-grid mask-l-from-80% mask-r-from-80%" width="100%" aspect={2.5} maxHeight={256}>
+        <ResponsiveContainer className="" width="100%" aspect={2.5} maxHeight={256}>
           <Container className="relative h-full w-full">
             <LineChart
               accessibilityLayer
@@ -223,16 +229,14 @@ export const Balance = createElement<typeof Container>((props, ref) => {
               <Line
                 type="monotone"
                 dataKey="forecastValue"
-                stroke={color}
+                stroke={"var(--color-line-base)"}
                 strokeWidth={2}
-                strokeDasharray="2 6"
+                strokeOpacity={0.25}
                 dot={false}
                 activeDot={false}
                 isAnimationActive={false}
                 connectNulls
               />
-
-              {data.length > 0 && <ReferenceLine x={data[data.length - 1].date.getTime()} stroke="var(--color-border)" strokeDasharray="3 3" />}
 
               <Tooltip
                 content={() => null}
@@ -250,18 +254,53 @@ export const Balance = createElement<typeof Container>((props, ref) => {
   );
 });
 
+const Ethereum = createElement<typeof Svg>((props, ref) => {
+  return (
+    <Svg {...props} ref={ref} xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 540 879.4" fill="currentColor">
+      <Path d="m269.9 325.2-269.9 122.7 269.9 159.6 270-159.6z" />
+      <Path d="m0.1 447.8 269.9 159.6v-607.4z" />
+      <Path d="m270 0v607.4l269.9-159.6z" />
+      <Path d="m0 499 269.9 380.4v-220.9z" />
+      <Path d="m269.9 658.5v220.9l270.1-380.4z" />
+    </Svg>
+  );
+});
+
 function formatCurrency(value?: number) {
-  if (value == null) {
+  if (value == null || isNaN(value)) {
     return "-";
   }
 
-  return new Intl.NumberFormat("en-US", {
-    style: "currency",
-    currency: "USD",
-    currencyDisplay: "code",
-    currencySign: "accounting",
+  const abs = Math.abs(value);
+  const format = (num: number, suffix = "") => {
+    const formatted = new Intl.NumberFormat("en-US", {
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 2
+    }).format(num);
+
+    return `${value < 0 ? "-" : ""}${formatted}${suffix} USD`;
+  };
+
+  if (abs >= 1_000_000_000_000) {
+    return format(abs / 1_000_000_000_000, "T");
+  }
+
+  if (abs >= 1_000_000_000) {
+    return format(abs / 1_000_000_000, "B");
+  }
+
+  if (abs >= 1_000_000) {
+    return format(abs / 1_000_000, "M");
+  }
+
+  if (abs >= 1_000) {
+    return format(abs / 1_000, "K");
+  }
+
+  return `${new Intl.NumberFormat("en-US", {
+    minimumFractionDigits: 0,
     maximumFractionDigits: 2
-  }).format(value);
+  }).format(value)} USD`;
 }
 
 function formatDate(date?: Date | null, period?: keyof typeof PERIODS, isHovering?: boolean) {

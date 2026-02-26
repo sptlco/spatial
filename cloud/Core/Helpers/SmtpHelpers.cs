@@ -5,12 +5,12 @@ using Spatial.Extensions;
 using System.Net;
 using System.Net.Mail;
 
-namespace Spatial.Communication;
+namespace Spatial.Helpers;
 
 /// <summary>
 /// Helper methods for SMTP.
 /// </summary>
-public static class Mail
+public static class Smtp
 {
     /// <summary>
     /// Send an email.

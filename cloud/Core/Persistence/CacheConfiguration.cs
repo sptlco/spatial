@@ -1,6 +1,6 @@
 // Copyright © Spatial Corporation. All rights reserved.
 
-namespace Spatial.Caching;
+namespace Spatial.Persistence;
 
 /// <summary>
 /// Configurable options for <see cref="Cache"/>.

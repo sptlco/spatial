@@ -8,7 +8,7 @@ using System.Reflection;
 namespace Spatial.Persistence;
 
 /// <summary>
-/// A document stored in the database.
+/// An object stored in the database.
 /// </summary>
 public class Resource
 {
@@ -53,7 +53,7 @@ public static class Resource<T> where T : Resource
     /// Store a <see cref="Resource"/> of type <typeparamref name="T"/>.
     /// </summary>
     /// <param name="record">The <see cref="Resource"/> to store.</param>
-    public static T Store(in T record)
+    public static T StoreOne(in T record)
     {
         GetCollection().InsertOne(record);
 
@@ -64,11 +64,29 @@ public static class Resource<T> where T : Resource
     /// Store a <see cref="Resource"/> of type <typeparamref name="T"/>.
     /// </summary>
     /// <param name="record">The <see cref="Resource"/> to store.</param>
-    public static async Task<T> StoreAsync(T record)
+    public static async Task<T> StoreOneAsync(T record)
     {
         await GetCollection().InsertOneAsync(record);
 
         return record;
+    }
+
+    /// <summary>
+    /// Store several resources.
+    /// </summary>
+    /// <param name="resources">A list of resources.</param>
+    public static void StoreMany(IEnumerable<T> resources)
+    {
+        GetCollection().InsertMany(resources);
+    }
+
+    /// <summary>
+    /// Store several resources.
+    /// </summary>
+    /// <param name="resources">A list of resources.</param>
+    public static Task StoreManyAsync(IEnumerable<T> resources)
+    {
+        return GetCollection().InsertManyAsync(resources);
     }
 
     /// <summary>

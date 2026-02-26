@@ -111,7 +111,7 @@ export const Combobox = {
     const [value, setValue] = useState("");
 
     return (
-      <Popover.Content {...props} ref={ref}>
+      <Popover.Content {...props} ref={ref} onOpenAutoFocus={(e) => e.preventDefault()}>
         <Container className="flex items-center gap-4 p-4">
           <Icon symbol="search" size={20} />
           <Input
@@ -138,7 +138,7 @@ export const Combobox = {
    */
   List: createElement<typeof UL, { label?: string; containerClassName?: string }>((props, ref) => (
     <Container className={clsx("flex flex-col w-full", props.containerClassName)}>
-      {props.label && <Span className="flex w-full py-2 px-4 bg-background-highlight/30 font-bold text-xs text-hint uppercase">{props.label}</Span>}
+      {props.label && <Span className="flex w-full p-4 font-bold text-xs text-hint uppercase">{props.label}</Span>}
       <UL {...props} ref={ref} className={clsx("flex flex-col w-full", props.className)}>
         {props.children}
       </UL>

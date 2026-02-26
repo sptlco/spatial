@@ -118,7 +118,7 @@ export const Roles = () => {
   const PAGE_SIZE = 20;
 
   const page = useMemo(() => Math.max(1, Number(searchParams.get("roles") ?? 1)), [searchParams]);
-  const pages = Math.ceil(sortedData.length / PAGE_SIZE);
+  const pages = Math.ceil((roles.data?.length ?? PAGE_SIZE) / PAGE_SIZE);
 
   const paginatedData = useMemo(() => {
     const start = (page - 1) * PAGE_SIZE;

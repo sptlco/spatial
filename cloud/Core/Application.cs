@@ -23,6 +23,7 @@ using Spatial.Compute;
 using Spatial.Extensions;
 using Spatial.Identity;
 using Spatial.Identity.Authorization;
+using Spatial.Logistics;
 using Spatial.Networking;
 using Spatial.Persistence;
 using Spatial.Simulation;
@@ -428,6 +429,11 @@ public class Application
             });
 
         builder.Services.AddSingleton<IAuthorizationHandler, PermissionHandler>();
+
+        if (configuration.Ethereum.Allocator.Enabled)
+        {
+            builder.Services.AddHostedService<Allocator>();
+        }
 
         var application = builder.Build();
 

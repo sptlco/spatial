@@ -59,6 +59,11 @@ export type TextFieldProps = {
   placeholder?: string;
 
   /**
+   * An optional icon.
+   */
+  icon?: ReactNode;
+
+  /**
    * An optional prefix.
    */
   prefix?: string;
@@ -259,9 +264,10 @@ export const Field = createElement<"input", FieldProps>(({ containerClassName, i
         }
 
         const input = () => {
-          if (props.prefix || props.suffix) {
+          if (props.prefix || props.suffix || props.icon) {
             return (
-              <Container className={clsx(classes, "flex items-center w-full", props.className)}>
+              <Container className={clsx(classes, "flex items-center w-full gap-4", props.className)}>
+                {props.icon}
                 {props.prefix && <Span className="flex text-hint shrink-0">{props.prefix}</Span>}
                 <Input
                   {...props}

@@ -7,12 +7,13 @@ using Nethereum.Contracts.QueryHandlers.MultiCall;
 using Nethereum.Contracts.Standards.ERC20.ContractDefinition;
 using Nethereum.Hex.HexConvertors.Extensions;
 using Nethereum.Hex.HexTypes;
+using Nethereum.RPC.Eth.DTOs;
 using Nethereum.Web3;
 using Nethereum.Web3.Accounts;
 using Spatial.Helpers;
 using System.Numerics;
 
-namespace Spatial.Blockchain;
+namespace Spatial.Logistics;
 
 /// <summary>
 /// A means of interaction with Ethereum networks.
@@ -150,7 +151,7 @@ public class Ethereum
     /// <param name="value">An amount of ETH to send along with the transaction.</param>
     /// <param name="input">The transaction's input parameters.</param>
     /// <returns>Receipt of the transaction.</returns>
-    public async Task<string> SendTransactionAsync(
+    public async Task<TransactionReceipt> SendTransactionAsync(
         string abi,
         string contract,
         string function,
@@ -161,7 +162,7 @@ public class Ethereum
         var wei = value.HasValue ? new HexBigInteger(value.Value) : null;
         var gas = await target.EstimateGasAsync(_account.Address, null, wei, input);
 
-        return (await target.SendTransactionAndWaitForReceiptAsync(_account.Address, gas, wei, receiptRequestCancellationToken: null, input)).TransactionHash;
+        return await target.SendTransactionAndWaitForReceiptAsync(_account.Address, gas, wei, receiptRequestCancellationToken: null, input);
     }
 
     private string Download(string contract)

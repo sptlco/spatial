@@ -1,7 +1,7 @@
 {
   "authentication": {
     "title": "Secure Access",
-    "description": "Sign in to continue to Spatial.",
+    "description": "Sign in to continue.",
 
     "email": {
       "label": "User ID"

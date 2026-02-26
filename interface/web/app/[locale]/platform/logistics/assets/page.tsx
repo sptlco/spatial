@@ -1,10 +1,10 @@
 // Copyright © Spatial Corporation. All rights reserved.
 
-import { Trades } from "./trades";
+import { Assets } from "./assets";
 
 /**
  * An automated trading dashboard.
  */
 export default function Page() {
-  return <Trades />;
+  return <Assets />;
 }

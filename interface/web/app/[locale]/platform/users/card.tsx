@@ -256,17 +256,21 @@ export const Users = () => {
   const PAGE_SIZE = 20;
   const PAGE = useMemo(() => Math.max(1, Number(searchParams.get("users") ?? 1)), [searchParams]);
 
-  const paginatedData = useMemo(() => {
-    const start = (PAGE - 1) * PAGE_SIZE;
-    return users.data?.slice(start, start + PAGE_SIZE) ?? [];
-  }, [users.data, PAGE]);
+  const allData = users.data ?? [];
 
-  const filteredData =
-    (filters.length === 0 ? paginatedData : paginatedData?.filter((u) => filters.every((t) => u.principal.roles.includes(t))))?.filter((u) =>
-      matchesKeywords(u, keywords)
-    ) ?? [];
+  const filteredData = useMemo(() => {
+    return allData.filter(
+      (user) => (filters.length === 0 || filters.every((role) => user.principal.roles.includes(role))) && matchesKeywords(user, keywords)
+    );
+  }, [allData, filters, keywords]);
 
   const sortedData = useMemo(() => sort([...filteredData]), [filteredData, order]);
+
+  const paginatedData = useMemo(() => {
+    const start = (PAGE - 1) * PAGE_SIZE;
+    return sortedData.slice(start, start + PAGE_SIZE);
+  }, [sortedData, PAGE]);
+
   const pages = Math.ceil(sortedData.length / PAGE_SIZE);
 
   const selectedUsers = useMemo(() => users.data?.filter((u) => selection.includes(u.account.id)) ?? [], [users.data, selection]);
@@ -313,7 +317,7 @@ export const Users = () => {
 
     return (
       <>
-        {sortedData.map((user) => (
+        {paginatedData.map((user) => (
           <Row key={user.account.id} user={user} />
         ))}
       </>
@@ -466,7 +470,7 @@ export const Users = () => {
         <Card.Title className="text-2xl font-bold flex gap-3 items-center">
           <Span>Users</Span>
           <Span className="bg-translucent shrink-0 size-10 font-normal rounded-full text-sm inline-flex items-center justify-center">
-            {users.isValidating || !users.data ? <Spinner className="size-3 text-foreground-secondary" /> : filteredData.length}
+            {users.isValidating || !users.data ? <Spinner className="size-3 text-foreground-secondary" /> : sortedData.length}
           </Span>
         </Card.Title>
         <Card.Gutter className="flex xl:hidden">

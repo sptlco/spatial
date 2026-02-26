@@ -1,8 +1,6 @@
 // Copyright © Spatial Corporation. All rights reserved.
 
-using System.ComponentModel.DataAnnotations;
-
-namespace Spatial.Billing;
+namespace Spatial.Logistics;
 
 /// <summary>
 /// Configurable options for <see cref="Stripe"/>.

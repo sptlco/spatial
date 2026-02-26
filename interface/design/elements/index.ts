@@ -34,6 +34,7 @@ export * from "./pagination";
 export * from "./paragraph";
 export * from "./path";
 export * from "./popover";
+export * from "./portal";
 export * from "./scroll-area";
 export * from "./select";
 export * from "./separator";

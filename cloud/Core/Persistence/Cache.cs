@@ -4,7 +4,7 @@ using StackExchange.Redis;
 using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 
-namespace Spatial.Caching;
+namespace Spatial.Persistence;
 
 /// <summary>
 /// A thread-safe, Redis-backed cache.

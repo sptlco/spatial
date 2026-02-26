@@ -2,7 +2,7 @@
 
 using System.Text.Json.Serialization;
 
-namespace Spatial.Blockchain;
+namespace Spatial.Logistics;
 
 /// <summary>
 /// An ERC20 coin.

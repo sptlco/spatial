@@ -1,13 +1,11 @@
 // Copyright © Spatial Corporation. All rights reserved.
 
-using System.Text.Json;
-using System.Text.Json.Serialization;
 using MongoDB.Bson;
 using MongoDB.Driver;
-using Spatial.Extensions;
-using Spatial.Persistence;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
-namespace Spatial;
+namespace Spatial.Persistence;
 
 /// <summary>
 /// A time-stamped measurement of a specific attribute within the system.
@@ -69,15 +67,21 @@ public class Metric : Resource
     }
 
     /// <summary>
-    /// Store a new <see cref="Metric"/>.
+    /// Store several new metrics.
     /// </summary>
-    /// <param name="name">The name of the <see cref="Metric"/>.</param>
-    /// <param name="value">The metric's value.</param>
-    /// <param name="metadata">Contextual data about the <see cref="Metric"/>.</param>
-    /// <returns>The stored <see cref="Metric"/>.</returns>
-    public static Metric Write(string name, object value, object? metadata = null)
+    /// <param name="metrics">Metrics to write.</param>
+    public static void WriteMany(Dictionary<string, (object Value, object? Metadata)> metrics)
     {
-        return Resource<Metric>.Store(Create(name, value, metadata));
+        Resource<Metric>.StoreMany(metrics.Select(kvp => Create(kvp.Key, kvp.Value.Value, kvp.Value.Metadata)));
+    }
+
+    /// <summary>
+    /// Store several new metrics.
+    /// </summary>
+    /// <param name="metrics">Metrics to write.</param>
+    public static Task WriteManyAsync(Dictionary<string, (object Value, object? Metadata)> metrics)
+    {
+        return Resource<Metric>.StoreManyAsync(metrics.Select(kvp => Create(kvp.Key, kvp.Value.Value, kvp.Value.Metadata)));
     }
 
     /// <summary>
@@ -87,9 +91,21 @@ public class Metric : Resource
     /// <param name="value">The metric's value.</param>
     /// <param name="metadata">Contextual data about the <see cref="Metric"/>.</param>
     /// <returns>The stored <see cref="Metric"/>.</returns>
-    public static Task<Metric> WriteAsync(string name, object value, object? metadata = null)
+    public static Metric WriteOne(string name, object value, object? metadata = null)
     {
-        return Resource<Metric>.StoreAsync(Create(name, value, metadata));
+        return Resource<Metric>.StoreOne(Create(name, value, metadata));
+    }
+
+    /// <summary>
+    /// Store a new <see cref="Metric"/>.
+    /// </summary>
+    /// <param name="name">The name of the <see cref="Metric"/>.</param>
+    /// <param name="value">The metric's value.</param>
+    /// <param name="metadata">Contextual data about the <see cref="Metric"/>.</param>
+    /// <returns>The stored <see cref="Metric"/>.</returns>
+    public static Task<Metric> WriteOneAsync(string name, object value, object? metadata = null)
+    {
+        return Resource<Metric>.StoreOneAsync(Create(name, value, metadata));
     }
 
     private static IAsyncCursor<Metric> Aggregate(
@@ -132,7 +148,6 @@ public class Metric : Resource
 
         var (unit, binSize) = resolution switch
         {
-            "1m" => ("minute", 1),
             "5m" => ("minute", 5),
             "15m" => ("minute", 15),
             "1h" => ("hour", 1),

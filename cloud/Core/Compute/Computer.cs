@@ -2,6 +2,7 @@
 
 using Spatial.Compute.Acceleration;
 using Spatial.Compute.Commands;
+using Spatial.Persistence;
 using System.Collections.Concurrent;
 using System.Runtime.CompilerServices;
 
@@ -165,7 +166,7 @@ public class Computer
 
             if (job.Options.EnableMetrics)
             {
-                _ = Metric.WriteAsync(
+                _ = Metric.WriteOneAsync(
                         name: "job",
                         value: CreateJobMetric(job),
                         metadata: new {

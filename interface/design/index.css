@@ -100,6 +100,7 @@
   --animate-fill: fill 0.1s ease forwards;
   --animate-outline: outline 0.1s ease forwards;
   --animate-caret: caret 1.25s ease-out infinite;
+  --animate-scroll: scroll 2s ease infinite;
 
   @keyframes fill {
     0% {
@@ -131,7 +132,7 @@
     }
   }
 
-  @keyframes ticker-scroll {
+  @keyframes scroll {
     from {
       transform: translateX(0);
     }
@@ -171,7 +172,7 @@
   }
 
   .ticker-track {
-    animation: ticker-scroll 30s linear infinite;
+    animation: scroll 30s linear infinite;
   }
 
   body {

@@ -36,6 +36,7 @@ import {
   Tooltip,
   UL
 } from "@sptlco/design";
+import { Metadata } from "next";
 
 const BASE_URL = "/platform";
 
@@ -300,14 +301,15 @@ export default function Layout(props: { children: ReactNode }) {
             <Separator orientation="vertical" className="hidden xl:flex bg-linear-to-b from-transparent to-transparent via-line-subtle h-full w-px" />
           </Container>
         </Container>
+        <Container id="title" className="flex items-center xl:justify-center row-start-1 col-start-1 col-span-2 px-10 pl-24 xl:pl-10" />
         <Container
-          className={clsx("flex px-10 gap-2.5 sm:gap-5 ml-auto items-center shrink-0", "row-start-1 col-start-1 xl:col-start-2")}
+          className={clsx("flex px-10 gap-2.5 sm:gap-5 items-center shrink-0", "row-start-1 col-start-1 xl:col-start-2")}
           style={{
             paddingTop: "var(--layout-pad)",
             paddingBottom: "var(--layout-pad)"
           }}
         >
-          <Container className="flex items-center gap-2.5">
+          <Container className="ml-auto flex items-center gap-1 xl:gap-2.5">
             <Button intent="ghost" className="p-0! size-10!">
               <Icon symbol="search" />
             </Button>

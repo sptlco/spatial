@@ -1,12 +1,10 @@
 // Copyright © Spatial Corporation. All rights reserved.
 
 using Microsoft.Extensions.Options;
-using Spatial.Billing;
-using Spatial.Blockchain;
-using Spatial.Caching;
-using Spatial.Communication;
 using Spatial.Identity;
 using Spatial.Intelligence.ThirdParty;
+using Spatial.Logistics;
+using Spatial.Networking;
 using Spatial.Persistence;
 using System.ComponentModel.DataAnnotations;
 
@@ -56,19 +54,19 @@ public class Configuration
     public DatabaseConfiguration Database { get; set; } = new DatabaseConfiguration();
 
     /// <summary>
-    /// Configurable options for the system's <see cref="Caching.Cache"/>.
+    /// Configurable options for the system's <see cref="Persistence.Cache"/>.
     /// </summary>
     [ValidateObjectMembers]
     public CacheConfiguration Cache { get; set; } = new CacheConfiguration();
 
     /// <summary>
-    /// Configurable options for <see cref="Billing.Stripe"/>.
+    /// Configurable options for <see cref="Logistics.Stripe"/>.
     /// </summary>
     [ValidateObjectMembers]
     public StripeConfiguration Stripe { get; set; } = new StripeConfiguration();
 
     /// <summary>
-    /// Configurable options for the system's <see cref="Blockchain.Ethereum"/> provider.
+    /// Configurable options for the system's <see cref="Logistics.Ethereum"/> provider.
     /// </summary>
     [ValidateObjectMembers]
     public EthereumConfiguration Ethereum { get; set; } = new EthereumConfiguration();

@@ -1,7 +1,8 @@
 {
   "posts": [
     {
-      "slug": "hello"
+      "slug": "hello",
+      "public": true
     },
     {
       "slug": "goodbye"

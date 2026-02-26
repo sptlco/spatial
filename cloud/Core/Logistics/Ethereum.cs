@@ -11,6 +11,7 @@ using Nethereum.RPC.Eth.DTOs;
 using Nethereum.Web3;
 using Nethereum.Web3.Accounts;
 using Spatial.Helpers;
+using Spatial.Logistics.Helpers;
 using System.Numerics;
 
 namespace Spatial.Logistics;
@@ -85,6 +86,34 @@ public class Ethereum
         }
 
         return details;
+    }
+
+    /// <summary>
+    /// Get the current price of <see cref="Ethereum"/>.
+    /// </summary>
+    /// <param name="feed">The price feed to query.</param>
+    /// <param name="decimals">The output amount's decimal count.</param>
+    /// <param name="maxAgeSeconds">The amount of seconds before the price is considered stale.</param>
+    /// <returns>The price of <see cref="Ethereum"/>.</returns>
+    public async Task<decimal> GetPriceAsync(string feed, int decimals, int maxAgeSeconds = 36000)
+    {
+        var handler = _web3.Eth.GetContractQueryHandler<LatestRoundDataFunction>();
+        var data = await handler.QueryDeserializingToObjectAsync<LatestRoundDataOutputDTO>(new LatestRoundDataFunction(), feed);
+
+        if (data.Answer <= 0)
+        {
+            throw new Exception("Received invalid price from Chainlink.");
+        }
+
+        var updated = (long) data.UpdatedAt;
+        var now = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
+
+        if (now - updated > maxAgeSeconds)
+        {
+            throw new Exception("Received stale price from Chainlink.");
+        }
+
+        return (decimal) data.Answer / (decimal) Math.Pow(10, decimals);
     }
 
     /// <summary>

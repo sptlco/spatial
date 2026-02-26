@@ -20,9 +20,6 @@ public class Allocator : BackgroundService
     private readonly Ethereum _ethereum;
     private readonly AllocatorConfiguration _config;
 
-    private DateTime? _bought;
-    private DateTime? _sold;
-
     /// <summary>
     /// Create a new <see cref="Allocator"/>.
     /// </summary>
@@ -44,75 +41,44 @@ public class Allocator : BackgroundService
 
             try
             {
-                // Start by fetching market data from CoinGecko.
-                // Query all the supported coins with price, market cap, volume and market related data.
-
-                var coins = await CoinGecko.GetMarketsAsync();
+                var price = await _ethereum.GetPriceAsync(Constants.Contracts.CHAINLINK_ETH_USD, 8);
                 var details = (await _ethereum.GetERC20DetailsAsync(USDC))[USDC];
+                var ethereum = Web3.Convert.FromWei(await _ethereum.GetBalanceAsync());
+                var dollars = (decimal) details.Balance / (decimal) Math.Pow(10, 6);
 
-                var ethereum = new {
-                    Market = coins.First(coin => coin.Id.Equals("ethereum")),
-                    Balance = await _ethereum.GetBalanceAsync()
-                };
+                var value = (Ethereum: ethereum * price, Total: (ethereum * price) + dollars);
 
-                var dollar = new {
-                    Market = coins.First(coin => coin.Id == "usd-coin"),
-                    details.Balance
-                };
-
-                // Stablecoin mean reversion.
-                // Detect USDC price deviation from peg to 1 USD.
-
-                var deviation = (dollar.Market.Price - 1.0M) / 1.0M;
-
-                if (deviation < -_config.DeviationThreshold)
+                if (value.Total > 0)
                 {
-                    // The dollar is cheap.
-                    // Buy with Ethereum.
+                    var weight = value.Ethereum / value.Total;
+                    var upper = _config.Exposure + _config.Bandwidth;
+                    var lower = _config.Exposure - _config.Bandwidth;
 
-                    if (_bought is null || DateTime.UtcNow - _bought > _config.Cooldown)
+                    if (weight > upper)
                     {
-                        await BuyAsync(ethereum.Balance, ethereum.Market.Price, deviation);
+                        var target = value.Total * _config.Exposure;
+                        var excess = value.Ethereum - target;
 
-                        _bought = DateTime.UtcNow;
+                        if (excess > _config.Minimum)
+                        {
+                            await SellAsync(excess, price);
+                        }
                     }
-                    else
+                    else if (weight < lower)
                     {
-                        INFO("Ignoring BUY signal due to active cooldown.");
-                    }
-                }
-                else if (deviation > _config.DeviationThreshold && dollar.Balance > 0)
-                {
-                    // The dollar is expensive.
-                    // Sell for Ethereum.
+                        var target = value.Total * _config.Exposure;
+                        var deficit = target - value.Ethereum;
 
-                    if (_sold is null || DateTime.UtcNow - _sold > _config.Cooldown)
-                    {
-                        await SellAsync(dollar.Balance, ethereum.Market.Price, deviation);
-                        
-                        _sold = DateTime.UtcNow;
-                    }
-                    else
-                    {
-                        INFO("Ignoring SELL signal due to active cooldown.");
+                        if (deficit > _config.Minimum)
+                        {
+                            await BuyAsync(deficit, price);
+                        }
                     }
                 }
 
-                // Take a snapshot of the current state.
-                // Use the new Metric API.
-
-                await Metric.WriteManyAsync(new Dictionary<string, (object Value, object? Metadata)> {
-                    ["ethereum"] = (
-                        Value: new {
-                            Balance = Web3.Convert.FromWei(ethereum.Balance),
-                            ethereum.Market.Price
-                        }, null),
-                    ["dollar"] = (
-                        Value: new {
-                            Balance = (decimal) dollar.Balance / 1_000_000.0M,
-                            dollar.Market.Price,
-                            Deviation = deviation
-                        }, null)
+                await Metric.WriteOneAsync("ethereum", new {
+                    Balance = ethereum,
+                    Price = price
                 });
             }
             catch (RpcClientUnknownException)
@@ -130,64 +96,13 @@ public class Allocator : BackgroundService
         }
     }
 
-    private async Task BuyAsync(BigInteger capital, decimal price, decimal deviation)
+    private async Task BuyAsync(decimal amount, decimal price)
     {
-        var amountIn = Web3.Convert.ToWei(Web3.Convert.FromWei(capital) * _config.Capital);
+        var amountIn = (BigInteger) (amount * (decimal) Math.Pow(10, 6));
 
         if (amountIn <= 0)
         {
-            WARN("Insufficient Ethereum for USDC purchase.");
-            return;
-        }
-
-        string[] path = [WETH, USDC];
-
-        try
-        {
-            var amountsOut = await Uniswap.GetAmountsOutAsync(amountIn, path);
-            var slippage = (BigInteger)((1.0M - _config.Tolerance) * 10_000.0M);
-            var amountOutMin = amountsOut.Last() * slippage / 10_000;
-            var deadline = (uint) DateTimeOffset.UtcNow.ToUnixTimeSeconds() + _config.Deadline * 60;
-            var timestamp = Time.Now;
-
-            var receipt = await Uniswap.SwapExactETHForTokensAsync(
-                amountIn,
-                amountOutMin,
-                path,
-                _ethereum.Account.Address,
-                deadline);
-
-            await Metric.WriteOneAsync(
-                name: "transaction",
-                value: new {
-                    Duration = (decimal) (Time.Now - timestamp),
-                    Price = price,
-                    Deviation = deviation,
-                    Volume = (decimal) amountsOut.Last() / 1_000_000.0M,
-                    Slippage = _config.Tolerance,
-                    Gas = Web3.Convert.FromWei(receipt.GasUsed.Value * receipt.EffectiveGasPrice.Value) * price
-                },
-                metadata: new {
-                    Hash = receipt.TransactionHash,
-                    Direction = "BUY",
-                    Pair = "ETH/USDC"
-                });
-
-            INFO("Purchased USDC with Ethereum: {Transaction}", receipt.TransactionHash);
-        }
-        catch (Exception e)
-        {
-            ERROR(e, "Failed to purchase USDC due to an unexpected error.");
-        }
-    }
-
-    private async Task SellAsync(BigInteger capital, decimal price, decimal deviation)
-    {
-        var amountIn = capital * (BigInteger) (_config.Capital * 1_000_000.0M) / 1_000_000;
-
-        if (amountIn <= 0)
-        {
-            WARN("Insufficient USDC for sale.");
+            WARN("Insufficient USDC for Ethereum purchase.");
             return;
         }
 
@@ -214,23 +129,72 @@ public class Allocator : BackgroundService
                 name: "transaction",
                 value: new {
                     Duration = (decimal) (Time.Now - timestamp),
+                    Volume = amount,
                     Price = price,
-                    Deviation = deviation,
-                    Volume = (decimal) amountIn / 1_000_000.0M,
+                    Slippage = _config.Tolerance,
+                    Gas = Web3.Convert.FromWei(receipt.GasUsed.Value * receipt.EffectiveGasPrice.Value) * price
+                },
+                metadata: new {
+                    Hash = receipt.TransactionHash,
+                    Direction = "BUY",
+                    Pair = "USDC/ETH"
+                });
+            
+            INFO("Purchased Ethereum: {Transaction}", receipt);
+        }
+        catch (Exception e)
+        {
+            ERROR(e, "Failed to purchase Ethereum due to an unexpected error.");
+        }
+    }
+
+    private async Task SellAsync(decimal amount, decimal price)
+    {
+        var amountIn = Web3.Convert.ToWei(amount / price);
+
+        if (amountIn <= 0)
+        {
+            WARN("Insufficient Ethereum for sale.");
+            return;
+        }
+
+        string[] path = [WETH, USDC];
+
+        try
+        {
+            var amountsOut = await Uniswap.GetAmountsOutAsync(amountIn, path);
+            var slippage = (BigInteger) ((1.0M - _config.Tolerance) * 10_000.0M);
+            var amountOutMin = amountsOut.Last() * slippage / 10_000;
+            var deadline = (uint) DateTimeOffset.UtcNow.ToUnixTimeSeconds() + _config.Deadline * 60;
+            var timestamp = Time.Now;
+
+            var receipt = await Uniswap.SwapExactETHForTokensAsync(
+                amountIn,
+                amountOutMin,
+                path,
+                _ethereum.Account.Address,
+                deadline);
+
+            await Metric.WriteOneAsync(
+                name: "transaction",
+                value: new {
+                    Duration = (decimal) (Time.Now - timestamp),
+                    Volume = amount,
+                    Price = price,
                     Slippage = _config.Tolerance,
                     Gas = Web3.Convert.FromWei(receipt.GasUsed.Value * receipt.EffectiveGasPrice.Value) * price
                 },
                 metadata: new {
                     Hash = receipt.TransactionHash,
                     Direction = "SELL",
-                    Pair = "USDC/ETH"
+                    Pair = "ETH/USDC"
                 });
-            
-            INFO("Sold USDC for Ethereum: {Transaction}", receipt);
+
+            INFO("Sold Ethereum for USDC: {Transaction}", receipt.TransactionHash);
         }
         catch (Exception e)
         {
-            ERROR(e, "Failed to sell USDC due to an unexpected error.");
+            ERROR(e, "Failed to sell Ethereum due to an unexpected error.");
         }
     }
 }
@@ -246,14 +210,19 @@ public class AllocatorConfiguration
     public bool Enabled { get; set; } = false;
 
     /// <summary>
-    /// The percentage of Ethereum available to the <see cref="Allocator"/> as capital.
+    /// The percentage of dollars allocated to Ethereum.
     /// </summary>
-    public decimal Capital { get; set; }
+    public decimal Exposure { get; set; }
 
     /// <summary>
-    /// Determines the stablecoin price deviation that signals an order.
+    /// The allowed deviation from the target weight.
     /// </summary>
-    public decimal DeviationThreshold { get; set; }
+    public decimal Bandwidth { get; set; }
+
+    /// <summary>
+    /// The minimum trade size in dollars.
+    /// </summary>
+    public decimal Minimum { get; set; }
 
     /// <summary>
     /// A trade deadline in minutes.

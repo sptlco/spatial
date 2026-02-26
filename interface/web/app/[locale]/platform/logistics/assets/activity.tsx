@@ -86,7 +86,7 @@ export const Activity = createElement<typeof Container>((props, ref) => {
           className={clsx(
             "border border-current/30",
             "rounded-lg text-xs font-extrabold uppercase px-4 py-1 bg-current/10",
-            metric.metadata.direction.toLowerCase() === "buy" ? "text-red" : "text-green"
+            metric.metadata.direction.toLowerCase() === "buy" ? "text-green" : "text-red"
           )}
         >
           {highlight(metric.metadata.direction, keywords)}
@@ -94,43 +94,20 @@ export const Activity = createElement<typeof Container>((props, ref) => {
       )
     },
     {
-      name: "Price",
-      renderer: (metric) => {
-        const formatted = formatCurrency(1 + 1 * metric.value.deviation);
-        return <Span>{highlight(formatted, keywords)}</Span>;
-      }
-    },
-    {
-      name: "Deviation",
-      renderer: (metric) => (
-        <Span className={clsx("flex items-center", metric.value.deviation > 0 ? "text-green" : "text-red")}>
-          <Span className="inline-flex items-center justify-center">
-            {metric.value.deviation > 0 ? <Icon symbol="arrow_drop_up" size={32} /> : <Icon symbol="arrow_drop_down" size={32} />}
-          </Span>
-          <Span className="font-semibold text-sm">{highlight(`${Math.abs(metric.value.deviation * 100).toFixed(2)}%`, keywords)}</Span>
-        </Span>
-      )
-    },
-    {
       name: "Volume",
-      renderer: (metric) => {
-        const formatted = formatCurrency(metric.value.volume);
-        return <Span>{highlight(formatted, keywords)}</Span>;
-      }
+      renderer: (metric) => <Span>{highlight(formatCurrency(metric.value.volume), keywords)}</Span>
     },
     {
-      name: "Slippage",
-      renderer: (metric) => {
-        const formatted = `${(metric.value.slippage * 100).toFixed(2)}%`;
-        return <Span>{highlight(formatted, keywords)}</Span>;
-      }
+      name: "Price",
+      renderer: (metric) => <Span>{highlight(formatCurrency(metric.value.price), keywords)}</Span>
     },
     {
       name: "Gas",
-      renderer: (metric) => {
-        const formatted = formatCurrency(metric.value.gas);
-        return <Span>{highlight(formatted, keywords)}</Span>;
-      }
+      renderer: (metric) => <Span>{highlight(formatCurrency(metric.value.gas), keywords)}</Span>
+    },
+    {
+      name: "Slippage",
+      renderer: (metric) => <Span>{highlight(`${(metric.value.slippage * 100).toFixed(2)}%`, keywords)}</Span>
     }
   ];
 
@@ -182,7 +159,6 @@ export const Activity = createElement<typeof Container>((props, ref) => {
       metric.value.duration.toFixed(2),
       metric.metadata.direction,
       metric.value.price.toFixed(2),
-      (metric.value.deviation * 100).toFixed(2),
       metric.value.volume.toFixed(2),
       (metric.value.slippage * 100).toFixed(2),
       metric.value.gas.toFixed(2)

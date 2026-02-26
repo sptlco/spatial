@@ -56,7 +56,7 @@ export const Profits = createElement<typeof Container>((props, ref) => {
     );
   };
 
-  const history = useSWR(["profits", year], () => Spatial.metrics.read("ethereum", start, end, undefined, "1m"), {
+  const history = useSWR(["profits", year], () => Spatial.metrics.read("ethereum", start, end), {
     refreshInterval: 10000,
     dedupingInterval: 15000
   });

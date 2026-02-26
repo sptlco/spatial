@@ -158,6 +158,11 @@ internal class Constants
         /// The Multicall contract address.
         /// </summary>
         public const string Multicall = "0xcA11bde05977b3631167028862bE2a173976CA11";
+
+        /// <summary>
+        /// The Chainlink ETH/USD price feed.
+        /// </summary>
+        public const string CHAINLINK_ETH_USD = "0x5f4ec3df9cbd43714fe2740f5e3616155c5b8419";
     }
 
     /// <summary>

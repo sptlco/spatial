@@ -2,12 +2,14 @@
 
 "use client";
 
+import { Spatial } from "@sptlco/client";
 import { clsx } from "clsx";
-import { ReactNode } from "react";
+import { ReactNode, useMemo } from "react";
 import useSWR from "swr";
 
+import { PERIODS } from "./balance";
+
 import { Container, createElement, H2, Icon, Span, Tooltip } from "@sptlco/design";
-import { Spatial } from "@sptlco/client";
 
 type Metric = {
   label: string;
@@ -18,44 +20,27 @@ type Metric = {
 /**
  * An element that displays the current trading objectives.
  */
-export const Snapshot = createElement<typeof Container>((props, ref) => {
-  const transactions = useSWR("platform/logistics/assets/objectives/transactions", async () => {
-    return await Spatial.metrics.read("transaction", undefined, undefined, undefined, "1m");
-  });
+export const Snapshot = createElement<typeof Container, { period: keyof typeof PERIODS }>((props, ref) => {
+  const from = useMemo(() => {
+    return getFromDate(props.period);
+  }, [props.period]);
 
-  const ethereum = useSWR("platform/logistics/assets/objectives/ethereum", async () => {
-    return await Spatial.metrics.read("ethereum", undefined, undefined, undefined, "1m");
-  });
-
-  const dollar = useSWR("platform/logistics/assets/objectives/dollar", async () => {
-    return await Spatial.metrics.read("dollar", undefined, undefined, undefined, "1m");
+  const transactions = useSWR(["platform/logistics/assets/snapshot/transactions", props.period], async () => {
+    return await Spatial.metrics.read("transaction", from, undefined, undefined, "1m");
   });
 
   const trades = (transactions?.data && !transactions.data.error && transactions.data?.data) || [];
-  const metrics_ethereum = (ethereum?.data && !ethereum.data.error && ethereum.data?.data) || [];
-  const metrics_dollar = (dollar?.data && !dollar.data.error && dollar.data?.data) || [];
-
-  const latest_ethereum = metrics_ethereum?.[metrics_ethereum.length - 1];
-  const latest_dollar = metrics_dollar?.[metrics_dollar.length - 1];
 
   const tradeCount = trades.length;
   const volume = trades.reduce((sum, t) => sum + t.value.volume, 0);
-  const deviation = trades.reduce((sum, t) => sum + t.value.deviation, 0) / tradeCount || 0;
   const slippage = trades.reduce((sum, t) => sum + t.value.slippage, 0) / tradeCount || 0;
   const gas = trades.reduce((sum, t) => sum + t.value.gas, 0) / tradeCount || 0;
-
-  const balance_ethereum = latest_ethereum?.value.balance ?? 0;
-  const price_ethereum = latest_ethereum?.value.price ?? 0;
-  const balance_dollar = latest_dollar?.value.balance ?? 0;
-  const value = balance_ethereum * price_ethereum + balance_dollar;
 
   const metrics: Metric[] = [
     { label: "Trades", value: formatNumber(tradeCount) },
     { label: "Volume", value: formatCurrency(volume) },
-    { label: "Average Deviation", value: formatPercent(deviation), tip: "Average price deviation at trade entry." },
     { label: "Average Slippage", value: formatPercent(slippage) },
-    { label: "Average Gas", value: formatCurrency(gas) },
-    { label: "Portfolio", value: formatCurrency(value) }
+    { label: "Average Gas", value: formatCurrency(gas) }
   ];
 
   return (
@@ -129,4 +114,21 @@ function formatNumber(value?: number) {
 
 function formatPercent(value: number) {
   return `${(value * 100).toFixed(2)}%`;
+}
+
+function getFromDate(period: keyof typeof PERIODS) {
+  const now = new Date();
+
+  switch (period) {
+    case "24h":
+      return new Date(now.getTime() - 24 * 60 * 60 * 1000);
+    case "7d":
+      return new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+    case "30d":
+      return new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
+    case "1y":
+      return new Date(now.getTime() - 365 * 24 * 60 * 60 * 1000);
+    default:
+      return undefined;
+  }
 }

@@ -24,7 +24,7 @@ export const Profits = createElement<typeof Container>((props, ref) => {
   const [year, setYear] = useState(m < 6 ? y - 1 : y);
 
   const start = new Date(Date.UTC(year, 6, 1));
-  const end = new Date(Date.UTC(year + 1, 6, 1));
+  const end = new Date(Date.UTC(year + 1, 5, 30, 23, 59, 59, 999));
 
   const selector = () => {
     return (
@@ -56,7 +56,7 @@ export const Profits = createElement<typeof Container>((props, ref) => {
     );
   };
 
-  const history = useSWR(["profits", year], () => Spatial.metrics.read("ethereum", start, end, undefined), {
+  const history = useSWR(["profits", year], () => Spatial.metrics.read("ethereum", start, end, undefined, "1m"), {
     refreshInterval: 10000,
     dedupingInterval: 15000
   });
@@ -98,18 +98,11 @@ export const Profits = createElement<typeof Container>((props, ref) => {
 
   const weeks: Bucket[][] = [];
 
-  const weekday = (date: Date) => {
-    const day = date.getUTCDay();
-    return day === 0 ? 6 : day - 1;
-  };
-
   let week: Bucket[] = Array(7).fill({ date: null, value: 0 });
   let cursor = new Date(start);
 
-  cursor.setUTCDate(cursor.getUTCDate() + 1);
-
   while (cursor <= end) {
-    const day = weekday(cursor);
+    const day = cursor.getUTCDay();
 
     week[day] = { date: new Date(cursor), value: map.get(getKey(cursor)) ?? 0 };
 
@@ -128,8 +121,8 @@ export const Profits = createElement<typeof Container>((props, ref) => {
   const first = metrics[0];
   const latest = metrics[metrics.length - 1];
 
-  const total = metrics.slice(1).reduce((sum, m, i) => sum + (equity(m) - equity(metrics[i])), 0);
-  const diff = (equity(latest) - equity(first)) / equity(first);
+  const total = equity(latest) - equity(first);
+  const diff = total / equity(first);
   const max = Math.max(...weeks.flat().map((d) => Math.abs(d.value)), 1);
 
   function getColor(value: number) {
@@ -153,6 +146,8 @@ export const Profits = createElement<typeof Container>((props, ref) => {
   }
 
   const days = weeks.flat();
+
+  console.log(map);
 
   return (
     <Container
@@ -188,7 +183,7 @@ export const Profits = createElement<typeof Container>((props, ref) => {
               </Tooltip.Trigger>
               {day.date && (
                 <Tooltip.Content className="flex items-center gap-1">
-                  <Span>{day.date.toDateString()}</Span>
+                  {day.date.toLocaleDateString(undefined, { timeZone: "UTC", day: "2-digit", weekday: "short", month: "short", year: "numeric" })}
                   <Span className={clsx("flex items-center", day.value > 0 ? "text-green" : day.value < 0 ? "text-red" : "text-hint")}>
                     <Span>{formatCurrency(day.value)}</Span>
                   </Span>
@@ -225,7 +220,13 @@ export const Profits = createElement<typeof Container>((props, ref) => {
                     </Tooltip.Trigger>
                     {day.date && (
                       <Tooltip.Content className="flex items-center gap-1">
-                        <Span>{day.date.toDateString()}</Span>
+                        {day.date.toLocaleDateString(undefined, {
+                          timeZone: "UTC",
+                          day: "2-digit",
+                          weekday: "short",
+                          month: "short",
+                          year: "numeric"
+                        })}
                         <Span className={clsx("flex items-center", day.value > 0 ? "text-green" : day.value < 0 ? "text-red" : "text-hint")}>
                           <Span>{formatCurrency(day.value)}</Span>
                         </Span>

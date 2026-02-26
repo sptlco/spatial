@@ -42,7 +42,7 @@ public class JobParallelFor2DBenchmarks
         Job.ParallelFor2D(
             MatrixSize, 
             MatrixSize, 
-            batchStrategy: BatchStrategy.None,
+            options: new JobOptions { BatchStrategy = BatchStrategy.None },
             function: (i, j) =>
             {
                 var sum = 0F;

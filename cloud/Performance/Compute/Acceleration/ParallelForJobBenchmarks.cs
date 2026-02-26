@@ -35,7 +35,7 @@ public class JobParallelForBenchmarks
     [Benchmark]
     public void ParallelFor()
     {
-        Job.ParallelFor(Iterations, i => _data[i]++, BatchStrategy.None);
+        Job.ParallelFor(Iterations, i => _data[i]++, new JobOptions { BatchStrategy = BatchStrategy.None });
     }
 
     /// <summary>

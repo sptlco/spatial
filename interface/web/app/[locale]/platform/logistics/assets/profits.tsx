@@ -61,6 +61,8 @@ export const Profits = createElement<typeof Container>((props, ref) => {
     dedupingInterval: 15000
   });
 
+  const TITLE = "Delta";
+
   if (!history.data || history.data.error || history.data.data.length < 2) {
     return (
       <Container
@@ -70,7 +72,7 @@ export const Profits = createElement<typeof Container>((props, ref) => {
         className={clsx("flex flex-col text-hint items-center justify-center xl:basis-[738px]", props.className)}
       >
         <Container className="flex flex-col items-center justify-center p-10 aspect-square gap-8 bg-background-surface rounded-4xl">
-          <Span className="font-semibold">Gains</Span>
+          <Span className="font-semibold">{TITLE}</Span>
           {selector()}
           <Spinner className="size-5" />
         </Container>
@@ -147,8 +149,6 @@ export const Profits = createElement<typeof Container>((props, ref) => {
 
   const days = weeks.flat();
 
-  console.log(map);
-
   return (
     <Container
       {...props}
@@ -158,7 +158,7 @@ export const Profits = createElement<typeof Container>((props, ref) => {
       <Container className="flex flex-col justify-between p-10 bg-background-surface xl:rounded-[56px] gap-10">
         <Container className="flex flex-col w-full gap-10">
           <H2 className="text-2xl inline-flex items-center gap-5 font-bold">
-            <Span>Gains</Span>
+            <Span>{TITLE}</Span>
             {selector()}
           </H2>
 
@@ -284,6 +284,8 @@ function formatCurrency(value?: number) {
 
   return `${new Intl.NumberFormat("en-US", {
     minimumFractionDigits: 0,
-    maximumFractionDigits: 2
+    maximumFractionDigits: 2,
+    currency: "USD",
+    currencySign: "accounting"
   }).format(value)} USD`;
 }

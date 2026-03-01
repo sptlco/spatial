@@ -25,7 +25,13 @@ export const Index = createElement<typeof ScrollArea.Root>((props, ref) => {
               <Logo mode="symbol" className="h-6" />
             </Link>
             <Container className="flex items-center gap-4">
-              <View type="single" value={view} onValueChange={setView} />
+              <View
+                type="single"
+                value={view}
+                onValueChange={(value) => {
+                  if (value) setView(value);
+                }}
+              />
               <Container className="flex items-center gap-2">
                 <Filters />
                 <Search />

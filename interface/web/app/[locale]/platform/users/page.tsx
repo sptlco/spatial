@@ -2,19 +2,19 @@
 
 "use client";
 
+import { Header } from "@/elements";
+import { Suspense } from "react";
+
 import { Tabs } from "./tabs";
 import { Roles } from "./roles";
 import { Users } from "./card";
-import { Suspense } from "react";
+
 import { Card } from "@sptlco/design";
 
 export default function Page() {
   return (
     <Card.Root>
-      <Card.Header className="px-10">
-        <Card.Title className="text-5xl xl:text-9xl xl:-translate-x-2 font-extrabold xl:leading-snug!">Identity</Card.Title>
-        <Card.Description className="xl:text-xl font-light">Grant users access to your computer.</Card.Description>
-      </Card.Header>
+      <Header title="Identity" description="Grant users access to your computer." />
       <Card.Content>
         <Tabs.Root defaultValue="users">
           <Tabs.List className="px-10">

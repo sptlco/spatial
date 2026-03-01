@@ -43,7 +43,7 @@ export const Snapshot = createElement<typeof Container, { period: keyof typeof P
 
   return (
     <Container {...props} ref={ref} className={clsx("flex w-screen xl:w-auto flex-col gap-6", props.className)}>
-      <H2 className="px-10 text-2xl font-bold">Snapshot</H2>
+      <H2 className="px-10 text-2xl font-bold">Past {props.period.toUpperCase()}</H2>
       <Container className="flex flex-col xl:flex-row xl:justify-between w-full xl:rounded-4xl xl:bg-background-surface">
         {metrics.map((metric, i) => (
           <Container key={i} className="grow flex flex-col xl:items-center gap-4 p-10 whitespace-nowrap">

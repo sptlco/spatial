@@ -59,28 +59,34 @@ export const Dialog = {
               "w-full sm:max-w-md max-h-full",
               "data-[state=open]:animate-in data-[state=open]:fade-in data-[state=open]:zoom-in-95",
               "data-[state=closed]:animate-out data-[state=closed]:fade-out data-[state=closed]:zoom-out-95",
-              "duration-500",
-              props.className
+              "duration-500"
             )}
           >
-            <ScrollArea.Root className="rounded-4xl items-center">
+            <ScrollArea.Root className="items-center">
               <ScrollArea.Viewport className="max-h-[calc(100vh-80px)]">
-                <Container className="flex flex-col w-full gap-10 p-10 rounded-4xl bg-background-surface">
-                  <Container className="flex w-full items-start gap-10">
-                    <Container className="flex flex-col grow">
-                      <Optional value={title}>
-                        <Primitive.Title className="font-bold text-lg">{title}</Primitive.Title>
-                      </Optional>
-                      <Optional value={description}>
-                        <Primitive.Description className="text-foreground-secondary">{description}</Primitive.Description>
-                      </Optional>
+                <Container className={clsx("flex flex-col w-full gap-10 p-10 rounded-4xl bg-background-surface", props.className)}>
+                  {title || description || closeButton ? (
+                    <Container className="flex w-full items-start gap-10">
+                      <Container className="flex flex-col grow">
+                        <Optional value={title}>
+                          <Primitive.Title className="font-bold text-lg">{title}</Primitive.Title>
+                        </Optional>
+                        <Optional value={description}>
+                          <Primitive.Description className="text-foreground-secondary">{description}</Primitive.Description>
+                        </Optional>
+                      </Container>
+                      {closeButton && (
+                        <Primitive.Close data-slot="dialog-close" className="cursor-pointer flex h-fit">
+                          <Icon symbol="close" />
+                        </Primitive.Close>
+                      )}
                     </Container>
-                    {closeButton && (
-                      <Primitive.Close data-slot="dialog-close" className="cursor-pointer flex h-fit">
-                        <Icon symbol="close" />
-                      </Primitive.Close>
-                    )}
-                  </Container>
+                  ) : (
+                    <>
+                      <Primitive.Title className="hidden" />
+                      <Primitive.Description className="hidden" />
+                    </>
+                  )}
                   {props.children}
                 </Container>
               </ScrollArea.Viewport>

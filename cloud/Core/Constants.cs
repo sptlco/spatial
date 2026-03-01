@@ -93,6 +93,11 @@ internal class Constants
     public const string MetricKey = "Name";
 
     /// <summary>
+    /// The name of a metric batch identifier.
+    /// </summary>
+    public const string BatchKey = "Batch";
+
+    /// <summary>
     /// Log property names.
     /// </summary>
     public static class Properties

@@ -136,7 +136,7 @@ export const Balance = createElement<typeof Container, { period: keyof typeof PE
         )}
         <Container className="flex flex-col gap-10 pb-10 xl:p-10 xl:rounded-[56px]">
           <Container className="flex flex-col gap-6 px-10 xl:p-0">
-            <Container className="flex flex-col sm:flex-row gap-5 xl:gap-10 items-start xl:items-center">
+            <Container className="flex flex-col sm:flex-row gap-5 xl:gap-10 items-start xl:items-center xl:justify-between">
               <Container className="flex items-center justify-start gap-4">
                 <H2 className="inline-flex text-2xl font-extrabold">Balance</H2>
                 <Span className={clsx("inline-flex items-center gap-1 text-sm text-hint", !hovered && "text-yellow")}>
@@ -183,7 +183,7 @@ export const Balance = createElement<typeof Container, { period: keyof typeof PE
               )}
             </Span>
           </Container>
-          <ResponsiveContainer className="" width="100%" aspect={2.5} maxHeight={256}>
+          <ResponsiveContainer className="mask-l-from-80% mask-r-from-80%" width="100%" aspect={2.5} maxHeight={256}>
             <Container className="relative h-full w-full">
               <LineChart
                 accessibilityLayer
@@ -304,7 +304,8 @@ function formatCurrency(value?: number) {
 
   return `${new Intl.NumberFormat("en-US", {
     minimumFractionDigits: 0,
-    maximumFractionDigits: 2
+    maximumFractionDigits: 2,
+    currencySign: "accounting"
   }).format(value)} USD`;
 }
 

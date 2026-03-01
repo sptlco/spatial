@@ -95,9 +95,6 @@ public class Hypersolver : System
 
             _synapsesById[(_synapsesByEntity[entity] = record).Id] = entity;
         }
-
-        INFO("Neurons: {Neurons}", _neuronsById.Count);
-        INFO("Synapses: {Synapses}", _synapsesById.Count);
     }
 
     /// <summary>

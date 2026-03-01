@@ -72,7 +72,9 @@ public class Metric : Resource
     /// <param name="metrics">Metrics to write.</param>
     public static void WriteMany(Dictionary<string, (object Value, object? Metadata)> metrics)
     {
-        Resource<Metric>.StoreMany(metrics.Select(kvp => Create(kvp.Key, kvp.Value.Value, kvp.Value.Metadata)));
+        var batch = GenerateBatchId();
+
+        Resource<Metric>.StoreMany(metrics.Select(kvp => Create(batch, kvp.Key, kvp.Value.Value, kvp.Value.Metadata)));
     }
 
     /// <summary>
@@ -81,7 +83,9 @@ public class Metric : Resource
     /// <param name="metrics">Metrics to write.</param>
     public static Task WriteManyAsync(Dictionary<string, (object Value, object? Metadata)> metrics)
     {
-        return Resource<Metric>.StoreManyAsync(metrics.Select(kvp => Create(kvp.Key, kvp.Value.Value, kvp.Value.Metadata)));
+        var batch = GenerateBatchId();
+
+        return Resource<Metric>.StoreManyAsync(metrics.Select(kvp => Create(batch, kvp.Key, kvp.Value.Value, kvp.Value.Metadata)));
     }
 
     /// <summary>
@@ -93,7 +97,7 @@ public class Metric : Resource
     /// <returns>The stored <see cref="Metric"/>.</returns>
     public static Metric WriteOne(string name, object value, object? metadata = null)
     {
-        return Resource<Metric>.StoreOne(Create(name, value, metadata));
+        return Resource<Metric>.StoreOne(Create(GenerateBatchId(), name, value, metadata));
     }
 
     /// <summary>
@@ -105,7 +109,7 @@ public class Metric : Resource
     /// <returns>The stored <see cref="Metric"/>.</returns>
     public static Task<Metric> WriteOneAsync(string name, object value, object? metadata = null)
     {
-        return Resource<Metric>.StoreOneAsync(Create(name, value, metadata));
+        return Resource<Metric>.StoreOneAsync(Create(GenerateBatchId(), name, value, metadata));
     }
 
     private static IAsyncCursor<Metric> Aggregate(
@@ -184,9 +188,13 @@ public class Metric : Resource
         return collection.Aggregate<Metric>(pipeline);
     }
 
-    private static Metric Create(string name, object value, object? metadata = null)
+    private static Metric Create(string batch, string name, object value, object? metadata = null)
     {
-        var meta = new Dictionary<string, string> { [Constants.MetricKey] = name };
+        var meta = new Dictionary<string, string> { 
+            [Constants.BatchKey] = batch,
+            [Constants.MetricKey] = name
+        };
+        
         var options = new JsonSerializerOptions {
           DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,  
         };
@@ -201,5 +209,10 @@ public class Metric : Resource
             Metadata = meta,
             Timestamp = DateTime.UtcNow
         };
+    }
+
+    private static string GenerateBatchId()
+    {
+        return ObjectId.GenerateNewId().ToString();
     }
 }

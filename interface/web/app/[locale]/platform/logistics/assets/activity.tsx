@@ -70,16 +70,6 @@ export const Activity = createElement<typeof Container>((props, ref) => {
       }
     },
     {
-      name: "Duration",
-      renderer: (metric) => <Span className="text-foreground-tertiary">{highlight(`${metric.value.duration.toFixed(2)} ms`, keywords)}</Span>
-    },
-    {
-      name: "Confirmed",
-      renderer: (metric) => (
-        <Span className="text-foreground-tertiary">{highlight(format.relativeTime(new Date(metric.timestamp), now), keywords)}</Span>
-      )
-    },
-    {
       name: "Direction",
       renderer: (metric) => (
         <Span
@@ -107,6 +97,16 @@ export const Activity = createElement<typeof Container>((props, ref) => {
     {
       name: "Gas",
       renderer: (metric) => <Span>{highlight(formatCurrency(metric.value.gas), keywords)}</Span>
+    },
+    {
+      name: "Confirmed",
+      renderer: (metric) => (
+        <Span className="text-foreground-tertiary">{highlight(format.relativeTime(new Date(metric.timestamp), now), keywords)}</Span>
+      )
+    },
+    {
+      name: "Duration",
+      renderer: (metric) => <Span className="text-foreground-tertiary">{highlight(`${metric.value.duration.toFixed(2)} ms`, keywords)}</Span>
     }
   ];
 
@@ -202,8 +202,6 @@ export const Activity = createElement<typeof Container>((props, ref) => {
     setSearch(keywords.join(" "));
   }, [searchParams]);
 
-  console.log(entries);
-
   return (
     <Container {...props} ref={ref} className={clsx("flex flex-col gap-10 w-screen xl:w-auto", props.className)}>
       <H2 className="px-10 text-2xl font-bold">Activity</H2>
@@ -270,7 +268,7 @@ export const Activity = createElement<typeof Container>((props, ref) => {
               </Table.Body>
             </Table.Root>
           </ScrollArea.Viewport>
-          <ScrollArea.Scrollbar orientation="horizontal" />
+          <ScrollArea.Scrollbar orientation="horizontal" className="opacity-0" />
         </ScrollArea.Root>
         <Pagination page={PAGE} pages={pages} className="self-center" onPageChange={navigate} />
       </Container>

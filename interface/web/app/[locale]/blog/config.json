@@ -1,11 +1,22 @@
 {
   "posts": [
     {
+      "date": "2026-02-28",
+      "topic": "Engineering",
       "slug": "hello",
-      "public": true
+      "public": true,
+      "name": "Super Asymmetry",
+      "description": "A greeting to the world.",
+      "author": "Dakarai Cundiff"
     },
     {
-      "slug": "goodbye"
+      "date": "2026-03-01",
+      "topic": "Updates",
+      "slug": "goodbye",
+      "public": true,
+      "name": "Mark 2",
+      "description": "A farewell to the world.",
+      "author": "Dakarai Cundiff"
     }
   ]
 }

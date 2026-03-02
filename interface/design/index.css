@@ -52,7 +52,7 @@
 
   --color-line-subtle: var(--color-translucent);
   --color-line-faint: --alpha(var(--color-white) / 12%);
-  --color-line-base: --alpha(var(--color-white) / 20%);
+  --color-line-base: --alpha(var(--color-white) / 10%);
   --color-line-strong: --alpha(var(--color-white) / 50%);
   --color-line-accent: var(--color-blue);
   --color-line-input-focus: var(--color-blue);

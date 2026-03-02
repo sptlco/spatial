@@ -10,7 +10,7 @@ export const Header = createElement<typeof Container, { title?: string; descript
     (props.title || props.description) && (
       <Container {...props} ref={ref} className="flex flex-col px-10">
         {props.title && (
-          <Card.Title className="col-span-full text-2xl xl:text-display xl:-translate-x-4 font-extrabold xl:pb-16">{props.title}</Card.Title>
+          <Card.Title className="col-span-full text-6xl xl:text-display xl:-translate-x-4 font-extrabold pb-4 xl:pb-16">{props.title}</Card.Title>
         )}
       </Container>
     )

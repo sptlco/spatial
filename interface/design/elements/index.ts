@@ -1,5 +1,6 @@
 // Copyright © Spatial Corporation. All rights reserved.
 
+export * from "./article";
 export * from "./avatar";
 export * from "./body";
 export * from "./button";

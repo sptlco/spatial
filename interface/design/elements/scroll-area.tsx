@@ -2,11 +2,14 @@
 
 "use client";
 
-import { createElement } from "..";
 import * as Primitive from "@radix-ui/react-scroll-area";
 import { clsx } from "clsx";
 import { cva } from "cva";
 import { createContext, useContext, useEffect, useState } from "react";
+
+import { createElement } from "..";
+
+export const ScrollAreaContext = createContext({ setViewport: null as ((element: HTMLElement | null) => void) | null, scrollX: 0, scrollY: 0 });
 
 /**
  * Augments native scroll functionality for custom, cross-browser styling.
@@ -23,7 +26,24 @@ export const ScrollArea = {
     }
   >(({ fade = false, fadeOrientation = "vertical", ...props }, ref) => {
     const [viewport, setViewport] = useState<HTMLElement | null>(null);
+    const [scrollX, setScrollX] = useState(0);
+    const [scrollY, setScrollY] = useState(0);
     const { top, bottom, left, right } = useScrollFade(viewport);
+
+    useEffect(() => {
+      if (viewport) {
+        const scroll = () => {
+          setScrollX(viewport.scrollLeft);
+          setScrollY(viewport.scrollTop);
+        };
+
+        scroll();
+
+        viewport.addEventListener("scroll", scroll, { passive: true });
+
+        return () => viewport.removeEventListener("scroll", scroll);
+      }
+    }, [viewport]);
 
     const mask =
       fade &&
@@ -33,7 +53,7 @@ export const ScrollArea = {
       });
 
     return (
-      <ScrollAreaViewportContext.Provider value={setViewport}>
+      <ScrollAreaContext.Provider value={{ setViewport, scrollX, scrollY }}>
         <Primitive.Root
           {...props}
           ref={ref}
@@ -48,7 +68,7 @@ export const ScrollArea = {
           }
           className={clsx("relative flex overflow-hidden", mask, props.className)}
         />
-      </ScrollAreaViewportContext.Provider>
+      </ScrollAreaContext.Provider>
     );
   }),
 
@@ -56,7 +76,7 @@ export const ScrollArea = {
    * The viewport area of the scroll area.
    */
   Viewport: createElement<typeof Primitive.Viewport, Primitive.ScrollAreaViewportProps>((props, ref) => {
-    const register = useContext(ScrollAreaViewportContext);
+    const register = useContext(ScrollAreaContext);
 
     return (
       <Primitive.Viewport
@@ -70,7 +90,7 @@ export const ScrollArea = {
             ref.current = node;
           }
 
-          register?.(node);
+          register.setViewport?.(node);
         }}
       />
     );
@@ -123,7 +143,11 @@ export const ScrollArea = {
   ))
 };
 
-const ScrollAreaViewportContext = createContext<((el: HTMLElement | null) => void) | null>(null);
+export type ScrollAreaContext = {
+  setViewport: ((viewport: HTMLElement | null) => void) | null;
+  scrollX: number;
+  scrollY: number;
+};
 
 function useScrollFade(viewport?: HTMLElement | null) {
   const [state, setState] = useState({

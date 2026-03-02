@@ -8,7 +8,7 @@ import { Address } from "./address";
 import { Snapshot } from "./snapshot";
 import { Activity } from "./activity";
 import { Balance, PERIODS } from "./balance";
-import { Profits } from "./profits";
+import { Delta } from "./delta";
 
 import { Card, Container, createElement } from "@sptlco/design";
 import { Header } from "@/elements";
@@ -26,7 +26,7 @@ export const Assets = createElement<typeof Card.Root>((props, ref) => {
         <Address />
         <Container className="flex flex-col xl:gap-10 w-full xl:flex-row xl:items-start">
           <Balance period={period} onPeriodChange={setPeriod} className="w-full xl:grow" />
-          <Profits className="w-full xl:w-auto" />
+          <Delta className="w-full xl:w-auto" />
         </Container>
         <Snapshot period={period} />
         <Activity />

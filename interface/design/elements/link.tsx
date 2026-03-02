@@ -12,12 +12,7 @@ export const Link = createElement<typeof Primitive, LinkProps>((props, ref) => (
     {...props}
     href={props.href || "#"}
     ref={ref}
-    className={clsx(
-      "cursor-pointer inline-flex items-center gap-2",
-      "text-button-highlight hover:text-button-highlight-hover active:text-button-highlight-active font-medium",
-      "transition-all",
-      props.className
-    )}
+    className={clsx("cursor-pointer inline-flex items-center gap-2", "transition-all", props.className)}
   >
     {props.children}
     {props.target == "_blank" && (

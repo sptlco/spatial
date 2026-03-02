@@ -15,7 +15,7 @@ type Bucket = {
   value: number;
 };
 
-export const Profits = createElement<typeof Container>((props, ref) => {
+export const Delta = createElement<typeof Container>((props, ref) => {
   const now = new Date();
 
   const y = now.getFullYear();

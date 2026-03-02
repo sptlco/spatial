@@ -2,7 +2,7 @@
 
 "use client";
 
-import { Footer, LocaleSwitcher } from "@/elements";
+import { Mark, LocaleSwitcher } from "@/elements";
 import { useUser } from "@/stores";
 import { SESSION_COOKIE_NAME, Spatial } from "@sptlco/client";
 import { clsx } from "clsx";
@@ -141,7 +141,7 @@ export default function Page() {
               {processing ? <Spinner className="size-4 text-foreground-tertiary" /> : <Icon symbol="arrow_right_alt" />}
             </Button>
           </Form>
-          <Footer className="col-span-3 row-start-3 place-self-center" />
+          <Mark className="col-span-3 row-start-3 place-self-center" />
           <Dialog.Root
             open={open}
             onOpenChange={(open) => {

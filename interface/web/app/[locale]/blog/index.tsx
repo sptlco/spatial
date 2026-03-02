@@ -8,40 +8,45 @@ import { Filters } from "./filters";
 import { Search } from "./search";
 import { View, views } from "./view";
 
-import { Container, createElement, Link, Logo, Main, Pagination, ScrollArea } from "@sptlco/design";
+import { Container, createElement, Link, Main, Pagination } from "@sptlco/design";
+
+import { posts } from "./config.json";
 
 /**
  * A public display of blog posts.
  */
-export const Index = createElement<typeof ScrollArea.Root>((props, ref) => {
+export const Index = createElement<typeof Main>((props, ref) => {
   const [view, setView] = useState(views[0].name);
 
   return (
-    <ScrollArea.Root {...props} ref={ref} className="size-full" fade>
-      <ScrollArea.Viewport className="h-screen">
-        <Main className="w-full flex flex-col gap-10">
-          <Container className="flex w-full p-10 gap-10 items-center justify-between">
-            <Link href="/" className="text-inherit!">
-              <Logo mode="symbol" className="h-6" />
-            </Link>
-            <Container className="flex items-center gap-4">
-              <View
-                type="single"
-                value={view}
-                onValueChange={(value) => {
-                  if (value) setView(value);
-                }}
-              />
-              <Container className="flex items-center gap-2">
-                <Filters />
-                <Search />
-              </Container>
+    <Main {...props} ref={ref} className="flex flex-col items-center justify-center">
+      <Container className="flex flex-col gap-16">
+        <Container className="flex w-full items-center justify-end">
+          <Container className="flex items-center gap-4">
+            <View
+              type="single"
+              value={view}
+              onValueChange={(value) => {
+                if (value) setView(value);
+              }}
+            />
+            <Container className="flex items-center gap-2">
+              <Filters />
+              <Search />
             </Container>
           </Container>
-          <Pagination page={1} pages={1} className="self-center" />
-        </Main>
-      </ScrollArea.Viewport>
-      <ScrollArea.Scrollbar />
-    </ScrollArea.Root>
+        </Container>
+        {posts
+          .filter((p) => p.public)
+          .map((post, i) => {
+            return (
+              <Link key={i} href={`/blog/${post.slug}`}>
+                {post.name}
+              </Link>
+            );
+          })}
+        <Pagination page={1} pages={1} className="self-center" />
+      </Container>
+    </Main>
   );
 });

@@ -20,7 +20,7 @@ export const View = createElement<typeof ToggleGroup.Root>((props, ref) => {
         <ToggleGroup.Item
           key={i}
           value={view.name}
-          className="flex items-center justify-center text-line-base data-[state=on]:text-foreground-primary"
+          className="flex items-center justify-center text-background-highlight data-[state=on]:text-foreground-primary"
         >
           {view.icon}
         </ToggleGroup.Item>

@@ -2,7 +2,7 @@
 
 "use client";
 
-import { Footer, LocaleSwitcher } from "@/elements";
+import { Mark, LocaleSwitcher } from "@/elements";
 import { useUser } from "@/stores";
 import { SESSION_COOKIE_NAME, Spatial } from "@sptlco/client";
 import { Account } from "@sptlco/data";
@@ -340,7 +340,7 @@ export default function Layout(props: { children: ReactNode }) {
         <ScrollArea.Root>
           <ScrollArea.Viewport ref={scroller} className={clsx("xl:pr-10", "row-start-2 col-start-1", "xl:col-start-2")}>
             <Container className="flex flex-col relative xl:min-h-[calc(100vh-(var(--layout-pad)*2)-140px)]">{props.children}</Container>
-            <Footer className="p-10" />
+            <Mark className="p-10" />
           </ScrollArea.Viewport>
           <ScrollArea.Scrollbar />
           <ScrollArea.Corner />

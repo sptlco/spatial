@@ -8,10 +8,11 @@ export const Filters = createElement<typeof Fragment>(() => {
   return (
     <Dropdown.Root>
       <Dropdown.Trigger asChild>
-        <Button intent="ghost" className="px-2!">
+        <Button intent="ghost" size="fit" className="p-2 data-[state=open]:bg-button-ghost-active">
           <Icon symbol="filter_list" fill />
         </Button>
       </Dropdown.Trigger>
+      <Dropdown.Content>Filters</Dropdown.Content>
     </Dropdown.Root>
   );
 });

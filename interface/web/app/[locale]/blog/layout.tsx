@@ -2,10 +2,9 @@
 
 "use client";
 
-import { Footer } from "@/elements";
 import { ReactNode, useEffect } from "react";
 
-import { Container, ScrollArea } from "@sptlco/design";
+import { ScrollArea } from "@sptlco/design";
 
 /**
  * A shared layout for all blog pages.
@@ -17,12 +16,7 @@ export default function Layout(props: { children: ReactNode }) {
 
   return (
     <ScrollArea.Root className="size-full" fade>
-      <ScrollArea.Viewport className="h-screen">
-        <Container className="flex flex-col gap-10">
-          {props.children}
-          <Footer />
-        </Container>
-      </ScrollArea.Viewport>
+      <ScrollArea.Viewport className="h-screen">{props.children}</ScrollArea.Viewport>
       <ScrollArea.Scrollbar />
     </ScrollArea.Root>
   );

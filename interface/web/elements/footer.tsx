@@ -103,7 +103,7 @@ export const Footer = createElement<"footer">((props, ref) => {
           </Container>
         </Container>
         <Container className="flex flex-col justify-between gap-10">
-          <Container className="grid gap-10 grid-cols-2 md:grid-cols-3 lg:grid-cols-5">
+          <Container className="grid gap-10 grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
             {Object.entries(groups).map(([category, links]) => (
               <Container key={category} className="flex flex-col gap-4">
                 <Span className="text-sm font-semibold text-foreground-tertiary">{category}</Span>
@@ -121,7 +121,7 @@ export const Footer = createElement<"footer">((props, ref) => {
               </Container>
             ))}
           </Container>
-          <Form className="group flex relative w-full gap-4 items-end">
+          <Form className="group flex relative w-full max-w-md gap-4 items-end">
             <Field
               type="email"
               inset={false}
@@ -131,7 +131,7 @@ export const Footer = createElement<"footer">((props, ref) => {
               onChange={(e) => setEmail(e.target.value)}
               className="pr-12"
             />
-            <Button type="submit" className={clsx("shrink-0! size-6! p-0! absolute right-2 bottom-2", "group-focus-within:bg-button-highlight!")}>
+            <Button type="submit" className={clsx("shrink-0! size-7! p-0! absolute right-1.5 bottom-1.5", "group-focus-within:bg-button-highlight!")}>
               <Icon symbol="arrow_right_alt" size={20} />
             </Button>
           </Form>

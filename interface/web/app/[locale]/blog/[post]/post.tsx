@@ -24,9 +24,9 @@ export const Post = createElement<typeof Article, { slug: string }>(async ({ slu
   return (
     <Article {...props} ref={ref} className="flex flex-col items-center px-10">
       <Header metadata={metadata} />
-      <Container className="flex flex-col gap-16 items-center w-full xl:max-w-5xl">
+      <Container className="flex flex-col gap-10 items-center w-full xl:max-w-5xl">
         <Markdown />
-        <Separator orientation="horizontal" className="w-full xl:max-w-xl h-px bg-line-base" />
+        <Separator orientation="horizontal" className="w-full xl:max-w-3xl h-px bg-line-base" />
         <Footer metadata={metadata} />
       </Container>
       <ScrollIndicator />

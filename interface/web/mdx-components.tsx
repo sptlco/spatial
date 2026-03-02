@@ -10,6 +10,6 @@ import { Paragraph } from "@sptlco/design";
  */
 export function useMDXComponents(): MDXComponents {
   return {
-    p: ({ children }) => <Paragraph className="xl:max-w-xl">{children}</Paragraph>
+    p: ({ children }) => <Paragraph className="xl:max-w-3xl">{children}</Paragraph>
   };
 }

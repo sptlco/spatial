@@ -18,7 +18,7 @@ export default function Layout(props: { children: ReactNode }) {
   return (
     <ScrollArea.Root className="size-full" fade>
       <ScrollArea.Viewport className="h-screen">
-        <Container className="flex flex-col gap-36">
+        <Container className="flex flex-col gap-10">
           {props.children}
           <Footer />
         </Container>

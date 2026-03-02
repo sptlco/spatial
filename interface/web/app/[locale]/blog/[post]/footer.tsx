@@ -13,7 +13,7 @@ export const Footer = createElement<typeof Container, { metadata: Metadata }>(({
       <Container
         {...props}
         ref={ref}
-        className="text-foreground-tertiary font-medium text-xs xl:text-sm flex items-start xl:items-center justify-between w-full xl:max-w-xl"
+        className="text-foreground-tertiary font-medium text-xs xl:text-sm flex items-start xl:items-center justify-between w-full xl:max-w-3xl"
       >
         <Span className="flex flex-col gap-1 xl:gap-2.5 xl:flex-row xl:items-center">
           <Span>{metadata.author}</Span>

@@ -46,9 +46,8 @@ export const Footer = createElement<"footer">((props, ref) => {
     { category: "Developers", label: "Webhooks", href: "/developers/webhooks" },
 
     { category: "Compliance", label: "Privacy Policy", href: "/legal/privacy" },
-    { category: "Compliance", label: "Terms of Service", href: "/legal/terms" },
-    { category: "Compliance", label: "Cookie Policy", href: "/legal/cookies" },
-    { category: "Compliance", label: "Security", href: "/legal/security" }
+    { category: "Compliance", label: "User Agreement", href: "/legal/terms" },
+    { category: "Compliance", label: "Cookie Policy", href: "/legal/cookies" }
   ];
 
   const groups = links.reduce<Record<string, Hyperlink[]>>((acc, link) => {

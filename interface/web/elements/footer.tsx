@@ -1,6 +1,9 @@
 // Copyright © Spatial Corporation. All rights reserved.
 
+"use client";
+
 import { clsx } from "clsx";
+import { useState } from "react";
 
 import { Button, Container, createElement, Field, Form, Icon, Link, Logo, Path, Span, Svg } from "@sptlco/design";
 
@@ -14,6 +17,8 @@ type Hyperlink = {
  * A shared page footer.
  */
 export const Footer = createElement<"footer">((props, ref) => {
+  const [email, setEmail] = useState("");
+
   const links: Hyperlink[] = [
     { category: "Product", label: "Overview", href: "/overview" },
     { category: "Product", label: "Pricing", href: "/pricing" },
@@ -21,14 +26,12 @@ export const Footer = createElement<"footer">((props, ref) => {
     { category: "Product", label: "Changelog", href: "/changelog" },
     { category: "Product", label: "Roadmap", href: "/roadmap" },
 
-    // Company
     { category: "Company", label: "About", href: "/about" },
     { category: "Company", label: "Careers", href: "/careers" },
     { category: "Company", label: "Press", href: "/press" },
     { category: "Company", label: "Partners", href: "/partners" },
     { category: "Company", label: "Contact", href: "/contact" },
 
-    // Resources
     { category: "Resources", label: "Blog", href: "/blog" },
     { category: "Resources", label: "Documentation", href: "/docs" },
     { category: "Resources", label: "Guides", href: "/guides" },
@@ -36,19 +39,16 @@ export const Footer = createElement<"footer">((props, ref) => {
     { category: "Resources", label: "Community", href: "/community" },
     { category: "Resources", label: "Status", href: "/status" },
 
-    // Developers
     { category: "Developers", label: "API Reference", href: "/developers/api" },
     { category: "Developers", label: "SDK", href: "/developers/sdks" },
     { category: "Developers", label: "CLI", href: "/developers/cli" },
     { category: "Developers", label: "GitHub", href: "https://github.com/spatial" },
     { category: "Developers", label: "Webhooks", href: "/developers/webhooks" },
 
-    // Legal
-    { category: "Legal", label: "Privacy Policy", href: "/legal/privacy" },
-    { category: "Legal", label: "Terms of Service", href: "/legal/terms" },
-    { category: "Legal", label: "Security", href: "/legal/security" },
-    { category: "Legal", label: "Compliance", href: "/legal/compliance" },
-    { category: "Legal", label: "Cookie Policy", href: "/legal/cookies" }
+    { category: "Compliance", label: "Privacy Policy", href: "/legal/privacy" },
+    { category: "Compliance", label: "Terms of Service", href: "/legal/terms" },
+    { category: "Compliance", label: "Cookie Policy", href: "/legal/cookies" },
+    { category: "Compliance", label: "Security", href: "/legal/security" }
   ];
 
   const groups = links.reduce<Record<string, Hyperlink[]>>((acc, link) => {
@@ -63,12 +63,12 @@ export const Footer = createElement<"footer">((props, ref) => {
 
   return (
     <footer {...props} ref={ref} className="flex flex-col items-center border-t border-line-base">
-      <Container className="flex relative gap-10 p-10 w-full xl:max-w-7xl border-l border-r border-line-base">
-        <Span className="absolute top-0 left-0 size-1.5 -translate-x-1/2 -translate-y-1/2 flex bg-foreground-secondary" />
-        <Span className="absolute top-0 right-0 size-1.5 translate-x-1/2 -translate-y-1/2 flex bg-foreground-secondary" />
-        <Container className="flex flex-col grow items-start justify-between">
+      <Container className="flex flex-col sm:flex-row relative gap-10 p-10 w-full xl:max-w-7xl xl:border-l xl:border-r border-line-base">
+        <Span className="absolute top-0 left-0 size-1.5 -translate-x-1/2 -translate-y-1/2 flex xl:bg-foreground-secondary" />
+        <Span className="absolute top-0 right-0 size-1.5 translate-x-1/2 -translate-y-1/2 flex xl:bg-foreground-secondary" />
+        <Container className="flex flex-col gap-10 grow items-start justify-between">
           <Container className="flex flex-col gap-10">
-            <Logo mode="wordmark" className="h-16" />
+            <Logo mode="wordmark" className="h-10 md:h-16" />
             <Container className="flex flex-col text-sm font-semibold uppercase">
               <Span>240 2nd Avenue S</Span>
               <Span>STE 201K</Span>
@@ -79,6 +79,8 @@ export const Footer = createElement<"footer">((props, ref) => {
             <Span className="text-foreground-tertiary text-sm">© Spatial Corporation. All rights reserved.</Span>
             <Container className="flex items-center gap-4">
               <Link
+                icon={false}
+                target="_blank"
                 href="https://github.com/sptlco"
                 className={clsx(
                   "flex items-center justify-center size-10! text-foreground-tertiary!",
@@ -89,6 +91,8 @@ export const Footer = createElement<"footer">((props, ref) => {
               </Link>
               <Link
                 href="https://github.com/sptlco"
+                icon={false}
+                target="_blank"
                 className={clsx(
                   "flex items-center justify-center size-10! text-foreground-tertiary!",
                   "bg-button hover:bg-button-hover active:bg-button-active rounded-lg"
@@ -118,11 +122,18 @@ export const Footer = createElement<"footer">((props, ref) => {
               </Container>
             ))}
           </Container>
-          <Form className="flex w-full gap-4 items-end">
-            <Field type="email" inset={false} label="Newsletter" placeholder="Enter your email address" />
-            <Button type="submit" intent="highlight" className="shrink-0!">
-              <Span>Subscribe</Span>
-              <Icon symbol="arrow_outward" size={20} />
+          <Form className="group flex relative w-full gap-4 items-end">
+            <Field
+              type="email"
+              inset={false}
+              label="Newsletter"
+              placeholder="Enter your email address"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="pr-12"
+            />
+            <Button type="submit" className={clsx("shrink-0! size-6! p-0! absolute right-2 bottom-2", "group-focus-within:bg-button-highlight!")}>
+              <Icon symbol="arrow_right_alt" size={20} />
             </Button>
           </Form>
         </Container>

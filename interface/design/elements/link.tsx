@@ -7,7 +7,7 @@ import Primitive, { type LinkProps } from "next/link";
 /**
  * A hyperlink, which is used to link from one page to another.
  */
-export const Link = createElement<typeof Primitive, LinkProps>((props, ref) => (
+export const Link = createElement<typeof Primitive, LinkProps & { icon?: boolean }>(({ icon, ...props }, ref) => (
   <Primitive
     {...props}
     href={props.href || "#"}
@@ -15,7 +15,7 @@ export const Link = createElement<typeof Primitive, LinkProps>((props, ref) => (
     className={clsx("cursor-pointer inline-flex items-center gap-2", "transition-all", props.className)}
   >
     {props.children}
-    {props.target == "_blank" && (
+    {icon !== false && props.target == "_blank" && (
       <Span className="inline-flex items-center align-middle">
         <Icon className="ml-0.5 font-medium text-[1em]!" symbol="arrow_outward" />
       </Span>

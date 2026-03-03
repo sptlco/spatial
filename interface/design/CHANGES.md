@@ -1,5 +1,14 @@
 # Changelog
 
+## [1.18.0](https://github.com/sptlco/spatial/compare/spatial-interface-design-1.17.0...spatial-interface-design-1.18.0) (2026-03-03)
+
+
+### Features
+
+* Added batch identifiers for metrics ([#137](https://github.com/sptlco/spatial/issues/137)) ([e09d27f](https://github.com/sptlco/spatial/commit/e09d27fd93648c567129e3d999966948ee374a86))
+* Added responsive footer styles ([#137](https://github.com/sptlco/spatial/issues/137)) ([a0eef3c](https://github.com/sptlco/spatial/commit/a0eef3c016fb8ef56821f9f44d0edd85f2bd0d96))
+* Designed a footer ([#137](https://github.com/sptlco/spatial/issues/137)) ([6b89053](https://github.com/sptlco/spatial/commit/6b890532abc699493268a87b3dde88ebb68a45f7))
+
 ## [1.17.0](https://github.com/sptlco/spatial/compare/spatial-interface-design-1.16.0...spatial-interface-design-1.17.0) (2026-02-26)
 
 

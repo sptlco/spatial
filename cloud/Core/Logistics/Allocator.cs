@@ -42,9 +42,8 @@ public class Allocator : BackgroundService
             try
             {
                 var price = await _ethereum.GetPriceAsync(Constants.Contracts.CHAINLINK_ETH_USD, 8);
-                var details = (await _ethereum.GetERC20DetailsAsync(USDC))[USDC];
                 var ethereum = Web3.Convert.FromWei(await _ethereum.GetBalanceAsync());
-                var dollars = (decimal) details.Balance / (decimal) Math.Pow(10, 6);
+                var dollars = (decimal) (await _ethereum.GetERC20DetailsAsync(USDC))[USDC].Balance / (decimal) Math.Pow(10, 6);
                 var value = (Ethereum: ethereum * price, Total: (ethereum * price) + dollars);
 
                 if (value.Total > 0)
@@ -138,7 +137,7 @@ public class Allocator : BackgroundService
                     Pair = "USDC/ETH"
                 });
             
-            INFO("Purchased Ethereum: {Transaction}", receipt.TransactionHash);
+            INFO("Purchased {Volume} Ethereum at {Price}: {Transaction}", amount, price, receipt.TransactionHash);
         }
         catch (Exception e)
         {
@@ -187,7 +186,7 @@ public class Allocator : BackgroundService
                     Pair = "ETH/USDC"
                 });
 
-            INFO("Sold Ethereum for USDC: {Transaction}", receipt.TransactionHash);
+            INFO("Sold {Volume} Ethereum at {Price}: {Transaction}", amount, price, receipt.TransactionHash);
         }
         catch (Exception e)
         {

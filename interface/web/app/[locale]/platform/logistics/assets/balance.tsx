@@ -6,7 +6,7 @@ import { Spatial } from "@sptlco/client";
 import { Metric } from "@sptlco/data";
 import { clsx } from "clsx";
 import { useEffect, useMemo, useState } from "react";
-import { Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
+import { Area, AreaChart, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 import useSWR from "swr";
 
 import { Container, createElement, H2, Icon, Path, Portal, Span, Svg, ToggleGroup } from "@sptlco/design";
@@ -49,66 +49,21 @@ export const Balance = createElement<typeof Container, { period: keyof typeof PE
       }));
     }, [metrics]);
 
-    const forecastData = useMemo(() => {
-      if (data.length < 2) {
-        return [];
-      }
-
-      const last = data[data.length - 1];
-      const recent = data.slice(-Math.min(60, data.length));
-      const slope = recent.length > 1 ? (recent[recent.length - 1].value - recent[0].value) / (recent.length - 1) : 0;
-      const interval = data[data.length - 1].date.getTime() - data[data.length - 2].date.getTime();
-
-      const horizon =
-        {
-          "24h": 180, // 3 hours (180 mins)
-          "7d": 1440, // 24 hours (1440 mins)
-          "30d": 7, // 7 days
-          "1y": 90 // 90 days
-        }[props.period] ?? 60;
-
-      return Array.from({ length: horizon }).map((_, i) => {
-        const next = new Date(last.date.getTime() + interval * (i + 1));
-
-        return {
-          date: next.getTime(),
-          historyValue: null,
-          forecastValue: last.value + slope * (i + 1)
-        };
-      });
-    }, [data, props.period]);
-
-    const combinedData = useMemo(() => {
-      if (!data.length) {
-        return [];
-      }
-
-      const history = data.map((d) => ({
+    const chartData = useMemo(() => {
+      return data.map((d) => ({
         date: d.date.getTime(),
-        historyValue: d.value,
-        forecastValue: null
+        value: d.value
       }));
+    }, [data]);
 
-      const last = history[history.length - 1];
-      const connector =
-        forecastData.length > 0
-          ? {
-              date: last.date,
-              historyValue: last.historyValue,
-              forecastValue: last.historyValue
-            }
-          : null;
+    const hovered = point != null ? chartData[point] : null;
 
-      return connector ? [...history, connector, ...forecastData] : history;
-    }, [data, forecastData]);
+    const value = hovered?.value ?? null;
+    const date = hovered?.date != null ? new Date(hovered.date) : now ? new Date(now.created) : null;
 
     const base = metrics && metrics.length ? getValue(metrics[0]) : 0;
-    const hovered = point != null ? combinedData[point] : null;
-    const hoveredValue = hovered?.historyValue ?? hovered?.forecastValue ?? null;
-    const currentValue = hoveredValue ?? (now ? getValue(now) : 0);
-    const displayDate = hovered?.date != null ? new Date(hovered.date) : now ? new Date(now.created) : null;
-    const isForecastHover = hovered?.forecastValue != null && hovered?.historyValue == null;
-    const diff = base && currentValue ? (currentValue - base) / base : 0;
+    const current = value ?? (now ? getValue(now) : 0);
+    const delta = base && current ? (current - base) / base : 0;
 
     const color = useMemo(() => {
       if (!data || data.length < 2) {
@@ -124,135 +79,115 @@ export const Balance = createElement<typeof Container, { period: keyof typeof PE
       return "var(--color-foreground-primary)";
     }, [data]);
 
+    const hover = (state: any) => {
+      const index = state?.activeTooltipIndex;
+
+      if (index == null || index >= chartData.length) {
+        setPoint(null);
+        return;
+      }
+
+      if (index !== point) {
+        setPoint(index);
+      }
+    };
+
     return (
       <Container {...props} ref={ref} className={clsx("flex flex-col gap-10 w-screen xl:w-auto", props.className)}>
-        {metrics && (
-          <Portal container={document.getElementById("title")!}>
-            <Container className="flex items-center gap-2.5 md:gap-4 font-extrabold truncate text-sm md:text-base">
-              <Ethereum className="h-5 md:h-6" />
-              <Span className="truncate">{formatCurrency(metrics[metrics.length - 1].value.price)}</Span>
-            </Container>
-          </Portal>
-        )}
         <Container className="flex flex-col gap-10 pb-10 xl:p-10 xl:rounded-[56px]">
           <Container className="flex flex-col gap-6 px-10 xl:p-0">
             <Container className="flex flex-col sm:flex-row gap-5 xl:gap-10 items-start xl:items-center xl:justify-between">
-              <Container className="flex items-center justify-start gap-4">
-                <H2 className="inline-flex text-2xl font-extrabold">Balance</H2>
-                <Span className={clsx("inline-flex items-center gap-1 text-sm text-hint", !hovered && "text-yellow")}>
-                  <Icon symbol={point ? (isForecastHover ? "online_prediction" : "history") : "bolt"} className="font-light" size={20} fill />
-                  <Span className="font-bold">{formatDate(displayDate, props.period, hovered != null)}</Span>
-                </Span>
-              </Container>
-
-              <ToggleGroup.Root
-                className="rounded-lg bg-background-subtle flex items-center overflow-hidden"
-                type="single"
-                value={props.period}
-                onValueChange={(value) => {
-                  if (value) onPeriodChange(value as keyof typeof PERIODS);
-                }}
-              >
-                {Object.entries(PERIODS).map((period, i) => (
-                  <ToggleGroup.Item
-                    key={i}
-                    value={period[0]}
-                    className="px-5 py-2 uppercase font-bold text-hint rounded-lg data-[state=on]:bg-button data-[state=on]:text-foreground-primary"
-                  >
-                    {period[1]}
-                  </ToggleGroup.Item>
-                ))}
-              </ToggleGroup.Root>
+              <H2 className="inline-flex text-2xl font-extrabold gap-4 items-center">
+                <Span>Ethereum</Span>
+                <Ethereum className="h-6" />
+              </H2>
             </Container>
-
-            <Span className="flex flex-col md:flex-row md:items-center gap-4">
-              <Span className="text-5xl xl:text-9xl font-extrabold truncate">
+            <Span className="flex flex-col gap-2">
+              <Span className="text-6xl xl:text-9xl -ml-1 xl:-ml-1.5 font-extrabold truncate">
                 {!now ? (
                   <Container className="flex items-center h-32">
                     <Span className="bg-background-surface rounded-full h-10 w-sm animate-pulse flex" />
                   </Container>
                 ) : (
-                  formatCurrency(hoveredValue ?? getValue(now))
+                  formatCurrency(value ?? getValue(now))
                 )}
               </Span>
-              {diff != 0 && (
-                <Span className={clsx("inline-flex items-center text-xl xl:text-2xl", diff > 0 ? "text-green" : "text-red")}>
-                  {diff > 0 ? <Icon symbol="arrow_drop_up" size={40} /> : <Icon symbol="arrow_drop_down" size={40} />}{" "}
-                  <Span>{(Math.abs(diff) * 100).toFixed(2)}%</Span>{" "}
+              {delta != 0 && (
+                <Span className={clsx("truncate inline-flex -ml-2.5 items-center xl:text-2xl", delta > 0 ? "text-green" : "text-red")}>
+                  {delta > 0 ? <Icon symbol="arrow_drop_up" size={40} /> : <Icon symbol="arrow_drop_down" size={40} />}
+                  <Span>
+                    {formatCurrency(Math.abs(current - base))} ({(Math.abs(delta) * 100).toFixed(2)}%)
+                  </Span>
+                  <Span className="text-hint pl-2">{formatDate(date, point != null, props.period)}</Span>
                 </Span>
               )}
             </Span>
           </Container>
-          <ResponsiveContainer className="mask-l-from-80% mask-r-from-80%" width="100%" aspect={2.5} maxHeight={256}>
-            <Container className="relative h-full w-full">
-              <LineChart
-                accessibilityLayer
-                data={combinedData}
-                margin={{ left: 12, right: 12 }}
-                onMouseMove={(state: any) => {
-                  const index = state?.activeTooltipIndex;
+          <Container className="w-full flex flex-col gap-10">
+            <ResponsiveContainer className="xl:order-999 xl:mask-r-from-80% xl:mask-l-from-80%" width="100%" aspect={2.5} maxHeight={256}>
+              <Container className="relative h-full w-full">
+                <AreaChart
+                  accessibilityLayer
+                  data={chartData}
+                  margin={{ left: 0, right: 0 }}
+                  onMouseMove={hover}
+                  onTouchMove={hover} // <-- add this
+                  onTouchStart={hover} // <-- optional
+                  onMouseLeave={() => setPoint(null)}
+                >
+                  <defs>
+                    <linearGradient id="gradient" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0%" stopColor={color} stopOpacity={0.7} />
+                      <stop offset="100%" stopColor={color} stopOpacity={0} />
+                    </linearGradient>
+                  </defs>
 
-                  if (index == null || index >= combinedData.length) {
-                    if (point !== null) {
-                      setPoint(null);
-                    }
+                  <XAxis hide dataKey="date" type="number" scale="time" domain={["dataMin", "dataMax"]} />
+                  <YAxis hide domain={["dataMin - 1", "dataMax"]} />
 
-                    return;
-                  }
+                  <Area
+                    type="monotone"
+                    dataKey="value"
+                    stroke={color}
+                    strokeWidth={3}
+                    fill="url(#gradient)"
+                    dot={false}
+                    activeDot={false}
+                    connectNulls
+                  />
 
-                  if (index == null) {
-                    if (point !== null) {
-                      setPoint(null);
-                    }
-
-                    return;
-                  }
-
-                  if (index !== point) {
-                    setPoint(index);
-                  }
-                }}
-                onMouseLeave={() => {
-                  if (point !== null) {
-                    setPoint(null);
-                  }
-                }}
-              >
-                <XAxis hide dataKey="date" type="number" scale="time" domain={["dataMin", "dataMax"]} tick={false} />
-                <YAxis hide domain={["auto", "auto"]} />
-                <Line
-                  type="monotone"
-                  dataKey="historyValue"
-                  stroke={color}
-                  strokeWidth={2}
-                  dot={false}
-                  activeDot={false}
-                  isAnimationActive={false}
-                  connectNulls
-                />
-                <Line
-                  type="monotone"
-                  dataKey="forecastValue"
-                  stroke={"var(--color-line-base)"}
-                  strokeWidth={2}
-                  strokeOpacity={0.25}
-                  dot={false}
-                  activeDot={false}
-                  isAnimationActive={false}
-                  connectNulls
-                />
-
-                <Tooltip
-                  content={() => null}
-                  cursor={{
-                    stroke: color,
-                    strokeWidth: 2,
-                    strokeDasharray: "2 6"
-                  }}
-                />
-              </LineChart>
-            </Container>
-          </ResponsiveContainer>
+                  <Tooltip
+                    content={() => null}
+                    cursor={{
+                      stroke: "var(--color-line-strong)",
+                      strokeWidth: 1
+                    }}
+                  />
+                </AreaChart>
+              </Container>
+            </ResponsiveContainer>
+            <ToggleGroup.Root
+              className="xl:gap-4 flex items-center justify-center xl:justify-start overflow-hidden"
+              type="single"
+              value={props.period}
+              onValueChange={(value) => {
+                if (value) onPeriodChange(value as keyof typeof PERIODS);
+              }}
+            >
+              {Object.entries(PERIODS).map((period, i) => (
+                <ToggleGroup.Item
+                  key={i}
+                  value={period[0]}
+                  className={clsx(
+                    "text-xs xl:text-sm",
+                    "px-5 py-2 uppercase font-bold text-hint rounded-full xl:rounded-lg xl:bg-button data-[state=on]:bg-button-highlight-active data-[state=on]:text-foreground-primary"
+                  )}
+                >
+                  {period[1]}
+                </ToggleGroup.Item>
+              ))}
+            </ToggleGroup.Root>
+          </Container>
         </Container>
       </Container>
     );
@@ -309,40 +244,37 @@ function formatCurrency(value?: number) {
   }).format(value)} USD`;
 }
 
-function formatDate(date?: Date | null, period?: keyof typeof PERIODS, isHovering?: boolean) {
-  if (!isHovering) return "Live";
-  if (!date) {
-    return "";
+function formatDate(date?: Date | null, hovering?: boolean, period?: keyof typeof PERIODS) {
+  if (!hovering) {
+    switch (period) {
+      case "24h":
+        return "Past 24 hours";
+      case "7d":
+        return "Past week";
+      case "30d":
+        return "Past 30 days";
+      case "1y":
+        return "Past year";
+    }
   }
 
-  if (period === "24h") {
-    return new Intl.DateTimeFormat("en-US", {
-      hour: "2-digit",
-      minute: "2-digit",
-      hour12: false
-    }).format(date);
-  }
+  if (!hovering) return "Today";
+  if (!date) return "";
 
-  if (period === "7d") {
-    return new Intl.DateTimeFormat("en-US", {
-      weekday: "short",
-      hour: "2-digit",
-      minute: "2-digit",
-      hour12: false
-    }).format(date);
-  }
-
-  if (period === "30d") {
-    return new Intl.DateTimeFormat("en-US", {
-      month: "short",
-      day: "numeric"
-    }).format(date);
-  }
-
-  return new Intl.DateTimeFormat("en-US", {
-    month: "short",
-    year: "numeric"
+  const datePart = new Intl.DateTimeFormat("en-US", {
+    month: "short", // e.g., Mar
+    day: "numeric", // e.g., 3
+    timeZone: "UTC" // force UTC
   }).format(date);
+
+  const timePart = new Intl.DateTimeFormat("en-US", {
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: false, // 24-hour format
+    timeZone: "UTC" // force UTC
+  }).format(date);
+
+  return `${datePart} at ${timePart}`;
 }
 
 function getFromDate(period: keyof typeof PERIODS) {

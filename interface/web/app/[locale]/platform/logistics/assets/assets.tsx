@@ -23,8 +23,7 @@ export const Assets = createElement<typeof Card.Root>((props, ref) => {
     <Card.Root {...props} ref={ref}>
       <Header title="Assets" description="Automated Ethereum analysis and trading." />
       <Card.Content className="flex flex-col gap-10">
-        <Address />
-        <Container className="flex flex-col xl:gap-10 w-full xl:flex-row xl:items-start">
+        <Container className="flex flex-col xl:gap-10 w-full xl:flex-row">
           <Balance period={period} onPeriodChange={setPeriod} className="w-full xl:grow" />
           <Delta className="w-full xl:w-auto" />
         </Container>

@@ -310,9 +310,6 @@ export default function Layout(props: { children: ReactNode }) {
           }}
         >
           <Container className="ml-auto flex items-center gap-1 xl:gap-2.5">
-            <Button intent="ghost" className="p-0! size-10!">
-              <Icon symbol="search" />
-            </Button>
             <LocaleSwitcher compact />
           </Container>
           <Sheet.Root>

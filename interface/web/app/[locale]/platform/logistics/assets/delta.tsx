@@ -30,8 +30,10 @@ export const Delta = createElement<typeof Container>((props, ref) => {
     return (
       <Select.Root value={year.toString()} onValueChange={(value) => setYear(Number(value))}>
         <Select.Trigger asChild>
-          <Button intent="ghost" shape="pill" className="data-[state=open]:bg-button-ghost-active px-4! font-semibold! text-hint!">
-            <Span>{year}</Span>
+          <Button intent="ghost" shape="pill" className="data-[state=open]:bg-button-ghost-active mx-auto font-bold! text-2xl!">
+            <Span className="inline-flex items-center gap-4">
+              <Span>Delta</Span> <Span className="inline-flex px-4 py-2 rounded-full bg-button text-sm">{year}</Span>
+            </Span>
             <Icon symbol="keyboard_arrow_down" />
           </Button>
         </Select.Trigger>
@@ -61,8 +63,6 @@ export const Delta = createElement<typeof Container>((props, ref) => {
     dedupingInterval: 15000
   });
 
-  const TITLE = "Delta";
-
   if (!history.data || history.data.error || history.data.data.length < 2) {
     return (
       <Container
@@ -72,7 +72,6 @@ export const Delta = createElement<typeof Container>((props, ref) => {
         className={clsx("flex flex-col text-hint items-center justify-center xl:basis-[738px]", props.className)}
       >
         <Container className="flex flex-col items-center justify-center p-10 aspect-square gap-8 bg-background-surface rounded-4xl">
-          <Span className="font-semibold">{TITLE}</Span>
           {selector()}
           <Spinner className="size-5" />
         </Container>
@@ -153,19 +152,15 @@ export const Delta = createElement<typeof Container>((props, ref) => {
     <Container
       {...props}
       ref={ref}
-      className={clsx("flex flex-col xl:h-full justify-between w-screen xl:w-auto duration-500 animate-in fade-in zoom-in-95", props.className)}
+      className={clsx("flex flex-col xl:justify-end w-screen xl:w-auto duration-500 animate-in fade-in zoom-in-95", props.className)}
     >
-      <Container className="flex flex-col justify-between p-10 bg-background-surface xl:rounded-[56px] gap-10">
-        <Container className="flex flex-col w-full gap-10">
-          <H2 className="text-2xl inline-flex items-center gap-5 font-bold">
-            <Span>{TITLE}</Span>
-            {selector()}
-          </H2>
-
-          <Span className={clsx("flex flex-col md:flex-row md:items-center gap-4", total > 0 ? "text-green" : "text-red")}>
+      <Container className="flex flex-col justify-start p-10 xl:rounded-[56px] gap-10">
+        <Container className="flex flex-col w-full gap-6">
+          <H2 className="inline-flex items-center">{selector()}</H2>
+          <Span className={clsx("flex flex-col gap-2", total > 0 ? "text-green" : "text-red")}>
             <Span className={clsx("text-4xl xl:text-8xl font-extrabold truncate")}>{formatCurrency(total)}</Span>
             {diff != 0 && (
-              <Span className={clsx("inline-flex items-center text-xl xl:text-2xl")}>
+              <Span className={clsx("inline-flex items-center -ml-2.5 xl:text-2xl")}>
                 {diff > 0 ? <Icon symbol="arrow_drop_up" size={40} /> : <Icon symbol="arrow_drop_down" size={40} />}{" "}
                 <Span>{(Math.abs(diff) * 100).toFixed(2)}%</Span>{" "}
               </Span>

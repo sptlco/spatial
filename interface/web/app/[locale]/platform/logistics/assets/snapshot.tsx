@@ -43,8 +43,8 @@ export const Snapshot = createElement<typeof Container, { period: keyof typeof P
 
   return (
     <Container {...props} ref={ref} className={clsx("flex w-screen xl:w-auto flex-col gap-6", props.className)}>
-      <H2 className="px-10 text-2xl font-bold">Past {props.period.toUpperCase()}</H2>
-      <Container className="flex flex-col xl:flex-row xl:justify-between w-full xl:rounded-4xl xl:bg-background-surface">
+      <H2 className="px-10 text-2xl font-bold">{formatDate(null, false, props.period)}</H2>
+      <Container className="flex flex-col xl:flex-row xl:justify-between w-full">
         {metrics.map((metric, i) => (
           <Container key={i} className="grow flex flex-col xl:items-center gap-4 p-10 whitespace-nowrap">
             <Span className="text-sm text-foreground-quaternary font-semibold flex items-center gap-2">
@@ -110,8 +110,37 @@ function formatNumber(value?: number) {
   return new Intl.NumberFormat("en-US").format(value);
 }
 
-function formatPercent(value: number) {
-  return `${(value * 100).toFixed(2)}%`;
+function formatDate(date?: Date | null, hovering?: boolean, period?: keyof typeof PERIODS) {
+  if (!hovering) {
+    switch (period) {
+      case "24h":
+        return "Past 24 hours";
+      case "7d":
+        return "Past week";
+      case "30d":
+        return "Past 30 days";
+      case "1y":
+        return "Past year";
+    }
+  }
+
+  if (!hovering) return "Today";
+  if (!date) return "";
+
+  const datePart = new Intl.DateTimeFormat("en-US", {
+    month: "short", // e.g., Mar
+    day: "numeric", // e.g., 3
+    timeZone: "UTC" // force UTC
+  }).format(date);
+
+  const timePart = new Intl.DateTimeFormat("en-US", {
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: false, // 24-hour format
+    timeZone: "UTC" // force UTC
+  }).format(date);
+
+  return `${datePart} at ${timePart}`;
 }
 
 function getFromDate(period: keyof typeof PERIODS) {

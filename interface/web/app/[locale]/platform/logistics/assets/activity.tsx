@@ -15,6 +15,8 @@ import { Button, Container, createElement, Field, Form, H2, Icon, Link, Paginati
 type Field = {
   name: string;
   renderer: (metric: Metric) => ReactNode;
+  columnClassName?: string;
+  cellClassName?: string;
 };
 
 const highlight = (text: string, keywords: string[]) => {
@@ -71,9 +73,12 @@ export const Activity = createElement<typeof Container>((props, ref) => {
     },
     {
       name: "Direction",
+      columnClassName: "text-center",
+      cellClassName: "text-center",
       renderer: (metric) => (
         <Span
           className={clsx(
+            "inline-flex mx-auto",
             "border border-current/30",
             "rounded-lg text-xs font-extrabold uppercase px-4 py-1 bg-current/10",
             metric.metadata.direction.toLowerCase() === "buy" ? "text-green" : "text-red"
@@ -85,27 +90,32 @@ export const Activity = createElement<typeof Container>((props, ref) => {
     },
     {
       name: "Volume",
+      columnClassName: "text-center",
+      cellClassName: "text-center",
       renderer: (metric) => (
-        <Span className={clsx("flex items-center", metric.value.volume > 0 ? "text-green" : "text-red")}>
-          <Span className="inline-flex items-center justify-center">
-            {metric.value.volume > 0 ? <Icon symbol="arrow_drop_up" size={32} /> : <Icon symbol="arrow_drop_down" size={32} />}
-          </Span>
-          <Span className="font-semibold">{highlight(formatCurrency(Math.abs(metric.value.volume)), keywords)}</Span>
+        <Span className={clsx("inline-flex mx-auto items-center font-semibold", metric.value.volume > 0 ? "text-green" : "text-red")}>
+          {highlight(formatCurrency(metric.value.volume), keywords)}
         </Span>
       )
     },
     {
       name: "Gas",
+      columnClassName: "text-center",
+      cellClassName: "text-center",
       renderer: (metric) => <Span>{highlight(formatCurrency(metric.value.gas), keywords)}</Span>
     },
     {
       name: "Confirmed",
+      columnClassName: "text-center",
+      cellClassName: "text-center",
       renderer: (metric) => (
         <Span className="text-foreground-tertiary">{highlight(format.relativeTime(new Date(metric.timestamp), now), keywords)}</Span>
       )
     },
     {
       name: "Duration",
+      columnClassName: "text-center",
+      cellClassName: "text-center",
       renderer: (metric) => (
         <Span className="text-foreground-tertiary">{highlight(formatNumber(metric.value.duration, undefined, "ms"), keywords)}</Span>
       )
@@ -250,9 +260,9 @@ export const Activity = createElement<typeof Container>((props, ref) => {
             <Table.Root className="min-w-full table-fixed text-left border-separate border-spacing-10">
               <Table.Header className="text-foreground-quaternary">
                 <Table.Row>
-                  {fields.map((metric, i) => (
-                    <Table.Column key={i} className="font-semibold text-sm whitespace-nowrap">
-                      {metric.name}
+                  {fields.map((field, i) => (
+                    <Table.Column key={i} className={clsx("font-semibold text-sm whitespace-nowrap", field.columnClassName)}>
+                      {field.name}
                     </Table.Column>
                   ))}
                 </Table.Row>
@@ -260,9 +270,9 @@ export const Activity = createElement<typeof Container>((props, ref) => {
               <Table.Body>
                 {(paginatedData ?? []).map((entry, i) => (
                   <Table.Row key={i}>
-                    {fields.map((metric, j) => (
-                      <Table.Cell className="truncate" key={j}>
-                        {metric.renderer(entry)}
+                    {fields.map((field, j) => (
+                      <Table.Cell className={clsx("truncate", field.cellClassName)} key={j}>
+                        {field.renderer(entry)}
                       </Table.Cell>
                     ))}
                   </Table.Row>

@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.31.0](https://github.com/sptlco/spatial/compare/spatial-cloud-1.30.0...spatial-cloud-1.31.0) (2026-03-03)
+
+
+### Features
+
+* Added batch identifiers for metrics ([#137](https://github.com/sptlco/spatial/issues/137)) ([e09d27f](https://github.com/sptlco/spatial/commit/e09d27fd93648c567129e3d999966948ee374a86))
+
+
+### Bug Fixes
+
+* Updated transaction metrics ([#137](https://github.com/sptlco/spatial/issues/137)) ([b7f18c8](https://github.com/sptlco/spatial/commit/b7f18c8a4d786bc738aeceab95f453d2ee3acca8))
+
 ## [1.30.0](https://github.com/sptlco/spatial/compare/spatial-cloud-1.29.0...spatial-cloud-1.30.0) (2026-02-26)
 
 

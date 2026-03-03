@@ -1,5 +1,22 @@
 # Changelog
 
+## [1.25.0](https://github.com/sptlco/spatial/compare/spatial-1.24.0...spatial-1.25.0) (2026-03-03)
+
+
+### Features
+
+* Added a navigation bar ([#137](https://github.com/sptlco/spatial/issues/137)) ([9ac2dcb](https://github.com/sptlco/spatial/commit/9ac2dcbcbef4ff52b09f86108baaf1b51a0ac355))
+* Added batch identifiers for metrics ([#137](https://github.com/sptlco/spatial/issues/137)) ([e09d27f](https://github.com/sptlco/spatial/commit/e09d27fd93648c567129e3d999966948ee374a86))
+* Added responsive footer styles ([#137](https://github.com/sptlco/spatial/issues/137)) ([a0eef3c](https://github.com/sptlco/spatial/commit/a0eef3c016fb8ef56821f9f44d0edd85f2bd0d96))
+* Designed a footer ([#137](https://github.com/sptlco/spatial/issues/137)) ([6b89053](https://github.com/sptlco/spatial/commit/6b890532abc699493268a87b3dde88ebb68a45f7))
+* Designed a navigation bar ([#137](https://github.com/sptlco/spatial/issues/137)) ([8aa8df1](https://github.com/sptlco/spatial/commit/8aa8df1290cb1e87760c79f591be35116142f398))
+
+
+### Bug Fixes
+
+* Specified resolution ([#137](https://github.com/sptlco/spatial/issues/137)) ([af39231](https://github.com/sptlco/spatial/commit/af392312715312c56f7735ca2b605c6868ccc3ad))
+* Updated transaction metrics ([#137](https://github.com/sptlco/spatial/issues/137)) ([b7f18c8](https://github.com/sptlco/spatial/commit/b7f18c8a4d786bc738aeceab95f453d2ee3acca8))
+
 ## [1.24.0](https://github.com/sptlco/spatial/compare/spatial-1.23.1...spatial-1.24.0) (2026-02-26)
 
 

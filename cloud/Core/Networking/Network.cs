@@ -362,19 +362,22 @@ public partial class Network
     /// <param name="data">A <see cref="ProtocolBuffer"/>.</param>
     /// <param name="filter">An optional filter.</param>
     /// <param name="dispose">Whether or not to dispose of the <see cref="ProtocolBuffer"/>.</param>
-    public void Multicast(ushort command, ProtocolBuffer data, Expression<Func<Connection, bool>>? filter = default, bool dispose = true)
+    /// <param name="encrypt">Whether or not to encrypt the <see cref="ProtocolBuffer"/>.</param>
+    public void Multicast(ushort command, ProtocolBuffer data, Func<Connection, bool>? filter = default, bool dispose = true, bool encrypt = true)
     {
         data.Serialize(true);
 
-        var func = filter?.Compile();
-
-        Job.ParallelFor(_connections, (_, connection) =>
+        void send(Connection connection)
         {
-            if (func == default || func(connection))
+            if (filter == default || filter(connection))
             {
-                Send(connection, command, data, false, false);
+                Send(connection, command, data, false, false, encrypt);
             }
-        });
+        }
+
+        Job.ParallelFor(
+            collection: _connections, 
+            function: (_, connection) => send(connection)).Wait();
 
         if (dispose)
         {
@@ -388,8 +391,9 @@ public partial class Network
     /// <param name="command">A <see cref="NETCOMMAND"/>.</param>
     /// <param name="data">A <see cref="ProtocolBuffer"/>.</param>
     /// <param name="dispose">Whether or not to dispose of the <see cref="ProtocolBuffer"/>.</param>
-    public void Broadcast(ushort command, ProtocolBuffer data, bool dispose = true)
+    /// <param name="encrypt">Whether or not to encrypt the <see cref="ProtocolBuffer"/>.</param>
+    public void Broadcast(ushort command, ProtocolBuffer data, bool dispose = true, bool encrypt = true)
     {
-        Multicast(command, data, default, dispose);
+        Multicast(command, data, default, dispose, encrypt);
     }
 }

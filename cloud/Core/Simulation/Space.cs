@@ -586,7 +586,7 @@ public sealed partial class Space : IDisposable
                 Job.ParallelFor2D(
                     width: archetype.Chunks.Length,
                     height: (int) archetype.Chunks.Max(c => c.Count),
-                    function: (m, n) => process(archetype, m, n));
+                    function: (m, n) => process(archetype, m, n)).Wait();
             }
             else
             {

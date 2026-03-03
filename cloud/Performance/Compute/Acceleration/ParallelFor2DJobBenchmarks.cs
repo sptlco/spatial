@@ -53,7 +53,7 @@ public class JobParallelFor2DBenchmarks
                 }
 
                 _c[i, j] = sum;
-            });
+            }).Wait();
     }
 
     /// <summary>
@@ -75,7 +75,7 @@ public class JobParallelFor2DBenchmarks
                 }
 
                 _c[i, j] = sum;
-            });
+            }).Wait();
     }
 
     private static float[,] CreateRandomMatrix(int size)

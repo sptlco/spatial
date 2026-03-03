@@ -35,7 +35,7 @@ public class JobParallelForBenchmarks
     [Benchmark]
     public void ParallelFor()
     {
-        Job.ParallelFor(Iterations, i => _data[i]++, new JobOptions { BatchStrategy = BatchStrategy.None });
+        Job.ParallelFor(Iterations, i => _data[i]++, new JobOptions { BatchStrategy = BatchStrategy.None }).Wait();
     }
 
     /// <summary>
@@ -44,6 +44,6 @@ public class JobParallelForBenchmarks
     [Benchmark]
     public void BatchParallelFor()
     {
-        Job.ParallelFor(Iterations, i => _data[i]++);
+        Job.ParallelFor(Iterations, i => _data[i]++).Wait();
     }
 }

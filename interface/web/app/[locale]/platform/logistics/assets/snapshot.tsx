@@ -32,7 +32,7 @@ export const Snapshot = createElement<typeof Container, { period: keyof typeof P
   const trades = (transactions?.data && !transactions.data.error && transactions.data?.data) || [];
 
   const tradeCount = trades.length;
-  const volume = trades.reduce((sum, t) => sum + t.value.volume, 0);
+  const volume = trades.reduce((sum, t) => sum + Math.abs(t.value.volume), 0);
   const gas = trades.reduce((sum, t) => sum + t.value.gas, 0);
 
   const metrics: Metric[] = [

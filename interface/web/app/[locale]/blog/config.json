@@ -5,16 +5,17 @@
       "topic": "Engineering",
       "slug": "hello",
       "public": true,
-      "name": "Super Asymmetry",
+      "name": "Hello, world!",
       "description": "A greeting to the world.",
-      "author": "Dakarai Cundiff"
+      "author": "Dakarai Cundiff",
+      "media": "abc"
     },
     {
       "date": "2026-03-01",
       "topic": "Updates",
       "slug": "goodbye",
       "public": true,
-      "name": "Mark 2",
+      "name": "Goodbye, world!",
       "description": "A farewell to the world.",
       "author": "Dakarai Cundiff"
     }

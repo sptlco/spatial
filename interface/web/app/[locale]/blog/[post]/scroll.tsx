@@ -30,6 +30,7 @@ export const ScrollIndicator = createElement<typeof Fragment>((props, _) => {
           "flex items-center justify-center size-10",
           "bg-input rounded-full",
           "fixed bottom-10 left-1/2 -translate-x-1/2",
+          "animate-in fade-in",
           "transition-opacity duration-300",
           { "opacity-0": scrollY > 0 }
         )}

@@ -138,7 +138,7 @@ dev_mode() {
   (cd "\$PROJECT_ROOT/cloud/Server" && ASPNETCORE_ENVIRONMENT=Development dotnet watch) &
   PID=\$!
 
-  success "Development environment running..."
+  success "Development server running..."
   info "Press Ctrl+C to shutdown."
   echo
 

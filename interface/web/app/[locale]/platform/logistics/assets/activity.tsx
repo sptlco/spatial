@@ -106,7 +106,9 @@ export const Activity = createElement<typeof Container>((props, ref) => {
     },
     {
       name: "Duration",
-      renderer: (metric) => <Span className="text-foreground-tertiary">{highlight(`${metric.value.duration.toFixed(2)} ms`, keywords)}</Span>
+      renderer: (metric) => (
+        <Span className="text-foreground-tertiary">{highlight(formatNumber(metric.value.duration, undefined, "ms"), keywords)}</Span>
+      )
     }
   ];
 
@@ -155,12 +157,12 @@ export const Activity = createElement<typeof Container>((props, ref) => {
 
     const haystack = [
       metric.metadata.hash,
-      metric.value.duration.toFixed(2),
+      formatNumber(metric.value.duration),
       metric.metadata.direction,
-      metric.value.price.toFixed(2),
-      metric.value.volume.toFixed(2),
-      (metric.value.slippage * 100).toFixed(2),
-      metric.value.gas.toFixed(2)
+      formatNumber(metric.value.price),
+      formatNumber(metric.value.volume),
+      formatNumber(metric.value.slippage * 100),
+      formatNumber(metric.value.gas)
     ]
       .join(" ")
       .toLowerCase();
@@ -276,39 +278,35 @@ export const Activity = createElement<typeof Container>((props, ref) => {
   );
 });
 
-function formatCurrency(value?: number, currency?: string) {
+function formatCurrency(value?: number, currency: string = "USD") {
   if (value == null || isNaN(value)) {
     return "-";
   }
 
-  const abs = Math.abs(value);
-  const format = (num: number, suffix = "") => {
-    const formatted = new Intl.NumberFormat("en-US", {
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 2
-    }).format(num);
-
-    return `${value < 0 ? "-" : ""}${formatted}${suffix} ${currency ?? "USD"}`;
-  };
-
-  if (abs >= 1_000_000_000_000) {
-    return format(abs / 1_000_000_000_000, "T");
+  if (value >= 1_000_000_000_000) {
+    return formatNumber(value / 1_000_000_000_000, "T", currency);
   }
 
-  if (abs >= 1_000_000_000) {
-    return format(abs / 1_000_000_000, "B");
+  if (value >= 1_000_000_000) {
+    return formatNumber(value / 1_000_000_000, "B", currency);
   }
 
-  if (abs >= 1_000_000) {
-    return format(abs / 1_000_000, "M");
+  if (value >= 1_000_000) {
+    return formatNumber(value / 1_000_000, "M", currency);
   }
 
-  if (abs >= 1_000) {
-    return format(abs / 1_000, "K");
+  if (value >= 1_000) {
+    return formatNumber(value / 1_000, "K", currency);
   }
 
-  return `${new Intl.NumberFormat("en-US", {
+  return formatNumber(value, undefined, currency);
+}
+
+const formatNumber = (num: number, suffix?: string, unit?: string) => {
+  const formatted = new Intl.NumberFormat("en-US", {
     minimumFractionDigits: 0,
     maximumFractionDigits: 2
-  }).format(value)} ${currency ?? "USD"}`;
-}
+  }).format(num);
+
+  return `${formatted}${suffix ?? ""}${unit ? ` ${unit}` : ""}`;
+};

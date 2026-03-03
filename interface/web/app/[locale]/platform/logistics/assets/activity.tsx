@@ -63,7 +63,7 @@ export const Activity = createElement<typeof Container>((props, ref) => {
       renderer: (metric) => {
         const hash = `${metric.metadata.hash.slice(0, 6)}...${metric.metadata.hash.slice(-4)}`;
         return (
-          <Link href={`https://etherscan.io/address/${metric.metadata.hash}`} target="_blank" className="text-inherit">
+          <Link href={`https://etherscan.io/tx/${metric.metadata.hash}`} target="_blank" className="text-inherit">
             {highlight(hash, keywords)}
           </Link>
         );
@@ -90,7 +90,7 @@ export const Activity = createElement<typeof Container>((props, ref) => {
           <Span className="inline-flex items-center justify-center">
             {metric.value.volume > 0 ? <Icon symbol="arrow_drop_up" size={32} /> : <Icon symbol="arrow_drop_down" size={32} />}
           </Span>
-          <Span className="font-semibold text-sm">{highlight(formatCurrency(Math.abs(metric.value.volume)), keywords)}</Span>
+          <Span className="font-semibold">{highlight(formatCurrency(Math.abs(metric.value.volume)), keywords)}</Span>
         </Span>
       )
     },

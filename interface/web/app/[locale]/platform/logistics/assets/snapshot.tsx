@@ -37,11 +37,11 @@ export const Snapshot = createElement<typeof Container, { period: keyof typeof P
 
   const metrics: Metric[] = [
     {
-      label: "Trades",
+      label: "Transactions",
       value: formatNumber(tradeCount),
       tip: (
         <>
-          <Paragraph>Total number of trades executed autonomously during the selected period.</Paragraph>
+          <Paragraph>Total number of transactions executed autonomously during the selected period.</Paragraph>
           <Paragraph>
             Each trade represents a completed buy or sell decision by the system. Higher trade counts generally indicate increased strategy activity
             and responsiveness to market conditions.
@@ -56,20 +56,20 @@ export const Snapshot = createElement<typeof Container, { period: keyof typeof P
         <>
           <Paragraph>Aggregate notional value of Ethereum transacted during the selected period.</Paragraph>
           <Paragraph>
-            This reflects the total capital deployed across all executed trades and serves as a key indicator of market exposure, liquidity
-            utilization, and overall strategy footprint.
+            This reflects the total capital deployed across all transactions and serves as a key indicator of market exposure, liquidity utilization,
+            and overall strategy footprint.
           </Paragraph>
         </>
       )
     },
     {
-      label: "Burn",
+      label: "Gas",
       value: formatCurrency(gas),
       tip: (
         <>
           <Paragraph>Total network transaction fees (gas) consumed during the selected period.</Paragraph>
           <Paragraph>
-            This represents the operational cost of executing trades on-chain and directly impacts net performance, as higher gas consumption reduces
+            This represents the operational cost of transactions on-chain and directly impacts net performance, as higher gas consumption reduces
             realized returns.
           </Paragraph>
         </>

@@ -21,6 +21,7 @@ export default function Page() {
           <Tabs.List className="px-10">
             <Tabs.Trigger value="users">Users</Tabs.Trigger>
             <Tabs.Trigger value="roles">Roles</Tabs.Trigger>
+            <Tabs.Trigger value="settings">Settings</Tabs.Trigger>
           </Tabs.List>
           <Tabs.Content value="users">
             <Suspense>
@@ -32,6 +33,7 @@ export default function Page() {
               <Roles />
             </Suspense>
           </Tabs.Content>
+          <Tabs.Content value="settings" />
         </Tabs.Root>
       </Card.Content>
     </Card.Root>

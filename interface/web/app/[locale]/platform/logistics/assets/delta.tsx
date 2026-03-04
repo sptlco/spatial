@@ -145,12 +145,12 @@ export const Delta = createElement<typeof Container>((props, ref) => {
       className={clsx("flex flex-col xl:justify-end w-screen xl:w-auto duration-500 animate-in fade-in zoom-in-95", props.className)}
     >
       <Container className="flex flex-col justify-start p-10 xl:rounded-[56px] gap-10">
-        <Container className="flex flex-col w-full gap-6">
+        <Container className="flex flex-col items-center xl:items-start w-full gap-6">
           <H2 className="inline-flex items-center">{selector()}</H2>
-          <Span className={clsx("flex flex-col gap-2", total > 0 ? "text-green" : "text-red")}>
+          <Span className={clsx("flex flex-col items-center xl:items-start text-center xl:text-left gap-2", total > 0 ? "text-green" : "text-red")}>
             <Span className={clsx("text-4xl xl:text-8xl font-extrabold truncate")}>{formatCurrency(total)}</Span>
             {diff != 0 && (
-              <Span className={clsx("inline-flex items-center -ml-2.5 xl:text-2xl")}>
+              <Span className={clsx("inline-flex items-center -ml-2.5 xl:text-2xl truncate")}>
                 {diff > 0 ? <Icon symbol="arrow_drop_up" size={40} /> : <Icon symbol="arrow_drop_down" size={40} />}{" "}
                 <Span>{(Math.abs(diff) * 100).toFixed(2)}%</Span>{" "}
               </Span>

@@ -20,7 +20,7 @@ export const Header = createElement<typeof Fragment, { title?: string }>((props,
     mounted &&
     props.title && (
       <Portal {...props} ref={ref} container={document.getElementById("title")!}>
-        <Span className="font-bold xl:text-foreground-quaternary xl:font-normal">{props.title}</Span>
+        <Span className="xl:text-foreground-quaternary text-sm sm:text-base font-semibold">{props.title}</Span>
       </Portal>
     )
   );

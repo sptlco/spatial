@@ -78,12 +78,12 @@ export const Snapshot = createElement<typeof Container, { period: keyof typeof P
   ];
 
   return (
-    <Container {...props} ref={ref} className={clsx("flex w-screen xl:w-auto flex-col gap-6", props.className)}>
-      <H2 className="px-10 text-2xl font-bold">{formatDate(null, false, props.period)}</H2>
-      <Container className="flex flex-col xl:flex-row xl:justify-between w-full">
+    <Container {...props} ref={ref} className={clsx("xl:bg-transparent", "flex w-screen xl:w-auto px-10 xl:p-0 flex-col gap-6", props.className)}>
+      <H2 className="text-2xl font-bold">{formatDate(null, false, props.period)}</H2>
+      <Container className="flex flex-col gap-10 xl:flex-row xl:justify-between w-full">
         {metrics.map((metric, i) => (
-          <Container key={i} className="grow flex flex-col xl:items-center gap-4 p-10 whitespace-nowrap">
-            <Span className="text-sm text-foreground-quaternary font-semibold flex items-center gap-2">
+          <Container key={i} className="grow flex flex-col xl:items-center gap-4 whitespace-nowrap">
+            <Span className="text-sm text-foreground-quaternary font-semibold flex items-center divide-y divide-line-base divide-dotted gap-2">
               <Span>{metric.label}</Span>
               {metric.tip && (
                 <Tooltip.Root>

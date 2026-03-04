@@ -32,6 +32,7 @@ import {
   LI,
   Pagination,
   Paragraph,
+  Portal,
   Sheet,
   Span,
   Spinner,
@@ -465,8 +466,8 @@ export const Users = () => {
   const [creating, setCreating] = useState(false);
 
   return (
-    <Card.Root>
-      <Card.Header className="px-10">
+    <Card.Root className="gap-0!">
+      <Card.Header>
         <Card.Title className="text-2xl font-bold flex gap-3 items-center">
           <Span>Users</Span>
           <Span className="bg-translucent shrink-0 size-10 font-normal rounded-full text-sm inline-flex items-center justify-center">
@@ -495,10 +496,10 @@ export const Users = () => {
           </Button>
         </Card.Gutter>
       </Card.Header>
-      <Card.Content className={clsx("w-full flex flex-col relative xl:gap-10!", { "mask-b-from-20% mask-b-to-80%": !users.data })}>
-        <Container className="px-10 flex flex-col xl:flex-row w-full items-start xl:items-center gap-5">
+      <Card.Content className={clsx("w-full flex flex-col relative mt-10", { "mask-b-from-20% mask-b-to-80%": !users.data })}>
+        <Container className="flex flex-col xl:flex-row w-full items-start xl:items-center gap-5">
           <Form
-            className="relative w-full max-w-sm flex items-center"
+            className="group relative w-full max-w-sm flex items-center"
             onSubmit={(e) => {
               e.preventDefault();
               commitKeywords(search);
@@ -523,12 +524,19 @@ export const Users = () => {
             <Icon symbol="search" className="absolute left-3" />
 
             {keywords.length > 0 ? (
-              <Button type="button" intent="ghost" className="absolute right-1 size-8! p-0!" onClick={clearKeywords}>
+              <Button
+                type="button"
+                className={clsx("shrink-0! size-7! p-0! absolute right-1.5 bottom-1.5", "group-focus-within:bg-button-highlight!")}
+                onClick={clearKeywords}
+              >
                 <Icon symbol="close" />
               </Button>
             ) : (
-              <Button type="submit" intent="ghost" className="absolute right-1 size-8! p-0!">
-                <Icon symbol="arrow_forward" />
+              <Button
+                type="submit"
+                className={clsx("shrink-0! size-7! p-0! absolute right-1.5 bottom-1.5", "group-focus-within:bg-button-highlight!")}
+              >
+                <Icon symbol="arrow_right_alt" size={20} />
               </Button>
             )}
           </Form>
@@ -601,7 +609,7 @@ export const Users = () => {
             </Combobox.Root>
           </Container>
         </Container>
-        <Table.Root className="w-full px-10 table-fixed border-separate border-spacing-y-10">
+        <Table.Root className="w-full table-fixed border-separate border-spacing-y-10">
           <Table.Header>
             <Table.Row>
               <Table.Column className="size-12 xl:w-16">
@@ -644,15 +652,12 @@ export const Users = () => {
             <Body />
           </Table.Body>
         </Table.Root>
-        <Pagination page={PAGE} pages={pages} className="self-center" onPageChange={navigate} />
-        <Container
-          className={clsx("forwards", "opacity-0", "fixed bottom-10  left-1/2 -translate-1/2", "p-10 bg-background-surface shadow-base rounded-2xl", {
-            "animate-in slide-in-from-bottom fade-in": selection.length > 0
-          })}
-        ></Container>
       </Card.Content>
-      {selection.length > 0 &&
-        createPortal(
+      <Card.Footer className="w-full flex flex-col">
+        <Pagination page={PAGE} pages={pages} className="self-center" onPageChange={navigate} />
+      </Card.Footer>
+      {selection.length > 0 && (
+        <Portal container={document.getElementById("actions")!}>
           <Container
             className={clsx(
               "bg-blue shadow-base",
@@ -738,9 +743,9 @@ export const Users = () => {
                 Clear
               </Tooltip.Content>
             </Tooltip.Root>
-          </Container>,
-          document.getElementById("actions")!
-        )}
+          </Container>
+        </Portal>
+      )}
 
       <Sheet.Root open={creating} onOpenChange={setCreating}>
         <Creator

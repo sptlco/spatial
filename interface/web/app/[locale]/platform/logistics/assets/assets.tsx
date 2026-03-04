@@ -4,7 +4,6 @@
 
 import { useState } from "react";
 
-import { Address } from "./address";
 import { Snapshot } from "./snapshot";
 import { Activity } from "./activity";
 import { Balance, PERIODS } from "./balance";
@@ -22,8 +21,8 @@ export const Assets = createElement<typeof Card.Root>((props, ref) => {
   return (
     <Card.Root {...props} ref={ref}>
       <Header title="Assets" />
-      <Card.Content className="flex flex-col gap-10">
-        <Container className="flex flex-col xl:gap-10 w-full xl:flex-row">
+      <Card.Content className="flex flex-col gap-16 xl:gap-20 xl:pr-10">
+        <Container className="flex flex-col gap-16 xl:gap-20 xl:pb-10 w-full xl:flex-row">
           <Balance period={period} onPeriodChange={setPeriod} className="w-full xl:grow" />
           <Delta className="w-full xl:w-auto" />
         </Container>

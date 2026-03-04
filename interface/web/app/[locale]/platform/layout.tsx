@@ -10,7 +10,7 @@ import { clsx } from "clsx";
 import cookies from "js-cookie";
 import { useLocale, useTranslations } from "next-intl";
 import { usePathname } from "next/navigation";
-import { FormEvent, ReactNode, useEffect, useRef, useState } from "react";
+import { FormEvent, ReactNode, useContext, useEffect, useRef, useState } from "react";
 import { SWRConfig } from "swr";
 import { useShallow } from "zustand/shallow";
 
@@ -19,6 +19,7 @@ import {
   Button,
   Container,
   Dialog,
+  DocumentContext,
   Drawer,
   Field,
   Form,
@@ -126,7 +127,11 @@ export default function Layout(props: { children: ReactNode }) {
   const scroller = useRef<HTMLDivElement>(null);
   const frame = useRef<number>(null);
 
+  const { setClassName } = useContext(DocumentContext);
+
   useEffect(() => {
+    setClassName("bg-background-subtle!");
+
     const el = scroller.current;
 
     if (!el) {
@@ -229,7 +234,7 @@ export default function Layout(props: { children: ReactNode }) {
         shouldRetryOnError: false
       }}
     >
-      <Main className={clsx("grid w-full h-screen", "grid-cols-1 xl:grid-cols-[auto_1fr]", "grid-rows-[auto_minmax(0,1fr)]")}>
+      <Main className={clsx("bg-background-subtle", "grid w-full h-screen", "grid-cols-1 xl:grid-cols-[auto_1fr]", "grid-rows-[auto_minmax(0,1fr)]")}>
         <Dialog.Root open={requirements.name}>
           <Dialog.Content title="Information required" description="We need to know the following." closeButton={false}>
             <Form className="flex flex-col items-center gap-10" onSubmit={submit}>
@@ -261,49 +266,46 @@ export default function Layout(props: { children: ReactNode }) {
             "xl:overflow-y-auto"
           )}
         >
-          <Container className="flex h-full gap-0 xl:gap-10">
-            <Container className="flex flex-col h-full gap-10">
-              <Link href="/" className="relative flex items-center justify-center size-10 xl:w-16!">
-                <Logo mode="symbol" className="w-10 fill-foreground-primary" />
-              </Link>
-              <UL className="hidden xl:flex grow flex-col items-center justify-center gap-6">
-                {pages.map((page, i) => {
-                  const highlight = active(page.path);
+          <Container className="flex flex-col h-full gap-10">
+            <Link href="/" className="relative flex items-center justify-center size-10 xl:w-16!">
+              <Logo mode="symbol" className="w-10 fill-foreground-primary" />
+            </Link>
+            <UL className="hidden xl:flex grow flex-col items-center justify-center gap-6">
+              {pages.map((page, i) => {
+                const highlight = active(page.path);
 
-                  return (
-                    <LI key={i}>
-                      <Tooltip.Root>
-                        <Tooltip.Trigger>
-                          <Link
-                            href={page.path}
-                            className={clsx(
-                              "transition-all relative",
-                              "flex items-center justify-center size-16",
-                              "rounded-2xl bg-button-ghost text-foreground-primary",
-                              "hover:bg-button-ghost-hover active:bg-button-ghost-active",
-                              "hover:text-foreground-primary active:text-foreground-primary",
-                              { "bg-button-ghost-hover! text-white!": highlight }
-                            )}
-                          >
-                            <Icon symbol={page.icon} className={highlight ? "animate-fill" : "animate-outline"} />
-                            {highlight && <Span className="absolute bottom-2.5 size-1 translate-y-1/4 rounded-full bg-blue" />}
-                          </Link>
-                        </Tooltip.Trigger>
-                        <Tooltip.Content side="right" sideOffset={20}>
-                          {t(page.name)}
-                        </Tooltip.Content>
-                      </Tooltip.Root>
-                    </LI>
-                  );
-                })}
-              </UL>
-            </Container>
-            <Separator orientation="vertical" className="hidden xl:flex bg-linear-to-b from-transparent to-transparent via-line-subtle h-full w-px" />
+                return (
+                  <LI key={i}>
+                    <Tooltip.Root>
+                      <Tooltip.Trigger>
+                        <Link
+                          href={page.path}
+                          className={clsx(
+                            "transition-all relative",
+                            "flex items-center justify-center size-16",
+                            "rounded-2xl bg-button-ghost text-foreground-primary",
+                            "hover:bg-button-ghost-hover active:bg-button-ghost-active",
+                            "hover:text-foreground-primary active:text-foreground-primary",
+                            { "bg-button-ghost-hover! text-white!": highlight }
+                          )}
+                        >
+                          <Icon symbol={page.icon} className={highlight ? "animate-fill" : "animate-outline"} />
+                          {highlight && <Span className="absolute bottom-2.5 size-1 translate-y-1/4 rounded-full bg-blue" />}
+                        </Link>
+                      </Tooltip.Trigger>
+                      <Tooltip.Content side="right" sideOffset={20}>
+                        {t(page.name)}
+                      </Tooltip.Content>
+                    </Tooltip.Root>
+                  </LI>
+                );
+              })}
+            </UL>
           </Container>
         </Container>
         <Container
           id="title"
-          className="flex items-center xl:justify-center row-start-1 col-start-1 xl:col-start-2 col-span-2 px-10 pl-24 xl:pl-10 xl:-ml-10"
+          className="flex items-center xl:justify-center row-start-1 col-start-1 xl:col-start-2 col-span-2 px-10 pl-24 xl:p-0 xl:mr-10"
         />
         <Container
           className={clsx("flex px-10 gap-2.5 sm:gap-5 items-center shrink-0", "row-start-1 col-start-1 xl:col-start-2")}
@@ -337,14 +339,15 @@ export default function Layout(props: { children: ReactNode }) {
             </Sheet.Content>
           </Sheet.Root>
         </Container>
-        <ScrollArea.Root>
-          <ScrollArea.Viewport ref={scroller} className={clsx("xl:pr-10", "row-start-2 col-start-1", "xl:col-start-2")}>
-            <Container className="flex flex-col relative xl:min-h-[calc(100vh-(var(--layout-pad)*2)-140px)]">{props.children}</Container>
-            <Mark className="p-10" />
-          </ScrollArea.Viewport>
-          <ScrollArea.Scrollbar />
-          <ScrollArea.Corner />
-        </ScrollArea.Root>
+        <Container>
+          <ScrollArea.Root className="h-full" fade>
+            <ScrollArea.Viewport ref={scroller} className={clsx("row-start-1 row-span-2 col-start-1", "xl:col-start-2")}>
+              <Container className="flex flex-col relative xl:min-h-[calc(100vh-(var(--layout-pad)*2)-140px)]">{props.children}</Container>
+              <Mark />
+            </ScrollArea.Viewport>
+            <ScrollArea.Scrollbar />
+          </ScrollArea.Root>
+        </Container>
         <Container id="actions" className="fixed pointer-events-none bottom-0 left-0 w-full flex gap-5 p-10 z-20 justify-start">
           <Drawer.Root>
             <Drawer.Trigger className="xl:hidden z-30 pointer-events-auto cursor-pointer rounded-full bg-background-surface shadow-base p-4 flex shrink-0 items-center justify-center">

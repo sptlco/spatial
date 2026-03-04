@@ -63,7 +63,7 @@ export const Sheet = {
       <Sheet.Portal>
         <Sheet.Overlay
           className={clsx(
-            "fixed inset-0 z-50 size-full bg-background-base/30 backdrop-blur",
+            "fixed inset-0 z-50 size-full bg-inherit/30 backdrop-blur",
             "data-[state=open]:animate-in data-[state=open]:fade-in",
             "data-[state=closed]:animate-out data-[state=closed]:fade-out",
             "duration-500"

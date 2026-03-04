@@ -63,10 +63,9 @@ export const Activity = createElement<typeof Container>((props, ref) => {
     {
       name: "Transaction",
       renderer: (metric) => {
-        const hash = `${metric.metadata.hash.slice(0, 6)}...${metric.metadata.hash.slice(-4)}`;
         return (
           <Link href={`https://etherscan.io/tx/${metric.metadata.hash}`} target="_blank" className="text-inherit">
-            {highlight(hash, keywords)}
+            {highlight(`${metric.metadata.hash.slice(0, 10)}...${metric.metadata.hash.slice(-9)}`, keywords)}
           </Link>
         );
       }
@@ -216,52 +215,64 @@ export const Activity = createElement<typeof Container>((props, ref) => {
 
   return (
     <Container {...props} ref={ref} className={clsx("flex flex-col gap-10 w-screen xl:w-auto", props.className)}>
-      <H2 className="px-10 text-2xl font-bold">Activity</H2>
       <Container className="flex flex-col w-full">
-        <Container className="flex px-10">
-          <Form
-            className="relative w-full max-w-sm flex items-center"
-            onSubmit={(e) => {
-              e.preventDefault();
-              commitKeywords(search);
-            }}
-          >
-            <Field
-              type="text"
-              id="search"
-              name="search"
-              placeholder="Search activity"
-              value={search}
-              className="w-full pl-12 pr-12"
-              onChange={(e) => setSearch(e.target.value)}
-              onKeyDown={(e) => {
-                if (e.key === "Escape" && search.length > 0) {
-                  e.preventDefault();
-                  clearKeywords();
-                }
+        <Container className="flex flex-col gap-10 px-10 xl:p-0 w-full">
+          <H2 className="text-2xl font-bold">Activity</H2>
+          <Container className="flex">
+            <Form
+              className="group relative w-full sm:max-w-sm flex items-center"
+              onSubmit={(e) => {
+                e.preventDefault();
+                commitKeywords(search);
               }}
-            />
+            >
+              <Field
+                type="text"
+                id="search"
+                name="search"
+                placeholder="Search activity"
+                value={search}
+                className="w-full pl-12 pr-12"
+                onChange={(e) => setSearch(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Escape" && search.length > 0) {
+                    e.preventDefault();
+                    clearKeywords();
+                  }
+                }}
+              />
 
-            <Icon symbol="search" className="absolute left-3" />
+              <Icon symbol="search" className="absolute left-3" />
 
-            {keywords.length > 0 ? (
-              <Button type="button" intent="ghost" className="absolute right-1 size-8! p-0!" onClick={clearKeywords}>
-                <Icon symbol="close" />
-              </Button>
-            ) : (
-              <Button type="submit" intent="ghost" className="absolute right-1 size-8! p-0!">
-                <Icon symbol="arrow_forward" />
-              </Button>
-            )}
-          </Form>
+              {keywords.length > 0 ? (
+                <Button
+                  type="button"
+                  onClick={clearKeywords}
+                  className={clsx("shrink-0! size-7! p-0! absolute right-1.5 bottom-1.5", "group-focus-within:bg-button-highlight!")}
+                >
+                  <Icon symbol="close" />
+                </Button>
+              ) : (
+                <Button
+                  type="submit"
+                  className={clsx("shrink-0! size-7! p-0! absolute right-1.5 bottom-1.5", "group-focus-within:bg-button-highlight!")}
+                >
+                  <Icon symbol="arrow_right_alt" size={20} />
+                </Button>
+              )}
+            </Form>
+          </Container>
         </Container>
         <ScrollArea.Root className="w-full" fade fadeOrientation="horizontal">
-          <ScrollArea.Viewport className="max-w-full">
-            <Table.Root className="min-w-full table-fixed text-left border-separate border-spacing-10">
+          <ScrollArea.Viewport className="max-w-full px-10 xl:p-0">
+            <Table.Root className="min-w-full table-fixed text-left border-separate border-spacing-y-10">
               <Table.Header className="text-foreground-quaternary">
                 <Table.Row>
                   {fields.map((field, i) => (
-                    <Table.Column key={i} className={clsx("font-semibold text-sm whitespace-nowrap", field.columnClassName)}>
+                    <Table.Column
+                      key={i}
+                      className={clsx("font-semibold text-sm whitespace-nowrap px-10 first:px-0 last:pl-0 xl:last:px-0", field.columnClassName)}
+                    >
                       {field.name}
                     </Table.Column>
                   ))}
@@ -271,7 +282,7 @@ export const Activity = createElement<typeof Container>((props, ref) => {
                 {(paginatedData ?? []).map((entry, i) => (
                   <Table.Row key={i}>
                     {fields.map((field, j) => (
-                      <Table.Cell className={clsx("truncate", field.cellClassName)} key={j}>
+                      <Table.Cell className={clsx("truncate px-10 first:px-0 last:pl-0 xl:last:px-0", field.cellClassName)} key={j}>
                         {field.renderer(entry)}
                       </Table.Cell>
                     ))}

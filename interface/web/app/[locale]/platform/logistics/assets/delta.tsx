@@ -142,9 +142,9 @@ export const Delta = createElement<typeof Container>((props, ref) => {
     <Container
       {...props}
       ref={ref}
-      className={clsx("flex flex-col xl:justify-end w-screen xl:w-auto duration-500 animate-in fade-in zoom-in-95", props.className)}
+      className={clsx("flex flex-col xl:justify-end w-screen xl:w-auto px-10 xl:p-0 duration-500 animate-in fade-in zoom-in-95", props.className)}
     >
-      <Container className="flex flex-col justify-start p-10 gap-10">
+      <Container className="flex flex-col justify-start gap-10">
         <Container className="flex flex-col items-center w-full gap-6">
           <H2 className="inline-flex items-center">{selector()}</H2>
           <Span className={clsx("flex flex-col items-center text-center gap-2", total > 0 ? "text-green" : "text-red")}>

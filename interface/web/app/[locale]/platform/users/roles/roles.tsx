@@ -319,150 +319,150 @@ export const Roles = () => {
   const [creating, setCreating] = useState(false);
 
   return (
-    <>
-      <Card.Root className="gap-0!">
-        <Card.Header className="px-10">
-          <Card.Title className="text-2xl font-bold flex gap-3 items-center">
-            <Span>Roles</Span>
-            <Span className="bg-translucent size-10 font-normal rounded-full text-sm inline-flex items-center justify-center">
-              {roles.isValidating || !roles.data ? <Spinner className="size-3 text-foreground-secondary" /> : roles.data.length}
-            </Span>
-          </Card.Title>
-          <Card.Gutter className="flex xl:hidden">
-            <Dropdown.Root>
-              <Dropdown.Trigger asChild>
-                <Button intent="ghost" className="size-10! p-0! data-[state=open]:bg-button-ghost-active">
-                  <Icon symbol="keyboard_arrow_down" />
-                </Button>
-              </Dropdown.Trigger>
-              <Dropdown.Content>
-                <Dropdown.Item onSelect={() => setCreating(true)}>
-                  <Icon symbol="add" />
-                  <Span>Create</Span>
-                </Dropdown.Item>
-              </Dropdown.Content>
-            </Dropdown.Root>
-          </Card.Gutter>
-          <Card.Gutter className="hidden xl:flex">
-            <Button onClick={() => setCreating(true)}>
-              <Icon symbol="add" />
-              <Span>Create</Span>
-            </Button>
-          </Card.Gutter>
-        </Card.Header>
-        <Card.Content className={clsx("w-full flex flex-col relative xl:gap-10!", { "mask-b-from-20% mask-b-to-80%": !roles.data })}>
-          <Table.Root className="w-full px-10 table-fixed border-separate border-spacing-y-10">
-            <Table.Header>
-              <Table.Row>
-                <Table.Column className="size-12 xl:w-16">
-                  <Checkbox checked={paginatedData.length > 0 && paginatedData.every((r) => selection.includes(r.id))} onCheckedChange={selectAll} />
-                </Table.Column>
-                <Table.Column className="text-left text-sm text-foreground-quaternary font-semibold">Name</Table.Column>
-                <Table.Column className="text-center hidden xl:table-cell text-sm text-foreground-quaternary font-semibold">Permissions</Table.Column>
-                <Table.Column className="text-center hidden xl:table-cell text-sm text-foreground-quaternary font-semibold">Assignments</Table.Column>
-                <Table.Column className="size-12 xl:w-16" />
-              </Table.Row>
-            </Table.Header>
-            <Table.Body className="relative">
-              <Body />
-            </Table.Body>
-          </Table.Root>
-          <Pagination page={page} pages={pages} className="self-center" onPageChange={navigate} />
-        </Card.Content>
+    <Card.Root className="gap-0!">
+      <Card.Header>
+        <Card.Title className="text-2xl font-bold flex gap-3 items-center">
+          <Span>Roles</Span>
+          <Span className="bg-translucent size-10 font-normal rounded-full text-sm inline-flex items-center justify-center">
+            {roles.isValidating || !roles.data ? <Spinner className="size-3 text-foreground-secondary" /> : roles.data.length}
+          </Span>
+        </Card.Title>
+        <Card.Gutter className="flex xl:hidden">
+          <Dropdown.Root>
+            <Dropdown.Trigger asChild>
+              <Button intent="ghost" className="size-10! p-0! data-[state=open]:bg-button-ghost-active">
+                <Icon symbol="keyboard_arrow_down" />
+              </Button>
+            </Dropdown.Trigger>
+            <Dropdown.Content>
+              <Dropdown.Item onSelect={() => setCreating(true)}>
+                <Icon symbol="add" />
+                <Span>Create</Span>
+              </Dropdown.Item>
+            </Dropdown.Content>
+          </Dropdown.Root>
+        </Card.Gutter>
+        <Card.Gutter className="hidden xl:flex">
+          <Button onClick={() => setCreating(true)}>
+            <Icon symbol="add" />
+            <Span>Create</Span>
+          </Button>
+        </Card.Gutter>
+      </Card.Header>
+      <Card.Content className={clsx("w-full flex flex-col relative", { "mask-b-from-20% mask-b-to-80%": !roles.data })}>
+        <Table.Root className="w-full table-fixed border-separate border-spacing-y-10">
+          <Table.Header>
+            <Table.Row>
+              <Table.Column className="size-12 xl:w-16">
+                <Checkbox checked={paginatedData.length > 0 && paginatedData.every((r) => selection.includes(r.id))} onCheckedChange={selectAll} />
+              </Table.Column>
+              <Table.Column className="text-left text-sm text-foreground-quaternary font-semibold">Name</Table.Column>
+              <Table.Column className="text-center hidden xl:table-cell text-sm text-foreground-quaternary font-semibold">Permissions</Table.Column>
+              <Table.Column className="text-center hidden xl:table-cell text-sm text-foreground-quaternary font-semibold">Assignments</Table.Column>
+              <Table.Column className="size-12 xl:w-16" />
+            </Table.Row>
+          </Table.Header>
+          <Table.Body className="relative">
+            <Body />
+          </Table.Body>
+        </Table.Root>
+      </Card.Content>
+      <Card.Footer className="w-full flex flex-col">
+        <Pagination page={page} pages={pages} className="self-center" onPageChange={navigate} />
+      </Card.Footer>
 
-        {selection.length > 0 &&
-          createPortal(
-            <Container
-              className={clsx(
-                "bg-blue shadow-base",
-                "pointer-events-auto ml-auto flex items-center gap-2 rounded-2xl p-2 animate-in zoom-in-95 slide-in-from-right-50 fade-in duration-500",
-                "xl:mx-auto xl:slide-in-from-bottom-50 xl:slide-in-from-right-0"
-              )}
-            >
-              <Dialog.Root>
-                <Dialog.Trigger asChild>
-                  <Container>
-                    <Tooltip.Root>
-                      <Tooltip.Trigger asChild>
-                        <Button intent="ghost" className="size-10! p-0!">
-                          <Icon symbol="delete" />
-                        </Button>
-                      </Tooltip.Trigger>
-                      <Tooltip.Content side="top" sideOffset={20}>
-                        Delete
-                      </Tooltip.Content>
-                    </Tooltip.Root>
-                  </Container>
-                </Dialog.Trigger>
-
-                <Dialog.Content
-                  title={`Delete ${selection.length} user${selection.length === 1 ? "" : "s"}`}
-                  description="Please confirm this action. This cannot be undone."
-                >
-                  <Form
-                    className="flex flex-col gap-10"
-                    onSubmit={(e) => {
-                      e.preventDefault();
-                      deleteMany(selectedRoles);
-                    }}
-                  >
-                    <ScrollArea.Root>
-                      <ScrollArea.Viewport className="max-h-48">
-                        <UL className="flex flex-col gap-4">
-                          {selectedRoles.map((role) => (
-                            <LI key={role.id} className="flex items-center gap-4">
-                              <Monogram text={role.name} className="shrink-0 size-12" style={{ color: role.color }} />
-                              <Container className="flex flex-col truncate">
-                                <Span className="font-semibold truncate">{role.name}</Span>
-                              </Container>
-                            </LI>
-                          ))}
-                        </UL>
-                      </ScrollArea.Viewport>
-                      <ScrollArea.Scrollbar />
-                    </ScrollArea.Root>
-
-                    <Paragraph className="text-sm text-foreground-secondary">
-                      These accounts and all associated data will be deleted immediately.
-                    </Paragraph>
-
-                    <Container className="flex w-full justify-end gap-4">
-                      <Dialog.Close asChild>
-                        <Button type="button" intent="ghost">
-                          Cancel
-                        </Button>
-                      </Dialog.Close>
-                      <Button type="submit" intent="destructive">
-                        Delete
+      {selection.length > 0 &&
+        createPortal(
+          <Container
+            className={clsx(
+              "bg-blue shadow-base",
+              "pointer-events-auto ml-auto flex items-center gap-2 rounded-2xl p-2 animate-in zoom-in-95 slide-in-from-right-50 fade-in duration-500",
+              "xl:mx-auto xl:slide-in-from-bottom-50 xl:slide-in-from-right-0"
+            )}
+          >
+            <Dialog.Root>
+              <Dialog.Trigger asChild>
+                <Container>
+                  <Tooltip.Root>
+                    <Tooltip.Trigger asChild>
+                      <Button intent="ghost" className="size-10! p-0!">
+                        <Icon symbol="delete" />
                       </Button>
-                    </Container>
-                  </Form>
-                </Dialog.Content>
-              </Dialog.Root>
+                    </Tooltip.Trigger>
+                    <Tooltip.Content side="top" sideOffset={20}>
+                      Delete
+                    </Tooltip.Content>
+                  </Tooltip.Root>
+                </Container>
+              </Dialog.Trigger>
 
-              <Tooltip.Root>
-                <Tooltip.Trigger asChild>
-                  <Button intent="ghost" className="size-10! p-0!" onClick={() => setSelection([])}>
-                    <Icon symbol="close" fill />
-                  </Button>
-                </Tooltip.Trigger>
-                <Tooltip.Content side="top" sideOffset={20}>
-                  Clear
-                </Tooltip.Content>
-              </Tooltip.Root>
-            </Container>,
-            document.getElementById("actions")!
-          )}
+              <Dialog.Content
+                title={`Delete ${selection.length} user${selection.length === 1 ? "" : "s"}`}
+                description="Please confirm this action. This cannot be undone."
+              >
+                <Form
+                  className="flex flex-col gap-10"
+                  onSubmit={(e) => {
+                    e.preventDefault();
+                    deleteMany(selectedRoles);
+                  }}
+                >
+                  <ScrollArea.Root>
+                    <ScrollArea.Viewport className="max-h-48">
+                      <UL className="flex flex-col gap-4">
+                        {selectedRoles.map((role) => (
+                          <LI key={role.id} className="flex items-center gap-4">
+                            <Monogram text={role.name} className="shrink-0 size-12" style={{ color: role.color }} />
+                            <Container className="flex flex-col truncate">
+                              <Span className="font-semibold truncate">{role.name}</Span>
+                            </Container>
+                          </LI>
+                        ))}
+                      </UL>
+                    </ScrollArea.Viewport>
+                    <ScrollArea.Scrollbar />
+                  </ScrollArea.Root>
 
-        <Sheet.Root open={creating} onOpenChange={setCreating}>
-          <Creator
-            onCreate={(_) => {
-              roles.mutate();
-              setCreating(false);
-            }}
-          />
-        </Sheet.Root>
-      </Card.Root>
-    </>
+                  <Paragraph className="text-sm text-foreground-secondary">
+                    These accounts and all associated data will be deleted immediately.
+                  </Paragraph>
+
+                  <Container className="flex w-full justify-end gap-4">
+                    <Dialog.Close asChild>
+                      <Button type="button" intent="ghost">
+                        Cancel
+                      </Button>
+                    </Dialog.Close>
+                    <Button type="submit" intent="destructive">
+                      Delete
+                    </Button>
+                  </Container>
+                </Form>
+              </Dialog.Content>
+            </Dialog.Root>
+
+            <Tooltip.Root>
+              <Tooltip.Trigger asChild>
+                <Button intent="ghost" className="size-10! p-0!" onClick={() => setSelection([])}>
+                  <Icon symbol="close" fill />
+                </Button>
+              </Tooltip.Trigger>
+              <Tooltip.Content side="top" sideOffset={20}>
+                Clear
+              </Tooltip.Content>
+            </Tooltip.Root>
+          </Container>,
+          document.getElementById("actions")!
+        )}
+
+      <Sheet.Root open={creating} onOpenChange={setCreating}>
+        <Creator
+          onCreate={(_) => {
+            roles.mutate();
+            setCreating(false);
+          }}
+        />
+      </Sheet.Root>
+    </Card.Root>
   );
 };

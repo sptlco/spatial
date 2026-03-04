@@ -37,18 +37,28 @@ export const Tabs = {
       updateIndicator();
 
       // 👇 Observe attribute changes (Radix toggles data-state)
-      const observer = new MutationObserver(updateIndicator);
+      const mutationObserver = new MutationObserver(updateIndicator);
 
-      observer.observe(list, {
+      mutationObserver.observe(list, {
         subtree: true,
         attributes: true,
         attributeFilter: ["data-state"]
       });
 
+      // 👇 Observe border-box so that padding transitions (px-4 on active)
+      //    are tracked. The default content-box misses padding-only changes,
+      //    causing the indicator to freeze at the pre-padding size on switch.
+      const resizeObserver = new ResizeObserver(updateIndicator);
+
+      list.querySelectorAll<HTMLElement>('[role="tab"]').forEach((trigger) => {
+        resizeObserver.observe(trigger, { box: "border-box" });
+      });
+
       window.addEventListener("resize", updateIndicator);
 
       return () => {
-        observer.disconnect();
+        mutationObserver.disconnect();
+        resizeObserver.disconnect();
         window.removeEventListener("resize", updateIndicator);
       };
     }, []);
@@ -56,14 +66,14 @@ export const Tabs = {
     return (
       <Primitive.List
         {...props}
-        className={clsx("relative flex items-center sm:justify-center gap-2 mb-10 w-full", props.className)}
+        className={clsx("relative flex items-center sm:justify-center gap-4 mb-10 w-full", props.className)}
         ref={(node) => {
           listRef.current = node;
           if (typeof ref === "function") ref(node);
           else if (ref) (ref as any).current = node;
         }}
       >
-        <Container className="flex items-center gap-2 bg-input rounded-xl w-full sm:w-auto">{children}</Container>
+        <Container className="flex items-center sm:justify-center gap-4 sm:bg-input rounded-xl w-full sm:w-auto">{children}</Container>
         <motion.span
           className="absolute bottom-0 left-0 h-full bg-button-highlight-active -z-10 rounded-xl"
           animate={{
@@ -85,11 +95,14 @@ export const Tabs = {
       {...props}
       ref={ref}
       className={clsx(
-        "px-4 py-2 h-10 inline-flex items-center",
+        "py-2 h-10 inline-flex items-center",
         "cursor-pointer",
-        "transition-colors",
+        "transition-all duration-500",
         "font-semibold",
-        "data-[state=inactive]:text-foreground-quaternary"
+        "sm:first:data-[state=inactive]:pl-4",
+        "sm:last:data-[state=inactive]:pr-4",
+        "data-[state=inactive]:text-foreground-quaternary",
+        "data-[state=active]:px-4"
       )}
     />
   )),

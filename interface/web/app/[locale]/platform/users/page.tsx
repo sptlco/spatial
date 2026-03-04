@@ -16,9 +16,9 @@ export default function Page() {
   return (
     <Card.Root>
       <Header title="Identity" />
-      <Card.Content>
+      <Card.Content className="px-10 xl:p-0 xl:pr-10">
         <Tabs.Root defaultValue="users">
-          <Tabs.List className="px-10">
+          <Tabs.List>
             <Tabs.Trigger value="users">Users</Tabs.Trigger>
             <Tabs.Trigger value="roles">Roles</Tabs.Trigger>
             <Tabs.Trigger value="settings">Settings</Tabs.Trigger>

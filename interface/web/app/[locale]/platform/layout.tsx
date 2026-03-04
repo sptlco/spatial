@@ -301,7 +301,10 @@ export default function Layout(props: { children: ReactNode }) {
             <Separator orientation="vertical" className="hidden xl:flex bg-linear-to-b from-transparent to-transparent via-line-subtle h-full w-px" />
           </Container>
         </Container>
-        <Container id="title" className="flex items-center xl:justify-center row-start-1 col-start-1 col-span-2 px-10 pl-24 xl:pl-10" />
+        <Container
+          id="title"
+          className="flex items-center xl:justify-center row-start-1 col-start-1 xl:col-start-2 col-span-2 px-10 pl-24 xl:pl-10 xl:-ml-10"
+        />
         <Container
           className={clsx("flex px-10 gap-2.5 sm:gap-5 items-center shrink-0", "row-start-1 col-start-1 xl:col-start-2")}
           style={{

@@ -2,14 +2,14 @@
 
 "use client";
 
-import { useEffect, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 
-import { Container, createElement, Portal, Span } from "@sptlco/design";
+import { createElement, Portal, Span } from "@sptlco/design";
 
 /**
  * A page header element.
  */
-export const Header = createElement<typeof Container, { title?: string; description?: string }>((props, ref) => {
+export const Header = createElement<typeof Fragment, { title?: string }>((props, ref) => {
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
@@ -17,14 +17,11 @@ export const Header = createElement<typeof Container, { title?: string; descript
   }, []);
 
   return (
-    (props.title || props.description) && (
-      <Container {...props} ref={ref} className="flex flex-col px-10">
-        {mounted && props.title && (
-          <Portal container={document.getElementById("title")!}>
-            <Span className="font-bold xl:text-foreground-quaternary xl:font-normal">{props.title}</Span>
-          </Portal>
-        )}
-      </Container>
+    mounted &&
+    props.title && (
+      <Portal {...props} ref={ref} container={document.getElementById("title")!}>
+        <Span className="font-bold xl:text-foreground-quaternary xl:font-normal">{props.title}</Span>
+      </Portal>
     )
   );
 });

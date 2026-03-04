@@ -2,19 +2,20 @@
 
 "use client";
 
-import { Header } from "@/elements";
 import { Suspense } from "react";
+
+import { Card } from "@sptlco/design";
+
+import { Header } from "@/elements";
 
 import { Tabs } from "./tabs";
 import { Roles } from "./roles";
-import { Users } from "./card";
-
-import { Card } from "@sptlco/design";
+import { Users } from "./users";
 
 export default function Page() {
   return (
     <Card.Root>
-      <Header title="Identity" description="Grant users access to your computer." />
+      <Header title="Identity" />
       <Card.Content>
         <Tabs.Root defaultValue="users">
           <Tabs.List className="px-10">

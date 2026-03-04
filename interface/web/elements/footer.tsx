@@ -69,6 +69,7 @@ export const Footer = createElement<"footer">((props, ref) => {
           <Container className="flex flex-col gap-10">
             <Logo mode="wordmark" className="h-10 md:h-16" />
             <Container className="flex flex-col text-sm font-semibold uppercase">
+              <Span>Spatial Corporation</Span>
               <Span>240 2nd Avenue S</Span>
               <Span>STE 201K</Span>
               <Span>Seattle, WA 98104</Span>

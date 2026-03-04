@@ -9,11 +9,11 @@ import useSWR from "swr";
 
 import { PERIODS } from "./balance";
 
-import { Container, createElement, H2, Icon, Span, Tooltip } from "@sptlco/design";
+import { Container, createElement, H2, Icon, Paragraph, Span, Tooltip } from "@sptlco/design";
 
 type Metric = {
   label: string;
-  tip?: string;
+  tip?: ReactNode;
   value: ReactNode;
 };
 
@@ -36,9 +36,45 @@ export const Snapshot = createElement<typeof Container, { period: keyof typeof P
   const gas = trades.reduce((sum, t) => sum + t.value.gas, 0);
 
   const metrics: Metric[] = [
-    { label: "Trades", value: formatNumber(tradeCount) },
-    { label: "Total Volume", value: formatCurrency(volume) },
-    { label: "Total Gas", value: formatCurrency(gas) }
+    {
+      label: "Trades",
+      value: formatNumber(tradeCount),
+      tip: (
+        <>
+          <Paragraph>Total number of trades executed autonomously during the selected period.</Paragraph>
+          <Paragraph>
+            Each trade represents a completed buy or sell decision by the system. Higher trade counts generally indicate increased strategy activity
+            and responsiveness to market conditions.
+          </Paragraph>
+        </>
+      )
+    },
+    {
+      label: "Volume",
+      value: formatCurrency(volume),
+      tip: (
+        <>
+          <Paragraph>Aggregate notional value of Ethereum transacted during the selected period.</Paragraph>
+          <Paragraph>
+            This reflects the total capital deployed across all executed trades and serves as a key indicator of market exposure, liquidity
+            utilization, and overall strategy footprint.
+          </Paragraph>
+        </>
+      )
+    },
+    {
+      label: "Burn",
+      value: formatCurrency(gas),
+      tip: (
+        <>
+          <Paragraph>Total network transaction fees (gas) consumed during the selected period.</Paragraph>
+          <Paragraph>
+            This represents the operational cost of executing trades on-chain and directly impacts net performance, as higher gas consumption reduces
+            realized returns.
+          </Paragraph>
+        </>
+      )
+    }
   ];
 
   return (
@@ -52,9 +88,12 @@ export const Snapshot = createElement<typeof Container, { period: keyof typeof P
               {metric.tip && (
                 <Tooltip.Root>
                   <Tooltip.Trigger className="flex cursor-pointer">
-                    <Icon symbol="info" className="font-semibold" size={20} fill />
+                    <Icon symbol="info" className="font-semibold" size={16} fill />
                   </Tooltip.Trigger>
-                  <Tooltip.Content sideOffset={20}>{metric.tip}</Tooltip.Content>
+                  <Tooltip.Content sideOffset={20} className="py-4! max-w-sm text-sm text-foreground-secondary flex items-center gap-4">
+                    <Icon symbol="info" className="font-semibold text-foreground-quaternary" fill size={16} />
+                    <Span className="flex flex-col gap-2">{metric.tip}</Span>
+                  </Tooltip.Content>
                 </Tooltip.Root>
               )}
             </Span>

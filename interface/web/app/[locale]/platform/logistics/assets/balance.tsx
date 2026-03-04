@@ -112,15 +112,17 @@ export const Balance = createElement<typeof Container, { period: keyof typeof PE
                   formatCurrency(value ?? getValue(now))
                 )}
               </Span>
-              {delta != 0 && (
-                <Span className={clsx("truncate inline-flex -ml-2.5 items-center xl:text-2xl", delta > 0 ? "text-green" : "text-red")}>
-                  {delta > 0 ? <Icon symbol="arrow_drop_up" size={40} /> : <Icon symbol="arrow_drop_down" size={40} />}
-                  <Span>
-                    {formatCurrency(Math.abs(current - base))} ({(Math.abs(delta) * 100).toFixed(2)}%)
+              <Span className="flex items-center -ml-2.5 xl:text-2xl">
+                {delta != 0 && (
+                  <Span className={clsx("truncate inline-flex items-center", delta > 0 ? "text-green" : "text-red")}>
+                    {delta > 0 ? <Icon symbol="arrow_drop_up" size={40} /> : <Icon symbol="arrow_drop_down" size={40} />}
+                    <Span>
+                      {formatCurrency(Math.abs(current - base))} ({(Math.abs(delta) * 100).toFixed(2)}%)
+                    </Span>
                   </Span>
-                  <Span className="text-hint pl-2">{formatDate(date, point != null, props.period)}</Span>
-                </Span>
-              )}
+                )}
+                <Span className="text-hint pl-2">{formatDate(date, point != null, props.period)}</Span>
+              </Span>
             </Span>
           </Container>
           <Container className="w-full flex flex-col gap-10">
@@ -149,7 +151,7 @@ export const Balance = createElement<typeof Container, { period: keyof typeof PE
                     type="monotone"
                     dataKey="value"
                     stroke={color}
-                    strokeWidth={3}
+                    strokeWidth={2}
                     fill="url(#gradient)"
                     dot={false}
                     activeDot={false}

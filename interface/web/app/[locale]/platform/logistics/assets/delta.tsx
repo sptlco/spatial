@@ -41,17 +41,7 @@ export const Delta = createElement<typeof Container>((props, ref) => {
           {[...Array(3)].map((_, i) => {
             const value = (m < 6 ? y - 1 : y) - i;
 
-            const s = new Date(Date.UTC(value, 6, 1));
-            const e = new Date(Date.UTC(value + 1, 5, 30));
-
-            return (
-              <Select.Item
-                key={i}
-                value={value.toString()}
-                label={value.toString()}
-                description={`${s.toLocaleDateString(undefined, { timeZone: "UTC", month: "short", day: "2-digit", year: "numeric" })} - ${e.toLocaleDateString(undefined, { timeZone: "UTC", month: "short", day: "2-digit", year: "numeric" })}`}
-              />
-            );
+            return <Select.Item key={i} value={value.toString()} label={value.toString()} />;
           })}
         </Select.Content>
       </Select.Root>

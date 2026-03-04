@@ -103,7 +103,7 @@ export const Balance = createElement<typeof Container, { period: keyof typeof PE
               </H2>
             </Container>
             <Span className="flex flex-col gap-2">
-              <Span className="text-6xl xl:text-9xl -ml-1 xl:-ml-1.5 font-extrabold truncate">
+              <Span className="text-5xl xl:text-9xl -ml-1 xl:-ml-1.5 font-extrabold truncate">
                 {!now ? (
                   <Container className="flex items-center h-32">
                     <Span className="bg-background-surface rounded-full h-10 w-sm animate-pulse flex" />

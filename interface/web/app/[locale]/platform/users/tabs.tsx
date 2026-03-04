@@ -56,14 +56,14 @@ export const Tabs = {
     return (
       <Primitive.List
         {...props}
-        className={clsx("relative flex items-center gap-2 mb-10 w-full", props.className)}
+        className={clsx("relative flex items-center sm:justify-center gap-2 mb-10 w-full", props.className)}
         ref={(node) => {
           listRef.current = node;
           if (typeof ref === "function") ref(node);
           else if (ref) (ref as any).current = node;
         }}
       >
-        <Container className="flex items-center gap-2 bg-input rounded-xl">{children}</Container>
+        <Container className="flex items-center gap-2 bg-input rounded-xl w-full sm:w-auto">{children}</Container>
         <motion.span
           className="absolute bottom-0 left-0 h-full bg-button-highlight-active -z-10 rounded-xl"
           animate={{

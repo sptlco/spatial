@@ -44,6 +44,8 @@ export const Index = createElement<typeof Main>((props, ref) => {
           {posts
             .filter((p) => p.public)
             .map((post, i) => {
+              // ...
+
               return null;
             })}
           <Pagination page={1} pages={1} className="self-center" />

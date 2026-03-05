@@ -116,24 +116,19 @@ export const Delta = createElement<typeof Container>((props, ref) => {
   const diff = total / equity(first);
   const max = Math.max(...weeks.flat().map((d) => Math.abs(d.value)), 1);
 
-  function getColor(value: number) {
+  function getColor(value: number): React.CSSProperties | undefined {
     if (value === 0) {
-      return "bg-input";
+      return undefined;
     }
 
-    const intensity = Math.abs(value) / max;
+    const MIN = 0.333;
+    const MAX = 1.0;
 
-    if (value > 0) {
-      if (intensity > 0.75) return "bg-green";
-      if (intensity > 0.5) return "bg-green/60";
-      if (intensity > 0.25) return "bg-green/30";
-      return "bg-green/10";
-    } else {
-      if (intensity > 0.75) return "bg-red";
-      if (intensity > 0.5) return "bg-red/60";
-      if (intensity > 0.25) return "bg-red/30";
-      return "bg-red/10";
-    }
+    var intensity = Math.abs(value) / max;
+
+    return {
+      backgroundColor: `color-mix(in srgb, var(--color-${value > 0 ? "green" : "red"}) ${(MIN + (MAX - MIN) * intensity) * 100}%, transparent)`
+    };
   }
 
   const days = weeks.flat();
@@ -158,12 +153,14 @@ export const Delta = createElement<typeof Container>((props, ref) => {
           </Span>
         </Container>
         <Container className="w-full grid grid-cols-21 gap-1 xl:hidden">
+          <Span className="text-xs text-foreground-quaternary font-semibold inline-flex items-center justify-end px-1">1</Span>
           {days.map((day, i) => (
             <Tooltip.Root key={i} delayDuration={0}>
               <Tooltip.Trigger>
                 <Container
                   suppressHydrationWarning
-                  className={clsx("rounded-xs aspect-square w-full transition-colors duration-200", day.date ? getColor(day.value) : "bg-input")}
+                  className={clsx("rounded-xs aspect-square w-full transition-colors duration-200", { "bg-input": !!day.date })}
+                  style={getColor(day.value)}
                 />
               </Tooltip.Trigger>
               {day.date && (
@@ -176,6 +173,7 @@ export const Delta = createElement<typeof Container>((props, ref) => {
               )}
             </Tooltip.Root>
           ))}
+          <Span className="text-xs text-foreground-quaternary font-semibold inline-flex items-center justify-start px-1">365</Span>
         </Container>
         <Container className="hidden xl:flex gap-1">
           <Container className="grid grid-rows-8 gap-1 text-xs text-foreground-quaternary font-semibold">
@@ -200,7 +198,8 @@ export const Delta = createElement<typeof Container>((props, ref) => {
                     <Tooltip.Trigger>
                       <Container
                         suppressHydrationWarning
-                        className={clsx("rounded-xs size-2.5 transition-colors duration-200", day.date ? getColor(day.value) : "bg-input")}
+                        className={clsx("rounded-xs size-2.5 transition-colors duration-200", { "bg-input": !!day.date })}
+                        style={getColor(day.value)}
                       />
                     </Tooltip.Trigger>
                     {day.date && (

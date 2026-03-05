@@ -340,7 +340,7 @@ export default function Layout(props: { children: ReactNode }) {
           </Sheet.Root>
         </Container>
         <Container>
-          <ScrollArea.Root className="h-full" fade>
+          <ScrollArea.Root className="h-full">
             <ScrollArea.Viewport ref={scroller} className={clsx("row-start-1 row-span-2 col-start-1", "xl:col-start-2")}>
               <Container className="flex flex-col relative xl:min-h-[calc(100vh-(var(--layout-pad)*2)-140px)]">{props.children}</Container>
               <Mark />

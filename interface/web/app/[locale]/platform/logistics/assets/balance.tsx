@@ -94,13 +94,10 @@ export const Balance = createElement<typeof Container, { period: keyof typeof PE
 
     return (
       <Container {...props} ref={ref} className={clsx("flex flex-col gap-10 w-screen xl:w-auto", props.className)}>
-        <Container className="flex flex-col gap-10 xl:rounded-[56px]">
+        <Container className="flex flex-col gap-10">
           <Container className="flex flex-col gap-6 px-10 xl:p-0">
             <Container className="flex flex-col sm:flex-row gap-5 xl:gap-10 items-start xl:items-center xl:justify-between">
-              <H2 className="inline-flex text-2xl font-extrabold gap-4 items-center">
-                <Span>Ethereum</Span>
-                <Ethereum className="h-6" />
-              </H2>
+              <H2 className="text-2xl font-extrabold">Ethereum</H2>
             </Container>
             <Span className="flex flex-col gap-2">
               <Span className="text-5xl xl:text-9xl xl:-ml-1.5 font-extrabold truncate">
@@ -195,18 +192,6 @@ export const Balance = createElement<typeof Container, { period: keyof typeof PE
     );
   }
 );
-
-const Ethereum = createElement<typeof Svg>((props, ref) => {
-  return (
-    <Svg {...props} ref={ref} xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 540 879.4" fill="currentColor">
-      <Path d="m269.9 325.2-269.9 122.7 269.9 159.6 270-159.6z" />
-      <Path d="m0.1 447.8 269.9 159.6v-607.4z" />
-      <Path d="m270 0v607.4l269.9-159.6z" />
-      <Path d="m0 499 269.9 380.4v-220.9z" />
-      <Path d="m269.9 658.5v220.9l270.1-380.4z" />
-    </Svg>
-  );
-});
 
 function formatCurrency(value?: number) {
   if (value == null || isNaN(value)) {

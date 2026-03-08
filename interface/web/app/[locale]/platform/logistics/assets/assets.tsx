@@ -19,7 +19,7 @@ export const Assets = createElement<typeof Card.Root>((props, ref) => {
   const [period, setPeriod] = useState<keyof typeof PERIODS>("24h");
 
   return (
-    <Card.Root {...props} ref={ref} className="xl:pl-2">
+    <Card.Root {...props} ref={ref}>
       <Header title="Assets" />
       <Card.Content className="flex flex-col gap-16 xl:gap-20 xl:pr-10">
         <Container className="flex flex-col gap-16 xl:gap-20 xl:pb-10 w-full xl:flex-row">

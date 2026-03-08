@@ -10,7 +10,7 @@ import { clsx } from "clsx";
 import cookies from "js-cookie";
 import { useLocale, useTranslations } from "next-intl";
 import { usePathname } from "next/navigation";
-import { FormEvent, ReactNode, useContext, useEffect, useRef, useState } from "react";
+import { FormEvent, ReactNode, useEffect, useRef, useState } from "react";
 import { SWRConfig } from "swr";
 import { useShallow } from "zustand/shallow";
 
@@ -19,7 +19,6 @@ import {
   Button,
   Container,
   Dialog,
-  DocumentContext,
   Drawer,
   Field,
   Form,
@@ -29,7 +28,6 @@ import {
   Logo,
   Main,
   ScrollArea,
-  Separator,
   Sheet,
   Span,
   Spinner,
@@ -37,7 +35,6 @@ import {
   Tooltip,
   UL
 } from "@sptlco/design";
-import { Metadata } from "next";
 
 const BASE_URL = "/platform";
 
@@ -127,11 +124,7 @@ export default function Layout(props: { children: ReactNode }) {
   const scroller = useRef<HTMLDivElement>(null);
   const frame = useRef<number>(null);
 
-  const { setClassName } = useContext(DocumentContext);
-
   useEffect(() => {
-    setClassName("bg-background-subtle!");
-
     const el = scroller.current;
 
     if (!el) {
@@ -234,7 +227,7 @@ export default function Layout(props: { children: ReactNode }) {
         shouldRetryOnError: false
       }}
     >
-      <Main className={clsx("bg-background-subtle", "grid w-full h-screen", "grid-cols-1 xl:grid-cols-[auto_1fr]", "grid-rows-[auto_minmax(0,1fr)]")}>
+      <Main className={clsx("grid w-full h-screen", "grid-cols-1 xl:grid-cols-[auto_1fr]", "grid-rows-[auto_minmax(0,1fr)]")}>
         <Dialog.Root open={requirements.name}>
           <Dialog.Content title="Information required" description="We need to know the following." closeButton={false}>
             <Form className="flex flex-col items-center gap-10" onSubmit={submit}>
@@ -341,9 +334,19 @@ export default function Layout(props: { children: ReactNode }) {
         </Container>
         <Container>
           <ScrollArea.Root className="h-full">
-            <ScrollArea.Viewport ref={scroller} className={clsx("row-start-1 row-span-2 col-start-1", "xl:col-start-2")}>
-              <Container className="flex flex-col relative xl:min-h-[calc(100vh-(var(--layout-pad)*2)-140px)]">{props.children}</Container>
-              <Mark />
+            <ScrollArea.Viewport
+              ref={scroller}
+              className={clsx("row-start-1 row-span-2 col-start-1", "xl:col-start-2", "xl:mr-10 xl:pl-0", "rounded-t-4xl")}
+            >
+              <Container
+                className={clsx(
+                  "flex flex-col justify-between relative min-h-[calc(100vh-(var(--layout-pad)*2)-40px)]",
+                  "bg-background-subtle xl:pl-10 pt-10 gap-10"
+                )}
+              >
+                <Container className="grow flex flex-col relative">{props.children}</Container>
+                <Mark />
+              </Container>
             </ScrollArea.Viewport>
             <ScrollArea.Scrollbar />
           </ScrollArea.Root>

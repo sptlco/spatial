@@ -1,5 +1,21 @@
 # Changelog
 
+## [1.29.0](https://github.com/sptlco/spatial/compare/spatial-interface-web-1.28.0...spatial-interface-web-1.29.0) (2026-03-09)
+
+
+### Features
+
+* Added an identity settings page ([#137](https://github.com/sptlco/spatial/issues/137)) ([ee3c0b2](https://github.com/sptlco/spatial/commit/ee3c0b2e93b2fdc7a85dcc41736f3604fcdbdfa1))
+* Designed a new interface ([#137](https://github.com/sptlco/spatial/issues/137)) ([8a762ac](https://github.com/sptlco/spatial/commit/8a762acb255651c2eab14d6a8ab670b343b23cb8))
+* Updated number formats ([#137](https://github.com/sptlco/spatial/issues/137)) ([881b4a7](https://github.com/sptlco/spatial/commit/881b4a781c612b2379a45b6bbd32417780c85e03))
+* Updated the UX ([#137](https://github.com/sptlco/spatial/issues/137)) ([6f193cd](https://github.com/sptlco/spatial/commit/6f193cdc4496d3e9f16902e00cfb15401402903a))
+* Upgraded the asset page ([#137](https://github.com/sptlco/spatial/issues/137)) ([f163762](https://github.com/sptlco/spatial/commit/f16376277c41b8590038431890c7b485ae7bd576))
+
+
+### Bug Fixes
+
+* Used Etherscan transaction URL instead of address URL ([#137](https://github.com/sptlco/spatial/issues/137)) ([468b695](https://github.com/sptlco/spatial/commit/468b6958c998b3a42a7b5e5264c15b2f336cc743))
+
 ## [1.28.0](https://github.com/sptlco/spatial/compare/spatial-interface-web-1.27.0...spatial-interface-web-1.28.0) (2026-03-03)
 
 

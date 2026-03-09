@@ -1,5 +1,25 @@
 # Changelog
 
+## [1.26.0](https://github.com/sptlco/spatial/compare/spatial-1.25.0...spatial-1.26.0) (2026-03-09)
+
+
+### Features
+
+* Added an identity settings page ([#137](https://github.com/sptlco/spatial/issues/137)) ([ee3c0b2](https://github.com/sptlco/spatial/commit/ee3c0b2e93b2fdc7a85dcc41736f3604fcdbdfa1))
+* Designed a new interface ([#137](https://github.com/sptlco/spatial/issues/137)) ([8a762ac](https://github.com/sptlco/spatial/commit/8a762acb255651c2eab14d6a8ab670b343b23cb8))
+* Updated number formats ([#137](https://github.com/sptlco/spatial/issues/137)) ([881b4a7](https://github.com/sptlco/spatial/commit/881b4a781c612b2379a45b6bbd32417780c85e03))
+* Updated the allocator to collect additional telemetry  ([#137](https://github.com/sptlco/spatial/issues/137)) ([3947cc3](https://github.com/sptlco/spatial/commit/3947cc3733d29301760ce17d6babdfb98bb2be03))
+* Updated the UX ([#137](https://github.com/sptlco/spatial/issues/137)) ([6f193cd](https://github.com/sptlco/spatial/commit/6f193cdc4496d3e9f16902e00cfb15401402903a))
+* Upgraded the asset page ([#137](https://github.com/sptlco/spatial/issues/137)) ([f163762](https://github.com/sptlco/spatial/commit/f16376277c41b8590038431890c7b485ae7bd576))
+
+
+### Bug Fixes
+
+* Added internal Docker host to code-server ([#137](https://github.com/sptlco/spatial/issues/137)) ([74a7032](https://github.com/sptlco/spatial/commit/74a7032b41bf4629a36946f5b8030967ef8d9a34))
+* Enabled the allocator in production ([#137](https://github.com/sptlco/spatial/issues/137)) ([f95ef44](https://github.com/sptlco/spatial/commit/f95ef4402fc484e654bd5f402ded040d7278e511))
+* Introduced wait for parallel jobs ([#137](https://github.com/sptlco/spatial/issues/137)) ([b1fd0d2](https://github.com/sptlco/spatial/commit/b1fd0d2778e3972968ac23ed46bff0a852345593))
+* Used Etherscan transaction URL instead of address URL ([#137](https://github.com/sptlco/spatial/issues/137)) ([468b695](https://github.com/sptlco/spatial/commit/468b6958c998b3a42a7b5e5264c15b2f336cc743))
+
 ## [1.25.0](https://github.com/sptlco/spatial/compare/spatial-1.24.0...spatial-1.25.0) (2026-03-03)
 
 

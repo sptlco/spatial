@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.19.0](https://github.com/sptlco/spatial/compare/spatial-interface-design-1.18.0...spatial-interface-design-1.19.0) (2026-03-09)
+
+
+### Features
+
+* Designed a new interface ([#137](https://github.com/sptlco/spatial/issues/137)) ([8a762ac](https://github.com/sptlco/spatial/commit/8a762acb255651c2eab14d6a8ab670b343b23cb8))
+
 ## [1.18.0](https://github.com/sptlco/spatial/compare/spatial-interface-design-1.17.0...spatial-interface-design-1.18.0) (2026-03-03)
 
 

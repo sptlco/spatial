@@ -1,5 +1,18 @@
 # Changelog
 
+## [1.32.0](https://github.com/sptlco/spatial/compare/spatial-cloud-1.31.0...spatial-cloud-1.32.0) (2026-03-09)
+
+
+### Features
+
+* Updated the allocator to collect additional telemetry  ([#137](https://github.com/sptlco/spatial/issues/137)) ([3947cc3](https://github.com/sptlco/spatial/commit/3947cc3733d29301760ce17d6babdfb98bb2be03))
+
+
+### Bug Fixes
+
+* Enabled the allocator in production ([#137](https://github.com/sptlco/spatial/issues/137)) ([f95ef44](https://github.com/sptlco/spatial/commit/f95ef4402fc484e654bd5f402ded040d7278e511))
+* Introduced wait for parallel jobs ([#137](https://github.com/sptlco/spatial/issues/137)) ([b1fd0d2](https://github.com/sptlco/spatial/commit/b1fd0d2778e3972968ac23ed46bff0a852345593))
+
 ## [1.31.0](https://github.com/sptlco/spatial/compare/spatial-cloud-1.30.0...spatial-cloud-1.31.0) (2026-03-03)
 
 

@@ -10,7 +10,7 @@ import { clsx } from "clsx";
 import cookies from "js-cookie";
 import { useLocale, useTranslations } from "next-intl";
 import { usePathname } from "next/navigation";
-import { FormEvent, ReactNode, useEffect, useRef, useState } from "react";
+import { FormEvent, ReactNode, useContext, useEffect, useRef, useState } from "react";
 import { SWRConfig } from "swr";
 import { useShallow } from "zustand/shallow";
 
@@ -19,6 +19,7 @@ import {
   Button,
   Container,
   Dialog,
+  DocumentContext,
   Drawer,
   Field,
   Form,
@@ -124,7 +125,11 @@ export default function Layout(props: { children: ReactNode }) {
   const scroller = useRef<HTMLDivElement>(null);
   const frame = useRef<number>(null);
 
+  const { setClassName } = useContext(DocumentContext);
+
   useEffect(() => {
+    setClassName("bg-background-subtle");
+
     const el = scroller.current;
 
     if (!el) {
@@ -336,12 +341,12 @@ export default function Layout(props: { children: ReactNode }) {
           <ScrollArea.Root className="h-full">
             <ScrollArea.Viewport
               ref={scroller}
-              className={clsx("row-start-1 row-span-2 col-start-1", "xl:col-start-2", "xl:mr-10 xl:pl-0", "rounded-t-4xl")}
+              className={clsx("row-start-1 row-span-2 col-start-1", "xl:col-start-2", "xl:mr-10 xl:pl-0", "rounded-t-4xl xl:rounded-t-[64px]")}
             >
               <Container
                 className={clsx(
                   "flex flex-col justify-between relative min-h-[calc(100vh-(var(--layout-pad)*2)-40px)]",
-                  "bg-background-subtle xl:px-20 py-10 xl:py-20 gap-10 xl:gap-20"
+                  "bg-background-surface xl:px-20 py-10 xl:py-20 gap-10 xl:gap-20"
                 )}
               >
                 <Container className="grow flex flex-col relative">{props.children}</Container>

@@ -48,7 +48,6 @@ export const Pagination = createElement<typeof UL, PaginationProps>(({ onPageCha
       <LI className="flex">
         <Button intent="none" size="fit" disabled={props.page === 1} onClick={() => onPageChange?.(Math.max(props.page - 1, 1))}>
           <Icon symbol="chevron_left" />
-          <Span>Previous</Span>
         </Button>
       </LI>
       <Form className="flex w-10" onSubmit={navigate}>
@@ -65,7 +64,6 @@ export const Pagination = createElement<typeof UL, PaginationProps>(({ onPageCha
       <Span>{props.pages}</Span>
       <LI className="flex">
         <Button intent="none" size="fit" disabled={props.page === props.pages} onClick={() => onPageChange?.(Math.min(props.page + 1, props.pages))}>
-          <Span>Next</Span>
           <Icon symbol="chevron_right" />
         </Button>
       </LI>

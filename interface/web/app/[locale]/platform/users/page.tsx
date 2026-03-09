@@ -12,8 +12,8 @@ import { Users } from "./users";
 
 export default function Page() {
   return (
-    <Application.Root title="Identity">
-      <Application.Content className="px-10 xl:px-0">
+    <Application.Root title="Identity" className="px-10 xl:px-0">
+      <Application.Content>
         <Tabs.Root defaultValue="users">
           <Tabs.List>
             <Tabs.Trigger value="users">Users</Tabs.Trigger>

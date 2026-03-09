@@ -497,7 +497,7 @@ export const Users = () => {
         </Card.Gutter>
       </Card.Header>
       <Card.Content className={clsx("w-full flex flex-col relative", { "mask-b-from-20% mask-b-to-80%": !users.data })}>
-        <Container className="flex flex-col xl:flex-row w-full items-start xl:items-center gap-5">
+        <Container className="flex flex-col xl:flex-row w-full items-center gap-5">
           <Form
             className="group relative w-full max-w-sm flex items-center"
             onSubmit={(e) => {

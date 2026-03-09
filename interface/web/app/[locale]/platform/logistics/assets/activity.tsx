@@ -214,8 +214,8 @@ export const Activity = createElement<typeof Container>((props, ref) => {
   }, [searchParams]);
 
   return (
-    <Container {...props} ref={ref} className={clsx("flex flex-col gap-10 w-screen xl:w-auto", props.className)}>
-      <Container className="flex flex-col w-full">
+    <Container {...props} ref={ref} className={clsx("flex flex-col w-screen xl:w-auto", props.className)}>
+      <Container className="flex flex-col w-full xl:gap-10">
         <Container className="flex flex-col gap-10 px-10 xl:p-0 w-full">
           <H2 className="text-2xl font-bold">Activity</H2>
           <Container className="flex">

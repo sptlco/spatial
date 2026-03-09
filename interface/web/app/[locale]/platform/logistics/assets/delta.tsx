@@ -118,7 +118,7 @@ export const Delta = createElement<typeof Container>((props, ref) => {
 
   function getColor(value: number): React.CSSProperties | undefined {
     if (value === 0) {
-      return undefined;
+      return { backgroundColor: "var(--color-input)" };
     }
 
     const MIN = 0.333;

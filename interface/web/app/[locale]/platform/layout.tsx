@@ -341,7 +341,7 @@ export default function Layout(props: { children: ReactNode }) {
               <Container
                 className={clsx(
                   "flex flex-col justify-between relative min-h-[calc(100vh-(var(--layout-pad)*2)-40px)]",
-                  "bg-background-subtle xl:pl-20 pt-10 xl:pt-20 xl:pr-10 gap-10"
+                  "bg-background-subtle xl:px-20 py-10 xl:py-20 gap-10 xl:gap-20"
                 )}
               >
                 <Container className="grow flex flex-col relative">{props.children}</Container>

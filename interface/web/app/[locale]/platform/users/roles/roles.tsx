@@ -349,7 +349,7 @@ export const Roles = () => {
           </Button>
         </Card.Gutter>
       </Card.Header>
-      <Card.Content className={clsx("w-full flex flex-col relative", { "mask-b-from-20% mask-b-to-80%": !roles.data })}>
+      <Card.Content className={clsx("w-full flex flex-col xl:gap-10 relative", { "mask-b-from-20% mask-b-to-80%": !roles.data })}>
         <Table.Root className="w-full table-fixed border-separate border-spacing-y-10">
           <Table.Header>
             <Table.Row>
@@ -366,11 +366,8 @@ export const Roles = () => {
             <Body />
           </Table.Body>
         </Table.Root>
-      </Card.Content>
-      <Card.Footer className="w-full flex flex-col">
         <Pagination page={page} pages={pages} className="self-center" onPageChange={navigate} />
-      </Card.Footer>
-
+      </Card.Content>
       {selection.length > 0 &&
         createPortal(
           <Container

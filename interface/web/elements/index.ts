@@ -1,5 +1,6 @@
 // Copyright © Spatial Corporation. All rights reserved.
 
+export * from "./app";
 export * from "./footer";
 export * from "./header";
 export * from "./locale";

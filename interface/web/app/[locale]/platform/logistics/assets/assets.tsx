@@ -9,26 +9,25 @@ import { Activity } from "./activity";
 import { Balance, PERIODS } from "./balance";
 import { Delta } from "./delta";
 
-import { Card, Container, createElement } from "@sptlco/design";
-import { Header } from "@/elements";
+import { Container, createElement } from "@sptlco/design";
+import { Application } from "@/elements";
 
 /**
  * An automated asset management dashboard.
  */
-export const Assets = createElement<typeof Card.Root>((props, ref) => {
+export const Assets = createElement<typeof Application.Root>((props, ref) => {
   const [period, setPeriod] = useState<keyof typeof PERIODS>("24h");
 
   return (
-    <Card.Root {...props} ref={ref}>
-      <Header title="Assets" />
-      <Card.Content className="flex flex-col gap-16 xl:gap-20 xl:pr-10">
-        <Container className="flex flex-col gap-16 xl:gap-20 xl:pb-10 w-full xl:flex-row">
+    <Application.Root {...props} ref={ref} title="Assets">
+      <Application.Content>
+        <Container className="flex flex-col xl:flex-row gap-10 xl:gap-20 w-full">
           <Balance period={period} onPeriodChange={setPeriod} className="w-full xl:grow" />
           <Delta className="w-full xl:w-auto" />
         </Container>
         <Snapshot period={period} />
         <Activity />
-      </Card.Content>
-    </Card.Root>
+      </Application.Content>
+    </Application.Root>
   );
 });

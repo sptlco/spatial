@@ -466,7 +466,7 @@ export const Users = () => {
   const [creating, setCreating] = useState(false);
 
   return (
-    <Card.Root className="gap-0!">
+    <Card.Root>
       <Card.Header>
         <Card.Title className="text-2xl font-bold flex gap-3 items-center">
           <Span>Users</Span>
@@ -496,7 +496,7 @@ export const Users = () => {
           </Button>
         </Card.Gutter>
       </Card.Header>
-      <Card.Content className={clsx("w-full flex flex-col relative mt-10", { "mask-b-from-20% mask-b-to-80%": !users.data })}>
+      <Card.Content className={clsx("w-full flex flex-col relative", { "mask-b-from-20% mask-b-to-80%": !users.data })}>
         <Container className="flex flex-col xl:flex-row w-full items-start xl:items-center gap-5">
           <Form
             className="group relative w-full max-w-sm flex items-center"
@@ -652,10 +652,8 @@ export const Users = () => {
             <Body />
           </Table.Body>
         </Table.Root>
+        <Pagination page={PAGE} pages={pages} className="self-center xl:mt-10" onPageChange={navigate} />
       </Card.Content>
-      <Card.Footer className="w-full flex flex-col">
-        <Pagination page={PAGE} pages={pages} className="self-center" onPageChange={navigate} />
-      </Card.Footer>
       {selection.length > 0 && (
         <Portal container={document.getElementById("actions")!}>
           <Container

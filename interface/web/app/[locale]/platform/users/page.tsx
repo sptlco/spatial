@@ -4,9 +4,7 @@
 
 import { Suspense } from "react";
 
-import { Card } from "@sptlco/design";
-
-import { Header } from "@/elements";
+import { Application } from "@/elements";
 
 import { Tabs } from "./tabs";
 import { Roles } from "./roles";
@@ -14,9 +12,8 @@ import { Users } from "./users";
 
 export default function Page() {
   return (
-    <Card.Root>
-      <Header title="Identity" />
-      <Card.Content className="px-10 xl:p-0 xl:pr-10">
+    <Application.Root title="Identity">
+      <Application.Content className="px-10 xl:px-0">
         <Tabs.Root defaultValue="users">
           <Tabs.List>
             <Tabs.Trigger value="users">Users</Tabs.Trigger>
@@ -35,7 +32,7 @@ export default function Page() {
           </Tabs.Content>
           <Tabs.Content value="settings" />
         </Tabs.Root>
-      </Card.Content>
-    </Card.Root>
+      </Application.Content>
+    </Application.Root>
   );
 }

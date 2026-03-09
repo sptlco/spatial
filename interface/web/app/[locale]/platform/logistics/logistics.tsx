@@ -4,9 +4,7 @@
 
 import { Header } from "@/elements";
 
-import { Metrics } from "./metrics";
-
-import { Card, createElement } from "@sptlco/design";
+import { Card, createElement, Link } from "@sptlco/design";
 
 /**
  * A dashboard for managing assets, automated trades,
@@ -17,7 +15,8 @@ export const Logistics = createElement<typeof Card.Root>((props, ref) => {
     <Card.Root {...props} ref={ref} className="relative flex flex-col grow ">
       <Header title="Logistics" />
       <Card.Content className="flex flex-col grow gap-10 xl:gap-20! xl:pr-10">
-        <Metrics />
+        <Link href="/platform/logistics/assets">Assets</Link>
+        <Link href="/platform/logistics/shipments">Shipments</Link>
       </Card.Content>
     </Card.Root>
   );

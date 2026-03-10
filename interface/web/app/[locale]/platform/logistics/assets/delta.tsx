@@ -135,8 +135,8 @@ export const Delta = createElement<typeof Container>((props, ref) => {
 
   const Label = createElement<typeof Span>((props, ref) => {
     return (
-      <Span {...props} ref={ref} className={clsx("relative inline-flex aspect-square w-full items-center text-xs", props.className)}>
-        <Span className="absolute flex">{props.children}</Span>
+      <Span {...props} ref={ref} className={clsx("relative inline-flex aspect-square w-full items-center", props.className)}>
+        <Span className="absolute flex text-foreground-quaternary font-semibold text-xs">{props.children}</Span>
       </Span>
     );
   });

@@ -6,7 +6,23 @@ import { clsx } from "clsx";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { Fragment, useEffect, useMemo, useState } from "react";
 
-import { Button, Container, createElement, Field, Form, Icon, LI, Pagination, Separator, Sheet, Span, UL } from "@sptlco/design";
+import {
+  Button,
+  Container,
+  createElement,
+  Dropdown,
+  Field,
+  Form,
+  H1,
+  Icon,
+  LI,
+  Pagination,
+  Separator,
+  Sheet,
+  Span,
+  UL,
+  useSheet
+} from "@sptlco/design";
 
 import { Application } from "@/elements";
 
@@ -63,6 +79,8 @@ export const Shipments = createElement<typeof Application.Root>((props, ref) => 
 
   const [search, setSearch] = useState("");
   const [view, setView] = useState(views[0].name);
+  const [creating, setCreating] = useState(false);
+  const [edit, setEdit] = useState<Shipment>();
 
   const keywords =
     searchParams
@@ -126,27 +144,49 @@ export const Shipments = createElement<typeof Application.Root>((props, ref) => 
       case "grid": {
         return (
           <UL className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-10">
-            {shipments.map((shipment, i) => {
-              return [...Array(5)].map((_, j) => {
-                const [editing, setEditing] = useState(false);
-
-                return (
-                  <Fragment key={`${i}+${j}`}>
-                    <Shipment.Card onClick={() => setEditing(true)} shipment={shipment} />
-                    <Shipment.Editor open={editing} onOpenChange={setEditing} shipment={shipment} onEdit={(_) => {}} />
-                  </Fragment>
-                );
-              });
-            })}
+            {shipments.map((shipment, i) => (
+              <Fragment key={i}>
+                <Shipment.Card onClick={() => setEdit(shipment)} shipment={shipment} />
+                <Shipment.Editor
+                  open={edit?.id === shipment.id}
+                  onOpenChange={(open) => setEdit(open ? shipment : undefined)}
+                  shipment={shipment}
+                  onEdit={(_) => {}}
+                />
+              </Fragment>
+            ))}
           </UL>
         );
+      }
+      case "list": {
+        return null;
       }
     }
   };
 
   return (
-    <Application.Root {...props} ref={ref} title="Shipments">
+    <Application.Root {...props} ref={ref} title="Logistics">
       <Application.Content className="px-10 xl:p-0">
+        <Container className="flex items-center justify-between">
+          <H1 className="text-2xl font-extrabold">Shipments</H1>
+          <Dropdown.Root>
+            <Dropdown.Trigger asChild>
+              <Button intent="ghost" className="xl:hidden size-10! p-0! data-[state=open]:bg-button-ghost-active">
+                <Icon symbol="keyboard_arrow_down" />
+              </Button>
+            </Dropdown.Trigger>
+            <Dropdown.Content>
+              <Dropdown.Item onSelect={() => setCreating(true)}>
+                <Icon symbol="add" />
+                <Span>Create</Span>
+              </Dropdown.Item>
+            </Dropdown.Content>
+          </Dropdown.Root>
+          <Button className="hidden xl:flex" onClick={() => setCreating(true)}>
+            <Icon symbol="add" />
+            <Span>Create</Span>
+          </Button>
+        </Container>
         <Container className="flex flex-col sm:flex-row gap-2">
           <Form
             className="group relative w-full sm:max-w-sm flex items-center"
@@ -213,7 +253,7 @@ const Shipment = {
   Address: createElement<typeof Container, { title: string; address: Address }>(({ title, address, ...props }, ref) => {
     return (
       <Container {...props} ref={ref} className="flex flex-col p-10 gap-5">
-        <Span className="flex items-center gap-2 text-lg xl:text-2xl font-bold">
+        <Span className="flex items-center gap-2.5 text-lg xl:text-2xl font-bold">
           <Span>{title}</Span>
           <Span className="text-foreground-quaternary font-normal">
             {address.city}, {address.state}
@@ -268,7 +308,7 @@ const Shipment = {
   Editor: createElement<typeof Sheet.Root, { shipment: Shipment; onEdit: (shipment: Shipment) => void }>(({ shipment, onEdit, ...props }, ref) => {
     return (
       <Sheet.Root {...props} ref={ref}>
-        <Sheet.Content>{shipment.id}</Sheet.Content>
+        <Sheet.Content title={shipment.id} closeButton />
       </Sheet.Root>
     );
   })

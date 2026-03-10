@@ -32,7 +32,7 @@ export const Delta = createElement<typeof Container>((props, ref) => {
         <Select.Trigger asChild>
           <Button intent="ghost" shape="pill" className="data-[state=open]:bg-button-ghost-active mx-auto font-bold! text-2xl!">
             <Span className="inline-flex items-center gap-4">
-              <Span>Delta</Span> <Span className="inline-flex px-4 py-2 rounded-full bg-button text-sm">{year}</Span>
+              <Span>Delta</Span> <Span className="inline-flex px-4 py-2 rounded-full outline outline-line-faint bg-button text-sm">{year}</Span>
             </Span>
             <Icon symbol="keyboard_arrow_down" />
           </Button>
@@ -133,6 +133,14 @@ export const Delta = createElement<typeof Container>((props, ref) => {
 
   const days = weeks.flat();
 
+  const Label = createElement<typeof Span>((props, ref) => {
+    return (
+      <Span {...props} ref={ref} className={clsx("relative inline-flex aspect-square w-full items-center text-xs", props.className)}>
+        <Span className="absolute flex">{props.children}</Span>
+      </Span>
+    );
+  });
+
   return (
     <Container
       {...props}
@@ -153,7 +161,7 @@ export const Delta = createElement<typeof Container>((props, ref) => {
           </Span>
         </Container>
         <Container className="w-full grid grid-cols-21 gap-1 xl:hidden">
-          <Span className="text-xs text-foreground-quaternary font-semibold inline-flex items-center justify-end px-1">1</Span>
+          <Label className="justify-end">1</Label>
           {days.map((day, i) => (
             <Tooltip.Root key={i} delayDuration={0}>
               <Tooltip.Trigger>
@@ -173,7 +181,7 @@ export const Delta = createElement<typeof Container>((props, ref) => {
               )}
             </Tooltip.Root>
           ))}
-          <Span className="text-xs text-foreground-quaternary font-semibold inline-flex items-center justify-start px-1">365</Span>
+          <Label className="justify-start">365</Label>
         </Container>
         <Container className="hidden xl:flex gap-1">
           <Container className="grid grid-rows-8 gap-1 text-xs text-foreground-quaternary font-semibold">

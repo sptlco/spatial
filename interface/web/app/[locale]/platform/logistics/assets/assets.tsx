@@ -19,7 +19,7 @@ export const Assets = createElement<typeof Application.Root>((props, ref) => {
   const [period, setPeriod] = useState<keyof typeof PERIODS>("24h");
 
   return (
-    <Application.Root {...props} ref={ref} title="Assets">
+    <Application.Root {...props} ref={ref} title="Logistics">
       <Application.Content>
         <Container className="flex flex-col xl:flex-row gap-10 xl:gap-20 w-full">
           <Balance period={period} onPeriodChange={setPeriod} className="w-full xl:grow" />

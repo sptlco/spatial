@@ -78,7 +78,7 @@
   --color-overlay-base: --alpha(var(--color-black) / 70%);
   --color-overlay-hover: --alpha(var(--color-blue) / 20%);
 
-  --color-state-success: var(--color-purple);
+  --color-state-success: var(--color-green);
   --color-state-error: var(--color-red);
   --color-state-warning: var(--color-yellow);
   --color-state-information: var(--color-cyan);

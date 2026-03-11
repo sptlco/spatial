@@ -2,9 +2,9 @@
 
 "use client";
 
-import { usePlatform } from "@/utilities";
+import { Spatial } from "@sptlco/client";
 import { clsx } from "clsx";
-import { useTranslations } from "next-intl";
+import useSWR from "swr";
 
 import { createElement, Container, Span } from "@sptlco/design";
 
@@ -12,9 +12,7 @@ import { createElement, Container, Span } from "@sptlco/design";
  * Displays the current platform version.
  */
 export const Mark = createElement<typeof Container>((props, ref) => {
-  const t = useTranslations("footer");
-
-  const { __version, version } = usePlatform();
+  const version = useSWR("version", Spatial.version);
 
   return (
     <Container
@@ -26,14 +24,14 @@ export const Mark = createElement<typeof Container>((props, ref) => {
         <Span
           className={clsx(
             "size-2 rounded-full flex bg-green",
-            { "bg-yellow!": __version.isLoading || __version.isValidating },
-            { "bg-red!": __version.error }
+            { "bg-yellow!": version.isLoading || version.isValidating },
+            { "bg-red!": version.error || version.data?.error }
           )}
         />
-        {__version.isLoading || __version.isValidating ? (
-          <Span className="h-4 w-20 rounded-full bg-background-surface animate-pulse" />
+        {version.isLoading || version.isValidating || !version.data || version.data.error ? (
+          <Span className="h-4 w-20 rounded-full bg-input animate-pulse" />
         ) : (
-          <>Mark {version}</>
+          <>Mark {version.data.data}</>
         )}
       </Span>
     </Container>

@@ -31,9 +31,12 @@ public class KeyController : Controller
 
         key.Store();
 
-        Smtp.Send(
+        Smtp.Render(
             subject: $"Your key code is {key.Code}", 
-            body: key.Code,
+            template: "key",
+            parameters: new Dictionary<string, object> {
+                ["code"] = key.Code
+            },
             recipients: key.Owner);
 
         return Task.CompletedTask;

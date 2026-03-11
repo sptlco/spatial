@@ -4,7 +4,7 @@
 
 import { Response, Spatial } from "@sptlco/client";
 import { createElement } from "@sptlco/design";
-import { createContext, Fragment, useContext as hook } from "react";
+import { createContext, Fragment, useContext, useMemo } from "react";
 import useSWR, { SWRResponse } from "swr";
 
 /**
@@ -15,9 +15,12 @@ export type PlatformContext = {
   __version: SWRResponse<Response<string>, any, any>;
 };
 
+// Use isLoading: true so consumers correctly show a loading state
+// before the ContextProvider has mounted and fetched.
+
 const __default: PlatformContext = {
-  __name: {} as any,
-  __version: {} as any
+  __name: { isLoading: true, isValidating: false, data: undefined, error: undefined } as any,
+  __version: { isLoading: true, isValidating: false, data: undefined, error: undefined } as any
 };
 
 const Context = createContext<PlatformContext>(__default);
@@ -36,11 +39,18 @@ export const ContextProvider = createElement<typeof Fragment>((props, _) => {
  * Get the current platform context.
  */
 export const usePlatform = () => {
-  const context = hook(Context);
+  const { __name, __version } = useContext(Context);
 
-  return {
-    ...context,
-    name: (context.__name.data && !context.__name.data.error && context.__name.data.data) || "",
-    version: (context.__version.data && !context.__version.data.error && context.__version.data.data) || ""
-  };
+  return useMemo(
+    () => ({
+      __name,
+      __version,
+      name: (__name.data && !__name.data.error && __name.data.data) || "",
+      version: (__version.data && !__version.data.error && __version.data.data) || ""
+    }),
+
+    // SWR objects are referentially stable between renders unless the response
+    // actually changes, so this memo only recomputes when data truly updates.
+    [__name, __version]
+  );
 };

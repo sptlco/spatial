@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.20.0](https://github.com/sptlco/spatial/compare/spatial-interface-design-1.19.0...spatial-interface-design-1.20.0) (2026-03-12)
+
+
+### Features
+
+* Added a shipment editor ([#137](https://github.com/sptlco/spatial/issues/137)) ([7f78552](https://github.com/sptlco/spatial/commit/7f785525707fa8bd9b98e1b0cb75bb3b16484afc))
+
 ## [1.19.0](https://github.com/sptlco/spatial/compare/spatial-interface-design-1.18.0...spatial-interface-design-1.19.0) (2026-03-09)
 
 

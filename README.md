@@ -38,7 +38,7 @@ This repository contains all official source code and documentation for [Spatial
 
 ## Getting started
 
-Run the setup script once to install the `spatial` CLI:
+Run the setup script once to install the CLI:
 
 ```bash
 bash scripts/setup.sh
@@ -277,7 +277,7 @@ Full role-based access control.
 
 The logistics module covers two distinct areas:
 
-**Assets** track the system's Ethereum holdings — its bank account. The dashboard shows current balance, transaction count, total volume (USD), gas costs, and performance over configurable time windows (24h, 7d, 30d, 1y). Transactions are executed autonomously to maintain the configured exposure (by swapping stable coin `USDC` for `ETH` and vice versa).
+**Assets** track the configured wallet's Ethereum holdings. The dashboard shows current balance, transaction count, total volume (USD), gas costs, and performance over configurable time windows (24h, 7d, 30d, 1y). Transactions are executed autonomously to maintain the configured exposure (by swapping stable coin `USDC` for `ETH` and vice versa).
 
 **Shipments, orders, and inventory** are Stripe-based commerce operations — physical goods, fulfillment, and sales management. The dashboard provides a searchable, filterable shipment list with origin and destination details. Order tracking and inventory management are in progress.
 
@@ -291,7 +291,7 @@ A custom binary protocol for native client communication.
 
 > The networking layer is inspired by the protocol design of [Fiesta Online](https://en.wikipedia.org/wiki/Fiesta_Online), and originally powered a server emulator for that game.
 
-## Tech stack
+## Stack
 
 | Layer    | Technology                        |
 | -------- | --------------------------------- |

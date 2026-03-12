@@ -1,0 +1,53 @@
+name: Performance
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - "main"
+  pull_request:
+    branches:
+      - "main"
+
+permissions:
+  contents: write
+  issues: write
+  pull-requests: write
+
+jobs:
+  benchmarks:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 10.x
+
+      - name: Restore
+        run: dotnet restore cloud/Performance/Spatial.Performance.csproj
+
+      - name: Build
+        run: dotnet build cloud/Performance/Spatial.Performance.csproj --configuration Release --no-restore
+
+      - name: Run Benchmarks
+        run: >
+          dotnet run
+          --project cloud/Performance/Spatial.Performance.csproj
+          --configuration Release
+          --no-build
+          -- --filter '*'
+          --warmupCount 1
+          --iterationCount 7
+          --outlierMode RemoveAll
+          --exporters json
+          --artifacts ./BenchmarkResults
+
+      - name: Upload Results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: benchmark-results-${{ github.sha }}
+          path: ./BenchmarkResults
+          retention-days: 90

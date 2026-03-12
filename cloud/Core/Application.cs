@@ -133,7 +133,7 @@ public class Application
         try
         {
             var application = new T();
-            var tickRate = (Time) (application.Configuration.TickRate / 60);
+            var tps = (Time) (application.Configuration.TickRate / 60);
 
             try
             {

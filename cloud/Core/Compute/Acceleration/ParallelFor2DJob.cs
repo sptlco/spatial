@@ -49,12 +49,12 @@ public sealed class ParallelFor2DJob : ParallelJob
     /// <summary>
     /// The number of iterations to perform per job in the first dimension.
     /// </summary>
-    public int BatchSizeX => ParallelForJob.CalculateBatchSize(_width, _batchSizeX, Options.BatchStrategy);
+    public int BatchSizeX => CalculateBatchSize(_width, _batchSizeX, Options.BatchStrategy);
 
     /// <summary>
     /// The number of iterations to perform per job in the second dimension.
     /// </summary>
-    public int BatchSizeY => ParallelForJob.CalculateBatchSize(_height, _batchSizeY, Options.BatchStrategy);
+    public int BatchSizeY => CalculateBatchSize(_height, _batchSizeY, Options.BatchStrategy);
 
     /// <summary>
     /// Execute the <see cref="ParallelFor2DJob"/>.
@@ -63,6 +63,16 @@ public sealed class ParallelFor2DJob : ParallelJob
     public override void Execute(int iteration)
     {
         _function(iteration % _width, iteration / _width);
+    }
+
+    private static int CalculateBatchSize(int iterations, int preference, BatchStrategy strategy = BatchStrategy.Auto)
+    {
+        return strategy switch {
+            BatchStrategy.None => iterations,
+            BatchStrategy.Preferred => Math.Max(1, preference),
+            BatchStrategy.Auto => Math.Max(1, iterations / (int) Math.Sqrt(Environment.ProcessorCount)),
+            _ => Math.Max(1, preference)
+        };
     }
 }
 

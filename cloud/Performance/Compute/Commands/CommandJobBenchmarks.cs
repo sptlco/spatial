@@ -13,28 +13,57 @@ namespace Spatial.Compute.Commands;
 public class CommandJobBenchmarks
 {
     private const int _iterations = 1000;
-    
+
+    private Computer _computer = null!;
+
     /// <summary>
-    /// Measure a direct invocation of an empty action.
+    /// Setup the benchmarks.
+    /// </summary>
+    [GlobalSetup]
+    public void Setup()
+    {
+        (_computer = new()).Run();
+    }
+
+    /// <summary>
+    /// Clean up after running the benchmarks.
+    /// </summary>
+    [GlobalCleanup]
+    public void Cleanup()
+    {
+        _computer.Shutdown();
+    }
+
+    /// <summary>
+    /// Baseline: direct sequential invocation.
+    /// Measures the raw cost of calling the action with zero scheduling overhead.
     /// </summary>
     [Benchmark(Baseline = true, OperationsPerInvoke = _iterations)]
     public void DirectInvocation()
     {
-        for (int i = 0; i < _iterations; i++)
+        for (var i = 0; i < _iterations; i++)
         {
             EmptyAction();
         }
     }
 
     /// <summary>
-    /// Measure <see cref="Job.Schedule"/>.
+    /// Measure end-to-end cost of scheduling and completing <see cref="_iterations"/>
+    /// <see cref="CommandJob"/>s — dispatch, agent pickup, execution, and finalization.
     /// </summary>
     [Benchmark(OperationsPerInvoke = _iterations)]
     public void JobCommand()
     {
-        for (int i = 0; i < _iterations; i++)
+        var handles = new Handle[_iterations];
+
+        for (var i = 0; i < _iterations; i++)
         {
-            Job.Schedule(EmptyAction);
+            handles[i] = Job.Schedule(EmptyAction);
+        }
+
+        for (var i = 0; i < _iterations; i++)
+        {
+            handles[i].Wait();
         }
     }
 

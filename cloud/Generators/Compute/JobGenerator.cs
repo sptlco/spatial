@@ -115,13 +115,16 @@ $@" /// <summary>
     /// <param name=""extent"">The launch extent of the kernel.</param>
     /// {argumentDocs}
     /// <param name=""function"">The function to execute.</param>
+    /// <param name=""options"">Configurable options for the <see cref=""Job""/>.</param>
     /// <typeparam name=""TIndex"">The kernel's index type.</typeparam>
     /// {typeParamDocs}
-    public static Handle Kernel<TIndex, {typeParams}>(Accelerator accelerator, TIndex extent, {functionArguments}, Action<TIndex, {typeParams}> function)
+    public static Handle Kernel<TIndex, {typeParams}>(Accelerator accelerator, TIndex extent, {functionArguments}, Action<TIndex, {typeParams}> function, JobOptions options = default)
         where TIndex : struct, IIndex
         {constraints}
     {{
-        return Schedule(new KernelJob<TIndex, {typeParams}>(accelerator, extent, {args}, function));
+        return Schedule(new KernelJob<TIndex, {typeParams}>(accelerator, extent, {args}, function) {{
+            Options = options ?? new()
+        }});
     }}";
         }
     }

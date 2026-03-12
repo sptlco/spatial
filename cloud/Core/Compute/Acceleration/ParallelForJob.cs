@@ -31,30 +31,22 @@ public sealed class ParallelForJob : ParallelJob
     public int BatchSize => CalculateBatchSize(_iterations, _batchSize, Options.BatchStrategy);
 
     /// <summary>
-    /// Calculate the batch size for a <see cref="ParallelForJob"/>.
-    /// </summary>
-    /// <param name="iterations">The number of iterations to perform.</param>
-    /// <param name="preference">The desired batch size.</param>
-    /// <param name="strategy">The job's <see cref="BatchStrategy"/>.</param>
-    /// <returns>The calculated batch size.</returns>
-    public static int CalculateBatchSize(int iterations, int preference, BatchStrategy strategy = BatchStrategy.Auto)
-    {
-        return strategy switch
-        {
-            BatchStrategy.None => iterations,
-            BatchStrategy.Preferred => Math.Min(preference, iterations),
-            BatchStrategy.Auto => Math.Max(1, iterations / (Environment.ProcessorCount * 8)),
-            _ => throw new ArgumentException("Invalid batch strategy. Cannot determine batch size."),
-        };
-    }
-
-    /// <summary>
     /// Execute the <see cref="ParallelForJob"/>.
     /// </summary>
     /// <param name="iteration">The current iteration.</param>
     public override void Execute(int iteration)
     {
         _function(iteration);
+    }
+
+    private static int CalculateBatchSize(int iterations, int preference, BatchStrategy strategy = BatchStrategy.Auto)
+    {
+        return strategy switch {
+            BatchStrategy.None => iterations,
+            BatchStrategy.Preferred => Math.Max(1, preference),
+            BatchStrategy.Auto => Math.Max(1, iterations / (Environment.ProcessorCount * 8)),
+            _ => Math.Max(1, preference)
+        };
     }
 }
 

@@ -1,6 +1,7 @@
 // Copyright © Spatial Corporation. All rights reserved.
 
 using BenchmarkDotNet.Attributes;
+using Spatial.Compute;
 using Spatial.Simulation.Components;
 
 namespace Spatial.Simulation;
@@ -16,6 +17,7 @@ public class SpaceBenchmarks
     private const int _entities = 1000 * 1000 * 5;
 
     private Space _space = null!;
+    private Computer _computer = null!;
     private Signature _signature;
     private Query _query;
 
@@ -31,6 +33,7 @@ public class SpaceBenchmarks
     [GlobalSetup]
     public void Setup()
     {
+        (_computer = new()).Run();
         _signature = Components switch
         {
             1 => Signature.Of<Position>(),
@@ -38,6 +41,15 @@ public class SpaceBenchmarks
             3 => Signature.Combine<Position, Velocity, Rotation>(),
             _ => Signature.Empty
         };
+    }
+
+    /// <summary>
+    /// Clean up after the benchmarks.
+    /// </summary>
+    [GlobalCleanup]
+    public void CleanupAll()
+    {
+        _computer.Shutdown();
     }
 
     /// <summary>

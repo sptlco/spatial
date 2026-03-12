@@ -55,7 +55,7 @@ public abstract partial class Job : IDisposable
     /// <summary>
     /// Configurable options for the <see cref="Job"/>.
     /// </summary>
-    internal JobOptions Options { get; set; }
+    internal JobOptions Options { get; set; } = new();
 
     /// <summary>
     /// Create a new <see cref="Accelerator"/>.
@@ -81,7 +81,7 @@ public abstract partial class Job : IDisposable
     /// <param name="options">Configurable options for the job.</param>
     public static Handle ParallelFor<T>(IEnumerable<T> collection, Action<T> function, JobOptions? options = default)
     {
-        return ParallelFor(collection.Count(), 0, (i) => function(collection.ElementAt(i)), options);
+        return ParallelFor(collection.Count(), 0, (i) => function(collection.ElementAt(i)), options ?? new());
     }
 
     /// <summary>
@@ -92,7 +92,7 @@ public abstract partial class Job : IDisposable
     /// <param name="options">Configurable options for the job.</param>
     public static Handle ParallelFor<T>(IReadOnlyCollection<T> collection, Action<T> function, JobOptions? options = default)
     {
-        return ParallelFor(collection.Count, 0, (i) => function(collection.ElementAt(i)), options);
+        return ParallelFor(collection.Count, 0, (i) => function(collection.ElementAt(i)), options ?? new());
     }
 
     /// <summary>
@@ -106,7 +106,7 @@ public abstract partial class Job : IDisposable
         return ParallelFor(
             iterations: collection.Count,
             batchSize: 0,
-            options: options,
+            options: options ?? new(),
             function: (i) => {
                 var (key, value) = collection.ElementAt(i);
                 function(key, value);
@@ -121,7 +121,7 @@ public abstract partial class Job : IDisposable
     /// <param name="options">Configurable options for the job.</param>
     public static Handle ParallelFor(int count, Action<int> function, JobOptions? options = default)
     {
-        return ParallelFor(count, 0, function, options);
+        return ParallelFor(count, 0, function, options ?? new());
     }
 
     /// <summary>
@@ -149,7 +149,7 @@ public abstract partial class Job : IDisposable
     /// <param name="options">Configurable options for the job.</param>
     public static Handle ParallelFor2D(int width, int height, Action<int, int> function, JobOptions? options = default)
     {
-        return ParallelFor2D(width, height, 0, 0, function, options);
+        return ParallelFor2D(width, height, 0, 0, function, options ?? new());
     }
 
     /// <summary>
@@ -274,6 +274,11 @@ public enum JobAccelerator
 /// </summary>
 public class JobOptions
 {
+    /// <summary>
+    /// ...
+    /// </summary>
+    public static JobOptions Default = new();
+
     /// <summary>
     /// Whether or not to enable metrics for the job.
     /// </summary>

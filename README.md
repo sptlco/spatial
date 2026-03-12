@@ -150,6 +150,13 @@ JWT_SECRET=<same-secret-as-server>
 | `NEXT_PUBLIC_SERVER_ENDPOINT` | URL of the cloud server API                  |
 | `JWT_SECRET`                  | Must match `JWT.Secret` in the server config |
 
+
+To start the web development server, run the following:
+```bash
+cd interface
+npm run dev:web
+```
+
 ### NGINX
 
 `config/nginx/default.conf` is the NGINX virtual host configuration. Update the `server_name` directives to match your domain, and ensure the `ssl_certificate` and `ssl_certificate_key` paths point to your certificates:

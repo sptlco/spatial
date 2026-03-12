@@ -1,5 +1,8 @@
 .bash_history
 .bashrc
+.claude
+.claude.json
+.claudeignore
 .config
 .dev
 .docker

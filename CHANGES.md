@@ -1,5 +1,25 @@
 # Changelog
 
+## [1.27.0](https://github.com/sptlco/spatial/compare/spatial-1.26.0...spatial-1.27.0) (2026-03-12)
+
+
+### Features
+
+* Added a benchmark runner ([#137](https://github.com/sptlco/spatial/issues/137)) ([5a4a945](https://github.com/sptlco/spatial/commit/5a4a94559115e2f79e4358fe05ad9f75fbd25cff))
+* Added a mail renderer ([#139](https://github.com/sptlco/spatial/issues/139)) ([ab1724c](https://github.com/sptlco/spatial/commit/ab1724c503f3443862e8876694b8cb128c1c2837))
+* Added a shipment editor ([#137](https://github.com/sptlco/spatial/issues/137)) ([7f78552](https://github.com/sptlco/spatial/commit/7f785525707fa8bd9b98e1b0cb75bb3b16484afc))
+* Added a shipment page ([#137](https://github.com/sptlco/spatial/issues/137)) ([a49aca1](https://github.com/sptlco/spatial/commit/a49aca1d9786ab59980da8d1df0ab9f33b3c6224))
+* Added Claude! ([#137](https://github.com/sptlco/spatial/issues/137)) ([49a9dc7](https://github.com/sptlco/spatial/commit/49a9dc78c22109f0166100aeaacb4c72c4189437))
+* Added page controls ([#137](https://github.com/sptlco/spatial/issues/137)) ([59ae2f9](https://github.com/sptlco/spatial/commit/59ae2f90105b2506c222091d94cd24ea541e39fc))
+
+
+### Bug Fixes
+
+* Removed unnecessary context ([#137](https://github.com/sptlco/spatial/issues/137)) ([62de300](https://github.com/sptlco/spatial/commit/62de300e26d467f037abcf3b727eaae94520850e))
+* Updated space benchmarks ([#137](https://github.com/sptlco/spatial/issues/137)) ([3dca112](https://github.com/sptlco/spatial/commit/3dca1122fe11f5ea940b9406664bdbd0e7625267))
+* Updated the performance workflow ([#137](https://github.com/sptlco/spatial/issues/137)) ([2cab2ed](https://github.com/sptlco/spatial/commit/2cab2ed28b9811e195f009f90453a5230a50fc53))
+* Used proper defaults for platform context ([#137](https://github.com/sptlco/spatial/issues/137)) ([dcb80cd](https://github.com/sptlco/spatial/commit/dcb80cd6aa3ea524ce0b0110cad6d238bd611ce0))
+
 ## [1.26.0](https://github.com/sptlco/spatial/compare/spatial-1.25.0...spatial-1.26.0) (2026-03-09)
 
 

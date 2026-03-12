@@ -1,5 +1,18 @@
 # Changelog
 
+## [1.33.0](https://github.com/sptlco/spatial/compare/spatial-cloud-1.32.0...spatial-cloud-1.33.0) (2026-03-12)
+
+
+### Features
+
+* Added a benchmark runner ([#137](https://github.com/sptlco/spatial/issues/137)) ([5a4a945](https://github.com/sptlco/spatial/commit/5a4a94559115e2f79e4358fe05ad9f75fbd25cff))
+* Added a mail renderer ([#139](https://github.com/sptlco/spatial/issues/139)) ([ab1724c](https://github.com/sptlco/spatial/commit/ab1724c503f3443862e8876694b8cb128c1c2837))
+
+
+### Bug Fixes
+
+* Updated space benchmarks ([#137](https://github.com/sptlco/spatial/issues/137)) ([3dca112](https://github.com/sptlco/spatial/commit/3dca1122fe11f5ea940b9406664bdbd0e7625267))
+
 ## [1.32.0](https://github.com/sptlco/spatial/compare/spatial-cloud-1.31.0...spatial-cloud-1.32.0) (2026-03-09)
 
 

@@ -1,5 +1,20 @@
 # Changelog
 
+## [1.30.0](https://github.com/sptlco/spatial/compare/spatial-interface-web-1.29.0...spatial-interface-web-1.30.0) (2026-03-12)
+
+
+### Features
+
+* Added a shipment editor ([#137](https://github.com/sptlco/spatial/issues/137)) ([7f78552](https://github.com/sptlco/spatial/commit/7f785525707fa8bd9b98e1b0cb75bb3b16484afc))
+* Added a shipment page ([#137](https://github.com/sptlco/spatial/issues/137)) ([a49aca1](https://github.com/sptlco/spatial/commit/a49aca1d9786ab59980da8d1df0ab9f33b3c6224))
+* Added page controls ([#137](https://github.com/sptlco/spatial/issues/137)) ([59ae2f9](https://github.com/sptlco/spatial/commit/59ae2f90105b2506c222091d94cd24ea541e39fc))
+
+
+### Bug Fixes
+
+* Removed unnecessary context ([#137](https://github.com/sptlco/spatial/issues/137)) ([62de300](https://github.com/sptlco/spatial/commit/62de300e26d467f037abcf3b727eaae94520850e))
+* Used proper defaults for platform context ([#137](https://github.com/sptlco/spatial/issues/137)) ([dcb80cd](https://github.com/sptlco/spatial/commit/dcb80cd6aa3ea524ce0b0110cad6d238bd611ce0))
+
 ## [1.29.0](https://github.com/sptlco/spatial/compare/spatial-interface-web-1.28.0...spatial-interface-web-1.29.0) (2026-03-09)
 
 

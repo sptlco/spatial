@@ -42,12 +42,11 @@ jobs:
           --iterationCount 7
           --outlierMode RemoveAll
           --exporters json
-          --artifacts ./BenchmarkResults
 
-      - name: Upload Results
+      - name: Upload benchmarks
         uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: benchmark-results-${{ github.sha }}
-          path: ./BenchmarkResults
-          retention-days: 90
+          name: benchmarkdotnet-results
+          path: |
+            **/BenchmarkDotNet.Artifacts/**

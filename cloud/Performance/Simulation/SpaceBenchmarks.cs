@@ -68,7 +68,7 @@ public class SpaceBenchmarks
     public void SetupMutateMono()
     {
         (_space = new Space()).Reserve(_signature, _entities);
-        _query = new Query().WithAll(_signature);
+        _query = new Query().Accelerate(false).WithAll(_signature);
 
         CreateImpl();
     }
@@ -80,7 +80,7 @@ public class SpaceBenchmarks
     public void SetupMutateAccelerated()
     {
         (_space = new Space()).Reserve(_signature, _entities);
-        _query = new Query().Parallel().WithAll(_signature);
+        _query = new Query().WithAll(_signature);
 
         CreateImpl();
     }

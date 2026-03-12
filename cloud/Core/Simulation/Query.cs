@@ -7,7 +7,7 @@ namespace Spatial.Simulation;
 /// </summary>
 public partial class Query
 {
-    private bool _parallel;
+    private bool _accelerated;
 
     private Signature _all;
     private Signature _any;
@@ -18,7 +18,7 @@ public partial class Query
     /// </summary>
     public Query()
     {
-        _parallel = true;
+        _accelerated = true;
 
         _all = new Signature();
         _any = new Signature();
@@ -28,16 +28,16 @@ public partial class Query
     /// <summary>
     /// Whether or not to process matching entities in parallel.
     /// </summary>
-    public bool Accelerated => _parallel;
+    public bool Accelerated => _accelerated;
 
     /// <summary>
     /// Process matching entities in parallel.
     /// </summary>
     /// <param name="parallel">Whether or not to run the query in parallel.</param>
     /// <returns>The <see cref="Query"/> for chained method calls.</returns>
-    public Query Parallel(bool parallel = true)
+    public Query Accelerate(bool parallel = true)
     {
-        _parallel = parallel;
+        _accelerated = parallel;
         return this;
     }
 

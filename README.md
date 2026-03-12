@@ -349,7 +349,7 @@ The following packages are published to GitHub Packages on release:
 - Chase Latta — [Liquid Neural Networks](https://www.youtube.com/watch?v=IlliqYiRhMU&t=1970s) (lecture)
 - D. Chase, D. Lev — [Dynamic Circular Work-Stealing Deque](https://www.dre.vanderbilt.edu/~schmidt/PDF/work-stealing-dequeue.pdf)
 
-For a discussion of how these ideas are applied in this codebase, see [Notes on Temporal ECS Neural Dynamics](https://sptlco.com/blog/temporal-ecs-neural-dynamics).
+For a discussion of how these ideas are applied in this codebase, see [Notes on Temporal ECS Neural Dynamics](https://dakarai.org/blog/post/temporal-ecs-neural-dynamics).
 
 ## License
 

@@ -6,7 +6,7 @@ import { Spatial } from "@sptlco/client";
 import { clsx } from "clsx";
 import useSWR from "swr";
 
-import { Button, Container, createElement, H2, Icon, Select, Span, Spinner, Tooltip } from "@sptlco/design";
+import { Button, Combobox, Container, createElement, H2, Icon, Span, Spinner, Tooltip } from "@sptlco/design";
 import { Metric } from "@sptlco/data";
 import { useState } from "react";
 
@@ -28,23 +28,23 @@ export const Delta = createElement<typeof Container>((props, ref) => {
 
   const selector = () => {
     return (
-      <Select.Root value={year.toString()} onValueChange={(value) => setYear(Number(value))}>
-        <Select.Trigger asChild>
+      <Combobox.Root selection={year.toString()} onSelect={(value) => setYear(Number(value))}>
+        <Combobox.Trigger asChild>
           <Button intent="ghost" shape="pill" className="data-[state=open]:bg-button-ghost-active mx-auto font-bold! text-2xl!">
             <Span className="inline-flex items-center gap-4">
               <Span>Delta</Span> <Span className="inline-flex px-4 py-2 rounded-full outline outline-line-faint bg-button text-sm">{year}</Span>
             </Span>
             <Icon symbol="keyboard_arrow_down" />
           </Button>
-        </Select.Trigger>
-        <Select.Content>
-          {[...Array(3)].map((_, i) => {
+        </Combobox.Trigger>
+        <Combobox.Content searchable={false}>
+          {[...Array(y - 1970)].map((_, i) => {
             const value = (m < 6 ? y - 1 : y) - i;
 
-            return <Select.Item key={i} value={value.toString()} label={value.toString()} />;
+            return <Combobox.Item key={i} value={value.toString()} label={value.toString()} />;
           })}
-        </Select.Content>
-      </Select.Root>
+        </Combobox.Content>
+      </Combobox.Root>
     );
   };
 

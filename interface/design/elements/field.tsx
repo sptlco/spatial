@@ -7,7 +7,7 @@ import { OTPInput, OTPInputContext, OTPInputProps } from "input-otp";
 import { ReactNode, useContext, useEffect, useRef, useState } from "react";
 import { HexColorPicker, HexColorInput } from "react-colorful";
 
-import { Button, Combobox, Container, createElement, Dropdown, Icon, Input, Label, Paragraph, Select, Span, toast, UL } from "..";
+import { Button, Combobox, Container, createElement, Dropdown, Icon, Input, Label, Paragraph, Span, toast, UL } from "..";
 
 /**
  * Common configurable options for a field.
@@ -29,17 +29,17 @@ export interface SharedFieldProps {
   inset?: boolean;
 
   /**
-   * Optional classes for the field's container.
+   * Optional FieldStyles for the field's container.
    */
   containerClassName?: string;
 
   /**
-   * Optional classes for the field's label.
+   * Optional FieldStyles for the field's label.
    */
   labelClassName?: string;
 
   /**
-   * Optional classes for the field's description.
+   * Optional FieldStyles for the field's description.
    */
   descriptionClassName?: string;
 }
@@ -237,18 +237,20 @@ export type FieldTypeProps = TextFieldProps | OptionFieldProps | OTPFieldProps |
 export type FieldProps = SharedFieldProps & FieldTypeProps;
 
 /**
+ * Shared styles for a field input.
+ */
+export const styles = clsx(
+  "disabled:opacity-50",
+  "px-4 py-2 bg-input placeholder-hint rounded-lg transition-all",
+  "outline-2 outline-offset-3 outline-transparent focus:outline-line-input-focus focus-within:outline-line-input-focus",
+  "data-[state=open]:outline-line-input-focus"
+);
+
+/**
  * Part of a form collecting user data.
  */
 export const Field = createElement<"input", FieldProps>(({ containerClassName, inset = true, ...props }, ref) => {
   const render = () => {
-    const classes = clsx(
-      "disabled:opacity-50",
-      "px-4 py-2 bg-input placeholder-hint rounded-lg transition-all",
-      "outline-2 outline-offset-3 outline-transparent focus:outline-line-input-focus focus-within:outline-line-input-focus",
-      "data-[state=open]:outline-line-input-focus",
-      props.className
-    );
-
     switch (props.type) {
       case "text":
       case "email":
@@ -266,7 +268,7 @@ export const Field = createElement<"input", FieldProps>(({ containerClassName, i
         const input = () => {
           if (props.prefix || props.suffix || props.icon) {
             return (
-              <Container className={clsx(classes, "flex items-center w-full gap-4", props.className)}>
+              <Container className={clsx(styles, "flex items-center w-full gap-4", props.className)}>
                 {props.icon}
                 {props.prefix && <Span className="flex text-hint shrink-0">{props.prefix}</Span>}
                 <Input
@@ -295,7 +297,7 @@ export const Field = createElement<"input", FieldProps>(({ containerClassName, i
               {...props}
               ref={ref}
               autoComplete="off"
-              className={clsx(classes, "w-full", props.className)}
+              className={clsx(styles, "w-full", props.className)}
               value={value}
               onChange={(e) =>
                 props.onChange?.({
@@ -350,7 +352,7 @@ export const Field = createElement<"input", FieldProps>(({ containerClassName, i
         return (
           <Combobox.Root {...props} onSelect={props.onValueChange}>
             <Combobox.Trigger asChild>
-              <Button intent="none" size="fit" className={clsx(classes, "group items-start justify-between! w-full!")}>
+              <Button intent="none" size="fit" className={clsx(styles, "group items-start justify-between! w-full!", props.className)}>
                 {trigger()}
                 <Icon symbol="keyboard_arrow_down" className="transition-all duration-100 group-data-[state=open]:-rotate-180" />
               </Button>
@@ -387,11 +389,11 @@ export const Field = createElement<"input", FieldProps>(({ containerClassName, i
               <Dropdown.Trigger className="flex absolute left-4 shrink-0 size-6 items-center justify-center cursor-pointer">
                 <Span className="size-full rounded-full" style={{ backgroundColor: rest.value }} />
               </Dropdown.Trigger>
-              <Dropdown.Content className="bg-transparent! shadow-none! z-80! w-fit!">
+              <Dropdown.Content align="center" className="bg-transparent! p-4! shadow-none! overflow-visible w-fit!">
                 <HexColorPicker color={rest.value} onChange={onValueChange} />
               </Dropdown.Content>
             </Dropdown.Root>
-            <HexColorInput {...rest} type="text" className={clsx(classes, "pl-13 w-full")} color={rest.value} prefixed onChange={onValueChange} />
+            <HexColorInput {...rest} type="text" className={clsx(styles, "pl-13 w-full")} color={rest.value} prefixed onChange={onValueChange} />
           </Container>
         );
       }

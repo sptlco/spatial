@@ -6,7 +6,7 @@ import { useState } from "react";
 
 import { Filters } from "./filters";
 import { Search } from "./search";
-import { View, views } from "./view";
+import { View, views, ViewType } from "./view";
 
 import { Footer } from "@/elements";
 import { Container, createElement, Link, Logo, Main, Pagination } from "@sptlco/design";
@@ -17,7 +17,7 @@ import { posts } from "./config.json";
  * A public display of blog posts.
  */
 export const Index = createElement<typeof Main>((props, ref) => {
-  const [view, setView] = useState(views[0].name);
+  const [view, setView] = useState<ViewType>("grid");
 
   return (
     <Main {...props} ref={ref}>
@@ -37,16 +37,19 @@ export const Index = createElement<typeof Main>((props, ref) => {
               type="single"
               value={view}
               onValueChange={(value) => {
-                if (value) setView(value);
+                if (value) setView(value as ViewType);
               }}
             />
           </Container>
           {posts
             .filter((p) => p.public)
             .map((post, i) => {
-              // ...
-
-              return null;
+              switch (view) {
+                case "grid":
+                  return null;
+                case "list":
+                  return null;
+              }
             })}
           <Pagination page={1} pages={1} className="self-center" />
         </Container>

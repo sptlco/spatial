@@ -4,15 +4,15 @@ import { Fragment } from "react";
 
 import { Button, Combobox, createElement, Icon } from "@sptlco/design";
 
-export const Filters = createElement<typeof Fragment>(() => {
+export const Sort = createElement<typeof Fragment>(() => {
   return (
     <Combobox.Root>
       <Combobox.Trigger asChild>
-        <Button intent="ghost" size="fit" className="group p-2 data-[state=open]:bg-button-ghost-active">
-          <Icon symbol="filter_alt" className="group-data-[state=open]:fill" />
+        <Button intent="ghost" size="fit" className="p-2 data-[state=open]:bg-button-ghost-active">
+          <Icon symbol="sort" fill />
         </Button>
       </Combobox.Trigger>
-      <Combobox.Content>Filters</Combobox.Content>
+      <Combobox.Content>Sort</Combobox.Content>
     </Combobox.Root>
   );
 });

@@ -19,8 +19,8 @@ export const Drawer = {
 
   Content: createElement<
     typeof Primitive.Content,
-    ComponentProps<typeof Primitive.Content> & { title?: ReactNode; description?: ReactNode; closeButton?: boolean }
-  >((props, ref) => {
+    ComponentProps<typeof Primitive.Content> & { title?: ReactNode; description?: ReactNode; closeButton?: boolean; nested?: boolean }
+  >(({ nested, ...props }, ref) => {
     const Optional: FC<PropsWithChildren<{ value?: ReactNode }>> = ({ value, ...props }) => {
       return !value ? <Hidden {...props} /> : props.children;
     };
@@ -30,7 +30,8 @@ export const Drawer = {
         <Primitive.Overlay
           data-slot="drawer-overlay"
           className={clsx(
-            "fixed inset-0 z-50 size-full bg-inherit/30 backdrop-blur",
+            "fixed inset-0 size-full bg-black/30 backdrop-blur",
+            nested ? "z-(--z-nested-overlay)" : "z-(--z-overlay)",
             "data-[state=open]:animate-in data-[state=open]:fade-in",
             "data-[state=closed]:animate-out data-[state=closed]:fade-out",
             "duration-500"
@@ -41,7 +42,9 @@ export const Drawer = {
           ref={ref}
           data-slot="drawer-content"
           className={clsx(
-            "group/drawer-content bg-background-surface fixed z-50 p-10 gap-10 flex h-auto flex-col",
+            "group/drawer-content bg-background-surface fixed p-10 gap-10 flex h-auto flex-col",
+            "border-t border-line-faint",
+            nested ? "z-(--z-nested)" : "z-(--z-sheet)",
             "data-[vaul-drawer-direction=top]:inset-x-0 data-[vaul-drawer-direction=top]:top-0 data-[vaul-drawer-direction=top]:mb-24 data-[vaul-drawer-direction=top]:max-h-[80vh] data-[vaul-drawer-direction=top]:rounded-b-4xl",
             "data-[vaul-drawer-direction=bottom]:inset-x-0 data-[vaul-drawer-direction=bottom]:bottom-0 data-[vaul-drawer-direction=bottom]:mt-24 data-[vaul-drawer-direction=bottom]:max-h-[80vh] data-[vaul-drawer-direction=bottom]:rounded-t-4xl",
             "data-[vaul-drawer-direction=right]:inset-y-0 data-[vaul-drawer-direction=right]:right-0 data-[vaul-drawer-direction=right]:w-3/4 data-[vaul-drawer-direction=right]:rounded-l-4xl data-[vaul-drawer-direction=right]:sm:max-w-sm",

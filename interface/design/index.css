@@ -97,6 +97,14 @@
   --shadow-base: 0 4px 20px rgba(0, 0, 0, 0.4);
   --shadow-accent: 0 0 0 2px --alpha(var(--color-blue) / 60%);
 
+  --z-overlay: 40;
+  --z-sheet: 50;
+  --z-nested-overlay: 55;
+  --z-nested: 58;
+  --z-popover: 60;
+  --z-tooltip: 70;
+  --z-toast: 80;
+
   --animate-fill: fill 0.1s ease forwards;
   --animate-outline: outline 0.1s ease forwards;
   --animate-caret: caret 1.25s ease-out infinite;

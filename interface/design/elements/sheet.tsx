@@ -11,7 +11,7 @@ import { createPortal } from "react-dom";
 
 const classes = cva({
   base: [
-    "fixed z-52",
+    "fixed z-(--z-sheet)",
     "bg-background-surface shadow-base transition ease-in-out",
     "data-[state=open]:animate-in data-[state=open]:duration-500",
     "data-[state=closed]:animate-out data-[state=closed]:duration-300"
@@ -63,7 +63,7 @@ export const Sheet = {
       <Sheet.Portal>
         <Sheet.Overlay
           className={clsx(
-            "fixed inset-0 z-50 size-full bg-inherit/30 backdrop-blur",
+            "fixed inset-0 z-(--z-overlay) size-full bg-black/30 backdrop-blur",
             "data-[state=open]:animate-in data-[state=open]:fade-in",
             "data-[state=closed]:animate-out data-[state=closed]:fade-out",
             "duration-500"

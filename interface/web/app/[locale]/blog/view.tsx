@@ -8,7 +8,12 @@ import { createElement, Icon, ToggleGroup } from "@sptlco/design";
 export const views = [
   { name: "grid", icon: <Icon symbol="grid_view" fill /> },
   { name: "list", icon: <Icon symbol="format_list_bulleted" className="font-light" /> }
-];
+] as const;
+
+/**
+ * A view type.
+ */
+export type ViewType = (typeof views)[number]["name"];
 
 /**
  * Allows the user to configure how posts are laid out.

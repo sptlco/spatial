@@ -5,7 +5,7 @@
 import { clsx } from "clsx";
 import { createContext, ReactNode, useContext, useEffect, useState } from "react";
 
-import { Container, createElement, Icon, Input, LI, Popover, Span, UL } from "..";
+import { Container, createElement, Drawer, Icon, Input, LI, Popover, Span, styles, UL, useDevice } from "..";
 
 /**
  * Configurable options for a combobox.
@@ -57,6 +57,9 @@ export type MultiComboboxProps = {
  * Internal context responsible for the behavior of a combobox.
  */
 type ComboboxContext = {
+  isMobile: boolean;
+  open: boolean;
+  setOpen: (open: boolean) => void;
   multiple?: boolean;
   search: string[];
   setSearch: (search: string[]) => void;
@@ -64,7 +67,7 @@ type ComboboxContext = {
   onSelect?: (value: string) => void;
 };
 
-const Context = createContext<ComboboxContext>({ search: [], setSearch: () => {}, selection: [] });
+const Context = createContext<ComboboxContext>({ isMobile: false, open: false, setOpen: () => {}, search: [], setSearch: () => {}, selection: [] });
 
 /**
  * A searchable list of items.
@@ -74,11 +77,16 @@ export const Combobox = {
    * Contains all the parts of a combobox.
    */
   Root: createElement<typeof Popover.Root, ComboboxProps>((props, _) => {
+    const { isMobile } = useDevice();
+    const [open, setOpen] = useState(false);
     const [search, setSearch] = useState<string[]>([]);
     const [selection, setSelection] = useState<string[]>([]);
 
     const context: ComboboxContext = {
       ...props,
+      isMobile,
+      open,
+      setOpen,
       search,
       setSearch,
       selection
@@ -90,48 +98,84 @@ export const Combobox = {
       }
     }, [props.selection]);
 
-    return (
-      <Context.Provider value={context}>
-        <Popover.Root {...props} />
-      </Context.Provider>
+    const children = <Context.Provider value={context}>{props.children}</Context.Provider>;
+
+    return isMobile ? (
+      <Drawer.Root open={open} onOpenChange={setOpen}>
+        {children}
+      </Drawer.Root>
+    ) : (
+      <Popover.Root open={open} onOpenChange={setOpen}>
+        {children}
+      </Popover.Root>
     );
   }),
 
   /**
    * The button that opens the combobox.
    */
-  Trigger: createElement<typeof Popover.Trigger>((props, ref) => <Popover.Trigger {...props} ref={ref} />),
+  Trigger: createElement<typeof Popover.Trigger>((props, ref) => {
+    const { isMobile } = useContext(Context);
+
+    return isMobile ? <Drawer.Trigger {...props} ref={ref} /> : <Popover.Trigger {...props} ref={ref} />;
+  }),
 
   /**
    * The component displayed when the combobox opens.
    */
-  Content: createElement<typeof Popover.Content, { searchPlaceholder?: string }>(({ searchPlaceholder = "Search", ...props }, ref) => {
-    const { setSearch } = useContext(Context);
+  Content: createElement<typeof Popover.Content, { searchable?: boolean; searchPlaceholder?: string }>(
+    ({ searchable = true, searchPlaceholder = "Search", ...props }, ref) => {
+      const { isMobile, setSearch } = useContext(Context);
+      const [value, setValue] = useState("");
 
-    const [value, setValue] = useState("");
+      const inner = (
+        <>
+          {searchable && (
+            <Container className={clsx("flex items-center gap-4", isMobile && styles, isMobile ? "px-4" : "p-4")}>
+              <Icon symbol="search" />
+              <Input
+                type="text"
+                id="search"
+                name="search"
+                className="flex-1 min-w-0 truncate"
+                placeholder={searchPlaceholder}
+                autoComplete="off"
+                value={value}
+                onChange={(e) => {
+                  setValue(e.target.value);
+                  setSearch(e.target.value.trim().split(/\s+/).filter(Boolean));
+                }}
+              />
+            </Container>
+          )}
+          <Popover.Viewport className="max-h-[calc(var(--radix-popover-content-available-height)-52px)]">{props.children}</Popover.Viewport>
+        </>
+      );
 
-    return (
-      <Popover.Content {...props} ref={ref} onOpenAutoFocus={(e) => e.preventDefault()}>
-        <Container className="flex items-center gap-4 p-4">
-          <Icon symbol="search" size={20} />
-          <Input
-            type="text"
-            id="search"
-            name="search"
-            className="flex-1 min-w-0 truncate"
-            placeholder={searchPlaceholder}
-            autoComplete="off"
-            value={value}
-            onChange={(e) => {
-              setValue(e.target.value);
-              setSearch(e.target.value.trim().split(/\s+/).filter(Boolean));
-            }}
-          />
-        </Container>
-        <Popover.Viewport className="max-h-[calc(var(--radix-popover-content-available-height)-52px)]">{props.children}</Popover.Viewport>
-      </Popover.Content>
-    );
-  }),
+      if (isMobile) {
+        return <Drawer.Content nested>{inner}</Drawer.Content>;
+      }
+
+      return (
+        <Popover.Portal>
+          <Container className="group">
+            <Container
+              className={clsx(
+                "z-(--z-nested-overlay)",
+                "fixed inset-0 bg-background-base/30 backdrop-blur size-full duration-300",
+                "group-has-data-[state=open]:animate-in group-has-data-[state=open]:fade-in",
+                "group-has-data-[state=closed]:animate-out group-has-data-[state=closed]:fade-out",
+                "group-has-data-[state=closed]:pointer-events-none"
+              )}
+            />
+            <Popover.Content {...props} ref={ref} onOpenAutoFocus={(e) => e.preventDefault()}>
+              {inner}
+            </Popover.Content>
+          </Container>
+        </Popover.Portal>
+      );
+    }
+  ),
 
   /**
    * A list of combobox items.
@@ -149,7 +193,7 @@ export const Combobox = {
    * An item listed in the combobox.
    */
   Item: createElement<typeof LI, { value: string; label: string; icon?: ReactNode; description?: string; indicator?: ReactNode }>((props, ref) => {
-    const { multiple, search, selection, onSelect } = useContext(Context);
+    const { isMobile, multiple, search, selection, onSelect } = useContext(Context);
 
     const selected = selection?.includes(props.value);
     const matches =
@@ -174,6 +218,7 @@ export const Combobox = {
         ref={ref}
         onClick={select}
         className={clsx(
+          { "rounded-lg": isMobile },
           "p-4 gap-4 cursor-pointer transition-all flex grow items-center",
           "hover:bg-button-highlight-hover active:bg-button-highlight-active hover:text-white",
           props.className

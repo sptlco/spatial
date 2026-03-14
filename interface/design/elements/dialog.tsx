@@ -43,13 +43,13 @@ export const Dialog = {
         <Primitive.Overlay
           data-slot="dialog-overlay"
           className={clsx(
-            "fixed inset-0 z-50 bg-background-base/30 backdrop-blur",
+            "fixed inset-0 z-(--z-overlay) bg-background-base/30 backdrop-blur",
             "data-[state=open]:animate-in data-[state=open]:fade-in",
             "data-[state=closed]:animate-out data-[state=closed]:fade-out",
             "duration-500"
           )}
         />
-        <Container className={clsx("fixed inset-0 z-51", "flex items-center size-full justify-center", "p-10", "pointer-events-none")}>
+        <Container className={clsx("fixed inset-0 z-(--z-popover)", "flex items-center size-full justify-center", "p-10", "pointer-events-none")}>
           <Primitive.Content
             {...props}
             ref={ref}

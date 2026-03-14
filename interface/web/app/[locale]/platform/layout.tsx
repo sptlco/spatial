@@ -359,7 +359,7 @@ export default function Layout(props: { children: ReactNode }) {
         </Container>
         <Container id="actions" className="fixed pointer-events-none bottom-0 left-0 w-full flex gap-5 p-10 z-20 justify-start">
           <Drawer.Root>
-            <Drawer.Trigger className="xl:hidden z-30 pointer-events-auto cursor-pointer transition-all rounded-full backdrop-blur bg-button hover:bg-button-hover active:bg-button-active shadow-base p-4 flex shrink-0 items-center justify-center">
+            <Drawer.Trigger className="xl:hidden pointer-events-auto cursor-pointer transition-all rounded-full backdrop-blur bg-button hover:bg-button-hover active:bg-button-active shadow-base p-4 flex shrink-0 items-center justify-center">
               <Icon symbol="apps" />
             </Drawer.Trigger>
             <Drawer.Content className="max-h-[80vh]">

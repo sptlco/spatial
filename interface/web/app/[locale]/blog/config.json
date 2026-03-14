@@ -7,8 +7,8 @@
       "public": true,
       "name": "Hello, world!",
       "description": "A greeting to the world.",
-      "media": "abc",
-      "authors": ["karai@sptlco.com"]
+      "author": "Dakarai Cundiff",
+      "media": "abc"
     },
     {
       "date": "2026-03-01",
@@ -17,7 +17,7 @@
       "public": true,
       "name": "Goodbye, world!",
       "description": "A farewell to the world.",
-      "authors": ["karai@sptlco.com"]
+      "author": "Dakarai Cundiff"
     }
   ]
 }

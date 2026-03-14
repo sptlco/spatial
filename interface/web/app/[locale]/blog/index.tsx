@@ -6,6 +6,7 @@ import { useState } from "react";
 
 import { Filters } from "./filters";
 import { Search } from "./search";
+import { Sort } from "./sort";
 import { View, views, ViewType } from "./view";
 
 import { Footer } from "@/elements";
@@ -31,6 +32,7 @@ export const Index = createElement<typeof Main>((props, ref) => {
               <Container className="flex items-center">
                 <Search />
                 <Filters />
+                <Sort />
               </Container>
             </Container>
             <View

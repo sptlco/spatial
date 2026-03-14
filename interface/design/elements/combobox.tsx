@@ -148,7 +148,19 @@ export const Combobox = {
               />
             </Container>
           )}
-          <Popover.Viewport className="max-h-[calc(var(--radix-popover-content-available-height)-52px)]">{props.children}</Popover.Viewport>
+          <Popover.Viewport
+            className={
+              isMobile
+                ? searchable
+                  ? "max-h-[calc(80vh-206px)]"
+                  : "max-h-[calc(80vh-126px)]"
+                : searchable
+                  ? "max-h-[calc(var(--radix-popover-content-available-height)-52px)]"
+                  : "max-h-(--radix-popover-content-available-height)"
+            }
+          >
+            {props.children}
+          </Popover.Viewport>
         </>
       );
 

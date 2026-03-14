@@ -258,6 +258,7 @@ export default function Layout(props: { children: ReactNode }) {
           }}
           className={clsx(
             "px-10",
+            "xl:border-r border-[#000]",
             "flex items-center xl:items-start",
             "row-start-1 col-start-1",
             "xl:row-span-2 xl:col-start-1 xl:row-start-1 xl:max-w-sm",
@@ -266,7 +267,7 @@ export default function Layout(props: { children: ReactNode }) {
         >
           <Container className="flex flex-col h-full gap-10">
             <Link href="/" className="relative flex items-center justify-center size-10 xl:w-16!">
-              <Logo mode="symbol" className="w-10 fill-foreground-primary" />
+              <Logo mode="symbol" className="h-5 xl:h-auto xl:w-10 fill-foreground-primary" />
             </Link>
             <UL className="hidden xl:flex grow flex-col items-center justify-center gap-6">
               {pages.map((page, i) => {
@@ -303,10 +304,10 @@ export default function Layout(props: { children: ReactNode }) {
         </Container>
         <Container
           id="title"
-          className="flex items-center xl:justify-center row-start-1 col-start-1 xl:col-start-2 col-span-2 px-10 pl-24 xl:p-0 xl:mr-10"
+          className="flex items-center xl:justify-center row-start-1 col-start-1 xl:col-start-2 col-span-2 px-10 pl-22 xl:p-0 xl:mr-10"
         />
         <Container
-          className={clsx("flex px-10 gap-2.5 sm:gap-5 items-center shrink-0", "row-start-1 col-start-1 xl:col-start-2")}
+          className={clsx("flex px-10 gap-2.5 sm:gap-5 items-center shrink-0 border-b border-[#000]", "row-start-1 col-start-1 xl:col-start-2")}
           style={{
             paddingTop: "var(--layout-pad)",
             paddingBottom: "var(--layout-pad)"
@@ -338,16 +339,12 @@ export default function Layout(props: { children: ReactNode }) {
           </Sheet.Root>
         </Container>
         <Container>
-          <ScrollArea.Root className="h-full">
-            <ScrollArea.Viewport
-              ref={scroller}
-              className={clsx("row-start-1 row-span-2 col-start-1", "xl:col-start-2", "xl:mr-10 xl:pl-0", "rounded-t-4xl xl:rounded-t-[64px]")}
-            >
+          <ScrollArea.Root className="h-full bg-background-surface">
+            <ScrollArea.Viewport ref={scroller} className={clsx("row-start-1 row-span-2 col-start-1", "xl:col-start-2", "xl:pl-0")}>
               <Container
                 className={clsx(
                   "flex flex-col justify-between relative min-h-[calc(100vh-(var(--layout-pad)*2)-40px)]",
-                  "bg-background-surface xl:px-20 py-10 xl:py-20 gap-10 xl:gap-20",
-                  "rounded-t-4xl xl:rounded-t-[64px]"
+                  "xl:px-20 py-10 xl:py-20 gap-10 xl:gap-20"
                 )}
               >
                 <Container className="grow flex flex-col relative">{props.children}</Container>
@@ -359,7 +356,7 @@ export default function Layout(props: { children: ReactNode }) {
         </Container>
         <Container id="actions" className="fixed pointer-events-none bottom-0 left-0 w-full flex gap-5 p-10 z-20 justify-start">
           <Drawer.Root>
-            <Drawer.Trigger className="xl:hidden pointer-events-auto cursor-pointer transition-all rounded-full backdrop-blur bg-button hover:bg-button-hover active:bg-button-active shadow-base p-4 flex shrink-0 items-center justify-center">
+            <Drawer.Trigger className="xl:hidden pointer-events-auto cursor-pointer transition-all rounded-full bg-button-highlight hover:bg-button-highlight-hover active:bg-button-highlight-active p-4 flex shrink-0 items-center justify-center">
               <Icon symbol="apps" />
             </Drawer.Trigger>
             <Drawer.Content className="max-h-[80vh]">

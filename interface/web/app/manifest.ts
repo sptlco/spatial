@@ -6,7 +6,7 @@ export default function manifest(): MetadataRoute.Manifest {
   return {
     name: "Spatial",
     short_name: "Spatial",
-    start_url: "/",
+    start_url: "/platform",
     display: "standalone",
     background_color: "#ffffff",
     theme_color: "#000000",

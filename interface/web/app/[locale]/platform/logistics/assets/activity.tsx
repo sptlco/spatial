@@ -65,7 +65,7 @@ export const Activity = createElement<typeof Container>((props, ref) => {
       renderer: (metric) => {
         return (
           <Link href={`https://etherscan.io/tx/${metric.metadata.hash}`} target="_blank" className="text-inherit">
-            {highlight(`${metric.metadata.hash.slice(0, 10)}...${metric.metadata.hash.slice(-9)}`, keywords)}
+            {highlight(`${metric.metadata.hash.slice(0, 4)}...${metric.metadata.hash.slice(-4)}`, keywords)}
           </Link>
         );
       }

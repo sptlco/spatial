@@ -68,7 +68,7 @@ const pages: Page[] = [
   },
   {
     name: "navigation.platform.pages.identity",
-    path: `${BASE_URL}/users`,
+    path: `${BASE_URL}/identity`,
     icon: "person"
   },
   {
@@ -267,7 +267,7 @@ export default function Layout(props: { children: ReactNode }) {
         >
           <Container className="flex flex-col h-full gap-10">
             <Link href="/" className="relative flex items-center justify-center size-10 xl:w-16!">
-              <Logo mode="symbol" className="h-5 xl:h-auto xl:w-10 fill-foreground-primary" />
+              <Logo mode="symbol" className="w-10 fill-foreground-primary" />
             </Link>
             <UL className="hidden xl:flex grow flex-col items-center justify-center gap-6">
               {pages.map((page, i) => {
@@ -304,7 +304,7 @@ export default function Layout(props: { children: ReactNode }) {
         </Container>
         <Container
           id="title"
-          className="flex items-center xl:justify-center row-start-1 col-start-1 xl:col-start-2 col-span-2 px-10 pl-22 xl:p-0 xl:mr-10"
+          className="flex items-center xl:justify-center row-start-1 col-start-1 xl:col-start-2 col-span-2 px-10 pl-24 xl:p-0 xl:mr-10"
         />
         <Container
           className={clsx("flex px-10 gap-2.5 sm:gap-5 items-center shrink-0 border-b border-[#000]", "row-start-1 col-start-1 xl:col-start-2")}

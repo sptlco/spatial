@@ -146,22 +146,22 @@ export const Roles = () => {
           {[...Array(10)].map((_, i) => (
             <Table.Row key={i}>
               <Table.Cell>
-                <Span className="flex size-6 rounded-lg animate-pulse bg-background-surface" />
+                <Span className="flex size-6 rounded-lg animate-pulse bg-input" />
               </Table.Cell>
               <Table.Cell>
                 <Container className="flex items-center gap-5 w-full">
-                  <Span className="rounded-full shrink-0 size-12 animate-pulse bg-background-surface" />
+                  <Span className="rounded-full shrink-0 size-12 animate-pulse bg-input" />
                   <Container className="flex flex-col w-full gap-2">
-                    <Span className="w-2/3 h-4 rounded-full animate-pulse bg-background-surface" />
-                    <Span className="w-4/5 h-4 rounded-full animate-pulse bg-background-surface" />
+                    <Span className="w-2/3 h-4 rounded-full animate-pulse bg-input" />
+                    <Span className="w-4/5 h-4 rounded-full animate-pulse bg-input" />
                   </Container>
                 </Container>
               </Table.Cell>
               <Table.Cell className="hidden xl:table-cell">
-                <Span className="flex mx-auto w-20 h-4 rounded-full bg-background-surface animate-pulse" />
+                <Span className="flex mx-auto w-20 h-4 rounded-full bg-input animate-pulse" />
               </Table.Cell>
               <Table.Cell className="hidden xl:table-cell">
-                <Span className="flex mx-auto w-20 h-4 rounded-full bg-background-surface animate-pulse" />
+                <Span className="flex mx-auto w-20 h-4 rounded-full bg-input animate-pulse" />
               </Table.Cell>
               <Table.Cell />
             </Table.Row>

@@ -6,25 +6,7 @@ import { clsx } from "clsx";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { Fragment, useEffect, useMemo, useState } from "react";
 
-import {
-  Button,
-  Container,
-  createElement,
-  Dropdown,
-  Field,
-  Form,
-  H1,
-  Icon,
-  LI,
-  Pagination,
-  Separator,
-  Sheet,
-  Span,
-  UL,
-  useSheet
-} from "@sptlco/design";
-
-import { Application } from "@/elements";
+import { Button, Card, Container, createElement, Dropdown, Field, Form, H1, Icon, LI, Pagination, Separator, Sheet, Span, UL } from "@sptlco/design";
 
 import { View, views } from "./view";
 import { Filters } from "./filters";
@@ -47,7 +29,7 @@ type Shipment = {
   to: Address;
 };
 
-export const Shipments = createElement<typeof Application.Root>((props, ref) => {
+export const Shipments = createElement<typeof Card.Root>((props, ref) => {
   const shipments: Shipment[] = [
     {
       id: "SHP-1055",
@@ -165,8 +147,8 @@ export const Shipments = createElement<typeof Application.Root>((props, ref) => 
   };
 
   return (
-    <Application.Root {...props} ref={ref} title="Logistics">
-      <Application.Content className="px-10 xl:p-0">
+    <Card.Root {...props} ref={ref}>
+      <Card.Content className="flex flex-col w-full px-10 xl:p-0 gap-10 xl:gap-20">
         <Container className="flex items-center justify-between">
           <H1 className="text-2xl font-extrabold">Shipments</H1>
           <Dropdown.Root>
@@ -244,8 +226,8 @@ export const Shipments = createElement<typeof Application.Root>((props, ref) => 
         </Container>
         {render()}
         <Pagination pages={pages} page={page} className="self-center" onPageChange={navigate} />
-      </Application.Content>
-    </Application.Root>
+      </Card.Content>
+    </Card.Root>
   );
 });
 

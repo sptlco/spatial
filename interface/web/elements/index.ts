@@ -7,4 +7,5 @@ export * from "./locale";
 export * from "./mark";
 export * from "./navigation";
 export * from "./service";
+export * from "./tabs";
 export * from "./user";

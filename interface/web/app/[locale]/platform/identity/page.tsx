@@ -4,9 +4,8 @@
 
 import { Suspense } from "react";
 
-import { Application } from "@/elements";
+import { Application, Tabs } from "@/elements";
 
-import { Tabs } from "./tabs";
 import { Roles } from "./roles";
 import { Users } from "./users";
 
@@ -18,7 +17,6 @@ export default function Page() {
           <Tabs.List>
             <Tabs.Trigger value="users">Users</Tabs.Trigger>
             <Tabs.Trigger value="roles">Roles</Tabs.Trigger>
-            <Tabs.Trigger value="settings">Settings</Tabs.Trigger>
           </Tabs.List>
           <Tabs.Content value="users">
             <Suspense>
@@ -30,7 +28,6 @@ export default function Page() {
               <Roles />
             </Suspense>
           </Tabs.Content>
-          <Tabs.Content value="settings" />
         </Tabs.Root>
       </Application.Content>
     </Application.Root>

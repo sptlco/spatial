@@ -8,7 +8,7 @@ import { FormEvent, useEffect, useState } from "react";
 import { getDomain } from "tldts";
 import useSWR from "swr";
 
-import { Button, Container, createElement, Field, Form, Icon, Sheet, Span, Spinner, toast } from "@sptlco/design";
+import { Button, Container, createElement, Field, Form, Sheet, Span, Spinner, toast } from "@sptlco/design";
 
 export const Creator = createElement<typeof Sheet.Content, { onCreate?: (account: Account) => void }>(({ onCreate, ...props }, ref) => {
   const [name, setName] = useState("");
@@ -18,7 +18,7 @@ export const Creator = createElement<typeof Sheet.Content, { onCreate?: (account
   const [selectedRoles, setSelectedRoles] = useState<string[]>([]);
   const [creating, setCreating] = useState(false);
 
-  const roles = useSWR("platform/users/creator/roles", async (_) => {
+  const roles = useSWR("platform/identity/creator/roles", async (_) => {
     const response = await Spatial.roles.list();
 
     if (response.error) {

@@ -22,7 +22,7 @@ export const Editor = createElement<typeof Sheet.Content, { user: User; onUpdate
     }))
   );
 
-  const roles = useSWR("platform/users/editor/roles", async (_) => {
+  const roles = useSWR("platform/identity/editor/roles", async (_) => {
     const response = await Spatial.roles.list();
 
     if (response.error) {

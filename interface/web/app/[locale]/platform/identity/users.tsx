@@ -30,6 +30,7 @@ import {
   Form,
   Icon,
   LI,
+  Monogram,
   Pagination,
   Paragraph,
   Portal,
@@ -234,7 +235,7 @@ export const Users = () => {
 
   const { account } = useUser(useShallow((state) => ({ account: state.account })));
 
-  const users = useSWR("platform/identity/users/list", async (_) => {
+  const users = useSWR("platform/identity/identity/list", async (_) => {
     const response = await Spatial.users.list();
 
     if (response.error) {
@@ -244,7 +245,7 @@ export const Users = () => {
     return response.data;
   });
 
-  const roles = useSWR("platform/identity/users/roles/list", async (_) => {
+  const roles = useSWR("platform/identity/identity/roles/list", async (_) => {
     const response = await Spatial.roles.list();
 
     if (response.error) {
@@ -283,14 +284,14 @@ export const Users = () => {
           {[...Array(10)].map((_, i) => (
             <Table.Row key={i}>
               <Table.Cell>
-                <Span className="flex size-6 rounded-lg animate-pulse bg-background-surface" />
+                <Span className="flex size-6 rounded-lg animate-pulse bg-input" />
               </Table.Cell>
               <Table.Cell>
                 <Container className="flex items-center gap-5 w-full">
-                  <Span className="rounded-full shrink-0 size-12 animate-pulse bg-background-surface" />
+                  <Span className="rounded-full shrink-0 size-12 animate-pulse bg-input" />
                   <Container className="flex flex-col w-full gap-2">
-                    <Span className="w-2/3 h-4 rounded-full animate-pulse bg-background-surface" />
-                    <Span className="w-4/5 h-4 rounded-full animate-pulse bg-background-surface" />
+                    <Span className="w-2/3 h-4 rounded-full animate-pulse bg-input" />
+                    <Span className="w-4/5 h-4 rounded-full animate-pulse bg-input" />
                   </Container>
                 </Container>
               </Table.Cell>
@@ -300,14 +301,14 @@ export const Users = () => {
                     <LI
                       key={i}
                       className={clsx(
-                        "rounded-xl animate-pulse bg-background-surface text-sm font-bold inline-flex w-20 h-4 items-center justify-center px-5 py-2 gap-3"
+                        "rounded-xl animate-pulse bg-input text-sm font-bold inline-flex w-20 h-4 items-center justify-center px-5 py-2 gap-3"
                       )}
                     />
                   ))}
                 </UL>
               </Table.Cell>
               <Table.Cell className="hidden xl:table-cell">
-                <Span className="flex w-1/2 h-4 rounded-full animate-pulse bg-background-surface" />
+                <Span className="flex w-1/2 h-4 rounded-full animate-pulse bg-input" />
               </Table.Cell>
               <Table.Cell />
             </Table.Row>
@@ -540,16 +541,14 @@ export const Users = () => {
               </Button>
             )}
           </Form>
-          <Container className="flex items-center justify-center w-full xl:w-fit gap-2">
+          <Container className="flex items-center w-full xl:w-fit gap-2">
             {roles.isLoading || !roles.data ? (
               <Span className="w-32 h-4 rounded-full bg-background-surface animate-pulse" />
             ) : (
               <Combobox.Root multiple selection={filters} onSelect={filter}>
                 <Combobox.Trigger asChild>
-                  <Button intent="ghost" className={clsx("data-[state=open]:bg-button-ghost-active")}>
-                    <Span>Filter</Span>
-                    <Icon symbol="keyboard_arrow_down" />
-                    {filters.length > 0 && <Span className="size-2 bg-blue rounded-full flex" />}
+                  <Button intent="ghost" size="fit" className="group p-2 data-[state=open]:bg-button-ghost-active">
+                    <Icon symbol="filter_alt" className="group-data-[state=open]:fill" />
                   </Button>
                 </Combobox.Trigger>
                 <Combobox.Content>
@@ -561,7 +560,7 @@ export const Users = () => {
                           key={role.id}
                           value={role.name}
                           label={role.name}
-                          icon={<Span className="flex size-4 rounded-full" style={{ backgroundColor: role.color }} />}
+                          icon={<Monogram text={role.name} color={role.color} className="size-10" />}
                         />
                       ))}
                   </Combobox.List>
@@ -570,10 +569,8 @@ export const Users = () => {
             )}
             <Combobox.Root multiple selection={order.map((o) => o.replace(/-.*/, ""))} onSelect={toggleSort}>
               <Combobox.Trigger asChild>
-                <Button intent="ghost" className={clsx("data-[state=open]:bg-button-ghost-active")}>
-                  <Span>Sort</Span>
-                  <Icon symbol="keyboard_arrow_down" />
-                  {order.length > 0 && <Span className="size-2 bg-blue rounded-full flex" />}
+                <Button intent="ghost" size="fit" className="group p-2 data-[state=open]:bg-button-ghost-active">
+                  <Icon symbol="sort" className="group-data-[state=open]:fill" />
                 </Button>
               </Combobox.Trigger>
               <Combobox.Content>

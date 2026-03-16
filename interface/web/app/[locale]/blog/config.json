@@ -4,20 +4,20 @@
       "date": "2026-02-28",
       "topic": "Engineering",
       "slug": "hello",
-      "public": true,
+      "public": false,
       "name": "Hello, world!",
       "description": "A greeting to the world.",
-      "author": "Dakarai Cundiff",
+      "author": "Dakarai T. Cundiff",
       "media": "abc"
     },
     {
       "date": "2026-03-01",
       "topic": "Updates",
       "slug": "goodbye",
-      "public": true,
+      "public": false,
       "name": "Goodbye, world!",
       "description": "A farewell to the world.",
-      "author": "Dakarai Cundiff"
+      "author": "Dakarai T. Cundiff"
     }
   ]
 }

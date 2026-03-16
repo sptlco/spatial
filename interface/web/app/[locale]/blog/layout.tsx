@@ -15,7 +15,7 @@ export default function Layout(props: { children: ReactNode }) {
   useEffect(() => {}, []);
 
   return (
-    <ScrollArea.Root className="size-full" fade>
+    <ScrollArea.Root className="size-full">
       <ScrollArea.Viewport className="h-screen">{props.children}</ScrollArea.Viewport>
       <ScrollArea.Scrollbar />
     </ScrollArea.Root>

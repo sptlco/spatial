@@ -2,7 +2,7 @@
 
 import { MDXComponents } from "mdx/types";
 
-import { Paragraph } from "@sptlco/design";
+import { H1, H2, Paragraph } from "@sptlco/design";
 
 /**
  * Use custom Markdown components.
@@ -10,6 +10,8 @@ import { Paragraph } from "@sptlco/design";
  */
 export function useMDXComponents(): MDXComponents {
   return {
-    p: ({ children }) => <Paragraph className="xl:max-w-3xl">{children}</Paragraph>
+    h1: (props) => <H1 {...props} className="text-5xl xl:text-6xl" />,
+    h2: (props) => <H2 {...props} className="text-4xl xl:text-5xl" />,
+    p: (props) => <Paragraph {...props} />
   };
 }

@@ -61,3 +61,27 @@ export const Logo = createElement<"svg", LogoProps>((props, ref) => {
       );
   }
 });
+
+export const X = createElement<typeof Svg>((props, ref) => {
+  return (
+    <Svg {...props} ref={ref} className={clsx("fill-current", props.className)} viewBox=" 0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+      <Path d="m21.742 21.75-7.563-11.179 7.056-8.321h-2.456l-5.691 6.714-4.54-6.714h-6.189l7.29 10.776-7.399 8.724h2.456l6.035-7.118 4.818 7.118h6.191zm-14.003-17.932 11.071 16.364h-2.447l-11.073-16.364h2.447z" />
+    </Svg>
+  );
+});
+
+export const Facebook = createElement<typeof Svg>((props, ref) => {
+  return (
+    <Svg {...props} ref={ref} className={clsx("fill-current", props.className)} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 264 512">
+      <Path d="M76.7 512V283H0v-91h76.7v-71.7C76.7 42.4 124.3 0 193.8 0c33.3 0 61.9 2.5 70.2 3.6V85h-48.2c-37.8 0-45.1 18-45.1 44.3V192H256l-11.7 91h-73.6v229" />
+    </Svg>
+  );
+});
+
+export const LinkedIn = createElement<typeof Svg>((props, ref) => {
+  return (
+    <Svg {...props} ref={ref} className={clsx("fill-current", props.className)} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448.1 512">
+      <Path d="M100.3 448H7.4V148.9h92.9V448zM53.8 108.1C24.1 108.1 0 83.5 0 53.8S24.1 0 53.8 0s53.8 24.1 53.8 53.8-24.1 54.3-53.8 54.3zM448 448h-92.7V302.4c0-34.7-.7-79.2-48.3-79.2-48.3 0-55.7 37.7-55.7 76.7V448h-92.8V148.9h89.1v40.8h1.3c12.4-23.5 42.7-48.3 87.9-48.3 94 0 111.3 61.9 111.3 142.3V448h-.1z" />
+    </Svg>
+  );
+});

@@ -25,7 +25,7 @@ export const Header = createElement<typeof Container, { metadata: Metadata }>(({
           <Span className="inline-flex mx-2.5">/</Span>
           <Span className="inline-flex">{metadata.topic}</Span>
         </Span>
-        <H1 className="text-3xl xl:text-5xl text-center font-extrabold">{metadata.name}</H1>
+        <H1 className="text-5xl xl:text-6xl text-center font-semibold">{metadata.name}</H1>
         {metadata.media && <Container className="flex aspect-2/1 w-full bg-background-subtle rounded-2xl xl:rounded-4xl" />}
         <Span className="text-foreground-tertiary font-medium text-xs xl:text-sm">
           <Span>{metadata.author}</Span>

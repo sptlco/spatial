@@ -197,3 +197,7 @@
   background-image: radial-gradient(circle, var(--color-line-faint) 1px, transparent 1px);
   background-size: 16px 16px;
 }
+
+* {
+  scroll-margin-top: 40px;
+}

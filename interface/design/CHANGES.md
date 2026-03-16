@@ -1,5 +1,14 @@
 # Changelog
 
+## [1.20.0](https://github.com/sptlco/spatial/compare/spatial-interface-design-1.19.0...spatial-interface-design-1.20.0) (2026-03-16)
+
+
+### Features
+
+* Abandoned select in favor of combobox ([#137](https://github.com/sptlco/spatial/issues/137)) ([57fc288](https://github.com/sptlco/spatial/commit/57fc288812dd72bc2cd11fa12f4506ba175d2af7))
+* Added a shipment editor ([#137](https://github.com/sptlco/spatial/issues/137)) ([7f78552](https://github.com/sptlco/spatial/commit/7f785525707fa8bd9b98e1b0cb75bb3b16484afc))
+* Cleaned up the interface ([#137](https://github.com/sptlco/spatial/issues/137)) ([e837261](https://github.com/sptlco/spatial/commit/e83726138237f4ad34c009159cfb6dc339193485))
+
 ## [1.19.0](https://github.com/sptlco/spatial/compare/spatial-interface-design-1.18.0...spatial-interface-design-1.19.0) (2026-03-09)
 
 

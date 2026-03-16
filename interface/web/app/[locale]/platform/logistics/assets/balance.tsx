@@ -158,10 +158,14 @@ export const Balance = createElement<typeof Container, { period: keyof typeof PE
 
                   <Tooltip
                     content={() => null}
-                    cursor={{
-                      stroke: "var(--color-line-strong)",
-                      strokeWidth: 1
-                    }}
+                    cursor={
+                      point
+                        ? {
+                            stroke: "var(--color-line-strong)",
+                            strokeWidth: 1
+                          }
+                        : undefined
+                    }
                   />
                 </AreaChart>
               </Container>

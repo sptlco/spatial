@@ -12,6 +12,7 @@ using Nethereum.Web3;
 using Nethereum.Web3.Accounts;
 using Spatial.Helpers;
 using Spatial.Logistics.Helpers;
+using System.Collections.Concurrent;
 using System.Numerics;
 
 namespace Spatial.Logistics;
@@ -21,6 +22,8 @@ namespace Spatial.Logistics;
 /// </summary>
 public class Ethereum
 {
+    private static readonly ConcurrentDictionary<string, string> _contracts = [];
+
     private readonly Account _account;
     private readonly Web3 _web3;
 
@@ -34,6 +37,11 @@ public class Ethereum
     /// The application's <see cref="Nethereum.Web3.Accounts.Account"/>.
     /// </summary>
     public Account Account => _account;
+
+    /// <summary>
+    /// The client's Web3 provider.
+    /// </summary>
+    public Web3 Web3 => _web3;
 
     /// <summary>
     /// Create a new <see cref="Ethereum"/> client.
@@ -194,7 +202,41 @@ public class Ethereum
         return await target.SendTransactionAndWaitForReceiptAsync(_account.Address, gas, wei, receiptRequestCancellationToken: null, input);
     }
 
+    /// <summary>
+    /// Estimate the gas required for a transaction.
+    /// </summary>
+    /// <param name="abi">The contract's ABI; a URL, file path, or source code.</param>
+    /// <param name="contract">The contract's address.</param>
+    /// <param name="function">The name of the function to send the transaction to.</param>
+    /// <param name="value">An amount of ETH to send along with the transaction.</param>
+    /// <param name="input">The transaction's input parameters.</param>
+    /// <returns>The transaction's estimated gas consumption.</returns>
+
+    public async Task<BigInteger> EstimateGasAsync(
+        string abi,
+        string contract,
+        string function,
+        BigInteger? value = null,
+        params object[] input)
+    {
+        var target = _web3.Eth.GetContract(Download(abi), contract).GetFunction(function);
+        var wei = value.HasValue ? new HexBigInteger(value.Value) : null;
+        var gas = await target.EstimateGasAsync(_account.Address, null, wei, input);
+
+        return gas.Value;
+    }
+
     private string Download(string contract)
+    {
+        if (_contracts.TryGetValue(contract, out var data))
+        {
+            return data;
+        }
+
+        return _contracts[contract] = DownloadImpl(contract);
+    }
+
+    private string DownloadImpl(string contract)
     {
         if (Uri.TryCreate(contract, UriKind.Absolute, out var uri) && (uri.Scheme == Uri.UriSchemeHttp || uri.Scheme == Uri.UriSchemeHttps))
         {

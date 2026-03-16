@@ -1,7 +1,7 @@
 // Copyright © Spatial Corporation. All rights reserved.
 
-using System.Numerics;
 using Nethereum.RPC.Eth.DTOs;
+using System.Numerics;
 
 namespace Spatial.Logistics.Helpers;
 
@@ -27,6 +27,30 @@ public static class Uniswap
         uint deadline)
     {
         return await Ethereum.CreateClient().SendTransactionAsync(
+            abi: Constants.ABI.UniswapV2Router02,
+            contract: Constants.Contracts.UniswapV2Router02,
+            function: Constants.Functions.SwapExactETHForTokens,
+            value: amountIn,
+            input: [amountOutMin, path, to, deadline]);
+    }
+
+    /// <summary>
+    /// Estimate the gas required to swap an exact amount of ETH for as many output tokens as possible, along the route determined by the <paramref name="path"/>.
+    /// </summary>
+    /// <param name="amountIn">The amount of ETH to send.</param>
+    /// <param name="amountOutMin">The minimum amount of output tokens that must be received for the transaction not to revert.</param>
+    /// <param name="path">An array of token addresses.</param>
+    /// <param name="to">Recipient of the output tokens.</param>
+    /// <param name="deadline">Unix timestamp after which the transaction will revert.</param>
+    /// <returns>The estimated gas units required to perform the transaction.</returns>
+    public static async Task<BigInteger> EstimateSwapExactETHForTokensGasAsync(
+        BigInteger amountIn,
+        BigInteger amountOutMin,
+        string[] path,
+        string to,
+        uint deadline)
+    {
+        return await Ethereum.CreateClient().EstimateGasAsync(
             abi: Constants.ABI.UniswapV2Router02,
             contract: Constants.Contracts.UniswapV2Router02,
             function: Constants.Functions.SwapExactETHForTokens,

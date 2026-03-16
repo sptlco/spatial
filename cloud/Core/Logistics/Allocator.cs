@@ -18,7 +18,28 @@ public class Allocator : BackgroundService
     private const string WETH = "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2";
 
     private readonly Ethereum _ethereum;
+    private readonly Cache _cache;
     private readonly AllocatorConfiguration _config;
+
+    private decimal _costBasis;
+
+    private DateTime _bought
+    {
+        get => _cache.TryGet<DateTime>("allocator", "bought", out var value) ? value : DateTime.MinValue;
+        set => _cache.Set("allocator", "bought", value);
+    }
+
+    private DateTime _sold
+    {
+        get => _cache.TryGet<DateTime>("allocator", "sold", out var value) ? value : DateTime.MinValue;
+        set => _cache.Set("allocator", "sold", value);
+    }
+
+    private DateTime _tookProfit
+    {
+        get => _cache.TryGet<DateTime>("allocator", "took-profit", out var value) ? value : DateTime.MinValue;
+        set => _cache.Set("allocator", "took-profit", value);
+    }
 
     /// <summary>
     /// Create a new <see cref="Allocator"/>.
@@ -26,6 +47,7 @@ public class Allocator : BackgroundService
     public Allocator()
     {
         _ethereum = Ethereum.CreateClient();
+        _cache = new Cache();
         _config = Configuration.Current.Ethereum.Allocator;
     }
 
@@ -35,6 +57,8 @@ public class Allocator : BackgroundService
     /// <param name="token">The service's <see cref="CancellationToken"/>.</param>
     protected override async Task ExecuteAsync(CancellationToken token)
     {
+        _costBasis = await ComputeCostBasisAsync(_tookProfit);
+
         while (!token.IsCancellationRequested)
         {
             var next = DateTime.UtcNow.AddMinutes(1);
@@ -52,24 +76,44 @@ public class Allocator : BackgroundService
                     var upper = _config.Exposure + _config.Bandwidth;
                     var lower = _config.Exposure - _config.Bandwidth;
 
-                    if (weight > upper)
+                    if (_config.Profit.Gain > 0 && _costBasis > 0)
                     {
-                        var target = value.Total * _config.Exposure;
-                        var excess = value.Ethereum - target;
+                        var gain = (price - _costBasis) / _costBasis;
 
-                        if (excess > _config.Minimum)
+                        if (gain >= _config.Profit.Gain && value.Ethereum > _config.Minimum && DateTime.UtcNow - _sold > _config.Cooldown)
+                        {
+                            INFO("Taking profit at {Gain:P2} gain. Cost basis: {CostBasis}, Current price: {Price}.", gain, _costBasis, price);
+
+                            var reserve = await EstimateGasReserveAsync(value.Ethereum, price);
+                            var amount = value.Ethereum - (reserve * price);
+
+                            await SellAsync(amount, price);
+
+                            _sold = DateTime.UtcNow;
+                            _tookProfit = DateTime.UtcNow;
+                            _costBasis = 0;
+                        }
+                    }
+                    else if (weight > upper)
+                    {
+                        var excess = value.Ethereum - (value.Total * _config.Exposure);
+
+                        if (excess > _config.Minimum && DateTime.UtcNow - _sold > _config.Cooldown)
                         {
                             await SellAsync(excess, price);
+
+                            _sold = DateTime.UtcNow;
                         }
                     }
                     else if (weight < lower)
                     {
-                        var target = value.Total * _config.Exposure;
-                        var deficit = target - value.Ethereum;
+                        var deficit = (value.Total * _config.Exposure) - value.Ethereum;
 
-                        if (deficit > _config.Minimum)
+                        if (deficit > _config.Minimum && DateTime.UtcNow - _bought > _config.Cooldown && DateTime.UtcNow - _tookProfit > _config.Profit.Cooldown)
                         {
                             await BuyAsync(deficit, price);
+
+                            _bought = DateTime.UtcNow;
                         }
                     }
                 }
@@ -96,7 +140,7 @@ public class Allocator : BackgroundService
 
     private async Task BuyAsync(decimal amount, decimal price)
     {
-        var amountIn = (BigInteger) (amount * (decimal) Math.Pow(10, 6));
+        var amountIn = (BigInteger)(amount * (decimal)Math.Pow(10, 6));
 
         if (amountIn <= 0)
         {
@@ -113,7 +157,7 @@ public class Allocator : BackgroundService
             var amountsOut = await Uniswap.GetAmountsOutAsync(amountIn, path);
             var slippage = (BigInteger)((1.0M - _config.Tolerance) * 10_000.0M);
             var amountOutMin = amountsOut.Last() * slippage / 10_000;
-            var deadline = (uint) DateTimeOffset.UtcNow.ToUnixTimeSeconds() + _config.Deadline * 60;
+            var deadline = (uint)DateTimeOffset.UtcNow.ToUnixTimeSeconds() + _config.Deadline * 60;
             var timestamp = Time.Now;
 
             var receipt = await Uniswap.SwapExactTokensForETHAsync(
@@ -126,7 +170,7 @@ public class Allocator : BackgroundService
             await Metric.WriteOneAsync(
                 name: "transaction",
                 value: new {
-                    Duration = (decimal) (Time.Now - timestamp),
+                    Duration = (decimal)(Time.Now - timestamp),
                     Volume = amount,
                     Price = price,
                     Gas = Web3.Convert.FromWei(receipt.GasUsed.Value * receipt.EffectiveGasPrice.Value) * price
@@ -136,7 +180,9 @@ public class Allocator : BackgroundService
                     Direction = "BUY",
                     Pair = "USDC/ETH"
                 });
-            
+
+            _costBasis = await ComputeCostBasisAsync(_tookProfit);
+
             INFO("Purchased {Volume} Ethereum at {Price}: {Transaction}", amount, price, receipt.TransactionHash);
         }
         catch (Exception e)
@@ -160,9 +206,9 @@ public class Allocator : BackgroundService
         try
         {
             var amountsOut = await Uniswap.GetAmountsOutAsync(amountIn, path);
-            var slippage = (BigInteger) ((1.0M - _config.Tolerance) * 10_000.0M);
+            var slippage = (BigInteger)((1.0M - _config.Tolerance) * 10_000.0M);
             var amountOutMin = amountsOut.Last() * slippage / 10_000;
-            var deadline = (uint) DateTimeOffset.UtcNow.ToUnixTimeSeconds() + _config.Deadline * 60;
+            var deadline = (uint)DateTimeOffset.UtcNow.ToUnixTimeSeconds() + _config.Deadline * 60;
             var timestamp = Time.Now;
 
             var receipt = await Uniswap.SwapExactETHForTokensAsync(
@@ -175,7 +221,7 @@ public class Allocator : BackgroundService
             await Metric.WriteOneAsync(
                 name: "transaction",
                 value: new {
-                    Duration = (decimal) (Time.Now - timestamp),
+                    Duration = (decimal)(Time.Now - timestamp),
                     Volume = -amount,
                     Price = price,
                     Gas = Web3.Convert.FromWei(receipt.GasUsed.Value * receipt.EffectiveGasPrice.Value) * price
@@ -192,6 +238,46 @@ public class Allocator : BackgroundService
         {
             ERROR(e, "Failed to sell Ethereum due to an unexpected error.");
         }
+    }
+
+    private static async Task<decimal> ComputeCostBasisAsync(DateTime since)
+    {
+        var transactions = await Metric.ReadAsync("transaction", from: since, resolution: "1m");
+        var buys = transactions.Where(t => t.Value.TryGetValue("Volume", out var value) && value > 0).ToList();
+
+        if (buys.Count == 0)
+        {
+            return 0;
+        }
+
+        var dollars = buys.Sum(t => t.Value["Volume"]);
+        var ethereum = buys.Sum(t => t.Value["Volume"] / t.Value["Price"]);
+
+        return ethereum > 0 ? dollars / ethereum : 0;
+    }
+
+    private async Task<decimal> EstimateGasReserveAsync(decimal amount, decimal price)
+    {
+        var amountIn = Web3.Convert.ToWei(amount / price);
+        
+        string[] path = [WETH, USDC];
+
+        var amountsOut = await Uniswap.GetAmountsOutAsync(amountIn, path);
+        var slippage = (BigInteger)((1.0M - _config.Tolerance) * 10_000.0M);
+        var amountOutMin = amountsOut.Last() * slippage / 10_000;
+        var deadline = (uint)DateTimeOffset.UtcNow.ToUnixTimeSeconds() + _config.Deadline * 60;
+
+        var units = await Uniswap.EstimateSwapExactETHForTokensGasAsync(
+            amountIn,
+            amountOutMin,
+            path,
+            _ethereum.Account.Address,
+            deadline);
+
+        var gasPrice = await _ethereum.Web3.Eth.GasPrice.SendRequestAsync();
+        var gasCost = Web3.Convert.FromWei(units * gasPrice.Value);
+
+        return gasCost * _config.Profit.Buffer;
     }
 }
 
@@ -234,4 +320,30 @@ public class AllocatorConfiguration
     /// The allocator's cooldown per order direction.
     /// </summary>
     public TimeSpan Cooldown { get; set; } = TimeSpan.FromMinutes(30);
+
+    /// <summary>
+    /// Configurable options for the allocator's take-profit mechanism.
+    /// </summary>
+    public ProfitConfiguration Profit { get; set; } = new ProfitConfiguration();
+
+    /// <summary>
+    /// Configurable options for the allocator's take-profit mechanism.
+    /// </summary>
+    public class ProfitConfiguration
+    {
+        /// <summary>
+        /// The unrealized gain at which to exit the entire ETH position. 0 = disabled.
+        /// </summary>
+        public decimal Gain { get; set; } = 0;
+
+        /// <summary>
+        /// How long to stay out of ETH after taking profit before rebalancing back in.
+        /// </summary>
+        public TimeSpan Cooldown { get; set; } = TimeSpan.FromHours(24);
+
+        /// <summary>
+        /// A multiplier applied to the estimated gas cost to account for price fluctuations.
+        /// </summary>
+        public decimal Buffer { get; set; } = 1.2M;
+    }
 }

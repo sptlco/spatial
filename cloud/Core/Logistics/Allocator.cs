@@ -155,9 +155,9 @@ public class Allocator : BackgroundService
             await _ethereum.ApproveAsync(USDC, Constants.Contracts.UniswapV2Router02, amountIn);
 
             var amountsOut = await Uniswap.GetAmountsOutAsync(amountIn, path);
-            var slippage = (BigInteger)((1.0M - _config.Tolerance) * 10_000.0M);
+            var slippage = (BigInteger) ((1.0M - _config.Tolerance) * 10_000.0M);
             var amountOutMin = amountsOut.Last() * slippage / 10_000;
-            var deadline = (uint)DateTimeOffset.UtcNow.ToUnixTimeSeconds() + _config.Deadline * 60;
+            var deadline = (uint) DateTimeOffset.UtcNow.ToUnixTimeSeconds() + _config.Deadline * 60;
             var timestamp = Time.Now;
 
             var receipt = await Uniswap.SwapExactTokensForETHAsync(
@@ -170,7 +170,7 @@ public class Allocator : BackgroundService
             await Metric.WriteOneAsync(
                 name: "transaction",
                 value: new {
-                    Duration = (decimal)(Time.Now - timestamp),
+                    Duration = (decimal) (Time.Now - timestamp),
                     Volume = amount,
                     Price = price,
                     Gas = Web3.Convert.FromWei(receipt.GasUsed.Value * receipt.EffectiveGasPrice.Value) * price
@@ -206,9 +206,9 @@ public class Allocator : BackgroundService
         try
         {
             var amountsOut = await Uniswap.GetAmountsOutAsync(amountIn, path);
-            var slippage = (BigInteger)((1.0M - _config.Tolerance) * 10_000.0M);
+            var slippage = (BigInteger) ((1.0M - _config.Tolerance) * 10_000.0M);
             var amountOutMin = amountsOut.Last() * slippage / 10_000;
-            var deadline = (uint)DateTimeOffset.UtcNow.ToUnixTimeSeconds() + _config.Deadline * 60;
+            var deadline = (uint) DateTimeOffset.UtcNow.ToUnixTimeSeconds() + _config.Deadline * 60;
             var timestamp = Time.Now;
 
             var receipt = await Uniswap.SwapExactETHForTokensAsync(
@@ -221,7 +221,7 @@ public class Allocator : BackgroundService
             await Metric.WriteOneAsync(
                 name: "transaction",
                 value: new {
-                    Duration = (decimal)(Time.Now - timestamp),
+                    Duration = (decimal) (Time.Now - timestamp),
                     Volume = -amount,
                     Price = price,
                     Gas = Web3.Convert.FromWei(receipt.GasUsed.Value * receipt.EffectiveGasPrice.Value) * price
@@ -263,9 +263,9 @@ public class Allocator : BackgroundService
         string[] path = [WETH, USDC];
 
         var amountsOut = await Uniswap.GetAmountsOutAsync(amountIn, path);
-        var slippage = (BigInteger)((1.0M - _config.Tolerance) * 10_000.0M);
+        var slippage = (BigInteger) ((1.0M - _config.Tolerance) * 10_000.0M);
         var amountOutMin = amountsOut.Last() * slippage / 10_000;
-        var deadline = (uint)DateTimeOffset.UtcNow.ToUnixTimeSeconds() + _config.Deadline * 60;
+        var deadline = (uint) DateTimeOffset.UtcNow.ToUnixTimeSeconds() + _config.Deadline * 60;
 
         var units = await Uniswap.EstimateSwapExactETHForTokensGasAsync(
             amountIn,

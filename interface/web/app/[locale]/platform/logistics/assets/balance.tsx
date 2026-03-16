@@ -130,8 +130,9 @@ export const Balance = createElement<typeof Container, { period: keyof typeof PE
                   data={chartData}
                   margin={{ left: 0, right: 0 }}
                   onMouseMove={hover}
-                  onTouchMove={hover} // <-- add this
-                  onTouchStart={hover} // <-- optional
+                  onTouchMove={hover}
+                  onTouchStart={hover}
+                  onTouchEnd={() => setPoint(null)}
                   onMouseLeave={() => setPoint(null)}
                 >
                   <defs>

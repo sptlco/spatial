@@ -57,7 +57,12 @@ public class Allocator : BackgroundService
     /// <param name="token">The service's <see cref="CancellationToken"/>.</param>
     protected override async Task ExecuteAsync(CancellationToken token)
     {
-        _costBasis = await ComputeCostBasisAsync(_tookProfit);
+        INFO("Allocator starting. Exposure: {Exposure:P2}, Bandwidth: {Bandwidth:P2}, Minimum: ${Minimum}, Cooldown: {Cooldown}.", _config.Exposure, _config.Bandwidth, _config.Minimum, _config.Cooldown);
+
+        if (_config.Profit.Gain > 0)
+        {
+            INFO("Take-profit enabled at {Gain:P2} gain. Post-profit cooldown: {Cooldown}.", _config.Profit.Gain, _config.Profit.Cooldown);
+        }
 
         while (!token.IsCancellationRequested)
         {
@@ -65,10 +70,19 @@ public class Allocator : BackgroundService
 
             try
             {
+                if (_costBasis == 0)
+                {
+                    _costBasis = await ComputeCostBasisAsync(_tookProfit);
+
+                    INFO("Computed cost basis: {CostBasis} (since {Since:u}).", _costBasis, _tookProfit);
+                }
+
                 var price = await _ethereum.GetPriceAsync(Constants.Contracts.CHAINLINK_ETH_USD, 8);
                 var ethereum = Web3.Convert.FromWei(await _ethereum.GetBalanceAsync());
                 var dollars = (decimal) (await _ethereum.GetERC20DetailsAsync(USDC))[USDC].Balance / (decimal) Math.Pow(10, 6);
                 var value = (Ethereum: ethereum * price, Total: (ethereum * price) + dollars);
+
+                INFO("Portfolio — ETH: {Ethereum:F6} (${EthValue:F2}), USDC: ${Dollars:F2}, Total: ${Total:F2}.", ethereum, value.Ethereum, dollars, value.Total);
 
                 if (value.Total > 0)
                 {
@@ -76,16 +90,23 @@ public class Allocator : BackgroundService
                     var upper = _config.Exposure + _config.Bandwidth;
                     var lower = _config.Exposure - _config.Bandwidth;
 
+                    INFO("Allocation — Weight: {Weight:P2}, Target: {Exposure:P2}, Range: [{Lower:P2}, {Upper:P2}], ETH price: {Price}.", weight, _config.Exposure, lower, upper, price);
+
                     if (_config.Profit.Gain > 0 && _costBasis > 0)
                     {
                         var gain = (price - _costBasis) / _costBasis;
+
+                        INFO("Take-profit check — Unrealized gain: {Gain:P2}, Target: {Target:P2}, Cost basis: {CostBasis}.", gain, _config.Profit.Gain, _costBasis);
 
                         if (gain >= _config.Profit.Gain && value.Ethereum > _config.Minimum && DateTime.UtcNow - _sold > _config.Cooldown)
                         {
                             INFO("Taking profit at {Gain:P2} gain. Cost basis: {CostBasis}, Current price: {Price}.", gain, _costBasis, price);
 
                             var reserve = await EstimateGasReserveAsync(value.Ethereum, price);
+                            INFO("Estimated gas reserve: {Reserve:F6} ETH (${ReserveUsd:F2}).", reserve, reserve * price);
+
                             var amount = value.Ethereum - (reserve * price);
+                            INFO("Selling {Amount:F6} ETH after reserving {Reserve:F6} ETH for gas.", amount, reserve);
 
                             await SellAsync(amount, price);
 
@@ -93,29 +114,76 @@ public class Allocator : BackgroundService
                             _tookProfit = DateTime.UtcNow;
                             _costBasis = 0;
                         }
+                        else if (gain >= _config.Profit.Gain)
+                        {
+                            if (value.Ethereum <= _config.Minimum)
+                            {
+                                INFO("Take-profit threshold met but ETH balance {Ethereum:F6} is below minimum {Minimum}. Skipping.", ethereum, _config.Minimum);
+                            }
+                            else
+                            {
+                                INFO("Take-profit threshold met but sell cooldown has not elapsed. Next eligible: {Next:u}.", _sold + _config.Cooldown);
+                            }
+                        }
                     }
                     else if (weight > upper)
                     {
                         var excess = value.Ethereum - (value.Total * _config.Exposure);
 
+                        INFO("Overweight — Excess: {Excess:F6} ETH (${ExcessUsd:F2}). Minimum: ${Minimum}.", excess, excess * price, _config.Minimum);
+
                         if (excess > _config.Minimum && DateTime.UtcNow - _sold > _config.Cooldown)
                         {
+                            INFO("Rebalancing down — Selling {Excess:F6} ETH (${ExcessUsd:F2}).", excess, excess * price);
+                            
                             await SellAsync(excess, price);
 
                             _sold = DateTime.UtcNow;
+                        }
+                        else if (excess <= _config.Minimum)
+                        {
+                            INFO("Excess ${ExcessUsd:F2} is below minimum trade size ${Minimum}. Skipping sell.", excess * price, _config.Minimum);
+                        }
+                        else
+                        {
+                            INFO("Sell cooldown has not elapsed. Next eligible: {Next:u}.", _sold + _config.Cooldown);
                         }
                     }
                     else if (weight < lower)
                     {
                         var deficit = (value.Total * _config.Exposure) - value.Ethereum;
 
+                        INFO("Underweight — Deficit: {Deficit:F6} ETH (${DeficitUsd:F2}). Minimum: ${Minimum}.", deficit, deficit * price, _config.Minimum);
+
                         if (deficit > _config.Minimum && DateTime.UtcNow - _bought > _config.Cooldown && DateTime.UtcNow - _tookProfit > _config.Profit.Cooldown)
                         {
+                            INFO("Rebalancing up — Buying {Deficit:F6} ETH (${DeficitUsd:F2}).", deficit, deficit * price);
+
                             await BuyAsync(deficit, price);
 
                             _bought = DateTime.UtcNow;
                         }
+                        else if (deficit <= _config.Minimum)
+                        {
+                            INFO("Deficit ${DeficitUsd:F2} is below minimum trade size ${Minimum}. Skipping buy.", deficit * price, _config.Minimum);
+                        }
+                        else if (DateTime.UtcNow - _bought <= _config.Cooldown)
+                        {
+                            INFO("Buy cooldown has not elapsed. Next eligible: {Next:u}.", _bought + _config.Cooldown);
+                        }
+                        else
+                        {
+                            INFO("Post-profit cooldown has not elapsed. Next eligible: {Next:u}.", _tookProfit + _config.Profit.Cooldown);
+                        }
                     }
+                    else
+                    {
+                        INFO("Portfolio is balanced. No action required.");
+                    }
+                }
+                else
+                {
+                    WARN("Total portfolio value is zero. Skipping allocation.");
                 }
 
                 await Metric.WriteOneAsync("ethereum", new {
@@ -136,6 +204,8 @@ public class Allocator : BackgroundService
                 await Task.Delay(TimeSpan.FromMilliseconds(Math.Max((next - DateTime.UtcNow).TotalMilliseconds, 10)), token);
             }
         }
+
+        INFO("Allocator stopped.");
     }
 
     private async Task BuyAsync(decimal amount, decimal price)
@@ -150,14 +220,21 @@ public class Allocator : BackgroundService
 
         string[] path = [USDC, WETH];
 
+        INFO("Initiating buy — Amount: ${Amount:F2} USDC, Expected ETH: {Eth:F6} at {Price}.", amount, amount / price, price);
+
         try
         {
+            INFO("Approving {Amount} USDC for Uniswap V2 Router.", amountIn);
+
             await _ethereum.ApproveAsync(USDC, Constants.Contracts.UniswapV2Router02, amountIn);
 
             var amountsOut = await Uniswap.GetAmountsOutAsync(amountIn, path);
             var slippage = (BigInteger) ((1.0M - _config.Tolerance) * 10_000.0M);
             var amountOutMin = amountsOut.Last() * slippage / 10_000;
             var deadline = (uint) DateTimeOffset.UtcNow.ToUnixTimeSeconds() + _config.Deadline * 60;
+
+            INFO("Swap params — AmountIn: {AmountIn} USDC, AmountOutMin: {AmountOutMin} wei, Slippage: {Tolerance:P2}, Deadline: +{Deadline}m.", amountIn, amountOutMin, _config.Tolerance, _config.Deadline);
+
             var timestamp = Time.Now;
 
             var receipt = await Uniswap.SwapExactTokensForETHAsync(
@@ -167,13 +244,15 @@ public class Allocator : BackgroundService
                 _ethereum.Account.Address,
                 deadline);
 
+            var gas = Web3.Convert.FromWei(receipt.GasUsed.Value * receipt.EffectiveGasPrice.Value);
+
             await Metric.WriteOneAsync(
                 name: "transaction",
                 value: new {
                     Duration = (decimal) (Time.Now - timestamp),
                     Volume = amount,
                     Price = price,
-                    Gas = Web3.Convert.FromWei(receipt.GasUsed.Value * receipt.EffectiveGasPrice.Value) * price
+                    Gas = gas * price
                 },
                 metadata: new {
                     Hash = receipt.TransactionHash,
@@ -183,7 +262,8 @@ public class Allocator : BackgroundService
 
             _costBasis = await ComputeCostBasisAsync(_tookProfit);
 
-            INFO("Purchased {Volume} Ethereum at {Price}: {Transaction}", amount, price, receipt.TransactionHash);
+            INFO("Purchased {Volume} Ethereum at {Price}: {Transaction} (Gas: {GasEth:F6} ETH / ${GasUsd:F2}, Duration: {Duration}ms).", amount, price, receipt.TransactionHash, gas, gas * price, (decimal)(Time.Now - timestamp));
+            INFO("Updated cost basis after buy: {CostBasis}.", _costBasis);
         }
         catch (Exception e)
         {
@@ -203,12 +283,17 @@ public class Allocator : BackgroundService
 
         string[] path = [WETH, USDC];
 
+        INFO("Initiating sell — ETH: {EthAmount:F6}, Expected USDC: ${Amount:F2} at {Price}.", amount / price, amount, price);
+
         try
         {
             var amountsOut = await Uniswap.GetAmountsOutAsync(amountIn, path);
             var slippage = (BigInteger) ((1.0M - _config.Tolerance) * 10_000.0M);
             var amountOutMin = amountsOut.Last() * slippage / 10_000;
             var deadline = (uint) DateTimeOffset.UtcNow.ToUnixTimeSeconds() + _config.Deadline * 60;
+
+            INFO("Swap params — AmountIn: {AmountIn} wei, AmountOutMin: {AmountOutMin} USDC, Slippage: {Tolerance:P2}, Deadline: +{Deadline}m.", amountIn, amountOutMin, _config.Tolerance, _config.Deadline);
+
             var timestamp = Time.Now;
 
             var receipt = await Uniswap.SwapExactETHForTokensAsync(
@@ -218,13 +303,15 @@ public class Allocator : BackgroundService
                 _ethereum.Account.Address,
                 deadline);
 
+            var gas = Web3.Convert.FromWei(receipt.GasUsed.Value * receipt.EffectiveGasPrice.Value);
+
             await Metric.WriteOneAsync(
                 name: "transaction",
                 value: new {
                     Duration = (decimal) (Time.Now - timestamp),
                     Volume = -amount,
                     Price = price,
-                    Gas = Web3.Convert.FromWei(receipt.GasUsed.Value * receipt.EffectiveGasPrice.Value) * price
+                    Gas = gas * price
                 },
                 metadata: new {
                     Hash = receipt.TransactionHash,
@@ -232,7 +319,7 @@ public class Allocator : BackgroundService
                     Pair = "ETH/USDC"
                 });
 
-            INFO("Sold {Volume} Ethereum at {Price}: {Transaction}", amount, price, receipt.TransactionHash);
+            INFO("Sold {Volume} Ethereum at {Price}: {Transaction} (Gas: {GasEth:F6} ETH / ${GasUsd:F2}, Duration: {Duration}ms).", amount, price, receipt.TransactionHash, gas, gas * price, (decimal)(Time.Now - timestamp));
         }
         catch (Exception e)
         {
@@ -247,13 +334,17 @@ public class Allocator : BackgroundService
 
         if (buys.Count == 0)
         {
+            INFO("No buy transactions found since {Since:u}. Cost basis is zero.", since);
             return 0;
         }
 
         var dollars = buys.Sum(t => t.Value["Volume"]);
         var ethereum = buys.Sum(t => t.Value["Volume"] / t.Value["Price"]);
+        var costBasis = ethereum > 0 ? dollars / ethereum : 0;
 
-        return ethereum > 0 ? dollars / ethereum : 0;
+        INFO("Cost basis computed from {Count} buy(s) since {Since:u} — ${Dollars:F2} for {Ethereum:F6} ETH = {CostBasis} per ETH.", buys.Count, since, dollars, ethereum, costBasis);
+
+        return costBasis;
     }
 
     private async Task<decimal> EstimateGasReserveAsync(decimal amount, decimal price)
@@ -276,8 +367,11 @@ public class Allocator : BackgroundService
 
         var gasPrice = await _ethereum.Web3.Eth.GasPrice.SendRequestAsync();
         var gasCost = Web3.Convert.FromWei(units * gasPrice.Value);
+        var reserve = gasCost * _config.Profit.Buffer;
 
-        return gasCost * _config.Profit.Buffer;
+        INFO("Gas estimate — Units: {Units}, Price: {GasPrice} wei, Cost: {GasCost:F6} ETH, Reserve (x{Buffer}): {Reserve:F6} ETH.", units, gasPrice.Value, gasCost, _config.Profit.Buffer, reserve);
+
+        return reserve;
     }
 }
 

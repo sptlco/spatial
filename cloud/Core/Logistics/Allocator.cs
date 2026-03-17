@@ -82,6 +82,11 @@ public class Allocator : BackgroundService
                 var dollars = (decimal) (await _ethereum.GetERC20DetailsAsync(USDC))[USDC].Balance / (decimal) Math.Pow(10, 6);
                 var value = (Ethereum: ethereum * price, Total: (ethereum * price) + dollars);
 
+                await Metric.WriteOneAsync("ethereum", new {
+                    Balance = ethereum,
+                    Price = price
+                });
+
                 INFO("Portfolio — ETH: {Ethereum:F6} (${EthValue:F2}), USDC: ${Dollars:F2}, Total: ${Total:F2}.", ethereum, value.Ethereum, dollars, value.Total);
 
                 if (value.Total > 0)
@@ -113,6 +118,8 @@ public class Allocator : BackgroundService
                             _sold = DateTime.UtcNow;
                             _tookProfit = DateTime.UtcNow;
                             _costBasis = 0;
+
+                            continue;
                         }
                         else if (gain >= _config.Profit.Gain)
                         {
@@ -126,7 +133,8 @@ public class Allocator : BackgroundService
                             }
                         }
                     }
-                    else if (weight > upper)
+                    
+                    if (weight > upper)
                     {
                         var excess = value.Ethereum - (value.Total * _config.Exposure);
 
@@ -185,11 +193,6 @@ public class Allocator : BackgroundService
                 {
                     WARN("Total portfolio value is zero. Skipping allocation.");
                 }
-
-                await Metric.WriteOneAsync("ethereum", new {
-                    Balance = ethereum,
-                    Price = price
-                });
             }
             catch (RpcClientUnknownException)
             {

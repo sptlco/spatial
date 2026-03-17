@@ -5,7 +5,6 @@
 import { Mark, LocaleSwitcher } from "@/elements";
 import { useUser } from "@/stores";
 import { SESSION_COOKIE_NAME, Spatial } from "@sptlco/client";
-import { clsx } from "clsx";
 import cookies from "js-cookie";
 import { useTranslations } from "next-intl";
 import { FormEvent, useEffect, useState } from "react";

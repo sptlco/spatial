@@ -1,0 +1,102 @@
+<table
+  width="100%"
+  style="background: #161616; font-size: 12px; line-height: 1.5; border-radius: 32px; max-width: 600px"
+  border="0"
+  cellpadding="0"
+  cellspacing="0"
+>
+  <tr>
+    <td style="padding: 40px">
+      <table border="0" cellpadding="0" cellspacing="0" width="100%">
+        <tr>
+          <td align="center" style="padding-bottom: 20px">
+            <table border="0" cellpadding="0" cellspacing="0">
+              <tr>
+                <td style="padding: 0 10px">
+                  <a href="#" style="display: inline-block">
+                    <img src="https://sptlco.com/assets/x.png" width="24" height="24" alt="X" border="0" style="display: block; opacity: 0.35" />
+                  </a>
+                </td>
+                <td style="padding: 0 10px">
+                  <a href="#" style="display: inline-block">
+                    <img
+                      src="https://sptlco.com/assets/instagram.png"
+                      width="24"
+                      height="24"
+                      alt="Instagram"
+                      border="0"
+                      style="display: block; opacity: 0.35"
+                    />
+                  </a>
+                </td>
+                <td style="padding: 0 10px">
+                  <a href="#" style="display: inline-block">
+                    <img
+                      src="https://sptlco.com/assets/youtube.png"
+                      width="24"
+                      height="24"
+                      alt="YouTube"
+                      border="0"
+                      style="display: block; opacity: 0.35"
+                    />
+                  </a>
+                </td>
+                <td style="padding: 0 10px">
+                  <a href="#" style="display: inline-block">
+                    <img
+                      src="https://sptlco.com/assets/linkedin.png"
+                      width="24"
+                      height="24"
+                      alt="LinkedIn"
+                      border="0"
+                      style="display: block; opacity: 0.35"
+                    />
+                  </a>
+                </td>
+                <td style="padding: 0 10px">
+                  <a href="#" style="display: inline-block">
+                    <img
+                      src="https://sptlco.com/assets/github.png"
+                      width="24"
+                      height="24"
+                      alt="GitHub"
+                      border="0"
+                      style="display: block; opacity: 0.35"
+                    />
+                  </a>
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+      </table>
+      <table border="0" cellpadding="0" cellspacing="0" width="100%">
+        <tr>
+          <td align="center">
+            <a href="#" style="color: #0364ff; text-decoration: none">Sign in to Spatial</a>
+            <span style="color: rgba(255, 255, 255, 0.4); padding: 0 6px">•</span>
+            <a href="#" style="color: #0364ff; text-decoration: none">Unsubscribe</a>
+          </td>
+        </tr>
+      </table>
+      <table border="0" cellpadding="0" cellspacing="0" width="100%">
+        <tr>
+          <td align="center">
+            <a href="#" style="color: #0364ff; text-decoration: none">Policy</a>
+            <span style="color: rgba(255, 255, 255, 0.4); padding: 0 6px">•</span>
+            <a href="#" style="color: #0364ff; text-decoration: none">Contact us</a>
+          </td>
+        </tr>
+      </table>
+      <table border="0" cellpadding="0" cellspacing="0" width="100%">
+        <tr>
+          <td align="center" style="padding-top: 20px; color: rgba(255, 255, 255, 0.4)">
+            <span>Spatial Corporation</span><br />
+            <span>240 2nd Ave S Suite 201K</span><br />
+            <span>Seattle, WA 98104</span>
+          </td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+</table>

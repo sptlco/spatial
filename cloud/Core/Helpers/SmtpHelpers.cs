@@ -33,26 +33,67 @@ public static class Smtp
     /// Render an email template.
     /// </summary>
     /// <param name="subject">The email's subject.</param>
+    /// <param name="preview">The email's preview text.</param>
     /// <param name="template">The email template to render.</param>
     /// <param name="parameters">The email template's parameters.</param>
     /// <param name="recipients">The email's recipients.</param>
-    public static void Render(string subject, string template, Dictionary<string, object> parameters, params string[] recipients)
+    public static void Send(string subject, string preview, string template, Dictionary<string, object> parameters, params string[] recipients)
     {
         var config = Application.Current.Configuration;
         var message = CreateMessage(subject, config);
 
+        parameters["preview"] = preview;
+
         message.IsBodyHtml = true;
-        message.Body = File.ReadAllText(Path.Join(AppDomain.CurrentDomain.BaseDirectory, "emails", $"{template}.html"));
+        message.Body = Render(template, parameters);
+
+        Send(message, recipients);
+    }
+
+    private static string Render(string template, Dictionary<string, object> parameters)
+    {
+        var text = File.ReadAllText(Path.Join(AppDomain.CurrentDomain.BaseDirectory, "emails", $"{template}.mail"));
+        var body = Resolve(text);
 
         foreach (var parameter in parameters)
         {
-            message.Body = Regex.Replace(
-                input: message.Body, 
-                pattern: @"\$\{\s*inputs\." + Regex.Escape(parameter.Key) + @"\s*\}", 
+            body = Regex.Replace(
+                input: body, 
+                pattern: @"\$\{\s*parameters\." + Regex.Escape(parameter.Key) + @"\s*\}", 
                 replacement: parameter.Value?.ToString() ?? string.Empty);
         }
 
-        Send(message, recipients);
+        return body;
+    }
+
+    private static string Resolve(string body, HashSet<string>? visited = null)
+    {
+        visited ??= new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+
+        return Regex.Replace(
+            input: body,
+            pattern: @"\$\{\s*templates\.(\w+)\s*\}",
+            evaluator: (match) => {
+                var name = match.Groups[1].Value;
+
+                if (!visited.Add(name))
+                {
+                    throw new InvalidOperationException($"Circular template reference detected: '{name}'.");
+                }
+
+                var path = Path.Join(AppDomain.CurrentDomain.BaseDirectory, "emails", $"{name}.mail");
+
+                if (!File.Exists(path))
+                {
+                    throw new FileNotFoundException($"Template '{name}' not found.", path);
+                }
+
+                var nested = Resolve(File.ReadAllText(path), visited);
+
+                visited.Remove(name);
+
+                return nested;
+            });
     }
 
     private static void Send(MailMessage message, params string[] recipients)

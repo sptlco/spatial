@@ -31,13 +31,14 @@ public class KeyController : Controller
 
         key.Store();
 
-        Smtp.Render(
-            subject: $"Your key code is {key.Code}", 
-            template: "key",
+        Smtp.Send(
+            recipients: key.Owner,
+            subject: $"Complete your access request",
+            preview: "Your key is ready — use it to complete your request.", 
+            template: "access",
             parameters: new Dictionary<string, object> {
                 ["code"] = key.Code
-            },
-            recipients: key.Owner);
+            });
 
         return Task.CompletedTask;
     }

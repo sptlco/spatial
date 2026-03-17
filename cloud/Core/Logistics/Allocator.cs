@@ -74,7 +74,7 @@ public class Allocator : BackgroundService
                 {
                     _costBasis = await ComputeCostBasisAsync(_tookProfit);
 
-                    INFO("Computed cost basis: {CostBasis} (since {Since:u}).", _costBasis, _tookProfit);
+                    INFO("Computed cost basis: ${CostBasis:F2} (since {Since:u}).", _costBasis, _tookProfit);
                 }
 
                 var price = await _ethereum.GetPriceAsync(Constants.Contracts.CHAINLINK_ETH_USD, 8);
@@ -95,23 +95,23 @@ public class Allocator : BackgroundService
                     var upper = _config.Exposure + _config.Bandwidth;
                     var lower = _config.Exposure - _config.Bandwidth;
 
-                    INFO("Allocation — Weight: {Weight:P2}, Target: {Exposure:P2}, Range: [{Lower:P2}, {Upper:P2}], ETH price: {Price}.", weight, _config.Exposure, lower, upper, price);
+                    INFO("Allocation — Weight: {Weight:P2}, Target: {Exposure:P2}, Range: [{Lower:P2}, {Upper:P2}], ETH price: ${Price:F2}.", weight, _config.Exposure, lower, upper, price);
 
                     if (_config.Profit.Gain > 0 && _costBasis > 0)
                     {
                         var gain = (price - _costBasis) / _costBasis;
 
-                        INFO("Take-profit check — Unrealized gain: {Gain:P2}, Target: {Target:P2}, Cost basis: {CostBasis}.", gain, _config.Profit.Gain, _costBasis);
+                        INFO("Take-profit check — Unrealized gain: {Gain:P2}, Target: {Target:P2}, Cost basis: ${CostBasis:F2}.", gain, _config.Profit.Gain, _costBasis);
 
                         if (gain >= _config.Profit.Gain && value.Ethereum > _config.Minimum && DateTime.UtcNow - _sold > _config.Cooldown)
                         {
-                            INFO("Taking profit at {Gain:P2} gain. Cost basis: {CostBasis}, Current price: {Price}.", gain, _costBasis, price);
+                            INFO("Taking profit at {Gain:P2} gain. Cost basis: ${CostBasis:F2}, Current price: ${Price:F2}.", gain, _costBasis, price);
 
                             var reserve = await EstimateGasReserveAsync(value.Ethereum, price);
                             INFO("Estimated gas reserve: {Reserve:F6} ETH (${ReserveUsd:F2}).", reserve, reserve * price);
 
                             var amount = value.Ethereum - (reserve * price);
-                            INFO("Selling {Amount:F6} ETH after reserving {Reserve:F6} ETH for gas.", amount, reserve);
+                            INFO("Selling ${Amount:F2} after reserving {Reserve:F6} ETH (${ReserveUsd:F2}) for gas.", amount, reserve, reserve * price);
 
                             await SellAsync(amount, price);
 
@@ -138,11 +138,11 @@ public class Allocator : BackgroundService
                     {
                         var excess = value.Ethereum - (value.Total * _config.Exposure);
 
-                        INFO("Overweight — Excess: {Excess:F6} ETH (${ExcessUsd:F2}). Minimum: ${Minimum}.", excess, excess * price, _config.Minimum);
+                        INFO("Overweight — Excess: ${Excess:F2}. Minimum: ${Minimum}.", excess, _config.Minimum);
 
                         if (excess > _config.Minimum && DateTime.UtcNow - _sold > _config.Cooldown)
                         {
-                            INFO("Rebalancing down — Selling {Excess:F6} ETH (${ExcessUsd:F2}).", excess, excess * price);
+                            INFO("Rebalancing down — Selling ${Excess:F2}.", excess);
                             
                             await SellAsync(excess, price);
 
@@ -150,7 +150,7 @@ public class Allocator : BackgroundService
                         }
                         else if (excess <= _config.Minimum)
                         {
-                            INFO("Excess ${ExcessUsd:F2} is below minimum trade size ${Minimum}. Skipping sell.", excess * price, _config.Minimum);
+                            INFO("Excess ${Excess:F2} is below minimum trade size ${Minimum}. Skipping sell.", excess, _config.Minimum);
                         }
                         else
                         {
@@ -161,11 +161,11 @@ public class Allocator : BackgroundService
                     {
                         var deficit = (value.Total * _config.Exposure) - value.Ethereum;
 
-                        INFO("Underweight — Deficit: {Deficit:F6} ETH (${DeficitUsd:F2}). Minimum: ${Minimum}.", deficit, deficit * price, _config.Minimum);
+                        INFO("Underweight — Deficit: ${Deficit:F2}. Minimum: ${Minimum}.", deficit, _config.Minimum);
 
                         if (deficit > _config.Minimum && DateTime.UtcNow - _bought > _config.Cooldown && DateTime.UtcNow - _tookProfit > _config.Profit.Cooldown)
                         {
-                            INFO("Rebalancing up — Buying {Deficit:F6} ETH (${DeficitUsd:F2}).", deficit, deficit * price);
+                            INFO("Rebalancing up — Buying ${Deficit:F2}.", deficit);
 
                             await BuyAsync(deficit, price);
 
@@ -173,7 +173,7 @@ public class Allocator : BackgroundService
                         }
                         else if (deficit <= _config.Minimum)
                         {
-                            INFO("Deficit ${DeficitUsd:F2} is below minimum trade size ${Minimum}. Skipping buy.", deficit * price, _config.Minimum);
+                            INFO("Deficit ${Deficit:F2} is below minimum trade size ${Minimum}. Skipping buy.", deficit, _config.Minimum);
                         }
                         else if (DateTime.UtcNow - _bought <= _config.Cooldown)
                         {
@@ -223,11 +223,11 @@ public class Allocator : BackgroundService
 
         string[] path = [USDC, WETH];
 
-        INFO("Initiating buy — Amount: ${Amount:F2} USDC, Expected ETH: {Eth:F6} at {Price}.", amount, amount / price, price);
+        INFO("Initiating buy — Amount: ${Amount:F2} USDC, Expected ETH: {Eth:F6} at ${Price:F2}.", amount, amount / price, price);
 
         try
         {
-            INFO("Approving {Amount} USDC for Uniswap V2 Router.", amountIn);
+            INFO("Approving {AmountIn} (${Amount:F2}) USDC for Uniswap V2 Router.", amountIn, amount);
 
             await _ethereum.ApproveAsync(USDC, Constants.Contracts.UniswapV2Router02, amountIn);
 
@@ -236,7 +236,8 @@ public class Allocator : BackgroundService
             var amountOutMin = amountsOut.Last() * slippage / 10_000;
             var deadline = (uint) DateTimeOffset.UtcNow.ToUnixTimeSeconds() + _config.Deadline * 60;
 
-            INFO("Swap params — AmountIn: {AmountIn} USDC, AmountOutMin: {AmountOutMin} wei, Slippage: {Tolerance:P2}, Deadline: +{Deadline}m.", amountIn, amountOutMin, _config.Tolerance, _config.Deadline);
+            INFO("Swap params — AmountIn: {AmountIn} (${Amount:F2}), AmountOutMin: {AmountOutMin} ({AmountOutMinEth:F6} ETH), Slippage: {Tolerance:P2}, Deadline: +{Deadline}m.",
+                amountIn, amount, amountOutMin, Web3.Convert.FromWei(amountOutMin), _config.Tolerance, _config.Deadline);
 
             var timestamp = Time.Now;
 
@@ -265,8 +266,8 @@ public class Allocator : BackgroundService
 
             _costBasis = await ComputeCostBasisAsync(_tookProfit);
 
-            INFO("Purchased {Volume} Ethereum at {Price}: {Transaction} (Gas: {GasEth:F6} ETH / ${GasUsd:F2}, Duration: {Duration}ms).", amount, price, receipt.TransactionHash, gas, gas * price, (decimal)(Time.Now - timestamp));
-            INFO("Updated cost basis after buy: {CostBasis}.", _costBasis);
+            INFO("Purchased {Eth:F6} ETH (${Amount:F2}) at ${Price:F2}: {Transaction} (Gas: {GasEth:F6} ETH / ${GasUsd:F2}, Duration: {Duration}ms).", amount / price, amount, price, receipt.TransactionHash, gas, gas * price, (decimal)(Time.Now - timestamp));
+            INFO("Updated cost basis after buy: ${CostBasis:F2}.", _costBasis);
         }
         catch (Exception e)
         {
@@ -286,7 +287,7 @@ public class Allocator : BackgroundService
 
         string[] path = [WETH, USDC];
 
-        INFO("Initiating sell — ETH: {EthAmount:F6}, Expected USDC: ${Amount:F2} at {Price}.", amount / price, amount, price);
+        INFO("Initiating sell — ETH: {EthAmount:F6} (${Amount:F2}) at ${Price:F2}.", amount / price, amount, price);
 
         try
         {
@@ -295,7 +296,7 @@ public class Allocator : BackgroundService
             var amountOutMin = amountsOut.Last() * slippage / 10_000;
             var deadline = (uint) DateTimeOffset.UtcNow.ToUnixTimeSeconds() + _config.Deadline * 60;
 
-            INFO("Swap params — AmountIn: {AmountIn} wei, AmountOutMin: {AmountOutMin} USDC, Slippage: {Tolerance:P2}, Deadline: +{Deadline}m.", amountIn, amountOutMin, _config.Tolerance, _config.Deadline);
+            INFO("Swap params — AmountIn: {AmountIn} ({AmountInEth:F6} ETH), AmountOutMin: {AmountOutMin} (${AmountOutMinUsd:F2}), Slippage: {Tolerance:P2}, Deadline: +{Deadline}m.", amountIn, Web3.Convert.FromWei(amountIn), amountOutMin, (decimal)amountOutMin / (decimal)Math.Pow(10, 6), _config.Tolerance, _config.Deadline);
 
             var timestamp = Time.Now;
 
@@ -322,7 +323,7 @@ public class Allocator : BackgroundService
                     Pair = "ETH/USDC"
                 });
 
-            INFO("Sold {Volume} Ethereum at {Price}: {Transaction} (Gas: {GasEth:F6} ETH / ${GasUsd:F2}, Duration: {Duration}ms).", amount, price, receipt.TransactionHash, gas, gas * price, (decimal)(Time.Now - timestamp));
+            INFO("Sold {Eth:F6} ETH (${Amount:F2}) at ${Price:F2}: {Transaction} (Gas: {GasEth:F6} ETH / ${GasUsd:F2}, Duration: {Duration}ms).", amount / price, amount, price, receipt.TransactionHash, gas, gas * price, (decimal)(Time.Now - timestamp));
         }
         catch (Exception e)
         {
@@ -345,7 +346,7 @@ public class Allocator : BackgroundService
         var ethereum = buys.Sum(t => t.Value["Volume"] / t.Value["Price"]);
         var costBasis = ethereum > 0 ? dollars / ethereum : 0;
 
-        INFO("Cost basis computed from {Count} buy(s) since {Since:u} — ${Dollars:F2} for {Ethereum:F6} ETH = {CostBasis} per ETH.", buys.Count, since, dollars, ethereum, costBasis);
+        INFO("Cost basis computed from {Count} buy(s) since {Since:u} — ${Dollars:F2} for {Ethereum:F6} ETH = ${CostBasis:F2} per ETH.", buys.Count, since, dollars, ethereum, costBasis);
 
         return costBasis;
     }

@@ -1,6 +1,5 @@
 // Copyright © Spatial Corporation. All rights reserved.
 
-using Spatial.Compute.Acceleration;
 using Spatial.Compute.Commands;
 using Spatial.Structures;
 using System.Diagnostics.CodeAnalysis;
@@ -80,6 +79,22 @@ internal class Agent : IDisposable
                 continue;
             }
 
+            // Spin briefly before sleeping — catches follow-up work
+            // without kernel wake-up cost.
+
+            var spin = new SpinWait();
+
+            while (!spin.NextSpinWillYield)
+            {
+                if (Fetch(out job))
+                {
+                    Execute(job);
+                    goto next;
+                }
+
+                spin.SpinOnce();
+            }
+
             try
             {
                 _signal.Wait(_cts.Token);
@@ -88,8 +103,10 @@ internal class Agent : IDisposable
             {
                 break;
             }
-            
+
             _signal.Reset();
+
+            next:;
         }
     }
 
@@ -152,7 +169,7 @@ internal class Agent : IDisposable
         }
         finally
         {
-            _computer.Finalize(job.Id);
+            _computer.Finalize(job);
         }
     }
 

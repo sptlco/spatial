@@ -44,7 +44,7 @@ public sealed class ParallelForJob : ParallelJob
         return strategy switch {
             BatchStrategy.None => iterations,
             BatchStrategy.Preferred => Math.Max(1, preference),
-            BatchStrategy.Auto => Math.Max(1, iterations / (Environment.ProcessorCount * 8)),
+            BatchStrategy.Auto => Math.Max(1, iterations / Environment.ProcessorCount),
             _ => Math.Max(1, preference)
         };
     }
@@ -67,10 +67,13 @@ internal sealed class BatchJob : CommandJob
     /// <param name="end">The end of the job's iteration range.</param>
     public BatchJob(ParallelForJob parent, int start, int end)
     {
-        _parent = parent;
-        _start = start;
-        _end = end;
+        Reset(parent, start, end);
     }
+
+    /// <summary>
+    /// No-op. Batch jobs are not tracked globally.
+    /// </summary>
+    public override string Id { get; internal set; } = string.Empty;
 
     /// <summary>
     /// The size of the <see cref="BatchJob"/>.
@@ -109,5 +112,18 @@ internal sealed class BatchJob : CommandJob
                 throw;
             }
         }
+    }
+
+    /// <summary>
+    /// Reset the <see cref="BatchJob"/>.
+    /// </summary>
+    /// <param name="parent">The job's parent.</param>
+    /// <param name="start">The job's starting index.</param>
+    /// <param name="end">The job's ending index.</param>
+    public void Reset(ParallelForJob parent, int start, int end)
+    {
+        _parent = parent;
+        _start = start;
+        _end = end;
     }
 }

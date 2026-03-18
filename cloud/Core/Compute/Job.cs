@@ -20,7 +20,7 @@ public abstract partial class Job : IDisposable
     /// <summary>
     /// The job's identification number.
     /// </summary>
-    public string Id { get; internal set; } = Guid.NewGuid().ToString("N");
+    public virtual string Id { get; internal set; } = Guid.NewGuid().ToString("N");
 
     /// <summary>
     /// The maximum <see cref="Time"/> the <see cref="Job"/> is allowed to run before timing out.
@@ -55,7 +55,7 @@ public abstract partial class Job : IDisposable
     /// <summary>
     /// Configurable options for the <see cref="Job"/>.
     /// </summary>
-    internal JobOptions Options { get; set; } = new();
+    public JobOptions Options { get; set; } = JobOptions.CreateDefault();
 
     /// <summary>
     /// Create a new <see cref="Accelerator"/>.
@@ -81,7 +81,7 @@ public abstract partial class Job : IDisposable
     /// <param name="options">Configurable options for the job.</param>
     public static Handle ParallelFor<T>(IEnumerable<T> collection, Action<T> function, JobOptions? options = default)
     {
-        return ParallelFor(collection.Count(), 0, (i) => function(collection.ElementAt(i)), options ?? new());
+        return ParallelFor(collection.Count(), 0, (i) => function(collection.ElementAt(i)), options ?? JobOptions.Default);
     }
 
     /// <summary>
@@ -92,7 +92,7 @@ public abstract partial class Job : IDisposable
     /// <param name="options">Configurable options for the job.</param>
     public static Handle ParallelFor<T>(IReadOnlyCollection<T> collection, Action<T> function, JobOptions? options = default)
     {
-        return ParallelFor(collection.Count, 0, (i) => function(collection.ElementAt(i)), options ?? new());
+        return ParallelFor(collection.Count, 0, (i) => function(collection.ElementAt(i)), options ?? JobOptions.Default);
     }
 
     /// <summary>
@@ -106,7 +106,7 @@ public abstract partial class Job : IDisposable
         return ParallelFor(
             iterations: collection.Count,
             batchSize: 0,
-            options: options ?? new(),
+            options: options ?? JobOptions.Default,
             function: (i) => {
                 var (key, value) = collection.ElementAt(i);
                 function(key, value);
@@ -116,12 +116,12 @@ public abstract partial class Job : IDisposable
     /// <summary>
     /// Dispatch a parallel for job.
     /// </summary>
-    /// <param name="count">The number of iterations to perform.</param>
+    /// <param name="iterations">The number of iterations to perform.</param>
     /// <param name="function">The function to execute.</param>
     /// <param name="options">Configurable options for the job.</param>
-    public static Handle ParallelFor(int count, Action<int> function, JobOptions? options = default)
+    public static Handle ParallelFor(int iterations, Action<int> function, JobOptions? options = default)
     {
-        return ParallelFor(count, 0, function, options ?? new());
+        return ParallelFor(iterations, 0, function, options ?? JobOptions.Default);
     }
 
     /// <summary>
@@ -149,7 +149,7 @@ public abstract partial class Job : IDisposable
     /// <param name="options">Configurable options for the job.</param>
     public static Handle ParallelFor2D(int width, int height, Action<int, int> function, JobOptions? options = default)
     {
-        return ParallelFor2D(width, height, 0, 0, function, options ?? new());
+        return ParallelFor2D(width, height, 0, 0, function, options ?? JobOptions.Default);
     }
 
     /// <summary>
@@ -178,7 +178,7 @@ public abstract partial class Job : IDisposable
     public static Handle Schedule(Action action, JobOptions? options = default)
     {
         return Schedule(new CommandJob(action) {
-            Options = options ?? new()
+            Options = options ?? JobOptions.Default
         });
     }
 
@@ -275,9 +275,9 @@ public enum JobAccelerator
 public class JobOptions
 {
     /// <summary>
-    /// ...
+    /// Default options for a <see cref="Job"/>.
     /// </summary>
-    public static JobOptions Default = new();
+    public static readonly JobOptions Default = CreateDefault();
 
     /// <summary>
     /// Whether or not to enable metrics for the job.
@@ -288,4 +288,13 @@ public class JobOptions
     /// The job's batching strategy.
     /// </summary>
     public BatchStrategy BatchStrategy { get; set; } = BatchStrategy.Auto;
+
+    /// <summary>
+    /// Create new <see cref="JobOptions"/>.
+    /// </summary>
+    /// <returns>Default <see cref="JobOptions"/>.</returns>
+    public static JobOptions CreateDefault()
+    {
+        return new();
+    }
 }

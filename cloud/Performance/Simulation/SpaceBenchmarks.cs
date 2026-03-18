@@ -3,6 +3,7 @@
 using BenchmarkDotNet.Attributes;
 using Spatial.Compute;
 using Spatial.Simulation.Components;
+using System.Runtime.CompilerServices;
 
 namespace Spatial.Simulation;
 
@@ -14,156 +15,175 @@ namespace Spatial.Simulation;
 [MemoryDiagnoser]
 public class SpaceBenchmarks
 {
-    private const int _entities = 1000 * 1000 * 5;
+    /// <summary>
+    /// The number of entities to measure.
+    /// </summary>
+    [Params(1_000, 10_000, 100_000, 1_000_000, 5_000_000)]
+    public uint Entities { get; set; }
+
+    private const float _dt = 1f / 60f;
+    private const float _damping = 0.99f;
+    private const float _maxSpeedSq = 100f * 100f;
+
+    private static readonly Signature _signature = Signature.Combine<Position, Velocity, Rotation>();
 
     private Space _space = null!;
     private Computer _computer = null!;
-    private Signature _signature;
-    private Query _query;
+    private Query _mono = null!;
+    private Query _accelerated = null!;
 
     /// <summary>
-    /// An entity's component count.
-    /// </summary>
-    [Params(0, 1, 2, 3)]
-    public int Components { get; set; }
-
-    /// <summary>
-    /// Setup a benchmark.
+    /// Set up the benchmark.
     /// </summary>
     [GlobalSetup]
-    public void Setup()
-    {
-        (_computer = new()).Run();
-        _signature = Components switch
-        {
-            1 => Signature.Of<Position>(),
-            2 => Signature.Combine<Position, Velocity>(),
-            3 => Signature.Combine<Position, Velocity, Rotation>(),
-            _ => Signature.Empty
-        };
-    }
+    public void Setup() => (_computer = new()).Run();
 
     /// <summary>
-    /// Clean up after the benchmarks.
+    /// Clean up after all benchmarks.
     /// </summary>
     [GlobalCleanup]
-    public void CleanupAll()
-    {
-        _computer.Shutdown();
-    }
+    public void CleanupAll() => _computer.Shutdown();
 
     /// <summary>
-    /// Setup <see cref="Create"/>.
+    /// Set up <see cref="Create"/>.
     /// </summary>
     [IterationSetup(Target = nameof(Create))]
-    public void SetupCreate()
-    {
-        (_space = new Space()).Reserve(_signature, _entities);
-    }
+    public void SetupCreate() => (_space = new Space()).Reserve(_signature, Entities);
 
     /// <summary>
-    /// Setup <see cref="MutateMono"/>.
+    /// Set up physics benchmarks.
     /// </summary>
-    [IterationSetup(Target = nameof(MutateMono))]
-    public void SetupMutateMono()
+    [IterationSetup(Targets = [
+        nameof(PhysicsMonoLite),
+        nameof(PhysicsAcceleratedLite),
+        nameof(PhysicsMonoHeavy),
+        nameof(PhysicsAcceleratedHeavy)])]
+    public void SetupPhysics()
     {
-        (_space = new Space()).Reserve(_signature, _entities);
-        _query = new Query().Accelerate(false).WithAll(_signature);
+        (_space = new Space()).Reserve(_signature, Entities);
 
-        CreateImpl();
+        for (var i = 0; i < Entities; i++)
+        {
+            _space.Create(_signature);
+        }
+
+        var index = 0;
+        var seed = new Query().WithAll(_signature);
+
+        _space.Mutate(seed, (Future _, in Entity _, ref Position pos, ref Velocity vel, ref Rotation rot) =>
+        {
+            pos.X = (index % 1000) * 1.5f;
+            pos.Y = (index % 500)  * 2.0f;
+            pos.Z = (index % 750)  * 1.2f;
+
+            vel.X = (index % 23) * 4.5f - 50f;
+            vel.Y = (index % 17) * 6.0f - 50f;
+            vel.Z = (index % 31) * 3.5f - 50f;
+
+            rot.Degrees = index % 360;
+
+            index++;
+        });
+
+        _mono = new Query().WithAll(_signature);
+        _accelerated = new Query().Accelerate().WithAll(_signature);
     }
 
     /// <summary>
-    /// Setup <see cref="MutateAccelerated"/>.
-    /// </summary>
-    [IterationSetup(Target = nameof(MutateAccelerated))]
-    public void SetupMutateAccelerated()
-    {
-        (_space = new Space()).Reserve(_signature, _entities);
-        _query = new Query().WithAll(_signature);
-
-        CreateImpl();
-    }
-
-    /// <summary>
-    /// Measure <see cref="Space.Create"/>.
-    /// </summary>
-    [BenchmarkCategory("Create")]
-    [Benchmark(OperationsPerInvoke = _entities)]
-    public void Create()
-    {
-        CreateImpl();
-    }
-
-    /// <summary>
-    /// Measure <see cref="Space.Mutate"/>.
-    /// </summary>
-    [BenchmarkCategory("MutateMono")]
-    [Benchmark(OperationsPerInvoke = _entities)]
-    public void MutateMono()
-    {
-        MutateImpl();
-    }
-
-    /// <summary>
-    /// Measure <see cref="Space.Mutate"/>.
-    /// </summary>
-    [BenchmarkCategory("MutateAccelerated")]
-    [Benchmark(OperationsPerInvoke = _entities)]
-    public void MutateAccelerated()
-    {
-        MutateImpl();
-    }
-
-    /// <summary>
-    /// Cleanup after a benchmark.
+    /// Clean up after a benchmark.
     /// </summary>
     [IterationCleanup]
-    public void Cleanup()
-    {
-        _space.Dispose();
-    }
+    public void Cleanup() => _space.Dispose();
 
-    private void CreateImpl()
+    /// <summary>
+    /// Measures <see cref="Space.Create"/> throughput.
+    /// </summary>
+    [Benchmark]
+    [BenchmarkCategory("Create")]
+    public void Create()
     {
-        for (var i = 0; i < _entities; i++)
+        for (var i = 0; i < Entities; i++)
         {
             _space.Create(_signature);
         }
     }
 
-    private void MutateImpl()
+    /// <summary>
+    /// Measures <see cref="Space.Mutate"/> throughput on a single thread.
+    /// Represents steady-state movement: position integration and rotation only.
+    /// </summary>
+    [Benchmark]
+    [BenchmarkCategory("PhysicsLite")]
+    public void PhysicsMonoLite()
     {
-        switch (Components)
+        _space.Mutate(_mono, (Future _, in Entity _, ref Position pos, ref Velocity vel, ref Rotation rot) => IntegrateLite(ref pos, ref vel, ref rot));
+    }
+
+    /// <summary>
+    /// Measures <see cref="Space.Mutate"/> throughput with acceleration.
+    /// Represents steady-state movement: position integration and rotation only.
+    /// </summary>
+    [Benchmark]
+    [BenchmarkCategory("PhysicsLite")]
+    public void PhysicsAcceleratedLite()
+    {
+        _space.Mutate(_accelerated, (Future _, in Entity _, ref Position pos, ref Velocity vel, ref Rotation rot) => IntegrateLite(ref pos, ref vel, ref rot));
+    }
+
+    /// <summary>
+    /// Measures <see cref="Space.Mutate"/> throughput on a single thread.
+    /// Represents worst-case movement: damping, speed clamp, integration, and rotation.
+    /// </summary>
+    [Benchmark]
+    [BenchmarkCategory("PhysicsHeavy")]
+    public void PhysicsMonoHeavy()
+    {
+        _space.Mutate(_mono, (Future _, in Entity _, ref Position pos, ref Velocity vel, ref Rotation rot) => IntegrateHeavy(ref pos, ref vel, ref rot));
+    }
+
+    /// <summary>
+    /// Measures <see cref="Space.Mutate"/> throughput with acceleration.
+    /// Represents worst-case movement: damping, speed clamp, integration, and rotation.
+    /// </summary>
+    [Benchmark]
+    [BenchmarkCategory("PhysicsHeavy")]
+    public void PhysicsAcceleratedHeavy()
+    {
+        _space.Mutate(_accelerated, (Future _, in Entity _, ref Position pos, ref Velocity vel, ref Rotation rot) => IntegrateHeavy(ref pos, ref vel, ref rot));
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private static void IntegrateLite(ref Position pos, ref Velocity vel, ref Rotation rot)
+    {
+        pos.X += vel.X * _dt;
+        pos.Y += vel.Y * _dt;
+        pos.Z += vel.Z * _dt;
+
+        rot.Degrees = (rot.Degrees + 1) % 360;
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private static void IntegrateHeavy(ref Position pos, ref Velocity vel, ref Rotation rot)
+    {
+        vel.X *= _damping;
+        vel.Y *= _damping;
+        vel.Z *= _damping;
+
+        var speedSq = vel.X * vel.X + vel.Y * vel.Y + vel.Z * vel.Z;
+
+        if (speedSq > _maxSpeedSq)
         {
-            case 0:
-                _space.Mutate(_query, (Future future, in Entity entity) => {});
-                break;
-            case 1:
-                _space.Mutate(_query, (Future future, in Entity entity, ref Position position) => {
-                    position.X++;
-                    position.Y++;
-                    position.Z++;
-                });
+            var inv = MathF.ReciprocalSqrtEstimate(speedSq) * MathF.Sqrt(_maxSpeedSq);
 
-                break;
-            case 2:
-                _space.Mutate(_query, (Future future, in Entity entity, ref Position position, ref Velocity velocity) => {
-                    position.X += velocity.X;
-                    position.Y += velocity.Y;
-                    position.Z += velocity.Z;
-                });
-
-                break;
-            case 3:
-                _space.Mutate(_query, (Future future, in Entity entity, ref Position position, ref Velocity velocity, ref Rotation rotation) => {
-                    position.X += velocity.X;
-                    position.Y += velocity.Y;
-                    position.Z += velocity.Z;
-                    rotation.Degrees = (rotation.Degrees + 1) % 360;
-                });
-                
-                break;
+            vel.X *= inv;
+            vel.Y *= inv;
+            vel.Z *= inv;
         }
+
+        pos.X += vel.X * _dt;
+        pos.Y += vel.Y * _dt;
+        pos.Z += vel.Z * _dt;
+
+        rot.Degrees = (rot.Degrees + 1) % 360;
     }
 }

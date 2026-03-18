@@ -18,7 +18,7 @@ public partial class Query
     /// </summary>
     public Query()
     {
-        _accelerated = true;
+        _accelerated = false;
 
         _all = new Signature();
         _any = new Signature();
@@ -33,11 +33,11 @@ public partial class Query
     /// <summary>
     /// Process matching entities in parallel.
     /// </summary>
-    /// <param name="parallel">Whether or not to run the query in parallel.</param>
+    /// <param name="value">Whether or not to run the query in parallel.</param>
     /// <returns>The <see cref="Query"/> for chained method calls.</returns>
-    public Query Accelerate(bool parallel = true)
+    public Query Accelerate(bool value = true)
     {
-        _accelerated = parallel;
+        _accelerated = value;
         return this;
     }
 

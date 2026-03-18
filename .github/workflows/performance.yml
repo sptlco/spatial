@@ -40,7 +40,6 @@ jobs:
           -- --filter '*'
           --warmupCount 1
           --iterationCount 7
-          --outlierMode RemoveAll
           --exporters json
 
       - name: Upload benchmarks

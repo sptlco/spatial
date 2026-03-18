@@ -24,6 +24,8 @@
 
 *.code-workspace
 
+docker-compose.override.yml
+
 /[Bb]uild/
 /[Cc]onfig/
 /[Pp]rotocols/

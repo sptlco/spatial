@@ -19,6 +19,8 @@ public class Computer
     private Agent[] _agents;
     private ConcurrentDictionary<string, Job> _jobs;
     private ConcurrentDictionary<Job, StrongBox<int>> _dependencies;
+    private readonly ConcurrentBag<BatchJob> _batch1DPool = [];
+    private readonly ConcurrentBag<Batch2DJob> _batch2DPool = [];
     private int _running;
     private uint _next;
 
@@ -119,65 +121,34 @@ public class Computer
     }
 
     /// <summary>
-    /// Finalize a <see cref="Job"/> that was executed.
+    /// Finalize a <see cref="CommandJob"/> that was executed.
     /// </summary>
-    /// <param name="jobId">The <see cref="Job"/> to finalize.</param>
-    public void Finalize(string jobId)
+    /// <param name="job">The <see cref="CommandJob"/> to finalize.</param>
+    internal void Finalize(CommandJob job)
     {
-        if (_jobs.TryRemove(jobId, out var job))
+        switch (job)
         {
-            job.Terminated = Time.Now;
+            case BatchJob batch1D:
+                if (batch1D.Parent.Complete(batch1D.Size))
+                {
+                    FinalizeImpl(batch1D.Parent);
+                }
 
-            switch (job)
-            {
-                case BatchJob batch1D:
-                    if (batch1D.Parent.Complete(batch1D.Size))
-                    {
-                        Finalize(batch1D.Parent.Id);
-                    }
+                _batch1DPool.Add(batch1D);
 
-                    break;
-                case Batch2DJob batch2D:
-                    if (batch2D.Parent.Complete(batch2D.Size))
-                    {
-                        Finalize(batch2D.Parent.Id);
-                    }
+                return;
+            case Batch2DJob batch2D:
+                if (batch2D.Parent.Complete(batch2D.Size))
+                {
+                    FinalizeImpl(batch2D.Parent);
+                }
 
-                    break;
-                default:
-                    // Notify dependents of this job (jobs that cannot run before this 
-                    // job is executed) that the job has been executed, so that they can run.
-                    
-                    if (job.Graph.Dependants.TryGetValue(job, out var dependants))
-                    {
-                        foreach (var dependant in dependants)
-                        {
-                            if (Interlocked.Decrement(ref _dependencies[dependant].Value) <= 0 && _dependencies.TryRemove(dependant, out _))
-                            {
-                                Process(dependant);
-                            }
-                        }
-                    }
-                    
-                    job.Graph.Handle.Signal();
+                _batch2DPool.Add(batch2D);
 
-                    break;
-            }
-
-            if (job.Options.EnableMetrics)
-            {
-                _ = Metric.WriteOneAsync(
-                        name: "job",
-                        value: CreateJobMetric(job),
-                        metadata: new {
-                            job.Id,
-                            Graph = job.Graph?.Id,
-                            Parent = (job as BatchJob)?.Parent.Id ?? (job as Batch2DJob)?.Parent.Id,
-                            Type = job.GetType().Name,
-                            Status = job.Status.ToString()});
-            }
-            
-            job.Dispose();
+                return;
+            default:
+                FinalizeImpl(job);
+                break;
         }
     }
 
@@ -185,18 +156,21 @@ public class Computer
     {
         job.Submitted = Time.Now;
         job.Status = JobStatus.Submitted;
-        
+
+        if (job is BatchJob or Batch2DJob)
+        {
+            Process(job);
+            return;
+        }
+
         _jobs[job.Id] = job;
 
-        if (job is not BatchJob and not Batch2DJob)
+        if (_dependencies.TryGetValue(job, out var box) && box.Value > 0)
         {
-            if (_dependencies.TryGetValue(job, out var box) && box.Value > 0)
-            {
-                // If the job has dependencies that have not yet been executed,
-                // defer the job's execution.
-                
-                return;
-            }
+            // If the job has dependencies that have not yet been executed,
+            // defer the job's execution.
+            
+            return;
         }
         
         Process(job);
@@ -206,7 +180,7 @@ public class Computer
     {
         if (job is ParallelJob parallel && parallel.Complete(0))
         {
-            Finalize(parallel.Id);
+            FinalizeImpl(parallel);
             return;
         }
 
@@ -217,9 +191,17 @@ public class Computer
                 {
                     var start = i * job1D.BatchSize;
                     var end = Math.Min(start + job1D.BatchSize, job1D.Iterations);
-                    var batch = new BatchJob(job1D, start, end) {
-                        Options = job1D.Options
-                    };
+                    
+                    if (!_batch1DPool.TryTake(out var batch))
+                    {
+                        batch = new BatchJob(job1D, start, end);
+                    }
+                    else
+                    {
+                        batch.Reset(job1D, start, end);
+                    }
+                    
+                    batch.Options = job1D.Options;
 
                     Submit(batch);
                 }
@@ -237,9 +219,17 @@ public class Computer
                         var endX = Math.Min(startX + job2D.BatchSizeX, job2D.Width);
                         var startY = by * job2D.BatchSizeY;
                         var endY = Math.Min(startY + job2D.BatchSizeY, job2D.Height);
-                        var batch = new Batch2DJob(job2D, startX, endX, startY, endY) {
-                            Options = job2D.Options
-                        };
+
+                        if (!_batch2DPool.TryTake(out var batch))
+                        {
+                            batch = new Batch2DJob(job2D, startX, endX, startY, endY);
+                        }
+                        else
+                        {
+                            batch.Reset(job2D, startX, endX, startY, endY);
+                        }
+
+                        batch.Options = job2D.Options;
 
                         Submit(batch);
                     }
@@ -262,6 +252,42 @@ public class Computer
         agent.Wake();   
     }
 
+    private void FinalizeImpl(Job job)
+    {
+        if (_jobs.TryRemove(job.Id, out _))
+        {
+            job.Terminated = Time.Now;
+
+            if (job.Graph.Dependants.TryGetValue(job, out var dependants))
+            {
+                foreach (var dependant in dependants)
+                {
+                    if (Interlocked.Decrement(ref _dependencies[dependant].Value) <= 0 && _dependencies.TryRemove(dependant, out _))
+                    {
+                        Process(dependant);
+                    }
+                }
+            }
+
+            job.Graph.Handle.Signal();
+
+            if (job.Options.EnableMetrics)
+            {
+                _ = Metric.WriteOneAsync(
+                    name: "job",
+                    value: CreateJobMetric(job),
+                    metadata: new {
+                        job.Id,
+                        Graph = job.Graph.Id,
+                        Type = job.GetType().Name,
+                        Status = job.Status.ToString()
+                    });
+            }
+
+            job.Dispose();
+        }
+    }
+
     private object CreateJobMetric(Job job)
     {
         return new {
@@ -271,13 +297,6 @@ public class Computer
             (job as ParallelFor2DJob)?.BatchSizeY,
             (job as ParallelFor2DJob)?.Width,
             (job as ParallelFor2DJob)?.Height,
-            Size = (job as BatchJob)?.Size ?? (job as Batch2DJob)?.Size,
-            (job as BatchJob)?.Start,
-            (job as BatchJob)?.End,
-            (job as Batch2DJob)?.StartX,
-            (job as Batch2DJob)?.StartY,
-            (job as Batch2DJob)?.EndX,
-            (job as Batch2DJob)?.EndY,
             Submitted = (double) job.Submitted,
             Executed = (double?) (job.Executed > 0 ? job.Executed : null),
             Terminated = (double) job.Terminated

@@ -70,7 +70,7 @@ public sealed class ParallelFor2DJob : ParallelJob
         return strategy switch {
             BatchStrategy.None => iterations,
             BatchStrategy.Preferred => Math.Max(1, preference),
-            BatchStrategy.Auto => Math.Max(1, iterations / (int) Math.Sqrt(Environment.ProcessorCount)),
+            BatchStrategy.Auto => Math.Max(1, iterations / (int) Math.Ceiling(Math.Sqrt(Environment.ProcessorCount))),
             _ => Math.Max(1, preference)
         };
     }
@@ -95,12 +95,13 @@ internal sealed class Batch2DJob : CommandJob
     /// <param name="endY">The end of the iteration range of the second dimension.</param>
     public Batch2DJob(ParallelFor2DJob parent, int startX, int endX, int startY, int endY)
     {
-        _parent = parent;
-        _startX = startX;
-        _endX = endX;
-        _startY = startY;
-        _endY = endY;
+        Reset(parent, startX, endX, startY, endY);
     }
+
+    /// <summary>
+    /// No-op. Batch jobs are not tracked globally.
+    /// </summary>
+    public override string Id { get; internal set; } = string.Empty;
 
     /// <summary>
     /// The number of iterations performed by the <see cref="Batch2DJob"/>.
@@ -152,5 +153,22 @@ internal sealed class Batch2DJob : CommandJob
                 }
             }
         }
+    }
+
+    /// <summary>
+    /// Reset the <see cref="Batch2DJob"/>.
+    /// </summary>
+    /// <param name="parent">The job's parent.</param>
+    /// <param name="startX">The beginning of the iteration range of the first dimension.</param>
+    /// <param name="endX">The end of the iteration range of the first dimension.</param>
+    /// <param name="startY">The beginning of the iteration range of the second dimension.</param>
+    /// <param name="endY">The end of the iteration range of the second dimension.</param>
+    public void Reset(ParallelFor2DJob parent, int startX, int endX, int startY, int endY)
+    {
+        _parent = parent;
+        _startX = startX;
+        _endX = endX;
+        _startY = startY;
+        _endY = endY;
     }
 }

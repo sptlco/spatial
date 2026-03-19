@@ -1,7 +1,7 @@
 // Copyright © Spatial Corporation. All rights reserved.
 
-using System.Runtime.CompilerServices;
 using Spatial.Structures;
+using System.Runtime.CompilerServices;
 
 namespace Spatial.Simulation;
 

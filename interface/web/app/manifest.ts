@@ -8,8 +8,8 @@ export default function manifest(): MetadataRoute.Manifest {
     short_name: "Spatial",
     start_url: "/platform",
     display: "standalone",
-    background_color: "#ffffff",
-    theme_color: "#000000",
+    background_color: "#0a0a0a",
+    theme_color: "#fff",
     icons: [
       {
         src: "/icon.png",

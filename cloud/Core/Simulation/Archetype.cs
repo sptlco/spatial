@@ -1,8 +1,8 @@
 // Copyright © Spatial Corporation. All rights reserved.
 
+using Serilog;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
-using Serilog;
 
 namespace Spatial.Simulation;
 

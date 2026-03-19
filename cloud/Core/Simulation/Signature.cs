@@ -187,14 +187,14 @@ public partial record struct Signature(UInt128 Id)
 
         while (low != 0)
         {
-            int bit = BitOperations.TrailingZeroCount(low);
+            var bit = BitOperations.TrailingZeroCount(low);
             yield return ComponentRegistry.GetComponentType(bit);
             low ^= 1UL << bit;
         }
 
         while (high != 0)
         {
-            int bit = BitOperations.TrailingZeroCount(high);
+            var bit = BitOperations.TrailingZeroCount(high);
             yield return ComponentRegistry.GetComponentType(bit + 64);
             high ^= 1UL << bit;
         }

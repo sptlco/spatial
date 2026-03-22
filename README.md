@@ -179,7 +179,7 @@ config/nginx/ssl/certs/your-domain.com.pem   ← fullchain.pem
 config/nginx/ssl/private/your-domain.com.key  ← privkey.pem
 ```
 
-The default config expects four subdomains:
+The default config expects three subdomains:
 
 | Subdomain               | Proxies to           |
 | ----------------------- | -------------------- |
@@ -353,4 +353,4 @@ For a discussion of how these ideas are applied in this codebase, see [Notes on 
 
 ## License
 
-Copyright &copy; Spatial Corporation. See [LICENSE](LICENSE) for details.
+&copy; Spatial Corporation. See [LICENSE](LICENSE) for details.

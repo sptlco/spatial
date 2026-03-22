@@ -1,5 +1,25 @@
 # Changelog
 
+## [1.28.0](https://github.com/sptlco/spatial/compare/spatial-1.27.0...spatial-1.28.0) (2026-03-22)
+
+
+### Features
+
+* Added a post outline to the blog ([#137](https://github.com/sptlco/spatial/issues/137)) ([d074cf6](https://github.com/sptlco/spatial/commit/d074cf693644f48acc890b7782338b888a1dd5b1))
+* Added nested templates ([#137](https://github.com/sptlco/spatial/issues/137)) ([7016a40](https://github.com/sptlco/spatial/commit/7016a4019788404d4d0d0a5732e7de749c354332))
+* Added telemetry ([#137](https://github.com/sptlco/spatial/issues/137)) ([d5a87e8](https://github.com/sptlco/spatial/commit/d5a87e8050f1972cfa5327ea33f80c1d39ee49ed))
+
+
+### Bug Fixes
+
+* Decoupled take-profit  from rebalancing  ([#137](https://github.com/sptlco/spatial/issues/137)) ([e665a13](https://github.com/sptlco/spatial/commit/e665a132eb81e2d2a737a73eda1419758922a48d))
+* Updated the cursor ([#137](https://github.com/sptlco/spatial/issues/137)) ([d9e18ff](https://github.com/sptlco/spatial/commit/d9e18ffcfbc6c274a54e45b4064e965afc9aff8e))
+
+
+### Performance Improvements
+
+* Optimized compute ([#137](https://github.com/sptlco/spatial/issues/137)) ([17136a1](https://github.com/sptlco/spatial/commit/17136a11432f7ebc5614d04d1fddda30858b51c1))
+
 ## [1.27.0](https://github.com/sptlco/spatial/compare/spatial-1.26.0...spatial-1.27.0) (2026-03-16)
 
 

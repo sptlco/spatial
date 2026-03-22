@@ -1,5 +1,23 @@
 # Changelog
 
+## [1.34.0](https://github.com/sptlco/spatial/compare/spatial-cloud-1.33.0...spatial-cloud-1.34.0) (2026-03-22)
+
+
+### Features
+
+* Added nested templates ([#137](https://github.com/sptlco/spatial/issues/137)) ([7016a40](https://github.com/sptlco/spatial/commit/7016a4019788404d4d0d0a5732e7de749c354332))
+* Added telemetry ([#137](https://github.com/sptlco/spatial/issues/137)) ([d5a87e8](https://github.com/sptlco/spatial/commit/d5a87e8050f1972cfa5327ea33f80c1d39ee49ed))
+
+
+### Bug Fixes
+
+* Decoupled take-profit  from rebalancing  ([#137](https://github.com/sptlco/spatial/issues/137)) ([e665a13](https://github.com/sptlco/spatial/commit/e665a132eb81e2d2a737a73eda1419758922a48d))
+
+
+### Performance Improvements
+
+* Optimized compute ([#137](https://github.com/sptlco/spatial/issues/137)) ([17136a1](https://github.com/sptlco/spatial/commit/17136a11432f7ebc5614d04d1fddda30858b51c1))
+
 ## [1.33.0](https://github.com/sptlco/spatial/compare/spatial-cloud-1.32.0...spatial-cloud-1.33.0) (2026-03-16)
 
 

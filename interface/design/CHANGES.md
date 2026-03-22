@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.21.0](https://github.com/sptlco/spatial/compare/spatial-interface-design-1.20.0...spatial-interface-design-1.21.0) (2026-03-22)
+
+
+### Features
+
+* Added a post outline to the blog ([#137](https://github.com/sptlco/spatial/issues/137)) ([d074cf6](https://github.com/sptlco/spatial/commit/d074cf693644f48acc890b7782338b888a1dd5b1))
+
 ## [1.20.0](https://github.com/sptlco/spatial/compare/spatial-interface-design-1.19.0...spatial-interface-design-1.20.0) (2026-03-16)
 
 

@@ -1,5 +1,18 @@
 # Changelog
 
+## [1.31.0](https://github.com/sptlco/spatial/compare/spatial-interface-web-1.30.0...spatial-interface-web-1.31.0) (2026-03-22)
+
+
+### Features
+
+* Added a post outline to the blog ([#137](https://github.com/sptlco/spatial/issues/137)) ([d074cf6](https://github.com/sptlco/spatial/commit/d074cf693644f48acc890b7782338b888a1dd5b1))
+* Added nested templates ([#137](https://github.com/sptlco/spatial/issues/137)) ([7016a40](https://github.com/sptlco/spatial/commit/7016a4019788404d4d0d0a5732e7de749c354332))
+
+
+### Bug Fixes
+
+* Updated the cursor ([#137](https://github.com/sptlco/spatial/issues/137)) ([d9e18ff](https://github.com/sptlco/spatial/commit/d9e18ffcfbc6c274a54e45b4064e965afc9aff8e))
+
 ## [1.30.0](https://github.com/sptlco/spatial/compare/spatial-interface-web-1.29.0...spatial-interface-web-1.30.0) (2026-03-16)
 
 

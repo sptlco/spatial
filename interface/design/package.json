@@ -1,6 +1,6 @@
 {
   "name": "@sptlco/design",
-  "version": "1.20.0",
+  "version": "1.21.0",
   "description": "Reusable components and styles for beautiful interfaces.",
   "main": "index.ts",
   "author": "Spatial Corporation",

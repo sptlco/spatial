@@ -36,7 +36,7 @@ const styles = cva({
       default: "bg-button hover:bg-button-hover active:bg-button-active",
       destructive: "bg-button-destructive hover:bg-button-destructive-hover active:bg-button-destructive-active",
       ghost: "bg-button-ghost hover:bg-button-ghost-hover active:bg-button-ghost-active",
-      highlight: "bg-button-highlight hover:bg-button-highlight-hover active:bg-button-highlight-active",
+      highlight: "bg-button-highlight disabled:bg-button hover:bg-button-highlight-hover active:bg-button-highlight-active",
       none: ""
     },
     shape: {

@@ -135,9 +135,14 @@ export default function Page() {
                 containerClassName="flex-1 min-w-0"
               />
             </Container>
-            <Button type="submit" size="pad" intent="ghost" disabled={!email}>
-              <Span>Continue</Span>
-              {processing ? <Spinner className="size-4 text-foreground-tertiary" /> : <Icon symbol="arrow_right_alt" />}
+            <Button type="submit" intent="highlight" size="fill" shape="pill" disabled={!email}>
+              {processing ? (
+                <Container className="inline-flex items-center justify-center size-6">
+                  <Spinner className="size-4 text-foreground-tertiary" />
+                </Container>
+              ) : (
+                <Icon symbol="arrow_right_alt" />
+              )}
             </Button>
           </Form>
           <Mark className="col-span-3 row-start-3 place-self-center" />

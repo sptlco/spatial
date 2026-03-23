@@ -100,9 +100,9 @@ export const Tabs = {
 
     return (
       <Primitive.List {...props} className={clsx("relative flex items-center sm:justify-center gap-4 mb-10 w-full", props.className)} ref={ref}>
-        <Container ref={containerRef} className="relative flex items-center sm:justify-center gap-4 sm:bg-input rounded-xl w-full sm:w-auto">
+        <Container ref={containerRef} className="relative flex items-center sm:justify-center gap-4 sm:bg-input rounded-full w-full sm:w-auto">
           <motion.span
-            className="absolute bottom-0 left-0 h-0.5 sm:h-full bg-background-inverse sm:bg-button-highlight-active sm:rounded-xl"
+            className="absolute bottom-0 left-0 h-0.5 sm:h-full bg-background-inverse sm:bg-button-highlight-active sm:rounded-full"
             initial={false}
             animate={{ x: indicator.left, width: indicator.width }}
             transition={{ type: "spring", damping: 20, stiffness: 300 }}

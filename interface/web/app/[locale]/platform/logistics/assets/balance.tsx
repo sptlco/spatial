@@ -123,52 +123,50 @@ export const Balance = createElement<typeof Container, { period: keyof typeof PE
             </Span>
           </Container>
           <Container className="w-full flex flex-col gap-10">
-            <ResponsiveContainer className="xl:order-999 xl:mask-r-from-80% xl:mask-l-from-80%" width="100%" aspect={2.5} maxHeight={256}>
-              <Container className="relative h-full w-full">
-                <AreaChart
-                  accessibilityLayer
-                  data={chartData}
-                  margin={{ left: 0, right: 0 }}
-                  onMouseMove={hover}
-                  onTouchMove={hover}
-                  onTouchStart={hover}
-                  onTouchEnd={() => setPoint(null)}
-                  onMouseLeave={() => setPoint(null)}
-                >
-                  <defs>
-                    <linearGradient id="gradient" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="0%" stopColor={color} stopOpacity={0.7} />
-                      <stop offset="100%" stopColor={color} stopOpacity={0} />
-                    </linearGradient>
-                  </defs>
+            <ResponsiveContainer className="xl:order-999 xl:mask-r-from-80% xl:mask-l-from-80%" width="100%" height={256}>
+              <AreaChart
+                accessibilityLayer
+                data={chartData}
+                margin={{ left: 0, right: 0 }}
+                onMouseMove={hover}
+                onTouchMove={hover}
+                onTouchStart={hover}
+                onTouchEnd={() => setPoint(null)}
+                onMouseLeave={() => setPoint(null)}
+              >
+                <defs>
+                  <linearGradient id="gradient" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stopColor={color} stopOpacity={0.7} />
+                    <stop offset="100%" stopColor={color} stopOpacity={0} />
+                  </linearGradient>
+                </defs>
 
-                  <XAxis hide dataKey="date" type="number" scale="time" domain={["dataMin", "dataMax"]} />
-                  <YAxis hide domain={["dataMin - 1", "dataMax"]} />
+                <XAxis hide dataKey="date" type="number" scale="time" domain={["dataMin", "dataMax"]} />
+                <YAxis hide domain={["dataMin - 1", "dataMax"]} />
 
-                  <Area
-                    type="monotone"
-                    dataKey="value"
-                    stroke={color}
-                    strokeWidth={2}
-                    fill="url(#gradient)"
-                    dot={false}
-                    activeDot={false}
-                    connectNulls
-                  />
+                <Area
+                  type="monotone"
+                  dataKey="value"
+                  stroke={color}
+                  strokeWidth={2}
+                  fill="url(#gradient)"
+                  dot={false}
+                  activeDot={false}
+                  connectNulls
+                />
 
-                  <Tooltip
-                    content={() => null}
-                    cursor={
-                      point
-                        ? {
-                            stroke: "var(--color-line-strong)",
-                            strokeWidth: 1
-                          }
-                        : undefined
-                    }
-                  />
-                </AreaChart>
-              </Container>
+                <Tooltip
+                  content={() => null}
+                  cursor={
+                    point
+                      ? {
+                          stroke: "var(--color-line-strong)",
+                          strokeWidth: 1
+                        }
+                      : undefined
+                  }
+                />
+              </AreaChart>
             </ResponsiveContainer>
             <ToggleGroup.Root
               className="xl:gap-4 flex items-center justify-center xl:justify-start overflow-hidden"

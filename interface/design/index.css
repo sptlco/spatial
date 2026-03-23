@@ -109,6 +109,8 @@
   --animate-outline: outline 0.1s ease forwards;
   --animate-caret: caret 1.25s ease-out infinite;
   --animate-scroll: scroll 2s ease infinite;
+  --animate-accordion-down: accordionDown 300ms cubic-bezier(0.87, 0, 0.13, 1);
+  --animate-accordion-up: accordionUp 300ms cubic-bezier(0.87, 0, 0.13, 1);
 
   @keyframes fill {
     0% {
@@ -146,6 +148,24 @@
     }
     to {
       transform: translateX(-50%);
+    }
+  }
+
+  @keyframes accordionDown {
+    from {
+      height: 0;
+    }
+    to {
+      height: var(--radix-accordion-content-height);
+    }
+  }
+
+  @keyframes accordionUp {
+    from {
+      height: var(--radix-accordion-content-height);
+    }
+    to {
+      height: 0;
     }
   }
 }

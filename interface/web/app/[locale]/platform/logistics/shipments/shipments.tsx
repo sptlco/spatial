@@ -6,7 +6,24 @@ import { clsx } from "clsx";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { Fragment, useEffect, useMemo, useState } from "react";
 
-import { Button, Card, Container, createElement, Dropdown, Field, Form, H1, Icon, LI, Pagination, Separator, Sheet, Span, UL } from "@sptlco/design";
+import {
+  Accordion,
+  Button,
+  Card,
+  Container,
+  createElement,
+  Dropdown,
+  Field,
+  Form,
+  H1,
+  Icon,
+  LI,
+  Pagination,
+  Separator,
+  Sheet,
+  Span,
+  UL
+} from "@sptlco/design";
 
 import { View, views } from "./view";
 import { Filters } from "./filters";
@@ -30,9 +47,11 @@ type Shipment = {
 };
 
 export const Shipments = createElement<typeof Card.Root>((props, ref) => {
-  const shipments: Shipment[] = [
-    {
-      id: "SHP-1055",
+  const shipments: Shipment[] = [];
+
+  for (let i = 0; i < 15; i++) {
+    shipments.push({
+      id: `SHP-${i}`,
       from: {
         company: "Spatial Corporation",
         line1: "240 2ND AVE S",
@@ -52,8 +71,8 @@ export const Shipments = createElement<typeof Card.Root>((props, ref) => {
         zip: "98121",
         country: "USA"
       }
-    }
-  ];
+    });
+  }
 
   const router = useRouter();
   const pathname = usePathname();
@@ -124,20 +143,44 @@ export const Shipments = createElement<typeof Card.Root>((props, ref) => {
   const render = () => {
     switch (view) {
       case "grid": {
+        const columns = [0, 1, 2].map((col) => shipments.filter((_, i) => i % 3 === col));
+        const twoColumns = [0, 1].map((col) => shipments.filter((_, i) => i % 2 === col));
+
+        const jsx = (shipment: Shipment, i: number) => <Shipment.Card key={i} shipment={shipment} onUpdate={() => setEdit(shipment)} />;
+
         return (
-          <UL className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-10">
+          <>
             {shipments.map((shipment, i) => (
-              <Fragment key={i}>
-                <Shipment.Card onClick={() => setEdit(shipment)} shipment={shipment} />
-                <Shipment.Editor
-                  open={edit?.id === shipment.id}
-                  onOpenChange={(open) => setEdit(open ? shipment : undefined)}
-                  shipment={shipment}
-                  onEdit={(_) => {}}
-                />
-              </Fragment>
+              <Shipment.Editor
+                key={i}
+                open={edit?.id === shipment.id}
+                onOpenChange={(open) => setEdit(open ? shipment : undefined)}
+                shipment={shipment}
+                onEdit={(_) => {}}
+              />
             ))}
-          </UL>
+
+            {/* Mobile: single column */}
+            <UL className="flex flex-col gap-10 sm:hidden">{shipments.map(jsx)}</UL>
+
+            {/* Tablet: 2 independent columns */}
+            <Container className="hidden sm:flex xl:hidden gap-10">
+              {twoColumns.map((col, ci) => (
+                <UL key={ci} className="flex flex-col gap-10 flex-1">
+                  {col.map(jsx)}
+                </UL>
+              ))}
+            </Container>
+
+            {/* Desktop: 3 independent columns */}
+            <Container className="hidden xl:flex gap-10">
+              {columns.map((col, ci) => (
+                <UL key={ci} className="flex flex-col gap-10 flex-1">
+                  {col.map(jsx)}
+                </UL>
+              ))}
+            </Container>
+          </>
         );
       }
       case "list": {
@@ -269,28 +312,128 @@ const Shipment = {
 
   Separator: createElement<typeof Separator>((props, ref) => <Separator {...props} ref={ref} className="flex w-full h-px bg-line-faint" />),
 
-  Card: createElement<typeof Button, { shipment: Shipment }>(({ shipment, ...props }, ref) => {
+  Card: createElement<typeof Fragment, { shipment: Shipment; onUpdate?: () => void; onCancel?: () => void }>(
+    ({ shipment, onUpdate, onCancel }, _) => {
+      return (
+        <Accordion.Root collapsible type="single" className="flex flex-col bg-input outline outline-line-faint rounded-4xl">
+          <Accordion.Item value={shipment.id}>
+            <Accordion.Header>
+              <Accordion.Trigger className="group flex items-center w-full p-10">
+                <Container className="flex flex-col items-start grow xl:gap-2">
+                  <Container className="flex w-full items-center gap-2 justify-between">
+                    <Span className="text-2xl xl:text-4xl font-bold">{shipment.id}</Span>
+                    <Icon symbol="keyboard_arrow_down" className="font-light transition group-data-[state=open]:rotate-180 duration-300" />
+                  </Container>
+                  <Span className="text-foreground-quaternary text-xs uppercase">
+                    {shipment.to.city}, {shipment.to.state} • 2 Parcels • 2 Units
+                  </Span>
+                </Container>
+              </Accordion.Trigger>
+            </Accordion.Header>
+            <Accordion.Content>
+              <Shipment.Address title="Origin" address={shipment.from} />
+              <Shipment.Separator />
+              <Shipment.Address title="Destination" address={shipment.to} />
+              <Container className="flex flex-col items-center gap-2.5 p-4">
+                <Button shape="pill" size="fill" onClick={onUpdate}>
+                  <Span>Update</Span>
+                </Button>
+                <Button shape="pill" size="fill" onClick={onCancel} destructive>
+                  Cancel
+                </Button>
+              </Container>
+            </Accordion.Content>
+          </Accordion.Item>
+        </Accordion.Root>
+      );
+    }
+  ),
+
+  Section: createElement<typeof Accordion.Item, { label: string }>(({ label, children, ...props }, ref) => {
     return (
-      <LI className="flex flex-col bg-input outline outline-line-faint rounded-4xl">
-        <Button {...props} ref={ref} intent="none" size="fit" className="flex flex-col items-start w-full p-10 xl:gap-2">
-          <Container className="flex w-full items-center justify-between">
-            <Span className="text-2xl xl:text-4xl font-bold">{shipment.id}</Span>
-            <Icon symbol="arrow_right_alt" className="font-light" />
-          </Container>
-          <Span className="text-foreground-quaternary text-xs uppercase">2 Parcels • 2 Units</Span>
-        </Button>
-        <Shipment.Separator />
-        <Shipment.Address title="Origin" address={shipment.from} />
-        <Shipment.Separator />
-        <Shipment.Address title="Destination" address={shipment.to} />
-      </LI>
+      <Accordion.Item {...props} ref={ref}>
+        <Accordion.Header>
+          <Accordion.Trigger
+            className={clsx(
+              "group flex items-center w-full py-2.5",
+              "text-hint text-xs uppercase font-bold relative",
+              "after:absolute after:w-[calc(100%+80px)] after:h-full after:bg-background-highlight/30 after:-left-10 after:-z-10"
+            )}
+          >
+            <Span className="grow text-left">{label}</Span>
+            <Icon symbol="keyboard_arrow_down" className="font-light transition group-data-[state=open]:rotate-180 duration-300" />
+          </Accordion.Trigger>
+        </Accordion.Header>
+        <Accordion.Content>
+          <Container className="grid grid-cols-1 sm:grid-cols-2 gap-10 py-10">{children}</Container>
+        </Accordion.Content>
+      </Accordion.Item>
     );
   }),
 
   Editor: createElement<typeof Sheet.Root, { shipment: Shipment; onEdit: (shipment: Shipment) => void }>(({ shipment, onEdit, ...props }, ref) => {
+    const [from, setFrom] = useState<Address>({ ...shipment.from });
+    const [to, setTo] = useState<Address>({ ...shipment.to });
+
+    useEffect(() => {
+      setFrom({ ...shipment.from });
+      setTo({ ...shipment.to });
+    }, [shipment]);
+
+    const fromField = (key: keyof Address) => ({
+      value: from[key] ?? "",
+      onChange: (e: React.ChangeEvent<HTMLInputElement>) => setFrom((prev) => ({ ...prev, [key]: e.target.value }))
+    });
+
+    const toField = (key: keyof Address) => ({
+      value: to[key] ?? "",
+      onChange: (e: React.ChangeEvent<HTMLInputElement>) => setTo((prev) => ({ ...prev, [key]: e.target.value }))
+    });
+
+    const submit = (e: React.FormEvent) => {
+      e.preventDefault();
+
+      onEdit({ ...shipment, from, to });
+    };
+
     return (
       <Sheet.Root {...props} ref={ref}>
-        <Sheet.Content title={shipment.id} closeButton />
+        <Sheet.Content title={shipment.id} closeButton>
+          <Form className="flex flex-col gap-10 sm:min-w-lg" onSubmit={submit}>
+            <Accordion.Root type="multiple" defaultValue={["from", "to", "payload", "status"]} className="flex flex-col">
+              <Shipment.Section value="from" label="Origin">
+                <Field type="text" inset={false} label="Name" placeholder="Full name" {...fromField("name")} />
+                <Field type="text" inset={false} label="Company" placeholder="Company" {...fromField("company")} />
+                <Field type="text" inset={false} label="Address Line 1" placeholder="Address line 1" {...fromField("line1")} />
+                <Field type="text" inset={false} label="Address Line 2" placeholder="Address line 2" {...fromField("line2")} />
+                <Field type="text" inset={false} label="City" placeholder="City" {...fromField("city")} />
+                <Field type="text" inset={false} label="State" placeholder="State" {...fromField("state")} />
+                <Field type="text" inset={false} label="ZIP" placeholder="ZIP" {...fromField("zip")} />
+              </Shipment.Section>
+
+              <Shipment.Section value="to" label="Destination">
+                <Field type="text" inset={false} label="Name" placeholder="Full name" {...toField("name")} />
+                <Field type="text" inset={false} label="Company" placeholder="Company" {...toField("company")} />
+                <Field type="text" inset={false} label="Address Line 1" placeholder="Address line 1" {...toField("line1")} />
+                <Field type="text" inset={false} label="Address Line 2" placeholder="Address line 2" {...toField("line2")} />
+                <Field type="text" inset={false} label="City" placeholder="City" {...toField("city")} />
+                <Field type="text" inset={false} label="State" placeholder="State" {...toField("state")} />
+                <Field type="text" inset={false} label="ZIP" placeholder="ZIP" {...toField("zip")} />
+              </Shipment.Section>
+
+              <Shipment.Section value="payload" label="Payload"></Shipment.Section>
+
+              <Shipment.Section value="status" label="Status"></Shipment.Section>
+            </Accordion.Root>
+
+            <Container className="flex gap-4">
+              <Button type="submit">Update</Button>
+              <Sheet.Close asChild>
+                <Button intent="ghost">Cancel</Button>
+              </Sheet.Close>
+            </Container>
+          </Form>
+        </Sheet.Content>
       </Sheet.Root>
     );
   })

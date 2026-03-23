@@ -25,6 +25,7 @@
 *.code-workspace
 
 docker-compose.override.yml
+nuget.config
 
 /[Bb]uild/
 /[Cc]onfig/

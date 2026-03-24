@@ -103,7 +103,7 @@ export const Balance = createElement<typeof Container, { period: keyof typeof PE
               <Span className="text-5xl xl:text-9xl xl:-ml-1.5 font-extrabold truncate">
                 {!now ? (
                   <Container className="flex items-center h-32">
-                    <Span className="bg-background-surface rounded-full h-10 w-full sm:w-sm animate-pulse flex" />
+                    <Span className="bg-background-highlight rounded-full h-10 w-full sm:w-sm animate-pulse flex" />
                   </Container>
                 ) : (
                   formatCurrency(value ?? getValue(now))

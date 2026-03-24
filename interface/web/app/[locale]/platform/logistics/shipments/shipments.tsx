@@ -6,6 +6,10 @@ import { clsx } from "clsx";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { Fragment, useEffect, useMemo, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import useSWR from "swr";
+
+import { Shipment as ShipmentType, Address } from "@sptlco/data";
+import { Spatial } from "@sptlco/client";
 
 import {
   Accordion,
@@ -13,6 +17,7 @@ import {
   Card,
   Container,
   createElement,
+  Dialog,
   Dropdown,
   Field,
   Form,
@@ -20,9 +25,12 @@ import {
   Icon,
   LI,
   Pagination,
+  Paragraph,
   Separator,
   Sheet,
   Span,
+  Table,
+  toast,
   UL
 } from "@sptlco/design";
 
@@ -68,23 +76,29 @@ const cardVariants = {
   }
 };
 
-// ─── Types ─────────────────────────────────────────────────────────────────
-
-type Address = {
-  name?: string;
-  company?: string;
-  line1: string;
-  line2?: string;
-  city: string;
-  state: string;
-  zip: string;
-  country: string;
+const tableVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.04,
+      delayChildren: 0.05
+    }
+  },
+  exit: { opacity: 0, transition: { duration: 0.15 } }
 };
 
-type Shipment = {
-  id: string;
-  from: Address;
-  to: Address;
+const rowVariants = {
+  hidden: { opacity: 0, x: -8 },
+  visible: {
+    opacity: 1,
+    x: 0,
+    transition: {
+      type: "spring",
+      stiffness: 300,
+      damping: 28
+    }
+  }
 };
 
 // ─── Animated wrappers ─────────────────────────────────────────────────────
@@ -92,35 +106,10 @@ type Shipment = {
 const MotionUL = motion(UL as any);
 const MotionLI = motion(LI as any);
 const MotionContainer = motion(Container as any);
+const MotionTBody = motion(Table.Body as any);
+const MotionTRow = motion(Table.Row as any);
 
 export const Shipments = createElement<typeof Card.Root>((props, ref) => {
-  const shipments: Shipment[] = [];
-
-  for (let i = 0; i < 15; i++) {
-    shipments.push({
-      id: `SHP-${i}`,
-      from: {
-        company: "Spatial Corporation",
-        line1: "240 2ND AVE S",
-        line2: "STE 201K",
-        city: "Seattle",
-        state: "WA",
-        zip: "98104",
-        country: "USA"
-      },
-      to: {
-        name: "Dakarai Cundiff",
-        company: "Spatial Corporation",
-        line1: "2014 FAIRVIEW AVE",
-        line2: "APT 2211",
-        city: "Seattle",
-        state: "WA",
-        zip: "98121",
-        country: "USA"
-      }
-    });
-  }
-
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -128,7 +117,7 @@ export const Shipments = createElement<typeof Card.Root>((props, ref) => {
   const [search, setSearch] = useState("");
   const [view, setView] = useState(views[0].name);
   const [creating, setCreating] = useState(false);
-  const [edit, setEdit] = useState<Shipment>();
+  const [edit, setEdit] = useState<ShipmentType>();
 
   const keywords =
     searchParams
@@ -179,15 +168,55 @@ export const Shipments = createElement<typeof Card.Root>((props, ref) => {
   };
 
   const PAGE_SIZE = 15;
-
-  const pages = 1;
   const page = useMemo(() => Math.max(1, Number(searchParams.get("page") ?? 1)), [searchParams]);
+
+  const shipments = useSWR("shipments/list", async () => {
+    const response = await Spatial.shipments.list();
+
+    if (response.error) {
+      throw response.error;
+    }
+
+    return response.data;
+  });
+
+  const allData = shipments.data ?? [];
+
+  const filteredData = useMemo(() => {
+    if (keywords.length === 0) return allData;
+
+    return allData.filter((s) => {
+      const haystack = [s.id, s.from.city, s.from.state, s.from.company, s.from.name, s.to.city, s.to.state, s.to.company, s.to.name]
+        .filter(Boolean)
+        .join(" ")
+        .toLowerCase();
+
+      return keywords.some((k) => haystack.includes(k.toLowerCase()));
+    });
+  }, [allData, keywords]);
+
+  const paginatedData = useMemo(() => {
+    const start = (page - 1) * PAGE_SIZE;
+    return filteredData.slice(start, start + PAGE_SIZE);
+  }, [filteredData, page]);
+
+  const pages = Math.ceil(filteredData.length / PAGE_SIZE);
 
   useEffect(() => {
     setSearch(keywords.join(" "));
   }, [searchParams]);
 
-  const card = (shipment: Shipment, i: number) => (
+  const cancel = (shipment: ShipmentType) =>
+    toast.promise(Spatial.shipments.del(shipment.id), {
+      loading: "Cancelling shipment…",
+      success: async () => {
+        await shipments.mutate();
+        return { message: "Shipment cancelled", description: shipment.id };
+      },
+      error: { message: "Cancel failed", description: "Something went wrong." }
+    });
+
+  const card = (shipment: ShipmentType, i: number) => (
     <MotionLI
       key={shipment.id}
       variants={cardVariants}
@@ -195,33 +224,72 @@ export const Shipments = createElement<typeof Card.Root>((props, ref) => {
       whileTap={{ scale: 0.985, transition: { type: "spring", stiffness: 500, damping: 25 } }}
       layout
     >
-      <Shipment.Card shipment={shipment} onUpdate={() => setEdit(shipment)} />
+      <Shipment.Card shipment={shipment} onUpdate={() => setEdit(shipment)} onCancel={() => cancel(shipment)} />
     </MotionLI>
+  );
+
+  const renderSkeleton = () => (
+    <UL className="flex flex-col gap-10">
+      {[...Array(PAGE_SIZE)].map((_, i) => (
+        <LI key={i} className="rounded-4xl animate-pulse bg-input h-24" />
+      ))}
+    </UL>
+  );
+
+  const renderTableSkeleton = () => (
+    <>
+      {[...Array(PAGE_SIZE)].map((_, i) => (
+        <Table.Row key={i}>
+          <Table.Cell>
+            <Span className="flex w-32 h-4 rounded-full animate-pulse bg-input" />
+          </Table.Cell>
+          <Table.Cell className="hidden sm:table-cell">
+            <Container className="flex flex-col gap-2">
+              <Span className="w-24 h-4 rounded-full animate-pulse bg-input" />
+              <Span className="w-16 h-3 rounded-full animate-pulse bg-input" />
+            </Container>
+          </Table.Cell>
+          <Table.Cell className="hidden sm:table-cell">
+            <Container className="flex flex-col gap-2">
+              <Span className="w-24 h-4 rounded-full animate-pulse bg-input" />
+              <Span className="w-16 h-3 rounded-full animate-pulse bg-input" />
+            </Container>
+          </Table.Cell>
+          <Table.Cell />
+        </Table.Row>
+      ))}
+    </>
   );
 
   const render = () => {
     switch (view) {
       case "grid": {
-        const columns = [0, 1, 2].map((col) => shipments.filter((_, i) => i % 3 === col));
-        const twoColumns = [0, 1].map((col) => shipments.filter((_, i) => i % 2 === col));
+        if (shipments.isLoading || !shipments.data) {
+          return renderSkeleton();
+        }
+
+        const columns = [0, 1, 2].map((col) => paginatedData.filter((_, i) => i % 3 === col));
+        const twoColumns = [0, 1].map((col) => paginatedData.filter((_, i) => i % 2 === col));
 
         return (
           <AnimatePresence mode="wait">
             <motion.div key="grid-view" variants={gridContainerVariants} initial="hidden" animate="visible" exit="exit">
-              {/* EanimatedCardditor sheets — unchanged */}
-              {shipments.map((shipment, i) => (
+              {paginatedData.map((shipment) => (
                 <Shipment.Editor
-                  key={i}
+                  key={shipment.id}
                   open={edit?.id === shipment.id}
                   onOpenChange={(open) => setEdit(open ? shipment : undefined)}
                   shipment={shipment}
-                  onEdit={(_) => {}}
+                  onEdit={async (_) => {
+                    await shipments.mutate();
+                    setEdit(undefined);
+                  }}
                 />
               ))}
 
               {/* Mobile: single column */}
               <MotionUL className="flex flex-col gap-10 sm:hidden" variants={columnVariants}>
-                {shipments.map(card)}
+                {paginatedData.map(card)}
               </MotionUL>
 
               {/* Tablet: 2 columns */}
@@ -247,13 +315,62 @@ export const Shipments = createElement<typeof Card.Root>((props, ref) => {
       }
 
       case "list": {
-        return null;
+        return (
+          <AnimatePresence mode="wait">
+            <motion.div key="list-view" variants={tableVariants} initial="hidden" animate="visible" exit="exit">
+              {paginatedData.map((shipment) => (
+                <Shipment.Editor
+                  key={shipment.id}
+                  open={edit?.id === shipment.id}
+                  onOpenChange={(open) => setEdit(open ? shipment : undefined)}
+                  shipment={shipment}
+                  onEdit={async (_) => {
+                    await shipments.mutate();
+                    setEdit(undefined);
+                  }}
+                />
+              ))}
+
+              <Table.Root className="w-full table-fixed border-separate border-spacing-y-4">
+                <Table.Header>
+                  <Table.Row>
+                    <Table.Column className="text-left w-40">
+                      <Span className="text-sm text-foreground-quaternary font-semibold">Shipment</Span>
+                    </Table.Column>
+                    <Table.Column className="text-left hidden sm:table-cell">
+                      <Span className="text-sm text-foreground-quaternary font-semibold">Origin</Span>
+                    </Table.Column>
+                    <Table.Column className="text-left hidden sm:table-cell">
+                      <Span className="text-sm text-foreground-quaternary font-semibold">Destination</Span>
+                    </Table.Column>
+                    <Table.Column className="w-12 xl:w-16" />
+                  </Table.Row>
+                </Table.Header>
+                <MotionTBody variants={tableVariants}>
+                  {shipments.isLoading || !shipments.data
+                    ? renderTableSkeleton()
+                    : paginatedData.map((shipment) => (
+                        <Shipment.Row key={shipment.id} shipment={shipment} onUpdate={() => setEdit(shipment)} onCancel={() => cancel(shipment)} />
+                      ))}
+                </MotionTBody>
+              </Table.Root>
+            </motion.div>
+          </AnimatePresence>
+        );
       }
     }
   };
 
   return (
     <Card.Root {...props} ref={ref}>
+      <Shipment.Creator
+        open={creating}
+        onOpenChange={setCreating}
+        onCreate={async (_) => {
+          await shipments.mutate();
+          setCreating(false);
+        }}
+      />
       <Card.Content className="flex flex-col w-full px-10 xl:p-0 gap-10 xl:gap-20">
         <Container className="flex items-center justify-between">
           <H1 className="text-2xl font-extrabold">Shipments</H1>
@@ -340,10 +457,10 @@ export const Shipments = createElement<typeof Card.Root>((props, ref) => {
 const Shipment = {
   Address: createElement<typeof Container, { title: string; address: Address }>(({ title, address, ...props }, ref) => {
     return (
-      <Container {...props} ref={ref} className={clsx("flex flex-col p-10 gap-5", props.className)}>
-        <Span className="flex items-center gap-2.5 text-lg xl:text-2xl font-bold">
+      <Container {...props} ref={ref} className={clsx("flex flex-col p-10 gap-10", props.className)}>
+        <Span className="flex flex-col items-start text-sm xl:text-lg font-extrabold">
           <Span>{title}</Span>
-          <Span className="text-foreground-quaternary font-normal">
+          <Span className="font-normal text-foreground-quaternary normal-case">
             {address.city}, {address.state}
           </Span>
         </Span>
@@ -375,37 +492,173 @@ const Shipment = {
 
   Separator: createElement<typeof Separator>((props, ref) => <Separator {...props} ref={ref} className="flex w-full h-px bg-line-faint" />),
 
-  Card: createElement<typeof Fragment, { shipment: Shipment; onUpdate?: () => void; onCancel?: () => void }>(
+  Row: createElement<typeof Fragment, { shipment: ShipmentType; onUpdate?: () => void; onCancel?: () => void }>(
     ({ shipment, onUpdate, onCancel }, _) => {
+      const [cancelling, setCancelling] = useState(false);
+
       return (
-        <Accordion.Root collapsible type="single" className="flex flex-col bg-input outline outline-line-faint rounded-4xl">
-          <Accordion.Item value={shipment.id}>
-            <Accordion.Header>
-              <Accordion.Trigger className="group flex items-center w-full p-10">
-                <Container className="flex flex-col items-start grow xl:gap-2">
-                  <Container className="flex w-full items-center gap-2 justify-between">
-                    <Span className="text-2xl xl:text-4xl font-bold">{shipment.id}</Span>
-                    <Icon symbol="keyboard_arrow_down" className="font-light transition group-data-[state=open]:rotate-180 duration-300" />
-                  </Container>
-                  <Span className="text-foreground-quaternary text-xs uppercase">{shipment.to.city} • 2 Parcels • 2 Units</Span>
-                </Container>
-              </Accordion.Trigger>
-            </Accordion.Header>
-            <Accordion.Content>
-              <Shipment.Address title="Origin" address={shipment.from} className="pt-0!" />
-              <Shipment.Separator />
-              <Shipment.Address title="Destination" address={shipment.to} />
-              <Container className="flex flex-col items-center gap-2.5 p-4">
-                <Button shape="pill" size="fill" onClick={onUpdate}>
-                  <Span>Update</Span>
-                </Button>
-                <Button shape="pill" size="fill" onClick={onCancel} destructive>
-                  Cancel
-                </Button>
+        <>
+          <MotionTRow variants={rowVariants} className="cursor-pointer rounded-2xl">
+            <Table.Cell onClick={onUpdate}>
+              <Container className="flex flex-col gap-1 py-2.5 xl:py-5">
+                <Span className="font-bold uppercase">{shipment.id.slice(-8)}</Span>
+                <Span className="text-xs inline-flex gap-2 items-center text-foreground-quaternary sm:hidden">
+                  <Span>{shipment.from.city}</Span>
+                  <Icon symbol="arrow_right_alt" size={16} />
+                  <Span>{shipment.to.city}</Span>
+                </Span>
               </Container>
-            </Accordion.Content>
-          </Accordion.Item>
-        </Accordion.Root>
+            </Table.Cell>
+            <Table.Cell className="hidden sm:table-cell" onClick={onUpdate}>
+              <Container className="flex flex-col gap-0.5">
+                <Span className="font-medium truncate">{shipment.from.company ?? shipment.from.name ?? "—"}</Span>
+                <Span className="text-sm text-foreground-quaternary">
+                  {shipment.from.city}, {shipment.from.state}
+                </Span>
+              </Container>
+            </Table.Cell>
+            <Table.Cell className="hidden sm:table-cell" onClick={onUpdate}>
+              <Container className="flex flex-col gap-0.5">
+                <Span className="font-medium truncate">{shipment.to.company ?? shipment.to.name ?? "—"}</Span>
+                <Span className="text-sm text-foreground-quaternary">
+                  {shipment.to.city}, {shipment.to.state}
+                </Span>
+              </Container>
+            </Table.Cell>
+            <Table.Cell>
+              <Dropdown.Root>
+                <Dropdown.Trigger asChild>
+                  <Button intent="ghost" className="ml-auto! size-10! p-0! data-[state=open]:bg-button-ghost-active">
+                    <Icon symbol="more_vert" />
+                  </Button>
+                </Dropdown.Trigger>
+                <Dropdown.Content align="end">
+                  <Dropdown.Item onSelect={onUpdate}>
+                    <Dropdown.Icon symbol="edit" fill />
+                    <Span>Edit</Span>
+                  </Dropdown.Item>
+                  <Dropdown.Item onSelect={() => setCancelling(true)}>
+                    <Dropdown.Icon symbol="close" fill />
+                    <Span>Cancel</Span>
+                  </Dropdown.Item>
+                </Dropdown.Content>
+              </Dropdown.Root>
+            </Table.Cell>
+          </MotionTRow>
+
+          <Dialog.Root open={cancelling} onOpenChange={setCancelling}>
+            <Dialog.Content title="Cancel shipment" description="Please confirm this action.">
+              <Form
+                className="flex flex-col gap-10"
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  setCancelling(false);
+                  onCancel?.();
+                }}
+              >
+                <Container className="flex flex-col gap-2">
+                  <Span className="font-semibold">{shipment.id.slice(-8).toUpperCase()}</Span>
+                  <Span className="text-sm inline-flex gap-2 items-center text-foreground-secondary">
+                    <Span>
+                      {shipment.from.city}, {shipment.from.state}
+                    </Span>
+                    <Icon symbol="arrow_right_alt" size={20} />
+                    <Span>
+                      {shipment.to.city}, {shipment.to.state}
+                    </Span>
+                  </Span>
+                </Container>
+                <Paragraph className="text-sm text-foreground-secondary">This shipment will be cancelled immediately and cannot be undone.</Paragraph>
+                <Container className="flex w-full items-center justify-end gap-4">
+                  <Dialog.Close asChild>
+                    <Button type="button" intent="ghost">
+                      Keep
+                    </Button>
+                  </Dialog.Close>
+                  <Button type="submit" intent="destructive">
+                    Cancel
+                  </Button>
+                </Container>
+              </Form>
+            </Dialog.Content>
+          </Dialog.Root>
+        </>
+      );
+    }
+  ),
+
+  Card: createElement<typeof Fragment, { shipment: ShipmentType; onUpdate?: () => void; onCancel?: () => void }>(
+    ({ shipment, onUpdate, onCancel }, _) => {
+      const [cancelling, setCancelling] = useState(false);
+
+      return (
+        <>
+          <Accordion.Root collapsible type="single" className="flex flex-col bg-input outline outline-line-faint rounded-4xl">
+            <Accordion.Item value={shipment.id}>
+              <Accordion.Header>
+                <Accordion.Trigger className="group flex items-center w-full p-10">
+                  <Container className="flex flex-col items-start grow xl:gap-2">
+                    <Container className="flex w-full items-center gap-2 justify-between">
+                      <Span className="text-2xl xl:text-4xl font-bold uppercase">{shipment.id.slice(-8)}</Span>
+                      <Icon symbol="keyboard_arrow_down" className="font-light transition group-data-[state=open]:rotate-180 duration-300" />
+                    </Container>
+                    <Span className="text-foreground-quaternary text-xs uppercase">2 Parcels • 2 Units</Span>
+                  </Container>
+                </Accordion.Trigger>
+              </Accordion.Header>
+              <Accordion.Content>
+                <Shipment.Address title="Origin" address={shipment.from} className="pt-0!" />
+                <Shipment.Separator />
+                <Shipment.Address title="Destination" address={shipment.to} />
+                <Container className="flex flex-col items-center gap-2.5 p-4">
+                  <Button shape="pill" size="fill" onClick={onUpdate}>
+                    <Span>Update</Span>
+                  </Button>
+                  <Button shape="pill" size="fill" onClick={() => setCancelling(true)} destructive>
+                    Cancel
+                  </Button>
+                </Container>
+              </Accordion.Content>
+            </Accordion.Item>
+          </Accordion.Root>
+
+          <Dialog.Root open={cancelling} onOpenChange={setCancelling}>
+            <Dialog.Content title="Cancel shipment" description="Please confirm this action.">
+              <Form
+                className="flex flex-col gap-10"
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  setCancelling(false);
+                  onCancel?.();
+                }}
+              >
+                <Container className="flex flex-col gap-2">
+                  <Span className="font-semibold">{shipment.id.slice(-8).toUpperCase()}</Span>
+                  <Span className="text-sm inline-flex gap-2 items-center text-foreground-secondary">
+                    <Span>
+                      {shipment.from.city}, {shipment.from.state}
+                    </Span>
+                    <Icon symbol="arrow_right_alt" size={20} />
+                    <Span>
+                      {shipment.to.city}, {shipment.to.state}
+                    </Span>
+                  </Span>
+                </Container>
+                <Paragraph className="text-sm text-foreground-secondary">This shipment will be cancelled immediately and cannot be undone.</Paragraph>
+                <Container className="flex w-full items-center justify-end gap-4">
+                  <Dialog.Close asChild>
+                    <Button type="button" intent="ghost">
+                      Keep
+                    </Button>
+                  </Dialog.Close>
+                  <Button type="submit" intent="destructive">
+                    Cancel
+                  </Button>
+                </Container>
+              </Form>
+            </Dialog.Content>
+          </Dialog.Root>
+        </>
       );
     }
   ),
@@ -426,20 +679,30 @@ const Shipment = {
           </Accordion.Trigger>
         </Accordion.Header>
         <Accordion.Content>
-          <Container className="grid grid-cols-1 sm:grid-cols-2 gap-10 py-10">{children}</Container>
+          <Container className="grid grid-cols-1 sm:grid-cols-2 gap-10 py-10 px-[5px]">{children}</Container>
         </Accordion.Content>
       </Accordion.Item>
     );
   }),
 
-  Editor: createElement<typeof Sheet.Root, { shipment: Shipment; onEdit: (shipment: Shipment) => void }>(({ shipment, onEdit, ...props }, ref) => {
-    const [from, setFrom] = useState<Address>({ ...shipment.from });
-    const [to, setTo] = useState<Address>({ ...shipment.to });
+  Creator: createElement<typeof Sheet.Root, { onCreate: (shipment: ShipmentType) => void }>(({ onCreate, ...props }, ref) => {
+    const empty = (): Address => ({
+      line1: "",
+      city: "",
+      state: "",
+      zip: "",
+      country: "USA"
+    });
+
+    const [from, setFrom] = useState<Address>(empty());
+    const [to, setTo] = useState<Address>(empty());
 
     useEffect(() => {
-      setFrom({ ...shipment.from });
-      setTo({ ...shipment.to });
-    }, [shipment]);
+      if (props.open) {
+        setFrom(empty());
+        setTo(empty());
+      }
+    }, [props.open]);
 
     const fromField = (key: keyof Address) => ({
       value: from[key] ?? "",
@@ -454,13 +717,29 @@ const Shipment = {
     const submit = (e: React.FormEvent) => {
       e.preventDefault();
 
-      onEdit({ ...shipment, from, to });
+      toast.promise(Spatial.shipments.create({ from, to }), {
+        loading: "Creating shipment…",
+        success: async (response) => {
+          if (response.error) {
+            return {
+              type: "error",
+              message: "Create failed",
+              description: "Something went wrong."
+            };
+          }
+
+          await onCreate(response.data!);
+
+          return { message: "Shipment created", description: response.data!.id };
+        },
+        error: { message: "Create failed", description: "Something went wrong." }
+      });
     };
 
     return (
       <Sheet.Root {...props} ref={ref}>
-        <Sheet.Content title={shipment.id} closeButton>
-          <Form className="flex flex-col gap-10 sm:min-w-lg" onSubmit={submit}>
+        <Sheet.Content title="New Shipment" closeButton>
+          <Form className="flex flex-col gap-10 sm:min-w-xl" onSubmit={submit}>
             <Accordion.Root type="multiple" defaultValue={["from", "to", "payload", "status"]} className="flex flex-col">
               <Shipment.Section value="from" label="Origin">
                 <Field type="text" inset={false} label="Name" placeholder="Full name" {...fromField("name")} />
@@ -482,13 +761,12 @@ const Shipment = {
                 <Field type="text" inset={false} label="ZIP" placeholder="ZIP" {...toField("zip")} />
               </Shipment.Section>
 
-              <Shipment.Section value="payload" label="Payload"></Shipment.Section>
-
-              <Shipment.Section value="status" label="Status"></Shipment.Section>
+              <Shipment.Section value="payload" label="Payload" />
+              <Shipment.Section value="status" label="Status" />
             </Accordion.Root>
 
             <Container className="flex gap-4">
-              <Button type="submit">Update</Button>
+              <Button type="submit">Create</Button>
               <Sheet.Close asChild>
                 <Button intent="ghost">Cancel</Button>
               </Sheet.Close>
@@ -497,5 +775,89 @@ const Shipment = {
         </Sheet.Content>
       </Sheet.Root>
     );
-  })
+  }),
+
+  Editor: createElement<typeof Sheet.Root, { shipment: ShipmentType; onEdit: (shipment: ShipmentType) => void }>(
+    ({ shipment, onEdit, ...props }, ref) => {
+      const [from, setFrom] = useState<Address>({ ...shipment.from });
+      const [to, setTo] = useState<Address>({ ...shipment.to });
+
+      useEffect(() => {
+        setFrom({ ...shipment.from });
+        setTo({ ...shipment.to });
+      }, [shipment]);
+
+      const fromField = (key: keyof Address) => ({
+        value: from[key] ?? "",
+        onChange: (e: React.ChangeEvent<HTMLInputElement>) => setFrom((prev) => ({ ...prev, [key]: e.target.value }))
+      });
+
+      const toField = (key: keyof Address) => ({
+        value: to[key] ?? "",
+        onChange: (e: React.ChangeEvent<HTMLInputElement>) => setTo((prev) => ({ ...prev, [key]: e.target.value }))
+      });
+
+      const submit = (e: React.FormEvent) => {
+        e.preventDefault();
+
+        toast.promise(Spatial.shipments.update({ ...shipment, from, to }), {
+          loading: "Updating shipment…",
+          success: async (response) => {
+            if (response.error) {
+              return {
+                type: "error",
+                message: "Update failed",
+                description: "Something went wrong."
+              };
+            }
+
+            await onEdit(response.data!);
+
+            return { message: "Shipment updated", description: response.data!.id };
+          },
+          error: { message: "Update failed", description: "Something went wrong." }
+        });
+      };
+
+      return (
+        <Sheet.Root {...props} ref={ref}>
+          <Sheet.Content title={shipment.id.slice(-8).toUpperCase()} closeButton>
+            <Form className="flex flex-col gap-10 sm:min-w-lg" onSubmit={submit}>
+              <Accordion.Root type="multiple" defaultValue={["from", "to", "payload", "status"]} className="flex flex-col">
+                <Shipment.Section value="from" label="Origin">
+                  <Field type="text" inset={false} label="Name" placeholder="Full name" {...fromField("name")} />
+                  <Field type="text" inset={false} label="Company" placeholder="Company" {...fromField("company")} />
+                  <Field type="text" inset={false} label="Address Line 1" placeholder="Address line 1" {...fromField("line1")} />
+                  <Field type="text" inset={false} label="Address Line 2" placeholder="Address line 2" {...fromField("line2")} />
+                  <Field type="text" inset={false} label="City" placeholder="City" {...fromField("city")} />
+                  <Field type="text" inset={false} label="State" placeholder="State" {...fromField("state")} />
+                  <Field type="text" inset={false} label="ZIP" placeholder="ZIP" {...fromField("zip")} />
+                </Shipment.Section>
+
+                <Shipment.Section value="to" label="Destination">
+                  <Field type="text" inset={false} label="Name" placeholder="Full name" {...toField("name")} />
+                  <Field type="text" inset={false} label="Company" placeholder="Company" {...toField("company")} />
+                  <Field type="text" inset={false} label="Address Line 1" placeholder="Address line 1" {...toField("line1")} />
+                  <Field type="text" inset={false} label="Address Line 2" placeholder="Address line 2" {...toField("line2")} />
+                  <Field type="text" inset={false} label="City" placeholder="City" {...toField("city")} />
+                  <Field type="text" inset={false} label="State" placeholder="State" {...toField("state")} />
+                  <Field type="text" inset={false} label="ZIP" placeholder="ZIP" {...toField("zip")} />
+                </Shipment.Section>
+
+                <Shipment.Section value="payload" label="Payload" />
+                <Shipment.Section value="status" label="Status" />
+              </Accordion.Root>
+
+              <Container className="flex gap-4">
+                <Button type="submit">Update</Button>
+                <Sheet.Close asChild>
+                  <Button intent="ghost">Cancel</Button>
+                </Sheet.Close>
+              </Container>
+            </Form>
+          </Sheet.Content>
+        </Sheet.Root>
+      );
+    }
+  )
 };

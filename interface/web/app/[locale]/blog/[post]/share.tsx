@@ -78,7 +78,7 @@ export const Share = createElement<typeof Container>((props, ref) => {
           onClick={handleCopy}
           aria-label={copied ? "Copied!" : "Copy link"}
         >
-          <Icon symbol={copied ? "check" : "content_copy"} size={20} className="font-medium" />
+          <Icon symbol={copied ? "check" : "content_copy"} size={20} className="font-light" />
         </Button>
       </UL>
     </Container>

@@ -9,6 +9,7 @@ import { PermissionController } from "./PermissionController";
 import { RoleController } from "./RoleController";
 import { ScopeController } from "./ScopeController";
 import { SessionController } from "./SessionController";
+import { ShipmentController } from "./ShipmentController";
 import { UserController } from "./UserController";
 
 export * from "./AccountController";
@@ -20,6 +21,7 @@ export * from "./PermissionController";
 export * from "./RoleController";
 export * from "./ScopeController";
 export * from "./SessionController";
+export * from "./ShipmentController";
 export * from "./UserController";
 
 export const Spatial = {
@@ -32,5 +34,6 @@ export const Spatial = {
   roles: new RoleController(),
   scopes: new ScopeController(),
   sessions: new SessionController(),
+  shipments: new ShipmentController(),
   users: new UserController()
 };

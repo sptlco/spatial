@@ -16,6 +16,8 @@ export default function Page() {
         <Tabs.Root defaultValue="assets">
           <Tabs.List className="px-10">
             <Tabs.Trigger value="assets">Assets</Tabs.Trigger>
+            <Tabs.Trigger value="inventory">Inventory</Tabs.Trigger>
+            <Tabs.Trigger value="orders">Orders</Tabs.Trigger>
             <Tabs.Trigger value="shipments">Shipments</Tabs.Trigger>
           </Tabs.List>
           <Tabs.Content value="assets">
@@ -23,6 +25,8 @@ export default function Page() {
               <Assets />
             </Suspense>
           </Tabs.Content>
+          <Tabs.Content value="inventory" />
+          <Tabs.Content value="orders" />
           <Tabs.Content value="shipments">
             <Suspense>
               <Shipments />

@@ -1,5 +1,7 @@
 // Copyright © Spatial Corporation. All rights reserved.
 
+using System.ComponentModel.DataAnnotations;
+
 namespace Spatial.Cloud.Data.Scopes;
 
 /// <summary>
@@ -110,6 +112,9 @@ public partial class Scope
         public const string Delete = "roles.delete";
     }
 
+    /// <summary>
+    /// Scopes related to scopes themselves.
+    /// </summary>
     public class Scopes
     {
         /// <summary>
@@ -117,6 +122,36 @@ public partial class Scope
         /// </summary>
         [Metadata("Get a list of scopes.")]
         public const string List = "scopes.list";
+    }
+
+    /// <summary>
+    /// Scopes related to shipments.
+    /// </summary>
+    public class Shipments
+    {
+        /// <summary>
+        /// Create a new shipment.
+        /// </summary>
+        [Metadata("Create a new shipment.")]
+        public const string Create = "shipments.create";
+
+        /// <summary>
+        /// Get a list of shipments.
+        /// </summary>
+        [Metadata("Get a list of shipments.")]
+        public const string List = "shipments.list";
+
+        /// <summary>
+        /// Update a shipment.
+        /// </summary>
+        [Metadata("Update a shipment.")]
+        public const string Update = "shipments.update";
+
+        /// <summary>
+        /// Delete a shipment.
+        /// </summary>
+        [Metadata("Delete a shipment.")]
+        public const string Delete = "shipments.delete";
     }
 
     /// <summary>

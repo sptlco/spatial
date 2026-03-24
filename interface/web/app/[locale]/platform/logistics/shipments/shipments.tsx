@@ -5,6 +5,7 @@
 import { clsx } from "clsx";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { Fragment, useEffect, useMemo, useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 
 import {
   Accordion,
@@ -29,6 +30,46 @@ import { View, views } from "./view";
 import { Filters } from "./filters";
 import { Sort } from "./sort";
 
+// ─── Animation variants ────────────────────────────────────────────────────
+
+const gridContainerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.06,
+      delayChildren: 0.05
+    }
+  },
+  exit: { opacity: 0, transition: { duration: 0.15 } }
+};
+
+const columnVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.08
+    }
+  }
+};
+
+const cardVariants = {
+  hidden: { opacity: 0, y: 20, scale: 0.98 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    scale: 1,
+    transition: {
+      type: "spring",
+      stiffness: 260,
+      damping: 22
+    }
+  }
+};
+
+// ─── Types ─────────────────────────────────────────────────────────────────
+
 type Address = {
   name?: string;
   company?: string;
@@ -45,6 +86,12 @@ type Shipment = {
   from: Address;
   to: Address;
 };
+
+// ─── Animated wrappers ─────────────────────────────────────────────────────
+
+const MotionUL = motion(UL as any);
+const MotionLI = motion(LI as any);
+const MotionContainer = motion(Container as any);
 
 export const Shipments = createElement<typeof Card.Root>((props, ref) => {
   const shipments: Shipment[] = [];
@@ -140,49 +187,65 @@ export const Shipments = createElement<typeof Card.Root>((props, ref) => {
     setSearch(keywords.join(" "));
   }, [searchParams]);
 
+  const card = (shipment: Shipment, i: number) => (
+    <MotionLI
+      key={shipment.id}
+      variants={cardVariants}
+      whileHover={{ y: -4, transition: { type: "spring", stiffness: 400, damping: 20 } }}
+      whileTap={{ scale: 0.985, transition: { type: "spring", stiffness: 500, damping: 25 } }}
+      layout
+    >
+      <Shipment.Card shipment={shipment} onUpdate={() => setEdit(shipment)} />
+    </MotionLI>
+  );
+
   const render = () => {
     switch (view) {
       case "grid": {
         const columns = [0, 1, 2].map((col) => shipments.filter((_, i) => i % 3 === col));
         const twoColumns = [0, 1].map((col) => shipments.filter((_, i) => i % 2 === col));
 
-        const jsx = (shipment: Shipment, i: number) => <Shipment.Card key={i} shipment={shipment} onUpdate={() => setEdit(shipment)} />;
-
         return (
-          <>
-            {shipments.map((shipment, i) => (
-              <Shipment.Editor
-                key={i}
-                open={edit?.id === shipment.id}
-                onOpenChange={(open) => setEdit(open ? shipment : undefined)}
-                shipment={shipment}
-                onEdit={(_) => {}}
-              />
-            ))}
-
-            {/* Mobile: single column */}
-            <UL className="flex flex-col gap-10 sm:hidden">{shipments.map(jsx)}</UL>
-
-            {/* Tablet: 2 independent columns */}
-            <Container className="hidden sm:flex xl:hidden gap-10">
-              {twoColumns.map((col, ci) => (
-                <UL key={ci} className="flex flex-col gap-10 flex-1">
-                  {col.map(jsx)}
-                </UL>
+          <AnimatePresence mode="wait">
+            <motion.div key="grid-view" variants={gridContainerVariants} initial="hidden" animate="visible" exit="exit">
+              {/* EanimatedCardditor sheets — unchanged */}
+              {shipments.map((shipment, i) => (
+                <Shipment.Editor
+                  key={i}
+                  open={edit?.id === shipment.id}
+                  onOpenChange={(open) => setEdit(open ? shipment : undefined)}
+                  shipment={shipment}
+                  onEdit={(_) => {}}
+                />
               ))}
-            </Container>
 
-            {/* Desktop: 3 independent columns */}
-            <Container className="hidden xl:flex gap-10">
-              {columns.map((col, ci) => (
-                <UL key={ci} className="flex flex-col gap-10 flex-1">
-                  {col.map(jsx)}
-                </UL>
-              ))}
-            </Container>
-          </>
+              {/* Mobile: single column */}
+              <MotionUL className="flex flex-col gap-10 sm:hidden" variants={columnVariants}>
+                {shipments.map(card)}
+              </MotionUL>
+
+              {/* Tablet: 2 columns */}
+              <MotionContainer className="hidden sm:flex xl:hidden gap-10" variants={gridContainerVariants}>
+                {twoColumns.map((col, ci) => (
+                  <MotionUL key={ci} className="flex flex-col gap-10 flex-1" variants={columnVariants}>
+                    {col.map(card)}
+                  </MotionUL>
+                ))}
+              </MotionContainer>
+
+              {/* Desktop: 3 columns */}
+              <MotionContainer className="hidden xl:flex gap-10" variants={gridContainerVariants}>
+                {columns.map((col, ci) => (
+                  <MotionUL key={ci} className="flex flex-col gap-10 flex-1" variants={columnVariants}>
+                    {col.map(card)}
+                  </MotionUL>
+                ))}
+              </MotionContainer>
+            </motion.div>
+          </AnimatePresence>
         );
       }
+
       case "list": {
         return null;
       }
@@ -277,7 +340,7 @@ export const Shipments = createElement<typeof Card.Root>((props, ref) => {
 const Shipment = {
   Address: createElement<typeof Container, { title: string; address: Address }>(({ title, address, ...props }, ref) => {
     return (
-      <Container {...props} ref={ref} className="flex flex-col p-10 gap-5">
+      <Container {...props} ref={ref} className={clsx("flex flex-col p-10 gap-5", props.className)}>
         <Span className="flex items-center gap-2.5 text-lg xl:text-2xl font-bold">
           <Span>{title}</Span>
           <Span className="text-foreground-quaternary font-normal">
@@ -324,14 +387,12 @@ const Shipment = {
                     <Span className="text-2xl xl:text-4xl font-bold">{shipment.id}</Span>
                     <Icon symbol="keyboard_arrow_down" className="font-light transition group-data-[state=open]:rotate-180 duration-300" />
                   </Container>
-                  <Span className="text-foreground-quaternary text-xs uppercase">
-                    {shipment.to.city}, {shipment.to.state} • 2 Parcels • 2 Units
-                  </Span>
+                  <Span className="text-foreground-quaternary text-xs uppercase">{shipment.to.city} • 2 Parcels • 2 Units</Span>
                 </Container>
               </Accordion.Trigger>
             </Accordion.Header>
             <Accordion.Content>
-              <Shipment.Address title="Origin" address={shipment.from} />
+              <Shipment.Address title="Origin" address={shipment.from} className="pt-0!" />
               <Shipment.Separator />
               <Shipment.Address title="Destination" address={shipment.to} />
               <Container className="flex flex-col items-center gap-2.5 p-4">

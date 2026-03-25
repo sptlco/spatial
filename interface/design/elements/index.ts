@@ -40,6 +40,7 @@ export * from "./portal";
 export * from "./scroll-area";
 export * from "./separator";
 export * from "./sheet";
+export * from "./slider";
 export * from "./sonner";
 export * from "./span";
 export * from "./spinner";

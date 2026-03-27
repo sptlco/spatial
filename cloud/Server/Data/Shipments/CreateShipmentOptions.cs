@@ -3,17 +3,12 @@
 namespace Spatial.Cloud.Data.Shipments;
 
 /// <summary>
-/// Configurable options for a new shipment.
+/// Configurable options for a new <see cref="Shipment"/>.
 /// </summary>
-public class CreateShipmentOptions : CreateResourceOptions
+public class CreateShipmentOptions
 {
     /// <summary>
-    /// The origin address.
+    /// The packages to ship.
     /// </summary>
-    public Address From { get; set; }
-
-    /// <summary>
-    /// The destination address.
-    /// </summary>
-    public Address To { get; set; }
+    public List<CreateParcelOptions> Packages { get; set; } = [];
 }

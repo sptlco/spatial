@@ -23,6 +23,42 @@ public static class ResourceExtensions
     }
 
     /// <summary>
+    /// Store a <see cref="Resource"/> of type <typeparamref name="T"/>.
+    /// </summary>
+    /// <typeparam name="T">The type of <see cref="Resource"/> to store.</typeparam>
+    /// <param name="record">The <see cref="Resource"/> to store.</param>
+    public static async Task<T> StoreAsync<T>(this T record) where T : Resource
+    {
+        await Resource<T>.StoreOneAsync(record);
+
+        return record;
+    }
+
+    /// <summary>
+    /// Store many resources of type <typeparamref name="T"/>.
+    /// </summary>
+    /// <typeparam name="T">The type of <see cref="Resource"/> to store.</typeparam>
+    /// <param name="records">The resources to store.</param>
+    public static IEnumerable<T> Store<T>(this IEnumerable<T> records) where T : Resource
+    {
+        Resource<T>.StoreMany(records);
+
+        return records;
+    }
+
+    /// <summary>
+    /// Store many resources of type <typeparamref name="T"/>.
+    /// </summary>
+    /// <typeparam name="T">The type of <see cref="Resource"/> to store.</typeparam>
+    /// <param name="records">The resources to store.</param>
+    public static async Task<IEnumerable<T>> StoreAsync<T>(this IEnumerable<T> records) where T : Resource
+    {
+        await Resource<T>.StoreManyAsync(records);
+
+        return records;
+    }
+
+    /// <summary>
     /// Save a <see cref="Resource"/> of type <typeparamref name="T"/>.
     /// </summary>
     /// <typeparam name="T">The type of <see cref="Resource"/> to save.</typeparam>

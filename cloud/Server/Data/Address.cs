@@ -8,12 +8,12 @@ namespace Spatial.Cloud.Data;
 public class Address
 {
     /// <summary>
-    /// The recipient's name.
+    /// The person's name.
     /// </summary>
     public string? Name { get; set; }
 
     /// <summary>
-    /// The recipient's company.
+    /// The person's company.
     /// </summary>
     public string? Company { get; set; }
 

@@ -136,21 +136,33 @@ public partial class Scope
         public const string Create = "shipments.create";
 
         /// <summary>
+        /// Get a <see cref="Shipment"/>.
+        /// </summary>
+        [Metadata("Get a shipment.")]
+        public const string Get = "shipments.get";
+
+        /// <summary>
         /// Get a list of shipments.
         /// </summary>
         [Metadata("Get a list of shipments.")]
         public const string List = "shipments.list";
 
         /// <summary>
-        /// Update a shipment.
+        /// Update a parcel.
         /// </summary>
-        [Metadata("Update a shipment.")]
-        public const string Update = "shipments.update";
+        [Metadata("Update a parcel.")]
+        public const string Update_Parcel = "shipments.parcels.update";
+
+        /// <summary>
+        /// Delete a parcel.
+        /// </summary>
+        [Metadata("Delete a parcel.")]
+        public const string Delete_Parcel = "shipments.parcels.delete";
 
         /// <summary>
         /// Delete a shipment.
         /// </summary>
-        [Metadata("Delete a shipment.")]
+        [Metadata("Delete a shipment")]
         public const string Delete = "shipments.delete";
     }
 

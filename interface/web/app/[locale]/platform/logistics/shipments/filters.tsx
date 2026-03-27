@@ -2,7 +2,7 @@
 
 import { Fragment } from "react";
 
-import { Button, createElement, Dropdown, Icon, Slider } from "@sptlco/design";
+import { Button, createElement, Dropdown, Icon } from "@sptlco/design";
 
 export const Filters = createElement<typeof Fragment>(() => {
   return (
@@ -12,9 +12,7 @@ export const Filters = createElement<typeof Fragment>(() => {
           <Icon symbol="filter_alt" className="group-data-[state=open]:fill" />
         </Button>
       </Dropdown.Trigger>
-      <Dropdown.Content className="p-10">
-        <Slider defaultValue={[33]} max={100} step={1} />
-      </Dropdown.Content>
+      <Dropdown.Content>Filters</Dropdown.Content>
     </Dropdown.Root>
   );
 });

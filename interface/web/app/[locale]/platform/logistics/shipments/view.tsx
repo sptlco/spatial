@@ -5,7 +5,7 @@ import { createElement, Icon, ToggleGroup } from "@sptlco/design";
 /**
  * A list of available layouts.
  */
-export const views = [
+export const VIEWS = [
   { name: "grid", icon: <Icon symbol="grid_view" fill /> },
   { name: "list", icon: <Icon symbol="format_list_bulleted" className="font-light" /> }
 ];
@@ -16,7 +16,7 @@ export const views = [
 export const View = createElement<typeof ToggleGroup.Root>((props, ref) => {
   return (
     <ToggleGroup.Root {...props} ref={ref} className="flex items-center gap-4">
-      {views.map((view, i) => (
+      {VIEWS.map((view, i) => (
         <ToggleGroup.Item
           key={i}
           value={view.name}

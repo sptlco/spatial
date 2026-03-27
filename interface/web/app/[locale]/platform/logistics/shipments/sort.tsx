@@ -12,7 +12,7 @@ export const Sort = createElement<typeof Fragment>(() => {
           <Icon symbol="sort" className="group-data-[state=open]:fill" />
         </Button>
       </Dropdown.Trigger>
-      <Dropdown.Content>Filters</Dropdown.Content>
+      <Dropdown.Content>Sort</Dropdown.Content>
     </Dropdown.Root>
   );
 });

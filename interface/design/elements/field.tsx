@@ -74,6 +74,10 @@ export type TextFieldProps = {
   suffix?: string;
 };
 
+export type NumberFieldProps = {
+  type: "number";
+};
+
 /**
  * Configurable options for an option field.
  */
@@ -229,7 +233,7 @@ export type ColorFieldProps = {
 /**
  * Configurable options for a specific field type.
  */
-export type FieldTypeProps = TextFieldProps | OptionFieldProps | OTPFieldProps | MetaFieldProps | ColorFieldProps;
+export type FieldTypeProps = TextFieldProps | NumberFieldProps | OptionFieldProps | OTPFieldProps | MetaFieldProps | ColorFieldProps;
 
 /**
  * Configurable options for a field.
@@ -336,6 +340,8 @@ export const Field = createElement<"input", FieldProps>(({ containerClassName, i
         ) : (
           input()
         );
+      case "number":
+        return <Input {...props} ref={ref} className={clsx(styles, "w-full", props.className)} />;
       case "option": {
         const trigger = () => {
           if (!props.selection || (props.selection as string[])?.length <= 0) {

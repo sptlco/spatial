@@ -46,13 +46,13 @@ public class ShipmentController : Controller
     }
 
     /// <summary>
-    /// Get a <see cref="Shipment"/>.
+    /// Find a <see cref="Shipment"/>.
     /// </summary>
     /// <returns>A <see cref="Shipment"/> projection.</returns>
     [GET]
     [Path("{shipment}")]
-    [Authorize(Scope.Shipments.Get)]
-    public async Task<Shipment> GetShipmentAsync(string shipment)
+    [Authorize(Scope.Shipments.Find)]
+    public async Task<Shipment> FindShipmentAsync(string shipment)
     {
         return Project(shipment, Resource<Parcel>.List(p => p.Shipment == shipment));
     }

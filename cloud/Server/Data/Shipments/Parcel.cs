@@ -14,7 +14,7 @@ public class Parcel : Resource
     /// <summary>
     /// Groups this <see cref="Parcel"/> with others that belong to the same logical <see cref="Shipment"/>.
     /// </summary>
-    public string Shipment { get; set; } = new UID();
+    public string Shipment { get; set; }
 
     /// <summary>
     /// The parcel's origin <see cref="Address"/>.

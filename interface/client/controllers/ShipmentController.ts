@@ -1,16 +1,28 @@
 // Copyright © Spatial Corporation. All rights reserved.
 
-import { CreateShipmentOptions, Shipment } from "@sptlco/data";
+import { CreateShipmentOptions, Parcel, Shipment } from "@sptlco/data";
 import { Controller } from "..";
 
+/**
+ * A {@link Controller} for {@link Shipment} functions.
+ */
 export class ShipmentController extends Controller {
   /**
-   * Create a new shipment.
-   * @param options Configurable options for the shipment.
-   * @returns A shipment.
+   * Create a new {@link Shipment}.
+   * @param options Configurable options for the {@link Shipment}.
+   * @returns A {@link Shipment}.
    */
   public create = async (options: CreateShipmentOptions) => {
     return this.post<Shipment>("shipments", options);
+  };
+
+  /**
+   * Find a {@link Shipment}.
+   * @param shipment A {@link Shipment} identifier.
+   * @returns All packages with the {@link Shipment} identifier.
+   */
+  public find = async (shipment: string) => {
+    return this.get<Shipment>(`shipments/${shipment}`);
   };
 
   /**
@@ -22,19 +34,27 @@ export class ShipmentController extends Controller {
   };
 
   /**
-   * Update a shipment.
-   * @param shipment The shipment to update.
-   * @returns The updated shipment.
+   * Update a {@link Parcel}.
+   * @param parcel The {@link Parcel} to update.
+   * @returns The updated {@link Parcel}.
    */
-  public update = async (shipment: Shipment) => {
-    return this.patch<Shipment>("shipments", shipment);
+  public updateParcel = async (parcel: Parcel) => {
+    return this.patch<Parcel>(`shipments/parcels/${parcel.id}`, parcel);
   };
 
   /**
-   * Delete a shipment.
-   * @param id The ID of the shipment to delete.
+   * Delete a {@link Shipment}.
+   * @param shipment The {@link Shipment} to delete.
    */
-  public del = async (id: string) => {
-    return this.delete(`shipments/${id}`);
+  public del = async (shipment: string) => {
+    return this.delete(`shipments/${shipment}`);
+  };
+
+  /**
+   * Delete a {@link Parcel}.
+   * @param parcel The {@link Parcel} to delete.
+   */
+  public deleteParcel = async (parcel: string) => {
+    return this.delete(`shipments/parcels/${parcel}`);
   };
 }

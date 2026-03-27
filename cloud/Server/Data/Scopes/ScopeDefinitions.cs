@@ -136,10 +136,10 @@ public partial class Scope
         public const string Create = "shipments.create";
 
         /// <summary>
-        /// Get a <see cref="Shipment"/>.
+        /// Find a <see cref="Shipment"/>.
         /// </summary>
-        [Metadata("Get a shipment.")]
-        public const string Get = "shipments.get";
+        [Metadata("Find a shipment.")]
+        public const string Find = "shipments.find";
 
         /// <summary>
         /// Get a list of shipments.

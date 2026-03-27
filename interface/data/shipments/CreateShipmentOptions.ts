@@ -1,8 +1,13 @@
 // Copyright © Spatial Corporation. All rights reserved.
 
-import { Address, CreateResourceOptions } from "..";
+import { CreateParcelOptions } from "..";
 
-export type CreateShipmentOptions = CreateResourceOptions & {
-  from: Address;
-  to: Address;
+/**
+ * Configurable options for a new shipment.
+ */
+export type CreateShipmentOptions = {
+  /**
+   * The packages to ship.
+   */
+  packages: CreateParcelOptions[];
 };

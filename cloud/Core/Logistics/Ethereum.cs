@@ -195,11 +195,13 @@ public class Ethereum
         BigInteger? value = null,
         params object[] input)
     {
+        using var cts = new CancellationTokenSource(TimeSpan.FromMinutes(10));
+
         var target = _web3.Eth.GetContract(Download(abi), contract).GetFunction(function);
         var wei = value.HasValue ? new HexBigInteger(value.Value) : null;
         var gas = await target.EstimateGasAsync(_account.Address, null, wei, input);
 
-        return await target.SendTransactionAndWaitForReceiptAsync(_account.Address, gas, wei, receiptRequestCancellationToken: null, input);
+        return await target.SendTransactionAndWaitForReceiptAsync(_account.Address, gas, wei, receiptRequestCancellationToken: cts.Token, input);
     }
 
     /// <summary>

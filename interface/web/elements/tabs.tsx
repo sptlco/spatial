@@ -135,10 +135,10 @@ export const Tabs = {
           "cursor-pointer",
           "transition-all duration-500",
           "font-semibold data-[state=active]:font-extrabold sm:data-[state=active]:font-semibold",
-          "sm:nth-2:data-[state=inactive]:pl-4",
-          "sm:last:data-[state=inactive]:pr-4",
+          "sm:nth-2:data-[state=inactive]:pl-6",
+          "sm:last:data-[state=inactive]:pr-6",
           "data-[state=inactive]:text-foreground-quaternary",
-          "sm:data-[state=active]:px-4"
+          "sm:data-[state=active]:px-6"
         )}
       />
     );

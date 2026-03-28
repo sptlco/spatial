@@ -194,9 +194,9 @@ public class Allocator : BackgroundService
                     WARN("Total portfolio value is zero. Skipping allocation.");
                 }
             }
-            catch (RpcClientUnknownException)
+            catch (RpcClientUnknownException e)
             {
-                WARN("Failed to analyze Ethereum due to a transient error.");
+                WARN(e, "Failed to analyze Ethereum due to a transient error.");
             }
             catch (Exception e)
             {
@@ -269,6 +269,10 @@ public class Allocator : BackgroundService
             INFO("Purchased {Eth:F6} ETH (${Amount:F2}) at ${Price:F2}: {Transaction} (Gas: {GasEth:F6} ETH / ${GasUsd:F2}, Duration: {Duration}ms).", amount / price, amount, price, receipt.TransactionHash, gas, gas * price, (decimal)(Time.Now - timestamp));
             INFO("Updated cost basis after buy: ${CostBasis:F2}.", _costBasis);
         }
+        catch (OperationCanceledException)
+        {
+            WARN("Transaction receipt polling timed out. The transaction may still confirm on-chain.");
+        }
         catch (Exception e)
         {
             ERROR(e, "Failed to purchase Ethereum due to an unexpected error.");
@@ -324,6 +328,10 @@ public class Allocator : BackgroundService
                 });
 
             INFO("Sold {Eth:F6} ETH (${Amount:F2}) at ${Price:F2}: {Transaction} (Gas: {GasEth:F6} ETH / ${GasUsd:F2}, Duration: {Duration}ms).", amount / price, amount, price, receipt.TransactionHash, gas, gas * price, (decimal)(Time.Now - timestamp));
+        }
+        catch (OperationCanceledException)
+        {
+            WARN("Transaction receipt polling timed out. The transaction may still confirm on-chain.");
         }
         catch (Exception e)
         {

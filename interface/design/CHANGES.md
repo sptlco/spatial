@@ -1,5 +1,14 @@
 # Changelog
 
+## [1.22.0](https://github.com/sptlco/spatial/compare/spatial-interface-design-1.21.0...spatial-interface-design-1.22.0) (2026-03-30)
+
+
+### Features
+
+* Added a shipment editor ([#137](https://github.com/sptlco/spatial/issues/137)) ([d1400cf](https://github.com/sptlco/spatial/commit/d1400cfa99a6ad1515b8f05c3f16217fdbeb406d))
+* Added a slider ([#137](https://github.com/sptlco/spatial/issues/137)) ([c0e9e42](https://github.com/sptlco/spatial/commit/c0e9e429b529fc1ebc4bb342743cfa8729f1fb32))
+* Added support for shipments to the public API ([#137](https://github.com/sptlco/spatial/issues/137)) ([b3100ec](https://github.com/sptlco/spatial/commit/b3100ec6102f8fba6c324bd5dba76d4ccfcb6d97))
+
 ## [1.21.0](https://github.com/sptlco/spatial/compare/spatial-interface-design-1.20.0...spatial-interface-design-1.21.0) (2026-03-22)
 
 

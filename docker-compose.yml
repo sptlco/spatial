@@ -60,3 +60,7 @@ services:
 volumes:
   mongo:
   redis:
+
+networks:
+  default:
+    name: spatial

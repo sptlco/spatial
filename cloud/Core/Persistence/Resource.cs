@@ -100,6 +100,16 @@ public static class Resource<T> where T : Resource
     }
 
     /// <summary>
+    /// Read a <see cref="Resource"/>.
+    /// </summary>
+    /// <param name="id">The document's identification number.</param>
+    /// <returns>A of type <typeparamref name="T"/>.</returns>
+    public static Task<T> ReadAsync(string id)
+    {
+        return FirstAsync(record => record.Id.Equals(id));
+    }
+
+    /// <summary>
     /// Get the first matching <see cref="Resource"/>.
     /// </summary>
     /// <param name="filter">An optional filter.</param>
@@ -113,10 +123,30 @@ public static class Resource<T> where T : Resource
     /// Get the first matching <see cref="Resource"/>.
     /// </summary>
     /// <param name="filter">An optional filter.</param>
+    /// <returns>A <see cref="Resource"/> of type <typeparamref name="T"/>.</returns>
+    public static async Task<T> FirstAsync(Expression<Func<T, bool>>? filter = null)
+    {
+        return (await ListAsync(filter)).First();
+    }
+
+    /// <summary>
+    /// Get the first matching <see cref="Resource"/>.
+    /// </summary>
+    /// <param name="filter">An optional filter.</param>
     /// <returns>A document of type <typeparamref name="T"/>, or null if the <see cref="Resource"/> does not exist.</returns>
     public static T? FirstOrDefault(Expression<Func<T, bool>>? filter = null)
     {
         return List(filter).FirstOrDefault();
+    }
+
+    /// <summary>
+    /// Get the first matching <see cref="Resource"/>.
+    /// </summary>
+    /// <param name="filter">An optional filter.</param>
+    /// <returns>A document of type <typeparamref name="T"/>, or null if the <see cref="Resource"/> does not exist.</returns>
+    public static async Task<T?> FirstOrDefaultAsync(Expression<Func<T, bool>>? filter = null)
+    {
+        return (await ListAsync(filter)).FirstOrDefault();
     }
 
     /// <summary>
@@ -132,6 +162,18 @@ public static class Resource<T> where T : Resource
     }
 
     /// <summary>
+    /// List documents of type <typeparamref name="T"/>.
+    /// </summary>
+    /// <param name="filter">A filter for the list.</param>
+    /// <returns>A list of documents.</returns>
+    public static async Task<List<T>> ListAsync(Expression<Func<T, bool>>? filter = null)
+    {
+        return (await GetCollection()
+            .FindAsync(filter ?? FilterDefinition<T>.Empty))
+            .ToList();
+    }
+
+    /// <summary>
     /// Replace a <see cref="Resource"/> in the database.
     /// </summary>
     /// <param name="filter">A filter for documents to replace.</param>
@@ -139,6 +181,16 @@ public static class Resource<T> where T : Resource
     public static void Replace(Expression<Func<T, bool>> filter, T replacement)
     {
         GetCollection().ReplaceOne(filter, replacement);
+    }
+
+    /// <summary>
+    /// Replace a <see cref="Resource"/> in the database.
+    /// </summary>
+    /// <param name="filter">A filter for documents to replace.</param>
+    /// <param name="replacement">A replacement <see cref="Resource"/>.</param>
+    public static Task ReplaceAsync(Expression<Func<T, bool>> filter, T replacement)
+    {
+        return GetCollection().ReplaceOneAsync(filter, replacement);
     }
 
     /// <summary>
@@ -151,12 +203,30 @@ public static class Resource<T> where T : Resource
     }
 
     /// <summary>
+    /// Remove a <see cref="Resource"/> from the database.
+    /// </summary>
+    /// <param name="filter">A filter for the removal.</param>
+    public static Task RemoveOneAsync(Expression<Func<T, bool>>? filter = null)
+    {
+        return GetCollection().DeleteOneAsync(filter ?? FilterDefinition<T>.Empty);
+    }
+
+    /// <summary>
     /// Remove documents from the database.
     /// </summary>
     /// <param name="filter">A filter for the removal.</param>
     public static void RemoveMany(Expression<Func<T, bool>>? filter = null)
     {
         GetCollection().DeleteMany(filter ?? FilterDefinition<T>.Empty);
+    }
+
+    /// <summary>
+    /// Remove documents from the database.
+    /// </summary>
+    /// <param name="filter">A filter for the removal.</param>
+    public static Task RemoveManyAsync(Expression<Func<T, bool>>? filter = null)
+    {
+        return GetCollection().DeleteManyAsync(filter ?? FilterDefinition<T>.Empty);
     }
 
     private static IMongoDatabase GetDatabase()

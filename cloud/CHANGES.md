@@ -1,5 +1,20 @@
 # Changelog
 
+## [1.35.0](https://github.com/sptlco/spatial/compare/spatial-cloud-1.34.0...spatial-cloud-1.35.0) (2026-03-30)
+
+
+### Features
+
+* Added asynchronous database support ([#137](https://github.com/sptlco/spatial/issues/137)) ([fb0846a](https://github.com/sptlco/spatial/commit/fb0846a9f175273fdc389a3dc0799f138dbc201c))
+* Added shipment support to TS clients ([#137](https://github.com/sptlco/spatial/issues/137)) ([b526a67](https://github.com/sptlco/spatial/commit/b526a677cf8c3b08a411fe4828bd0e9432e3e744))
+* Added support for shipments to the public API ([#137](https://github.com/sptlco/spatial/issues/137)) ([b3100ec](https://github.com/sptlco/spatial/commit/b3100ec6102f8fba6c324bd5dba76d4ccfcb6d97))
+* Wired up shipments ([#137](https://github.com/sptlco/spatial/issues/137)) ([90e9617](https://github.com/sptlco/spatial/commit/90e961744017f4772ed766acc299a1a4f3304824))
+
+
+### Bug Fixes
+
+* Added timeout for transactions ([c40cb81](https://github.com/sptlco/spatial/commit/c40cb813e05975e643d9decd87da9aa780b4db23))
+
 ## [1.34.0](https://github.com/sptlco/spatial/compare/spatial-cloud-1.33.0...spatial-cloud-1.34.0) (2026-03-22)
 
 

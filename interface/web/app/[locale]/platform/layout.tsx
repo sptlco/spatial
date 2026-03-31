@@ -177,6 +177,7 @@ export default function Layout(props: { children: ReactNode }) {
         // reload the page to trigger authentication
 
         cookies.remove(SESSION_COOKIE_NAME);
+
         window.location.reload();
       }
     }
@@ -192,21 +193,20 @@ export default function Layout(props: { children: ReactNode }) {
     toast.promise(Spatial.accounts.update(update), {
       loading: "Updating account",
       description: "We are updating your account with the information you provided.",
-      success: (response) => {
-        if (!response.error) {
-          user.update({
-            account: {
-              ...user.account,
-              name: update.name
-            }
-          });
+      success: () => {
+        user.update({
+          account: {
+            ...user.account,
+            name: update.name
+          }
+        });
 
-          return {
-            message: "Account updated",
-            description: "Your account has been updated."
-          };
-        }
-
+        return {
+          message: "Account updated",
+          description: "Your account has been updated."
+        };
+      },
+      error: () => {
         return {
           message: "Something went wrong",
           description: "An error occurred while updating your account."

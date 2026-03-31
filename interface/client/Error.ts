@@ -3,7 +3,7 @@
 /**
  * An error that occurred during a request.
  */
-export type Error = {
+export type ErrorResponse = {
   /**
    * The time the error occurred.
    */
@@ -29,3 +29,15 @@ export type Error = {
    */
   message: string;
 };
+
+/**
+ * Thrown when the server returns an {@link ErrorResponse}.
+ */
+export class NativeError extends Error {
+  public readonly response: ErrorResponse;
+
+  constructor(response: ErrorResponse) {
+    super(response.message);
+    this.response = response;
+  }
+}

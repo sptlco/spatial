@@ -1,8 +1,9 @@
 // Copyright © Spatial Corporation. All rights reserved.
 
-import { Response, SESSION_COOKIE_NAME } from ".";
 import axios, { AxiosRequestConfig } from "axios";
 import cookies from "js-cookie";
+
+import { NativeError, SESSION_COOKIE_NAME } from ".";
 
 const client = axios.create({
   baseURL: process.env.NEXT_PUBLIC_SERVER_ENDPOINT
@@ -43,7 +44,7 @@ export class Controller {
    */
   protected delete = async <R>(path: string, body?: any) => this.fetch<R>(path, "DELETE", body);
 
-  private fetch = async <T>(path: string, method: string, body?: any): Promise<Response<T>> => {
+  private fetch = async <T>(path: string, method: string, body?: any): Promise<T> => {
     try {
       let config: AxiosRequestConfig = {
         url: path,
@@ -62,12 +63,10 @@ export class Controller {
         };
       }
 
-      const response = await client(config);
-
-      return { data: response.data };
+      return (await client(config)).data;
     } catch (error: any) {
       if (axios.isAxiosError(error) && error.response) {
-        return { error: error.response.data };
+        throw new NativeError(error.response.data);
       }
 
       throw error;

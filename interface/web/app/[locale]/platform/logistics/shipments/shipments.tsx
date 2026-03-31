@@ -7,21 +7,11 @@ import useSWR from "swr";
 
 import { Button, Card, Container, createElement, Dropdown, H1, Icon, Span } from "@sptlco/design";
 
-const fetch = async () => {
-  const response = await Spatial.shipments.list();
-
-  if (response.error) {
-    return [];
-  }
-
-  return response.data;
-};
-
 /**
  * A rich, configurable view of shipment data.
  */
 export const Shipments = createElement<typeof Card.Root>((props, ref) => {
-  const response = useSWR("platform/logistics/shipments", fetch, {
+  const response = useSWR("platform/logistics/shipments", Spatial.shipments.list, {
     refreshInterval: 10000,
     dedupingInterval: 15000
   });

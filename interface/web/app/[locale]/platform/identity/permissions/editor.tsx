@@ -16,25 +16,8 @@ import { Card, Container, createElement, Form, Icon, LI, Paragraph, Sheet, Span,
  */
 export const Editor = createElement<typeof Sheet.Content, { data: Role; onUpdate?: (update: Role) => void }>(
   ({ data: role, onUpdate, ...props }, ref) => {
-    const permissions = useSWR("platform/identity/permissions/list", async (_) => {
-      const response = await Spatial.permissions.list();
-
-      if (response.error) {
-        throw response.error;
-      }
-
-      return response.data;
-    });
-
-    const scopes = useSWR("platform/identity/permissions/scopes/list", async (_) => {
-      const response = await Spatial.scopes.list();
-
-      if (response.error) {
-        throw response.error;
-      }
-
-      return response.data;
-    });
+    const permissions = useSWR("platform/identity/permissions/list", Spatial.permissions.list);
+    const scopes = useSWR("platform/identity/permissions/scopes/list", Spatial.scopes.list);
 
     const [initial, setInitial] = useState<string[]>([]);
     const [table, setTable] = useState<string[]>([]);
@@ -91,17 +74,7 @@ export const Editor = createElement<typeof Sheet.Content, { data: Role; onUpdate
         toast.promise(Spatial.permissions.update(diff), {
           loading: "Updating permissions",
           description: "",
-          success: async (response) => {
-            if (response.error) {
-              setSaving(false);
-
-              return {
-                type: "error",
-                message: "Update failed",
-                description: response.error.message
-              };
-            }
-
+          success: async () => {
             setInitial(table);
 
             await permissions.mutate();
@@ -111,6 +84,12 @@ export const Editor = createElement<typeof Sheet.Content, { data: Role; onUpdate
             return {
               message: "Permissions updated",
               description: `Updated ${count} permissions${count === 1 ? "" : "s"} for ${role.name}.`
+            };
+          },
+          error: (error) => {
+            return {
+              message: "Update failed",
+              description: error.message
             };
           }
         });

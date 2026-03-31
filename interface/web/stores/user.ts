@@ -29,14 +29,21 @@ export const useUser = create<AugmentedUser>()(
       login: async () => {
         set({ loading: true });
 
-        const user = await Spatial.users.current();
+        try {
+          const user = await Spatial.users.current();
 
-        set({
-          loading: false,
-          account: !user.error ? user.data.account : undefined,
-          principal: !user.error ? user.data.principal : undefined,
-          session: !user.error ? user.data.session : undefined
-        });
+          set({
+            loading: false,
+            ...user
+          });
+        } catch (error) {
+          set({
+            loading: false,
+            account: undefined,
+            principal: undefined,
+            session: undefined
+          });
+        }
       },
       logout: async () => {
         set({ loading: true });

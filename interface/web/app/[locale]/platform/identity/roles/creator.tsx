@@ -26,24 +26,22 @@ export const Creator = createElement<typeof Sheet.Content, { onCreate?: (role: R
 
     toast.promise(Spatial.roles.create({ name, description, color, metadata }), {
       loading: "Creating a role",
-      success: (response) => {
+      success: (role) => {
         setCreating(false);
 
-        if (!response.error) {
-          if (onCreate) {
-            onCreate(response.data);
-          }
-
-          return {
-            message: "Role created",
-            description: `Created ${response.data.name} role`
-          };
+        if (onCreate) {
+          onCreate(role);
         }
 
         return {
-          type: "error",
+          message: "Role created",
+          description: `Created ${role.name} role`
+        };
+      },
+      error: (error) => {
+        return {
           message: "Something went wrong",
-          description: response.error.message
+          description: error.message
         };
       }
     });

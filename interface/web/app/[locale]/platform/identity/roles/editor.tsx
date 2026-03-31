@@ -24,24 +24,22 @@ export const Editor = createElement<typeof Sheet.Content, { data: Role; onUpdate
       toast.promise(Spatial.roles.update(update), {
         loading: "Updating role",
         description: `We are updating ${role.name}.`,
-        success: (response) => {
+        success: () => {
           setUpdating(false);
 
-          if (!response.error) {
-            if (onUpdate) {
-              onUpdate(update);
-            }
-
-            return {
-              message: "Role updated",
-              description: "The role has been updated."
-            };
+          if (onUpdate) {
+            onUpdate(update);
           }
 
           return {
-            type: "error",
+            message: "Role updated",
+            description: "The role has been updated."
+          };
+        },
+        error: (error) => {
+          return {
             message: "Something went wrong",
-            description: response.error.message
+            description: error.message
           };
         }
       });

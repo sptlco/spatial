@@ -9,7 +9,5 @@ export class ParcelController extends Controller {
    * @param shipment The parcel to update.
    * @returns The updated parcel.
    */
-  public update = async (parcel: Parcel) => {
-    return this.patch<Parcel>("shipments/parcels", parcel);
-  };
+  public update = (parcel: Parcel) => this.patch<Parcel>("shipments/parcels", parcel);
 }

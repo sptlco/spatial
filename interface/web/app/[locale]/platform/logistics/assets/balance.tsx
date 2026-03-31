@@ -35,7 +35,7 @@ export const Balance = createElement<typeof Container, { period: keyof typeof PE
       dedupingInterval: 15000
     });
 
-    const metrics = ethereum.data && !ethereum.data.error ? ethereum.data.data : undefined;
+    const metrics = ethereum.data;
     const now = metrics && metrics[metrics.length - 1];
 
     const data = useMemo(() => {

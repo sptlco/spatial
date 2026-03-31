@@ -21,17 +21,11 @@ export const Mark = createElement<typeof Container>((props, ref) => {
       className={clsx("w-full flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-10 text-sm font-semibold", props.className)}
     >
       <Span className="cursor-default text-foreground-tertiary inline-flex items-center gap-4">
-        <Span
-          className={clsx(
-            "size-2 rounded-full flex bg-green",
-            { "bg-yellow!": version.isLoading || version.isValidating },
-            { "bg-red!": version.error || version.data?.error }
-          )}
-        />
-        {version.isLoading || version.isValidating || !version.data || version.data.error ? (
+        <Span className={clsx("size-2 rounded-full flex bg-green", { "bg-yellow!": version.isLoading || version.isValidating })} />
+        {version.isLoading || version.isValidating || !version.data ? (
           <Span className="h-4 w-20 rounded-full bg-input animate-pulse" />
         ) : (
-          <>Mark {version.data.data}</>
+          <>Mark {version.data}</>
         )}
       </Span>
     </Container>

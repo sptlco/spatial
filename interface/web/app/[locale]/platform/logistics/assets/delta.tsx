@@ -53,7 +53,7 @@ export const Delta = createElement<typeof Container>((props, ref) => {
     dedupingInterval: 15000
   });
 
-  if (!history.data || history.data.error || history.data.data.length < 2) {
+  if (!history.data || history.data.length < 2) {
     return (
       <Container
         {...props}
@@ -69,7 +69,7 @@ export const Delta = createElement<typeof Container>((props, ref) => {
     );
   }
 
-  const metrics: Metric[] = history.data.data ?? [];
+  const metrics: Metric[] = history.data ?? [];
   const map = new Map<string, number>();
 
   const equity = (m: Metric) => m.value.balance * m.value.price;

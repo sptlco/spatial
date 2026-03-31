@@ -29,7 +29,7 @@ export const Snapshot = createElement<typeof Container, { period: keyof typeof P
     return await Spatial.metrics.read("transaction", from, undefined, undefined, "1m");
   });
 
-  const trades = (transactions?.data && !transactions.data.error && transactions.data?.data) || [];
+  const trades = transactions?.data || [];
 
   const tradeCount = trades.length;
   const volume = trades.reduce((sum, t) => sum + Math.abs(t.value.volume), 0);

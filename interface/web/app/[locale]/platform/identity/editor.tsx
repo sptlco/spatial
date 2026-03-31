@@ -22,15 +22,7 @@ export const Editor = createElement<typeof Sheet.Content, { user: User; onUpdate
     }))
   );
 
-  const roles = useSWR("platform/identity/editor/roles", async (_) => {
-    const response = await Spatial.roles.list();
-
-    if (response.error) {
-      throw response.error;
-    }
-
-    return response.data;
-  });
+  const roles = useSWR("platform/identity/editor/roles", Spatial.roles.list);
 
   const [update, setUpdate] = useState<User>(user);
   const [updating, setUpdating] = useState(false);
@@ -54,29 +46,27 @@ export const Editor = createElement<typeof Sheet.Content, { user: User; onUpdate
         success: (responses) => {
           setUpdating(false);
 
-          if (!responses.some((response) => !!response.error)) {
-            if (onUpdate) {
-              onUpdate(update);
-            }
+          if (onUpdate) {
+            onUpdate(update);
+          }
 
-            if (update.account.id === me.account.id) {
-              me.update(update);
-            }
-
-            return {
-              message: "User updated",
-              description: (
-                <>
-                  Updated <Span className="font-semibold">{user.account.name}</Span>.
-                </>
-              )
-            };
+          if (update.account.id === me.account.id) {
+            me.update(update);
           }
 
           return {
-            type: "error",
+            message: "User updated",
+            description: (
+              <>
+                Updated <Span className="font-semibold">{user.account.name}</Span>.
+              </>
+            )
+          };
+        },
+        error: (error) => {
+          return {
             message: "Something went wrong",
-            description: responses.find((r) => !!r.error)!.error.message
+            description: error.message
           };
         }
       }

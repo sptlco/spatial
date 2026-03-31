@@ -12,14 +12,10 @@ export class SessionController extends Controller {
    * @param options Configurable options for the request.
    * @returns An authorization token.
    */
-  public create = async (options: CreateSessionOptions) => {
-    return this.post<Session>("sessions", options);
-  };
+  public create = (options: CreateSessionOptions) => this.post<Session>("sessions", options);
 
   /**
    * Destroy the current session.
    */
-  public destroy = async () => {
-    this.delete("sessions/current");
-  };
+  public destroy = () => this.delete("sessions/current");
 }

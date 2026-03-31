@@ -208,22 +208,14 @@ export const Users = () => {
   const deleteMany = (list: User[]) => {
     toast.promise(Promise.all(list.map((u) => Spatial.accounts.del(u.account.id))), {
       loading: `Deleting ${list.length} user${list.length === 1 ? "" : "s"}`,
-      success: async (responses) => {
-        const failed = responses.filter((r) => r.error);
+      success: async () => {
         await users.mutate();
+
         setSelection([]);
 
-        if (failed.length === 0) {
-          return {
-            message: "Users deleted",
-            description: `${list.length} user${list.length === 1 ? "" : "s"} deleted.`
-          };
-        }
-
         return {
-          type: "error",
-          message: "Partial failure",
-          description: `${failed.length} user${failed.length === 1 ? "" : "s"} failed to delete.`
+          message: "Users deleted",
+          description: `${list.length} user${list.length === 1 ? "" : "s"} deleted.`
         };
       },
       error: {
@@ -235,24 +227,9 @@ export const Users = () => {
 
   const { account } = useUser(useShallow((state) => ({ account: state.account })));
 
-  const users = useSWR("platform/identity/identity/list", async (_) => {
-    const response = await Spatial.users.list();
-
-    if (response.error) {
-      throw response.error;
-    }
-
-    return response.data;
-  });
-
+  const users = useSWR("platform/identity/identity/list", Spatial.users.list);
   const roles = useSWR("platform/identity/identity/roles/list", async (_) => {
-    const response = await Spatial.roles.list();
-
-    if (response.error) {
-      throw response.error;
-    }
-
-    return Object.fromEntries(response.data.map((r) => [r.name, r]));
+    return Object.fromEntries((await Spatial.roles.list()).map((r) => [r.name, r]));
   });
 
   const PAGE_SIZE = 20;

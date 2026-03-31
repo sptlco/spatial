@@ -3,9 +3,11 @@
 "use client";
 
 import { Spatial } from "@sptlco/client";
+import { Role } from "@sptlco/data";
 import { clsx } from "clsx";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
+import { createPortal } from "react-dom";
 import useSWR from "swr";
 
 import { Creator, Editor as RoleEditor } from ".";
@@ -33,8 +35,6 @@ import {
   Tooltip,
   UL
 } from "@sptlco/design";
-import { Role } from "@sptlco/data";
-import { createPortal } from "react-dom";
 
 /**
  * A dynamic list of roles.
@@ -58,22 +58,14 @@ export const Roles = () => {
   const deleteMany = (list: Role[]) => {
     toast.promise(Promise.all(list.map((r) => Spatial.roles.del(r.id))), {
       loading: `Deleting ${list.length} user${list.length === 1 ? "" : "s"}`,
-      success: async (responses) => {
-        const failed = responses.filter((r) => r.error);
+      success: async () => {
         await roles.mutate();
+
         setSelection([]);
 
-        if (failed.length === 0) {
-          return {
-            message: "Users deleted",
-            description: `${list.length} user${list.length === 1 ? "" : "s"} deleted.`
-          };
-        }
-
         return {
-          type: "error",
-          message: "Partial failure",
-          description: `${failed.length} user${failed.length === 1 ? "" : "s"} failed to delete.`
+          message: "Users deleted",
+          description: `${list.length} user${list.length === 1 ? "" : "s"} deleted.`
         };
       },
       error: {
@@ -83,35 +75,9 @@ export const Roles = () => {
     });
   };
 
-  const roles = useSWR("platform/identity/roles/list", async (_) => {
-    const response = await Spatial.roles.list();
-
-    if (response.error) {
-      throw response.error;
-    }
-
-    return response.data;
-  });
-
-  const assignments = useSWR("platform/identity/roles/assignments/list", async (_) => {
-    const response = await Spatial.assignments.list();
-
-    if (response.error) {
-      throw response.error;
-    }
-
-    return response.data;
-  });
-
-  const permissions = useSWR("platform/identity/roles/permissions/list", async (_) => {
-    const response = await Spatial.permissions.list();
-
-    if (response.error) {
-      throw response.error;
-    }
-
-    return response.data;
-  });
+  const roles = useSWR("platform/identity/roles/list", Spatial.roles.list);
+  const assignments = useSWR("platform/identity/roles/assignments/list", Spatial.assignments.list);
+  const permissions = useSWR("platform/identity/roles/permissions/list", Spatial.permissions.list);
 
   const sortedData = roles.data?.sort((a, b) => (a.name < b.name ? -1 : 1)) ?? [];
 
@@ -262,20 +228,18 @@ export const Roles = () => {
                       toast.promise(Spatial.roles.del(role.id), {
                         loading: "Deleting role",
                         description: `We are deleting ${role.name}.`,
-                        success: (response) => {
-                          if (!response.error) {
-                            roles.mutate();
-
-                            return {
-                              message: "Role deleted",
-                              description: `Deleted ${role.name}.`
-                            };
-                          }
+                        success: () => {
+                          roles.mutate();
 
                           return {
-                            type: "error",
+                            message: "Role deleted",
+                            description: `Deleted ${role.name}.`
+                          };
+                        },
+                        error: (error) => {
+                          return {
                             message: "Something went wrong",
-                            description: response.error.message
+                            description: error.message
                           };
                         }
                       });

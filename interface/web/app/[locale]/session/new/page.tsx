@@ -4,7 +4,7 @@
 
 import { Mark, LocaleSwitcher } from "@/elements";
 import { useUser } from "@/stores";
-import { SESSION_COOKIE_NAME, Spatial } from "@sptlco/client";
+import { NativeError, SESSION_COOKIE_NAME, Spatial } from "@sptlco/client";
 import cookies from "js-cookie";
 import { useTranslations } from "next-intl";
 import { FormEvent, useEffect, useState } from "react";
@@ -42,19 +42,20 @@ export default function Page() {
 
     setState("requesting");
 
-    const response = await Spatial.keys.create({ user: email });
+    try {
+      await Spatial.keys.create({ user: email });
 
-    if (response.error) {
-      toast.error(t("errors.request.title"), {
-        closeButton: true,
-        description: response.error.message
-      });
+      setState("confirming");
+    } catch (error) {
+      if (error instanceof NativeError) {
+        toast.error(t("errors.request.title"), {
+          closeButton: true,
+          description: error.message
+        });
 
-      setState("idle");
-      return;
+        setState("idle");
+      }
     }
-
-    setState("confirming");
   };
 
   const verify = async () => {
@@ -64,28 +65,30 @@ export default function Page() {
 
     setState("verifying");
 
-    const response = await Spatial.sessions.create({ user: email, key: code });
+    try {
+      const session = await Spatial.sessions.create({ user: email, key: code });
 
-    if (response.error) {
-      toast.error(t("errors.verify.title"), {
-        description: t("errors.verify.description")
+      cookies.set(SESSION_COOKIE_NAME, session.token, {
+        path: "/",
+        secure: true,
+        expires: new Date(session.expires)
       });
 
-      setCode("");
-      setState("confirming");
+      await login();
 
-      return;
+      setState("authenticated");
+    } catch (error) {
+      if (error instanceof NativeError) {
+        toast.error(t("errors.verify.title"), {
+          description: t("errors.verify.description")
+        });
+
+        setCode("");
+        setState("confirming");
+
+        return;
+      }
     }
-
-    cookies.set(SESSION_COOKIE_NAME, response.data.token, {
-      path: "/",
-      secure: true,
-      expires: new Date(response.data.expires)
-    });
-
-    await login();
-
-    setState("authenticated");
   };
 
   useEffect(() => {

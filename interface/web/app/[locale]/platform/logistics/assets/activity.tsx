@@ -191,7 +191,7 @@ export const Activity = createElement<typeof Container>((props, ref) => {
     router.replace(`${pathname}?${params.toString()}`, { scroll: false });
   };
 
-  const entries = (transactions.data && !transactions.data.error && transactions.data.data) || [];
+  const entries = transactions.data || [];
 
   const PAGE_SIZE = 8;
   const PAGE = useMemo(() => Math.max(1, Number(searchParams.get("page") ?? 1)), [searchParams]);

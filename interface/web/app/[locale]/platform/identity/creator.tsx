@@ -18,15 +18,7 @@ export const Creator = createElement<typeof Sheet.Content, { onCreate?: (account
   const [selectedRoles, setSelectedRoles] = useState<string[]>([]);
   const [creating, setCreating] = useState(false);
 
-  const roles = useSWR("platform/identity/creator/roles", async (_) => {
-    const response = await Spatial.roles.list();
-
-    if (response.error) {
-      throw response.error;
-    }
-
-    return response.data;
-  });
+  const roles = useSWR("platform/identity/creator/roles", Spatial.roles.list);
 
   useEffect(() => {
     setDomain(getDomain(window.location.host) || "");
@@ -40,33 +32,31 @@ export const Creator = createElement<typeof Sheet.Content, { onCreate?: (account
     toast.promise(Spatial.accounts.create({ name, email, metadata }), {
       loading: "Creating user",
       description: "We are creating a new account with the information you provided.",
-      success: async (response) => {
+      success: async (user) => {
         setCreating(false);
 
-        if (!response.error) {
-          await Spatial.assignments.patchMany(
-            response.data.id,
-            selectedRoles.map((r) => roles.data!.find((d) => d.name === r)!.id)
-          );
+        await Spatial.assignments.patchMany(
+          user.id,
+          selectedRoles.map((r) => roles.data!.find((d) => d.name === r)!.id)
+        );
 
-          if (onCreate) {
-            onCreate(response.data);
-          }
-
-          return {
-            message: "User created",
-            description: (
-              <>
-                Created <Span className="font-semibold">{response.data.name}</Span>.
-              </>
-            )
-          };
+        if (onCreate) {
+          onCreate(user);
         }
 
         return {
-          type: "error",
+          message: "User created",
+          description: (
+            <>
+              Created <Span className="font-semibold">{user.name}</Span>.
+            </>
+          )
+        };
+      },
+      error: (error) => {
+        return {
           message: "Something went wrong",
-          description: response.error.message
+          description: error.message
         };
       }
     });

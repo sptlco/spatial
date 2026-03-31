@@ -3,9 +3,12 @@
 "use client";
 
 import { Spatial } from "@sptlco/client";
+import { useState } from "react";
 import useSWR from "swr";
 
 import { Button, Card, Container, createElement, Dropdown, H1, Icon, Span } from "@sptlco/design";
+
+import { Creator } from "./creator";
 
 /**
  * A rich, configurable view of shipment data.
@@ -16,7 +19,7 @@ export const Shipments = createElement<typeof Card.Root>((props, ref) => {
     dedupingInterval: 15000
   });
 
-  // ...
+  const [creating, setCreating] = useState(false);
 
   return (
     <Card.Root {...props} ref={ref}>
@@ -30,18 +33,19 @@ export const Shipments = createElement<typeof Card.Root>((props, ref) => {
               </Button>
             </Dropdown.Trigger>
             <Dropdown.Content>
-              <Dropdown.Item>
+              <Dropdown.Item onSelect={() => setCreating(true)}>
                 <Icon symbol="add" />
                 <Span>Create</Span>
               </Dropdown.Item>
             </Dropdown.Content>
           </Dropdown.Root>
-          <Button className="hidden xl:flex">
+          <Button className="hidden xl:flex" onClick={() => setCreating(true)}>
             <Icon symbol="add" />
             <Span>Create</Span>
           </Button>
         </Container>
       </Card.Content>
+      <Creator open={creating} onOpenChange={setCreating} />
     </Card.Root>
   );
 });

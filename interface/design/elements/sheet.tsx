@@ -54,10 +54,12 @@ export const Sheet = {
   Content: createElement<
     typeof Primitive.Content,
     Primitive.DialogContentProps & { title?: ReactNode; description?: ReactNode; side?: "top" | "right" | "bottom" | "left"; closeButton?: boolean }
-  >(({ side = "right", closeButton = false, ...props }, ref) => {
+  >(({ side = "right", closeButton = false, title, description, ...props }, ref) => {
     const Optional: FC<PropsWithChildren<{ value?: ReactNode }>> = ({ value, ...props }) => {
       return !value ? <Hidden {...props} /> : props.children;
     };
+
+    const horizontal = side === "left" || side === "right";
 
     return (
       <Sheet.Portal>
@@ -72,12 +74,12 @@ export const Sheet = {
         <Primitive.Content {...props} data-slot="sheet-content" className={clsx(classes({ side }), props.className)} ref={ref}>
           <ScrollArea.Root className="h-full rounded-[inherit]" fade>
             <ScrollArea.Viewport className="max-h-screen">
-              <Container className="w-full flex flex-col p-10 gap-10">
-                <Optional value={props.title || props.description || closeButton}>
+              <Container className={clsx("w-full flex flex-col p-10 gap-10", horizontal && "min-h-screen")}>
+                <Optional value={title || description || closeButton}>
                   <Container className="w-full flex flex-col gap-2.5">
                     <Container className="flex items-center">
-                      <Optional value={props.title}>
-                        <Primitive.Title className="font-bold text-lg flex-1 min-w-0 truncate">{props.title}</Primitive.Title>
+                      <Optional value={title}>
+                        <Primitive.Title className="font-bold text-lg flex-1 min-w-0 truncate">{title}</Primitive.Title>
                       </Optional>
                       <Optional value={closeButton}>
                         <Primitive.Close className="cursor-pointer size-7 items-center justify-center">
@@ -85,14 +87,14 @@ export const Sheet = {
                         </Primitive.Close>
                       </Optional>
                     </Container>
-                    <Optional value={props.description}>
+                    <Optional value={description}>
                       <Primitive.Description className="text-foreground-secondary w-full sm:max-w-sm" asChild>
-                        <Paragraph>{props.description}</Paragraph>
+                        <Paragraph>{description}</Paragraph>
                       </Primitive.Description>
                     </Optional>
                   </Container>
                 </Optional>
-                {props.children}
+                <Container className={clsx(horizontal && "flex-1 flex flex-col gap-10")}>{props.children}</Container>
               </Container>
             </ScrollArea.Viewport>
             <ScrollArea.Scrollbar>
@@ -104,27 +106,4 @@ export const Sheet = {
       </Sheet.Portal>
     );
   })
-};
-
-/**
- * Consume a sheet.
- * @param sheet The sheet to consume.
- * @returns Controls for the sheet.
- */
-export const useSheet = (sheet: ReactNode) => {
-  const [open, setOpen] = useState(false);
-
-  useEffect(() => {
-    createPortal(
-      <Sheet.Root open={open} onOpenChange={setOpen}>
-        {sheet}
-      </Sheet.Root>,
-      document.body
-    );
-  }, []);
-
-  return {
-    open: () => setOpen(true),
-    close: () => setOpen(false)
-  };
 };

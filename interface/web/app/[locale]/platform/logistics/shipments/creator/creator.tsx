@@ -32,7 +32,7 @@ export const Creator = createElement<typeof Sheet.Root>((props, ref) => {
   return (
     <Portal container={document.body}>
       <Sheet.Root {...props} ref={ref}>
-        <Sheet.Content title="New shipment" closeButton className="xl:min-w-1/2">
+        <Sheet.Content title="Create a Shipment" closeButton className="xl:min-w-1/2">
           {render()}
         </Sheet.Content>
       </Sheet.Root>

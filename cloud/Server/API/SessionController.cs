@@ -1,9 +1,9 @@
 // Copyright © Spatial Corporation. All rights reserved.
 
 using Microsoft.AspNetCore.Authorization;
-using Spatial.Cloud.Data.Accounts;
-using Spatial.Cloud.Data.Keys;
-using Spatial.Cloud.Data.Sessions;
+using Spatial.Cloud.Data.Users.Accounts;
+using Spatial.Cloud.Data.Users.Accounts.Keys;
+using Spatial.Cloud.Data.Users.Sessions;
 using Spatial.Extensions;
 using Spatial.Identity;
 using Spatial.Persistence;

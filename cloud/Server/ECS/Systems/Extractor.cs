@@ -1,6 +1,6 @@
 // Copyright © Spatial Corporation. All rights reserved.
 
-using Spatial.Cloud.Data.Neurons;
+using Spatial.Cloud.Data.Brain.Neurons;
 using Spatial.Compute;
 using Spatial.Simulation;
 using System.Collections.Concurrent;
@@ -38,7 +38,7 @@ public class Extractor : System
         // Feature extraction.
         // Pre-process the inputs.
 
-        Job.ParallelFor(Server.Current.Propagators, (channel, propagator) => _inputs[channel] = propagator.Extract()).Wait();
+        Job.ParallelFor(Server.Current.Propagators, (group, propagator) => _inputs[group] = propagator.Extract()).Wait();
 
         // Feature passing.
         // Use the extracted feature vector to update the sensory neurons.
@@ -47,7 +47,7 @@ public class Extractor : System
             query: _query,
             filter: (_, neuron) => neuron.Type == NeuronType.Sensory,
             function: (Future future, in Entity entity, ref Neuron neuron) => {
-                neuron.Value = Math.Tanh(_inputs.GetValueOrDefault(neuron.Protocol)?[neuron.Channel] ?? 0.0D);
+                neuron.Value = Math.Tanh(_inputs.GetValueOrDefault(neuron.Group)?[neuron.Channel] ?? 0.0D);
             });
     }
 

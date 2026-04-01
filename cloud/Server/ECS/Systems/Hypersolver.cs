@@ -1,6 +1,6 @@
 // Copyright © Spatial Corporation. All rights reserved.
 
-using Spatial.Cloud.Data.Neurons;
+using Spatial.Cloud.Data.Brain.Neurons;
 using Spatial.Cloud.ECS.Components;
 using Spatial.Extensions;
 using Spatial.Persistence;
@@ -26,8 +26,8 @@ public class Hypersolver : System
     // Maps: Internal -> External
     // Physical entities mapped to database records.
 
-    private readonly ConcurrentDictionary<Entity, Data.Neurons.Neuron> _neuronsByEntity;
-    private readonly ConcurrentDictionary<Entity, Data.Synapses.Synapse> _synapsesByEntity;
+    private readonly ConcurrentDictionary<Entity, Data.Brain.Neurons.Neuron> _neuronsByEntity;
+    private readonly ConcurrentDictionary<Entity, Data.Brain.Synapses.Synapse> _synapsesByEntity;
 
     // Spatial queries for selecting neurons and synapses at runtime.
     // Used below for network updates, but also for bulk writes to the database.
@@ -69,8 +69,8 @@ public class Hypersolver : System
         // When the Hypersolver is created, reconstruct the brain.
         // Load neural records from the database and replicate in space.
 
-        var neurons = Resource<Data.Neurons.Neuron>.List();
-        var synapses = Resource<Data.Synapses.Synapse>.List();
+        var neurons = Resource<Data.Brain.Neurons.Neuron>.List();
+        var synapses = Resource<Data.Brain.Synapses.Synapse>.List();
 
         space.Reserve(Signature.Combine<Components.Neuron, Position>(), (uint) neurons.Count);
         space.Reserve(Signature.Combine<Synapse>(), (uint) synapses.Count);
@@ -79,7 +79,7 @@ public class Hypersolver : System
         {
             var record = neurons[i];
             var entity = space.Create(
-                new Components.Neuron(record.Type, record.Protocol, record.Channel, record.Value),
+                new Components.Neuron(record.Type, record.Group, record.Channel, record.Value),
                 new Position(record.Position.X, record.Position.Y, record.Position.Z));
 
             _neuronsById[(_neuronsByEntity[entity] = record).Id] = entity;
@@ -171,7 +171,7 @@ public class Hypersolver : System
                     // Behavior control, yeah! \o/
                     // Route the motor neuron's output value to its parent module.
 
-                    Server.Current.Propagators.GetValueOrDefault(neuron.Protocol)?.Apply(neuron.Channel, neuron.Value = Math.Tanh(input));
+                    Server.Current.Propagators.GetValueOrDefault(neuron.Group)?.Apply(neuron.Channel, neuron.Value = Math.Tanh(input));
 
                     break;
             }

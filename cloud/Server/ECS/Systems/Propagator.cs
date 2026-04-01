@@ -56,32 +56,32 @@ public abstract class Propagator
 }
 
 /// <summary>
-/// Describes a system for handling neural state.
+/// Describes a group of related neurons.
 /// </summary>
 [AttributeUsage(AttributeTargets.Class)]
-public class ProtocolAttribute : Attribute
+public class GroupAttribute : Attribute
 {
     /// <summary>
-    /// Create a new <see cref="ProtocolAttribute"/>.
+    /// Create a new <see cref="GroupAttribute"/>.
     /// </summary>
-    /// <param name="channel">The propagator's identification number.</param>
-    public ProtocolAttribute(int channel)
+    /// <param name="id">The group's identification number.</param>
+    public GroupAttribute(int id)
     {
-        Channel = channel;
+        Id = id;
     }
 
     /// <summary>
-    /// The module's identification number.
+    /// The group's identification number.
     /// </summary>
-    public int Channel { get; }
+    public int Id { get; }
 
     /// <summary>
-    /// The name of the module.
+    /// The name of the group.
     /// </summary>
     public string Name { get; set; }
 
     /// <summary>
-    /// A message describing what the module does.
+    /// A message describing neurons in this group.
     /// </summary>
     public string Description { get; set; }
 }

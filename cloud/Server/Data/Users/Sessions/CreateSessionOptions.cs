@@ -1,0 +1,19 @@
+// Copyright © Spatial Corporation. All rights reserved.
+
+namespace Spatial.Cloud.Data.Users.Sessions;
+
+/// <summary>
+/// Configurable options for a new session.
+/// </summary>
+public class CreateSessionOptions
+{
+    /// <summary>
+    /// The user creating the session.
+    /// </summary>
+    public string User { get; set; }
+
+    /// <summary>
+    /// A valid key code.
+    /// </summary>
+    public string Key { get; set; }
+}

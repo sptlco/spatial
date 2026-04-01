@@ -1,7 +1,7 @@
 // Copyright © Spatial Corporation. All rights reserved.
 
-using Spatial.Cloud.Data.Accounts;
 using Spatial.Cloud.Data.Scopes;
+using Spatial.Cloud.Data.Users.Accounts;
 using Spatial.Cloud.ECS.Systems;
 using Spatial.Identity;
 using Spatial.Persistence;
@@ -26,9 +26,9 @@ internal class Server : Application
         _propagators = Assembly
             .GetEntryAssembly()!
             .GetTypes()
-            .Where(type => type.IsAssignableTo(typeof(Propagator)) && type.GetCustomAttribute<ProtocolAttribute>() != default)
+            .Where(type => type.IsAssignableTo(typeof(Propagator)) && type.GetCustomAttribute<GroupAttribute>() != default)
             .ToDictionary(
-                keySelector: type => type.GetCustomAttribute<ProtocolAttribute>()!.Channel,
+                keySelector: type => type.GetCustomAttribute<GroupAttribute>()!.Id,
                 elementSelector: type => (Propagator) Activator.CreateInstance(type)!);
     }
 
@@ -53,7 +53,7 @@ internal class Server : Application
     public List<Sector> Scopes => _scopes.Value;
 
     /// <summary>
-    /// The server's propagators.
+    /// The server's neural propagators.
     /// </summary>
     public Dictionary<int, Propagator> Propagators => _propagators;
 

@@ -90,6 +90,11 @@ public class Hypersolver : System
     public Snapshot Snapshot => Volatile.Read(ref _front);
 
     /// <summary>
+    /// The neural network's topology.
+    /// </summary>
+    public (IEnumerable<Data.Brain.Neurons.Neuron> Neurons, IEnumerable<Data.Brain.Synapses.Synapse> Synapses) Resources => (_neuronsByEntity.Values, _synapsesByEntity.Values);
+
+    /// <summary>
     /// An <see cref="event"/> fired when the network is updated.
     /// </summary>
     public event Action<Snapshot>? Updated;
@@ -247,7 +252,7 @@ public class Hypersolver : System
     /// <param name="neuron">The <see cref="Data.Brain.Neurons.Neuron"/> to stimulate.</param>
     /// <param name="charge">A stimulus for the <see cref="Data.Brain.Neurons.Neuron"/>.</param>
     /// <exception cref="UserError">Thrown if the <see cref="Data.Brain.Neurons.Neuron"/> does not exist.</exception>
-    public void Stimulate(string neuron, double charge)
+    public void StimulateOne(string neuron, double charge)
     {
         if (!_neuronsById.TryGetValue(neuron, out var entity))
         {
@@ -255,6 +260,34 @@ public class Hypersolver : System
         }
 
         _inputs.AddOrUpdate(entity, charge, (_, existing) => existing + charge);
+    }
+
+    /// <summary>
+    /// Stimulate several neurons.
+    /// </summary>
+    /// <param name="neurons">The neurons to stimulate.</param>
+    /// <param name="charge">A stimulus for the neurons.</param>
+    /// <exception cref="UserError">Thrown if any of the neurons do not exist.</exception>
+    public void StimulateMany(string[] neurons, double charge)
+    {
+        var failures = 0;
+
+        foreach (var neuron in neurons)
+        {
+            try
+            {
+                StimulateOne(neuron, charge);
+            }
+            catch (Exception)
+            {
+                failures++;
+            }
+        }
+
+        if (failures > 0)
+        {
+            throw new UserError($"Failed to stimulate {failures}/{neurons.Length} neurons.");
+        }
     }
 
     /// <summary>
@@ -308,7 +341,7 @@ public class Hypersolver : System
                 continuationAction: t => ERROR(t.Exception, "Failed to persist neuron {Id}.", record.Id),
                 continuationOptions: TaskContinuationOptions.OnlyOnFaulted);
 
-            Neurons.InvokeChanged(record);
+            Neurons.InvokeUpdated(record);
         });
     }
 
@@ -434,7 +467,7 @@ public class Hypersolver : System
                 continuationAction: t => ERROR(t.Exception, "Failed to persist synapse {Id}.", record.Id),
                 continuationOptions: TaskContinuationOptions.OnlyOnFaulted);
 
-            Synapses.InvokeChanged(record);
+            Synapses.InvokeUpdated(record);
         });
     }
 
@@ -574,18 +607,18 @@ public class NeuronEvents
     public event Action<Data.Brain.Neurons.Neuron>? Added;
 
     /// <summary>
+    /// Fired when a neuron is externally mutated.
+    /// </summary>
+    public event Action<Data.Brain.Neurons.Neuron>? Updated;
+
+    /// <summary>
     /// Fired when a neuron is removed from the network.
     /// </summary>
     public event Action<Data.Brain.Neurons.Neuron>? Removed;
 
-    /// <summary>
-    /// Fired when a neuron is externally mutated.
-    /// </summary>
-    public event Action<Data.Brain.Neurons.Neuron>? Changed;
-
     internal void InvokeAdded(Data.Brain.Neurons.Neuron neuron)   => Added?.Invoke(neuron);
+    internal void InvokeUpdated(Data.Brain.Neurons.Neuron neuron) => Updated?.Invoke(neuron);
     internal void InvokeRemoved(Data.Brain.Neurons.Neuron neuron) => Removed?.Invoke(neuron);
-    internal void InvokeChanged(Data.Brain.Neurons.Neuron neuron) => Changed?.Invoke(neuron);
 }
 
 /// <summary>
@@ -599,16 +632,16 @@ public class SynapseEvents
     public event Action<Data.Brain.Synapses.Synapse>? Added;
 
     /// <summary>
+    /// Fired when a synapse is externally mutated.
+    /// </summary>
+    public event Action<Data.Brain.Synapses.Synapse>? Updated;
+
+    /// <summary>
     /// Fired when a synapse is removed from the network.
     /// </summary>
     public event Action<Data.Brain.Synapses.Synapse>? Removed;
 
-    /// <summary>
-    /// Fired when a synapse is externally mutated.
-    /// </summary>
-    public event Action<Data.Brain.Synapses.Synapse>? Changed;
-
     internal void InvokeAdded(Data.Brain.Synapses.Synapse synapse)   => Added?.Invoke(synapse);
+    internal void InvokeUpdated(Data.Brain.Synapses.Synapse synapse) => Updated?.Invoke(synapse);
     internal void InvokeRemoved(Data.Brain.Synapses.Synapse synapse) => Removed?.Invoke(synapse);
-    internal void InvokeChanged(Data.Brain.Synapses.Synapse synapse) => Changed?.Invoke(synapse);
 }

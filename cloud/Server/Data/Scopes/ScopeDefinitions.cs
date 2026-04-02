@@ -53,6 +53,66 @@ public partial class Scope
     }
 
     /// <summary>
+    /// Scopes related to the neural network.
+    /// </summary>
+    public class Brain
+    {
+        /// <summary>
+        /// Get a snapshot of the brain.
+        /// </summary>
+        [Metadata("Get a snapshot of the neural network.")]
+        public const string Read = "brain.read";
+
+        /// <summary>
+        /// Stream live network state.
+        /// </summary>
+        [Metadata("Stream live neural network state.")]
+        public const string Stream = "brain.stream";
+
+        /// <summary>
+        /// Stimulate a neuron.
+        /// </summary>
+        [Metadata("Stimulate a neuron.")]
+        public const string Stimulate_Neuron = "brain.neurons.stimulate";
+
+        /// <summary>
+        /// Add a neuron to the neural network.
+        /// </summary>
+        [Metadata("Add a neuron to the neural network.")]
+        public const string Add_Neuron = "brain.neurons.add";
+
+        /// <summary>
+        /// Remove a neuron from the neural network.
+        /// </summary>
+        [Metadata("Remove a neuron from the neural network.")]
+        public const string Remove_Neuron = "brain.neurons.remove";
+
+        /// <summary>
+        /// Update a neuron.
+        /// </summary>
+        [Metadata("Update a neuron.")]
+        public const string Update_Neuron = "brain.neurons.update";
+
+        /// <summary>
+        /// Add a synapse to the neural network.
+        /// </summary>
+        [Metadata("Add a synapse to the neural network.")]
+        public const string Add_Synapse = "brain.synapses.add";
+
+        /// <summary>
+        /// Remove a synapse from the neural network.
+        /// </summary>
+        [Metadata("Remove a synapse from the neural network.")]
+        public const string Remove_Synapse = "brain.synapses.remove";
+
+        /// <summary>
+        /// Update a synapse.
+        /// </summary>
+        [Metadata("Update a synapse.")]
+        public const string Update_Synapse = "brain.synapses.update";
+    }
+
+    /// <summary>
     /// Scopes related to metric data.
     /// </summary>
     public class Metrics

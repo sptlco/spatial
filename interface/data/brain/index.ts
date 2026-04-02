@@ -2,3 +2,6 @@
 
 export * from "./neurons";
 export * from "./synapses";
+
+export * from "./Snapshot";
+export * from "./StreamOptions";

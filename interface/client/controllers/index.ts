@@ -5,6 +5,7 @@ import { AssignmentController } from "./AssignmentController";
 import { IndexController } from "./IndexController";
 import { KeyController } from "./KeyController";
 import { MetricController } from "./MetricController";
+import { NeuralController } from "./NeuralController";
 import { ParcelController } from "./ParcelController";
 import { PermissionController } from "./PermissionController";
 import { RoleController } from "./RoleController";
@@ -18,6 +19,7 @@ export * from "./AssignmentController";
 export * from "./IndexController";
 export * from "./KeyController";
 export * from "./MetricController";
+export * from "./NeuralController";
 export * from "./ParcelController";
 export * from "./PermissionController";
 export * from "./RoleController";
@@ -30,6 +32,7 @@ export const Spatial = {
   ...new IndexController(),
   accounts: new AccountController(),
   assignments: new AssignmentController(),
+  brain: new NeuralController(),
   keys: new KeyController(),
   metrics: new MetricController(),
   parcels: new ParcelController(),

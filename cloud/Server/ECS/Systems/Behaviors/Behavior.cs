@@ -3,19 +3,19 @@
 using Spatial.Extensions;
 using System.Reflection;
 
-namespace Spatial.Cloud.ECS.Systems;
+namespace Spatial.Cloud.ECS.Systems.Behaviors;
 
 /// <summary>
 /// A signal propagator for deterministic neural behavior.
 /// </summary>
-public abstract class Propagator
+public abstract class Behavior
 {
     private readonly Dictionary<int, Property> _outputs;
 
     /// <summary>
-    /// Create a new <see cref="Propagator"/>.
+    /// Create a new <see cref="Behavior"/>.
     /// </summary>
-    public Propagator()
+    public Behavior()
     {
         var outputs = GetType()
             .GetProperties(BindingFlags.Public | BindingFlags.Instance)
@@ -49,7 +49,7 @@ public abstract class Propagator
     }
 
     /// <summary>
-    /// Update the <see cref="Propagator"/>.
+    /// Update the <see cref="Behavior"/>.
     /// </summary>
     /// <param name="delta"><see cref="Time"/> since the last update.</param>
     public virtual void Update(Time delta) { }
@@ -125,7 +125,7 @@ public class OutputAttribute : Attribute
 }
 
 /// <summary>
-/// An adjustable <see cref="Propagator"/> property.
+/// An adjustable <see cref="Behavior"/> property.
 /// </summary>
 public class Property
 {

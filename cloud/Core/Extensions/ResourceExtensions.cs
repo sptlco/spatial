@@ -71,6 +71,18 @@ public static class ResourceExtensions
     }
 
     /// <summary>
+    /// Save a <see cref="Resource"/> of type <typeparamref name="T"/>.
+    /// </summary>
+    /// <typeparam name="T">The type of <see cref="Resource"/> to save.</typeparam>
+    /// <param name="record">The <see cref="Resource"/> to save.</param>
+    public static async Task<T> SaveAsync<T>(this T record) where T : Resource
+    {
+        await ReplaceAsync(record, r => r.Id == record.Id);
+
+        return record;
+    }
+
+    /// <summary>
     /// Update a <see cref="Resource"/>.
     /// </summary>
     /// <typeparam name="T">The type of <see cref="Resource"/> to save.</typeparam>
@@ -91,7 +103,18 @@ public static class ResourceExtensions
     /// <param name="filter">A filter for the <see cref="Resource"/> to replace.</param>
     public static void Replace<T>(this T record, Expression<Func<T, bool>> filter) where T : Resource
     {
-        Resource<T>.Replace(filter, record);
+        Resource<T>.ReplaceOne(filter, record);
+    }
+
+    /// <summary>
+    /// Replace a <see cref="Resource"/> of type <typeparamref name="T"/>.
+    /// </summary>
+    /// <typeparam name="T">The type of <see cref="Resource"/> to replace.</typeparam>
+    /// <param name="record">A replacement <see cref="Resource"/>.</param>
+    /// <param name="filter">A filter for the <see cref="Resource"/> to replace.</param>
+    public static Task ReplaceAsync<T>(this T record, Expression<Func<T, bool>> filter) where T : Resource
+    {
+        return Resource<T>.ReplaceOneAsync(filter, record);
     }
 
     /// <summary>

@@ -1,7 +1,7 @@
 // Copyright © Spatial Corporation. All rights reserved.
 
 using Spatial.Cloud.Data.Brain.Neurons;
-using Spatial.Compute;
+using Spatial.Extensions;
 using Spatial.Simulation;
 using System.Collections.Concurrent;
 
@@ -38,7 +38,7 @@ public class Extractor : System
         // Feature extraction.
         // Pre-process the inputs.
 
-        Job.ParallelFor(Server.Current.Propagators, (group, propagator) => _inputs[group] = propagator.Extract()).Wait();
+        Server.Current.Behaviors.ForEach((group, propagator) => _inputs[group] = propagator.Extract());
 
         // Feature passing.
         // Use the extracted feature vector to update the sensory neurons.

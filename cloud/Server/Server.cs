@@ -3,6 +3,7 @@
 using Spatial.Cloud.Data.Scopes;
 using Spatial.Cloud.Data.Users.Accounts;
 using Spatial.Cloud.ECS.Systems;
+using Spatial.Cloud.ECS.Systems.Behaviors;
 using Spatial.Identity;
 using Spatial.Persistence;
 using System.Reflection;
@@ -15,7 +16,7 @@ namespace Spatial.Cloud;
 internal class Server : Application
 {
     private readonly Lazy<List<Sector>> _scopes;
-    private readonly Dictionary<int, Propagator> _propagators;
+    private readonly Dictionary<int, Behavior> _behaviors;
 
     /// <summary>
     /// Create a new <see cref="Server"/>.
@@ -23,13 +24,13 @@ internal class Server : Application
     public Server()
     {
         _scopes = new(() => GetScopes());
-        _propagators = Assembly
+        _behaviors = Assembly
             .GetEntryAssembly()!
             .GetTypes()
-            .Where(type => type.IsAssignableTo(typeof(Propagator)) && type.GetCustomAttribute<GroupAttribute>() != default)
+            .Where(type => type.IsAssignableTo(typeof(Behavior)) && type.GetCustomAttribute<GroupAttribute>() != default)
             .ToDictionary(
                 keySelector: type => type.GetCustomAttribute<GroupAttribute>()!.Id,
-                elementSelector: type => (Propagator) Activator.CreateInstance(type)!);
+                elementSelector: type => (Behavior) Activator.CreateInstance(type)!);
     }
 
     /// <summary>
@@ -53,9 +54,9 @@ internal class Server : Application
     public List<Sector> Scopes => _scopes.Value;
 
     /// <summary>
-    /// The server's neural propagators.
+    /// The server's neural behaviors.
     /// </summary>
-    public Dictionary<int, Propagator> Propagators => _propagators;
+    public Dictionary<int, Behavior> Behaviors => _behaviors;
 
     /// <summary>
     /// Configure the server's <see cref="IHostApplicationBuilder"/>.

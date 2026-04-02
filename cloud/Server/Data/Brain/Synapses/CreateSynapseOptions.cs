@@ -1,14 +1,11 @@
 // Copyright © Spatial Corporation. All rights reserved.
 
-using Spatial.Persistence;
-
 namespace Spatial.Cloud.Data.Brain.Synapses;
 
 /// <summary>
-/// A weighted connection between two neurons.
+/// Configurable options for a new <see cref="Synapse"/>.
 /// </summary>
-[Collection("synapses")]
-public class Synapse : Resource
+public class CreateSynapseOptions : CreateResourceOptions
 {
     /// <summary>
     /// The <see cref="Neurons.Neuron"/> the <see cref="Synapse"/> extends from.
@@ -21,7 +18,7 @@ public class Synapse : Resource
     public string To { get; set; }
 
     /// <summary>
-    /// The strength of the <see cref="Synapse"/>.
+    /// The current strength of the <see cref="Synapse"/>.
     /// </summary>
     public double Strength { get; set; }
 }

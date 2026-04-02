@@ -178,7 +178,7 @@ public static class Resource<T> where T : Resource
     /// </summary>
     /// <param name="filter">A filter for documents to replace.</param>
     /// <param name="replacement">A replacement <see cref="Resource"/>.</param>
-    public static void Replace(Expression<Func<T, bool>> filter, T replacement)
+    public static void ReplaceOne(Expression<Func<T, bool>> filter, T replacement)
     {
         GetCollection().ReplaceOne(filter, replacement);
     }
@@ -188,9 +188,35 @@ public static class Resource<T> where T : Resource
     /// </summary>
     /// <param name="filter">A filter for documents to replace.</param>
     /// <param name="replacement">A replacement <see cref="Resource"/>.</param>
-    public static Task ReplaceAsync(Expression<Func<T, bool>> filter, T replacement)
+    public static Task ReplaceOneAsync(Expression<Func<T, bool>> filter, T replacement)
     {
         return GetCollection().ReplaceOneAsync(filter, replacement);
+    }
+
+    /// <summary>
+    /// Replace multiple resources in the database.
+    /// </summary>
+    /// <param name="resources">The resources to replace.</param>
+    public static void ReplaceMany(IEnumerable<T> resources)
+    {
+        var models = resources.Select(resource => new ReplaceOneModel<T>(Builders<T>.Filter.Eq(r => r.Id, resource.Id), resource) {
+            IsUpsert = true
+        });
+
+        GetCollection().BulkWrite(models);
+    }
+
+    /// <summary>
+    /// Replace multiple resources in the database.
+    /// </summary>
+    /// <param name="resources">The resources to replace.</param>
+    public static Task ReplaceManyAsync(IEnumerable<T> resources)
+    {
+        var models = resources.Select(resource => new ReplaceOneModel<T>(Builders<T>.Filter.Eq(r => r.Id, resource.Id), resource) {
+            IsUpsert = true
+        });
+
+        return GetCollection().BulkWriteAsync(models);
     }
 
     /// <summary>

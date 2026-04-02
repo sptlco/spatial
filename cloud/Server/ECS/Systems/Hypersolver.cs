@@ -1,10 +1,13 @@
 // Copyright © Spatial Corporation. All rights reserved.
 
+using Spatial.Cloud.Data.Brain;
 using Spatial.Cloud.Data.Brain.Neurons;
+using Spatial.Cloud.Data.Brain.Synapses;
 using Spatial.Cloud.ECS.Components;
 using Spatial.Extensions;
 using Spatial.Persistence;
 using Spatial.Simulation;
+using Spatial.Structures;
 using System.Collections.Concurrent;
 
 namespace Spatial.Cloud.ECS.Systems;
@@ -29,16 +32,32 @@ public class Hypersolver : System
     private readonly ConcurrentDictionary<Entity, Data.Brain.Neurons.Neuron> _neuronsByEntity;
     private readonly ConcurrentDictionary<Entity, Data.Brain.Synapses.Synapse> _synapsesByEntity;
 
+    // Reverse index.
+    // Maps neuron IDs to the synapse IDs that reference them.
+
+    private readonly ConcurrentDictionary<string, ConcurrentHashSet<string>> _synapsesByNeuron;
+
     // Spatial queries for selecting neurons and synapses at runtime.
     // Used below for network updates, but also for bulk writes to the database.
 
     private readonly Query _neurons;
     private readonly Query _synapses;
+
+    // Deferred commands.
+    // Drained at the start of each tick.
+
+    private readonly ConcurrentQueue<Action<Space>> _commands;
     
     // Accumulated pre-synaptic charges.
     // Keyed by post-synaptic neurons for integration later.
 
     private readonly ConcurrentDictionary<Entity, double> _inputs;
+
+    // State propagation.
+    // Publish a snapshot of the current state of the network.
+
+    private Snapshot _front;
+    private Snapshot _back;
 
     /// <summary>
     /// Create a new <see cref="Hypersolver"/>.
@@ -53,12 +72,37 @@ public class Hypersolver : System
         _synapsesById = [];
         _neuronsByEntity = [];
         _synapsesByEntity = [];
+        _synapsesByNeuron = [];
+
+        _front = new Snapshot();
+        _back = new Snapshot();
 
         _neurons = new Query().WithAll<Components.Neuron>();
-        _synapses = new Query().WithAll<Synapse>();
+        _synapses = new Query().WithAll<Components.Synapse>();
 
+        _commands = [];
         _inputs = [];
     }
+
+    /// <summary>
+    /// Get the current state of the <see cref="Hypersolver"/>.
+    /// </summary>
+    public Snapshot Snapshot => Volatile.Read(ref _front);
+
+    /// <summary>
+    /// An <see cref="event"/> fired when the network is updated.
+    /// </summary>
+    public event Action<Snapshot>? Updated;
+
+    /// <summary>
+    /// Events for neuron lifecycle and state changes.
+    /// </summary>
+    public NeuronEvents Neurons { get; } = new NeuronEvents();
+
+    /// <summary>
+    /// Events for synapse lifecycle and state changes.
+    /// </summary>
+    public SynapseEvents Synapses { get; } = new SynapseEvents();
 
     /// <summary>
     /// Create the <see cref="Hypersolver"/>.
@@ -73,27 +117,28 @@ public class Hypersolver : System
         var synapses = Resource<Data.Brain.Synapses.Synapse>.List();
 
         space.Reserve(Signature.Combine<Components.Neuron, Position>(), (uint) neurons.Count);
-        space.Reserve(Signature.Combine<Synapse>(), (uint) synapses.Count);
+        space.Reserve(Signature.Combine<Components.Synapse>(), (uint) synapses.Count);
 
         for (var i = 0; i < neurons.Count; i++)
         {
-            var record = neurons[i];
-            var entity = space.Create(
-                new Components.Neuron(record.Type, record.Group, record.Channel, record.Value),
-                new Position(record.Position.X, record.Position.Y, record.Position.Z));
-
-            _neuronsById[(_neuronsByEntity[entity] = record).Id] = entity;
+            CreateNeuron(space, neurons[i]);
         }
 
         for (var i = 0; i < synapses.Count; i++)
         {
-            var record = synapses[i];
-            var entity = space.Create(new Synapse(
-                From: _neuronsById[record.From],
-                To: _neuronsById[record.To],
-                Strength: record.Strength));
+            CreateSynapse(space, synapses[i]);
+        }
+    }
 
-            _synapsesById[(_synapsesByEntity[entity] = record).Id] = entity;
+    /// <summary>
+    /// Prepare the <see cref="Hypersolver"/> before updating.
+    /// </summary>
+    /// <param name="space">The current <see cref="Space"/>.</param>
+    public override void BeforeUpdate(Space space)
+    {
+        while (_commands.TryDequeue(out var command))
+        {
+            command(space);
         }
     }
 
@@ -104,7 +149,7 @@ public class Hypersolver : System
     /// <param name="delta"><see cref="Time"/> since the last update.</param>
     public override void Update(Space space, Time delta)
     {
-        space.Mutate(_synapses, (Future future, in Entity entity, ref Synapse synapse) => {
+        space.Mutate(_synapses, (Future future, in Entity entity, ref Components.Synapse synapse) => {
 
             // Synaptic propagation.
             // Accumulate pre-synaptic charges for integration.
@@ -132,8 +177,7 @@ public class Hypersolver : System
                 Math.Exp(-distance * distance / (2.0 * _config.Sigma * _config.Sigma)) * // Spatial modulation
                 delta.Seconds;
 
-            synapse.Strength = Math.Clamp(synapse.Strength, -_config.Omax, _config.Omax);
-
+            _synapsesByEntity[entity].Strength = synapse.Strength = Math.Clamp(synapse.Strength, -_config.Omax, _config.Omax);
         });
 
         space.Mutate(_neurons, (Future future, in Entity entity, ref Components.Neuron neuron) => {
@@ -171,10 +215,12 @@ public class Hypersolver : System
                     // Behavior control, yeah! \o/
                     // Route the motor neuron's output value to its parent module.
 
-                    Server.Current.Propagators.GetValueOrDefault(neuron.Group)?.Apply(neuron.Channel, neuron.Value = Math.Tanh(input));
+                    Server.Current.Behaviors.GetValueOrDefault(neuron.Group)?.Apply(neuron.Channel, neuron.Value = Math.Tanh(input));
 
                     break;
             }
+
+            _neuronsByEntity[entity].Value = neuron.Value; 
         });
     }
 
@@ -185,6 +231,247 @@ public class Hypersolver : System
     public override void AfterUpdate(Space space)
     {
         _inputs.Clear();
+
+        _back.Neurons  = [.. _neuronsByEntity.Values.Select(n => new NeuronSnapshot(n.Id, n.Type, n.Group, n.Channel, n.Position, n.Value))];
+        _back.Synapses = [.. _synapsesByEntity.Values.Select(s => new SynapseSnapshot(s.Id, s.From, s.To, s.Strength))];
+        _back = Interlocked.Exchange(ref _front, _back);
+
+        Interval.ScheduleAsync(SaveAsync, Time.FromMinutes(5));
+
+        Updated?.Invoke(_front);
+    }
+
+    /// <summary>
+    /// Stimulate a <see cref="Data.Brain.Neurons.Neuron"/>.
+    /// </summary>
+    /// <param name="neuron">The <see cref="Data.Brain.Neurons.Neuron"/> to stimulate.</param>
+    /// <param name="charge">A stimulus for the <see cref="Data.Brain.Neurons.Neuron"/>.</param>
+    /// <exception cref="UserError">Thrown if the <see cref="Data.Brain.Neurons.Neuron"/> does not exist.</exception>
+    public void Stimulate(string neuron, double charge)
+    {
+        if (!_neuronsById.TryGetValue(neuron, out var entity))
+        {
+            throw new UserError("The neuron does not exist.");
+        }
+
+        _inputs.AddOrUpdate(entity, charge, (_, existing) => existing + charge);
+    }
+
+    /// <summary>
+    /// Add a <see cref="Data.Brain.Neurons.Neuron"/> to the network.
+    /// </summary>
+    /// <param name="options">Configurable options for the <see cref="Data.Brain.Neurons.Neuron"/>.</param>
+    /// <returns>The <see cref="Data.Brain.Neurons.Neuron"/> that was added.</returns>
+    public Data.Brain.Neurons.Neuron AddNeuron(CreateNeuronOptions options)
+    {
+        var record = new Data.Brain.Neurons.Neuron {
+            Type = options.Type,
+            Group = options.Group,
+            Channel = options.Channel,
+            Position = options.Position,
+            Value = options.Value
+        };
+
+        _commands.Enqueue(space => CreateNeuron(space, record, true));
+
+        return record.Store();
+    }
+
+    /// <summary>
+    /// Update a <see cref="Data.Brain.Neurons.Neuron"/>.
+    /// </summary>
+    /// <param name="neuron">The <see cref="Data.Brain.Neurons.Neuron"/> to update.</param>
+    /// <param name="options">Configurable options for the <see cref="Data.Brain.Neurons.Neuron"/>.</param>
+    /// <exception cref="UserError">Thrown if the <see cref="Data.Brain.Neurons.Neuron"/> does not exist.</exception>
+    public void UpdateNeuron(string neuron, UpdateNeuronOptions options)
+    {
+        if (!_neuronsById.TryGetValue(neuron, out var entity))
+        {
+            throw new UserError("The neuron does not exist.");
+        }
+
+        _commands.Enqueue(space => {
+            ref var component = ref space.Get<Components.Neuron>(entity);
+            ref var position = ref space.Get<Position>(entity);
+
+            var record = _neuronsByEntity[entity];
+            
+            component.Type = record.Type = options.Type ?? record.Type;
+            component.Group = record.Group = options.Group ?? record.Group;
+            component.Channel = record.Channel = options.Channel ?? record.Channel;
+
+            position.X = record.Position.X = options.Position?.X ?? record.Position.X;
+            position.Y = record.Position.Y = options.Position?.Y ?? record.Position.Y;
+            position.Z = record.Position.Z = options.Position?.Z ?? record.Position.Z;
+
+            Task.Run(() => record.SaveAsync()).ContinueWith(
+                continuationAction: t => ERROR(t.Exception, "Failed to persist neuron {Id}.", record.Id),
+                continuationOptions: TaskContinuationOptions.OnlyOnFaulted);
+
+            Neurons.InvokeChanged(record);
+        });
+    }
+
+    /// <summary>
+    /// Remove a <see cref="Data.Brain.Neurons.Neuron"/> from the network.
+    /// </summary>
+    /// <param name="neuron">The <see cref="Data.Brain.Neurons.Neuron"/> to remove.</param>
+    /// <exception cref="UserError">Thrown if the <see cref="Data.Brain.Neurons.Neuron"/> does not exist.</exception>
+    public void RemoveNeuron(string neuron)
+    {
+        if (!_neuronsById.TryGetValue(neuron, out var entity))
+        {
+            throw new UserError("The neuron does not exist.");
+        }
+
+        if (_synapsesByNeuron.TryGetValue(neuron, out var connected))
+        {
+            connected.ToList().ForEach(RemoveSynapse);
+
+            _synapsesByNeuron.TryRemove(neuron, out _);
+        }
+
+        var record = _neuronsByEntity[entity];
+
+        Resource<Data.Brain.Neurons.Neuron>.RemoveOne(n => n.Id == neuron);
+
+        _commands.Enqueue(space => {
+            space.Destroy(entity);
+
+            _neuronsById.TryRemove(neuron, out _);
+            _neuronsByEntity.TryRemove(entity, out _);
+            
+            Neurons.InvokeRemoved(record);
+        });
+    }
+
+    /// <summary>
+    /// Add a <see cref="Data.Brain.Synapses.Synapse"/> to the network.
+    /// </summary>
+    /// <param name="options">Configurable options for the <see cref="Data.Brain.Synapses.Synapse"/>.</param>
+    /// <returns>The <see cref="Data.Brain.Synapses.Synapse"/> that was added.</returns>
+    /// <exception cref="UserError">Thrown if either the pre-synaptic or post-synaptic <see cref="Data.Brain.Neurons.Neuron"/> does not exist.</exception>
+    public Data.Brain.Synapses.Synapse AddSynapse(CreateSynapseOptions options)
+    {
+        if (!_neuronsById.ContainsKey(options.From))
+        {
+            throw new UserError("The pre-synaptic neuron does not exist.");
+        }
+
+        if (!_neuronsById.ContainsKey(options.To))
+        {
+            throw new UserError("The post-synaptic neuron does not exist.");
+        }
+
+        var record = new Data.Brain.Synapses.Synapse {
+            From = options.From,
+            To = options.To,
+            Strength = options.Strength
+        };
+
+        _commands.Enqueue(space => CreateSynapse(space, record, true));
+
+        return record.Store();
+    }
+
+    /// <summary>
+    /// Update a <see cref="Data.Brain.Synapses.Synapse"/>.
+    /// </summary>
+    /// <param name="synapse">The <see cref="Data.Brain.Synapses.Synapse"/> to update.</param>
+    /// <param name="options">Configurable options for the <see cref="Data.Brain.Synapses.Synapse"/>.</param>
+    /// <exception cref="UserError">Thrown if either the <see cref="Data.Brain.Neurons.Neuron"/> doesn't exist, or its pre-synaptic or post-synaptic <see cref="Data.Brain.Neurons.Neuron"/> doesn't exist.</exception>
+    public void UpdateSynapse(string synapse, UpdateSynapseOptions options)
+    {
+        if (!_synapsesById.TryGetValue(synapse, out var entity))
+        {
+            throw new UserError("The synapse does not exist.");
+        }
+
+        if (options.From is not null && !_neuronsById.ContainsKey(options.From))
+        {
+            throw new UserError("The pre-synaptic neuron does not exist.");
+        }
+
+        if (options.To is not null && !_neuronsById.ContainsKey(options.To))
+        {
+            throw new UserError("The post-synaptic neuron does not exist.");
+        }
+
+        _commands.Enqueue(space => {
+            ref var component = ref space.Get<Components.Synapse>(entity);
+
+            var record = _synapsesByEntity[entity];
+
+            if (options.From is string from)
+            {
+                if (_synapsesByNeuron.TryGetValue(record.From, out var old))
+                {
+                    old.Remove(synapse);
+                }
+
+                _synapsesByNeuron.GetOrAdd(from, _ => []).Add(synapse);
+
+                component.From = _neuronsById[from];
+                record.From = from;
+            }
+
+            if (options.To is string to)
+            {
+                if (_synapsesByNeuron.TryGetValue(record.To, out var old))
+                {
+                    old.Remove(synapse);
+                }
+
+                _synapsesByNeuron.GetOrAdd(to, _ => []).Add(synapse);
+
+                component.To = _neuronsById[to];
+                record.To = to;
+            }
+
+            component.Strength = record.Strength = options.Strength ?? record.Strength;
+
+            Task.Run(() => record.SaveAsync()).ContinueWith(
+                continuationAction: t => ERROR(t.Exception, "Failed to persist synapse {Id}.", record.Id),
+                continuationOptions: TaskContinuationOptions.OnlyOnFaulted);
+
+            Synapses.InvokeChanged(record);
+        });
+    }
+
+    /// <summary>
+    /// Remove a <see cref="Data.Brain.Synapses.Synapse"/> from the network.
+    /// </summary>
+    /// <param name="synapse">The <see cref="Data.Brain.Synapses.Synapse"/> to remove.</param>
+    /// <exception cref="UserError">Thrown if the <see cref="Data.Brain.Synapses.Synapse"/> does not exist.</exception>
+    public void RemoveSynapse(string synapse)
+    {
+        if (!_synapsesById.TryGetValue(synapse, out var entity))
+        {
+            throw new UserError("The synapse does not exist.");
+        }
+
+        var record = _synapsesByEntity[entity];
+
+        Resource<Data.Brain.Synapses.Synapse>.RemoveOne(s => s.Id == synapse);
+
+        if (_synapsesByNeuron.TryGetValue(record.From, out var from))
+        {
+            from.Remove(synapse);
+        }
+
+        if (_synapsesByNeuron.TryGetValue(record.To, out var to))
+        {
+            to.Remove(synapse);
+        }
+
+        _commands.Enqueue(space => {
+            space.Destroy(entity);
+
+            _synapsesById.TryRemove(synapse, out _);
+            _synapsesByEntity.TryRemove(entity, out _);
+            
+            Synapses.InvokeRemoved(record);
+        });
     }
 
     /// <summary>
@@ -196,29 +483,48 @@ public class Hypersolver : System
         // When the space is destroyed (e.g. on shutdown), persist the Hypersolver.
         // Write each neuron and synapse back to the database.
 
-        Save(space);
+        Task.WaitAll(SaveAsync());
     }
 
-    private void Save(Space space)
+    private void CreateNeuron(Space space, Data.Brain.Neurons.Neuron record, bool notify = false)
     {
-        space.Mutate(_neurons, (future, in entity) => SaveNeuron(space, entity));
-        space.Mutate(_synapses, (future, in entity) => SaveSynapse(space, entity));
+        var entity = space.Create(
+            new Components.Neuron(record.Type, record.Group, record.Channel, record.Value),
+            new Position(record.Position.X, record.Position.Y, record.Position.Z));
+
+        _neuronsById[(_neuronsByEntity[entity] = record).Id] = entity;
+
+        if (notify)
+        {
+            Neurons.InvokeAdded(record);
+        }
     }
 
-    private void SaveNeuron(Space space, Entity entity) => _neuronsByEntity[entity].Update(record => {
-        var neuron = space.Get<Components.Neuron>(entity);
-        var position = space.Get<Position>(entity);
+    private void CreateSynapse(Space space, Data.Brain.Synapses.Synapse record, bool notify = false)
+    {
+        var entity = space.Create(new Components.Synapse(
+            From: _neuronsById[record.From],
+            To: _neuronsById[record.To],
+            Strength: record.Strength));
 
-        record.Position.X = position.X;
-        record.Position.Y = position.Y;
-        record.Position.Z = position.Z;
+        _synapsesById[(_synapsesByEntity[entity] = record).Id] = entity;
 
-        record.Value = neuron.Value;
-    });
+        _synapsesByNeuron.GetOrAdd(record.From, _ => []).Add(record.Id);
+        _synapsesByNeuron.GetOrAdd(record.To, _ => []).Add(record.Id);
 
-    private void SaveSynapse(Space space, Entity entity) => _synapsesByEntity[entity].Update(record => {
-        record.Strength = space.Get<Synapse>(entity).Strength;
-    });
+        if (notify)
+        {
+            Synapses.InvokeAdded(record);
+        }
+    }
+
+    private Task SaveAsync()
+    {
+        return Task.WhenAll(
+            Resource<Data.Brain.Neurons.Neuron>.ReplaceManyAsync(_neuronsByEntity.Values),
+            Resource<Data.Brain.Synapses.Synapse>.ReplaceManyAsync(_synapsesByEntity.Values)
+        );
+    }
 }
 
 /// <summary>
@@ -255,4 +561,54 @@ public class HypersolverConfiguration
     /// The spatial falloff radius for synaptic plasticity.
     /// </summary>
     public double Sigma { get; set; } = 50.0D;
+}
+
+/// <summary>
+/// Events for neuron lifecycle and state changes.
+/// </summary>
+public class NeuronEvents
+{
+    /// <summary>
+    /// Fired when a neuron is added to the network.
+    /// </summary>
+    public event Action<Data.Brain.Neurons.Neuron>? Added;
+
+    /// <summary>
+    /// Fired when a neuron is removed from the network.
+    /// </summary>
+    public event Action<Data.Brain.Neurons.Neuron>? Removed;
+
+    /// <summary>
+    /// Fired when a neuron is externally mutated.
+    /// </summary>
+    public event Action<Data.Brain.Neurons.Neuron>? Changed;
+
+    internal void InvokeAdded(Data.Brain.Neurons.Neuron neuron)   => Added?.Invoke(neuron);
+    internal void InvokeRemoved(Data.Brain.Neurons.Neuron neuron) => Removed?.Invoke(neuron);
+    internal void InvokeChanged(Data.Brain.Neurons.Neuron neuron) => Changed?.Invoke(neuron);
+}
+
+/// <summary>
+/// Events for synapse lifecycle and state changes.
+/// </summary>
+public class SynapseEvents
+{
+    /// <summary>
+    /// Fired when a synapse is added to the network.
+    /// </summary>
+    public event Action<Data.Brain.Synapses.Synapse>? Added;
+
+    /// <summary>
+    /// Fired when a synapse is removed from the network.
+    /// </summary>
+    public event Action<Data.Brain.Synapses.Synapse>? Removed;
+
+    /// <summary>
+    /// Fired when a synapse is externally mutated.
+    /// </summary>
+    public event Action<Data.Brain.Synapses.Synapse>? Changed;
+
+    internal void InvokeAdded(Data.Brain.Synapses.Synapse synapse)   => Added?.Invoke(synapse);
+    internal void InvokeRemoved(Data.Brain.Synapses.Synapse synapse) => Removed?.Invoke(synapse);
+    internal void InvokeChanged(Data.Brain.Synapses.Synapse synapse) => Changed?.Invoke(synapse);
 }

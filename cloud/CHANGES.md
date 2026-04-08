@@ -1,5 +1,14 @@
 # Changelog
 
+## [1.36.0](https://github.com/sptlco/spatial/compare/spatial-cloud-1.35.0...spatial-cloud-1.36.0) (2026-04-08)
+
+
+### Features
+
+* Added a neural controller ([#171](https://github.com/sptlco/spatial/issues/171)) ([e334834](https://github.com/sptlco/spatial/commit/e33483401f868edce71b3e2e1fb62769fbf8f8d7))
+* Updated the data model ([#171](https://github.com/sptlco/spatial/issues/171)) ([9f526e1](https://github.com/sptlco/spatial/commit/9f526e146fc65c911b75600a8015c8e8bd99e77c))
+* Upgraded the Hypersolver ([#173](https://github.com/sptlco/spatial/issues/173)) ([dc46013](https://github.com/sptlco/spatial/commit/dc460132ea9a9e3cc99abe69dc220acde7c7fb3b))
+
 ## [1.35.0](https://github.com/sptlco/spatial/compare/spatial-cloud-1.34.0...spatial-cloud-1.35.0) (2026-03-30)
 
 

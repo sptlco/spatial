@@ -1,5 +1,16 @@
 # Changelog
 
+## [1.30.0](https://github.com/sptlco/spatial/compare/spatial-1.29.0...spatial-1.30.0) (2026-04-08)
+
+
+### Features
+
+* Added a neural controller ([#171](https://github.com/sptlco/spatial/issues/171)) ([e334834](https://github.com/sptlco/spatial/commit/e33483401f868edce71b3e2e1fb62769fbf8f8d7))
+* Added an empty element ([#137](https://github.com/sptlco/spatial/issues/137)) ([6d53697](https://github.com/sptlco/spatial/commit/6d536970d978436f6d630bcaa7bf8688748fb26f))
+* Propagated client errors up to Next.js error boundary ([#137](https://github.com/sptlco/spatial/issues/137)) ([acdbb79](https://github.com/sptlco/spatial/commit/acdbb796cac90b62d88f40746dd3bcfa904b7d81))
+* Updated the data model ([#171](https://github.com/sptlco/spatial/issues/171)) ([9f526e1](https://github.com/sptlco/spatial/commit/9f526e146fc65c911b75600a8015c8e8bd99e77c))
+* Upgraded the Hypersolver ([#173](https://github.com/sptlco/spatial/issues/173)) ([dc46013](https://github.com/sptlco/spatial/commit/dc460132ea9a9e3cc99abe69dc220acde7c7fb3b))
+
 ## [1.29.0](https://github.com/sptlco/spatial/compare/spatial-1.28.0...spatial-1.29.0) (2026-03-30)
 
 

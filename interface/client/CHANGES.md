@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.12.0](https://github.com/sptlco/spatial/compare/spatial-interface-client-1.11.0...spatial-interface-client-1.12.0) (2026-04-08)
+
+
+### Features
+
+* Added a neural controller ([#171](https://github.com/sptlco/spatial/issues/171)) ([e334834](https://github.com/sptlco/spatial/commit/e33483401f868edce71b3e2e1fb62769fbf8f8d7))
+* Propagated client errors up to Next.js error boundary ([#137](https://github.com/sptlco/spatial/issues/137)) ([acdbb79](https://github.com/sptlco/spatial/commit/acdbb796cac90b62d88f40746dd3bcfa904b7d81))
+
 ## [1.11.0](https://github.com/sptlco/spatial/compare/spatial-interface-client-1.10.0...spatial-interface-client-1.11.0) (2026-03-30)
 
 

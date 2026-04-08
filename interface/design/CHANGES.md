@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.23.0](https://github.com/sptlco/spatial/compare/spatial-interface-design-1.22.0...spatial-interface-design-1.23.0) (2026-04-08)
+
+
+### Features
+
+* Added an empty element ([#137](https://github.com/sptlco/spatial/issues/137)) ([6d53697](https://github.com/sptlco/spatial/commit/6d536970d978436f6d630bcaa7bf8688748fb26f))
+
 ## [1.22.0](https://github.com/sptlco/spatial/compare/spatial-interface-design-1.21.0...spatial-interface-design-1.22.0) (2026-03-30)
 
 

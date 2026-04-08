@@ -1,11 +1,11 @@
 // Copyright © Spatial Corporation. All rights reserved.
 
-import { Resource } from ".";
+import { Schema } from ".";
 
 /**
  * A time-stamped measurement of a specific attribute within the system.
  */
-export type Metric = Resource<{
+export type Metric = Schema<{
   /**
    * The metric's value.
    */

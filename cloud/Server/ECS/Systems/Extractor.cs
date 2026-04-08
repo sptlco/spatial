@@ -38,7 +38,7 @@ public class Extractor : System
         // Feature extraction.
         // Pre-process the inputs.
 
-        Server.Current.Behaviors.ForEach((group, propagator) => _inputs[group] = propagator.Extract());
+        Server.Current.Behaviors.ForEach((group, behavior) => _inputs[group] = behavior.Extract());
 
         // Feature passing.
         // Use the extracted feature vector to update the sensory neurons.

@@ -1,11 +1,11 @@
 // Copyright © Spatial Corporation. All rights reserved.
 
-import { Resource } from "../../../..";
+import { Schema } from "../../../..";
 
 /**
  * A user role assignment.
  */
-export type Assignment = Resource<{
+export type Assignment = Schema<{
   /**
    * The user the role is assigned to.
    */

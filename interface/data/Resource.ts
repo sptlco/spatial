@@ -3,7 +3,12 @@
 /**
  * An object stored in the database.
  */
-export type Resource<S> = {
+export type Schema<S> = Resource & S;
+
+/**
+ * An object stored in the database.
+ */
+export type Resource = {
   /**
    * The object's unique identifier.
    */
@@ -18,4 +23,4 @@ export type Resource<S> = {
    * Arbitrary key-value pairs related to the object.
    */
   metadata: Record<string, string>;
-} & S;
+};

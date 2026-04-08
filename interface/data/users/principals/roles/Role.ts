@@ -1,8 +1,8 @@
 // Copyright © Spatial Corporation. All rights reserved.
 
-import { Resource } from "../../..";
+import { Schema } from "../../..";
 
-export type Role = Resource<{
+export type Role = Schema<{
   /**
    * The role's display name.
    */

@@ -83,10 +83,10 @@ export const Snapshot = createElement<typeof Container, { period: keyof typeof P
       ref={ref}
       className={clsx("xl:bg-transparent", "flex w-screen xl:w-auto px-10 xl:p-0 flex-col gap-6 xl:gap-10", props.className)}
     >
-      <H2 className="text-2xl font-bold">{formatDate(null, false, props.period)}</H2>
-      <Container className="flex flex-col gap-10 xl:flex-row xl:justify-between w-full">
+      <H2 className="text-2xl font-bold text-center xl:text-left">{formatDate(null, false, props.period)}</H2>
+      <Container className="flex flex-col items-center gap-10 xl:flex-row xl:justify-between w-full">
         {metrics.map((metric, i) => (
-          <Container key={i} className="grow flex flex-col xl:items-center gap-4 whitespace-nowrap">
+          <Container key={i} className="grow flex flex-col items-center gap-4 whitespace-nowrap">
             <Span className="text-sm text-foreground-quaternary font-semibold flex items-center divide-y divide-line-base divide-dotted gap-2">
               <Span>{metric.label}</Span>
               {metric.tip && (

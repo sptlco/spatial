@@ -10,7 +10,7 @@ namespace Spatial.Cloud.Data.Brain;
 /// </summary>
 public class Snapshot
 {
-     /// <summary>
+    /// <summary>
     /// The brain's neurons.
     /// </summary>
     public IReadOnlyList<NeuronSnapshot> Neurons { get; internal set; } = [];

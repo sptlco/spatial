@@ -7,6 +7,7 @@ using Spatial.Cloud.Data.Scopes;
 using Spatial.Cloud.ECS.Systems;
 using Spatial.Identity.Authorization;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Threading.Channels;
 
 namespace Spatial.Cloud.API;
@@ -41,6 +42,13 @@ public class NeuralController : Controller
         Response.Headers.Append("Cache-Control", "no-cache");
         Response.Headers.Append("X-Accel-Buffering", "no");
 
+        var json = new JsonSerializerOptions { 
+            PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+            DictionaryKeyPolicy = JsonNamingPolicy.CamelCase
+        };
+
+        json.Converters.Add(new JsonStringEnumConverter(JsonNamingPolicy.CamelCase));
+
         var structural = Channel.CreateUnbounded<(string Event, string Data)>();
         var snapshots = Channel.CreateBounded<(string Event, string Data)>(new BoundedChannelOptions(1) {
             FullMode = BoundedChannelFullMode.DropOldest
@@ -58,13 +66,13 @@ public class NeuralController : Controller
 
         var pipes = Task.WhenAll(Pipe(structural.Reader), Pipe(snapshots.Reader));
 
-        void Update(Snapshot snapshot) => snapshots.Writer.TryWrite(("updated", JsonSerializer.Serialize(snapshot)));
-        void AddNeuron(Neuron neuron) => structural.Writer.TryWrite(("neurons.add", JsonSerializer.Serialize(neuron)));
-        void UpdateNeuron(Neuron neuron) => structural.Writer.TryWrite(("neurons.update", JsonSerializer.Serialize(neuron)));
-        void RemoveNeuron(Neuron neuron) => structural.Writer.TryWrite(("neurons.remove", JsonSerializer.Serialize(neuron)));
-        void AddSynapse(Synapse synapse) => structural.Writer.TryWrite(("synapses.add", JsonSerializer.Serialize(synapse)));
-        void UpdateSynapse(Synapse synapse) => structural.Writer.TryWrite(("synapses.update", JsonSerializer.Serialize(synapse)));
-        void RemoveSynapse(Synapse synapse) => structural.Writer.TryWrite(("synapses.remove", JsonSerializer.Serialize(synapse)));
+        void Update(Snapshot snapshot) => snapshots.Writer.TryWrite(("updated", JsonSerializer.Serialize(snapshot, json)));
+        void AddNeuron(Neuron neuron) => structural.Writer.TryWrite(("neurons.add", JsonSerializer.Serialize(neuron, json)));
+        void UpdateNeuron(Neuron neuron) => structural.Writer.TryWrite(("neurons.update", JsonSerializer.Serialize(neuron, json)));
+        void RemoveNeuron(Neuron neuron) => structural.Writer.TryWrite(("neurons.remove", JsonSerializer.Serialize(neuron, json)));
+        void AddSynapse(Synapse synapse) => structural.Writer.TryWrite(("synapses.add", JsonSerializer.Serialize(synapse, json)));
+        void UpdateSynapse(Synapse synapse) => structural.Writer.TryWrite(("synapses.update", JsonSerializer.Serialize(synapse, json)));
+        void RemoveSynapse(Synapse synapse) => structural.Writer.TryWrite(("synapses.remove", JsonSerializer.Serialize(synapse, json)));
 
         var hypersolver = Server.Current.Hypersolver;
 
@@ -80,12 +88,12 @@ public class NeuralController : Controller
         {
             foreach (var neuron in hypersolver.Resources.Neurons)
             {
-                await Response.WriteAsync($"event: neurons.add\ndata: {JsonSerializer.Serialize(neuron)}\n\n", cancellationToken);
+                await Response.WriteAsync($"event: neurons.add\ndata: {JsonSerializer.Serialize(neuron, json)}\n\n", cancellationToken);
             }
 
             foreach (var synapse in hypersolver.Resources.Synapses)
             {
-                await Response.WriteAsync($"event: synapses.add\ndata: {JsonSerializer.Serialize(synapse)}\n\n", cancellationToken);
+                await Response.WriteAsync($"event: synapses.add\ndata: {JsonSerializer.Serialize(synapse, json)}\n\n", cancellationToken);
             }
 
             await Response.WriteAsync("event: ready\ndata: {}\n\n", cancellationToken);
@@ -111,7 +119,11 @@ public class NeuralController : Controller
             structural.Writer.Complete();
             snapshots.Writer.Complete();
 
-            await pipes;
+            try
+            {
+                await pipes;
+            }
+            catch (OperationCanceledException) { }
         }
     }
 

@@ -12,30 +12,30 @@ public readonly struct NeuronSnapshot(string id, NeuronType type, int group, int
     /// <summary>
     /// The neuron's identifier.
     /// </summary>
-    public readonly string Id = id;
+    public string Id { get; init; } = id;
 
     /// <summary>
     /// The neuron's <see cref="NeuronType"/>.
     /// </summary>
-    public readonly NeuronType Type = type;
+    public NeuronType Type { get; init; } = type;
 
     /// <summary>
     /// The group the <see cref="Neuron"/> belongs to.
     /// </summary>
-    public readonly int Group = group;
+    public int Group { get; init; } = group;
 
     /// <summary>
     /// For <see cref="NeuronType.Sensory"/> and <see cref="NeuronType.Motor"/> neurons, the channel the neuron maps to.
     /// </summary>
-    public readonly int Channel = channel;
+    public int Channel { get; init; } = channel;
 
     /// <summary>
     /// The precise location of the <see cref="Neuron"/>.
     /// </summary>
-    public readonly Point3D Position = position;
+    public Point3D Position { get; init; } = position;
 
     /// <summary>
     /// The neuron's current activation level.
     /// </summary>
-    public readonly double Value = value;
+    public double Value { get; init; } = value;
 }

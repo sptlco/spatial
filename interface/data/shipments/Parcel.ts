@@ -1,12 +1,12 @@
 // Copyright © Spatial Corporation. All rights reserved.
 
-import { Address, Commodity, Dimensions, ParcelStatus, Resource } from "..";
+import { Address, Commodity, Dimensions, ParcelStatus, Schema } from "..";
 
 /**
  * A physical package containing goods. The primary persisted entity —
  * logical shipments are derived by grouping on {@link shipment}.
  */
-export type Parcel = Resource<{
+export type Parcel = Schema<{
   /**
    * Groups this package with others belonging to the same shipment.
    */

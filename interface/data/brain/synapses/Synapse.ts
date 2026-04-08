@@ -1,11 +1,11 @@
 // Copyright © Spatial Corporation. All rights reserved.
 
-import { Resource } from "../..";
+import { Schema } from "../..";
 
 /**
  * A weighted connection between two neurons.
  */
-export type Synapse = Resource<{
+export type Synapse = Schema<{
   /**
    * The neuron the {@link Synapse} extends from.
    */

@@ -11,7 +11,7 @@ import { useEffect, useRef, useState } from "react";
 export const useBrain = () => {
   const [connecting, setConnecting] = useState(true);
 
-  const [snapshot, setSnapshot] = useState<Snapshot>();
+  const [snapshot, setSnapshot] = useState<Snapshot>({ neurons: [], synapses: [] });
   const [neurons, setNeurons] = useState<Record<string, Neuron>>({});
   const [synapses, setSynapses] = useState<Record<string, Synapse>>({});
   const [error, setError] = useState<unknown>(null);
@@ -21,7 +21,10 @@ export const useBrain = () => {
   useEffect(() => {
     abort.current = Spatial.brain.stream({
       ready: () => setConnecting(false),
-      updated: setSnapshot,
+      updated: (ss) => {
+        console.log(ss);
+        setSnapshot(ss);
+      },
       error: (error) => {
         setConnecting(false);
         setError(error);

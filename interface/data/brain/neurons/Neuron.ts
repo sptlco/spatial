@@ -1,11 +1,11 @@
 // Copyright © Spatial Corporation. All rights reserved.
 
-import { NeuronType, Point3D, Resource } from "../..";
+import { NeuronType, Point3D, Schema } from "../..";
 
 /**
  * An autonomous node in a neural network.
  */
-export type Neuron = Resource<{
+export type Neuron = Schema<{
   /**
    * The neuron's {@link NeuronType}.
    */

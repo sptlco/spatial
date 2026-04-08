@@ -553,10 +553,17 @@ public class Hypersolver : System
 
     private Task SaveAsync()
     {
-        return Task.WhenAll(
-            Resource<Data.Brain.Neurons.Neuron>.ReplaceManyAsync(_neuronsByEntity.Values),
-            Resource<Data.Brain.Synapses.Synapse>.ReplaceManyAsync(_synapsesByEntity.Values)
-        );
+        return Task.WhenAll(SaveNeurons(), SaveSynapses());
+    }
+
+    private Task SaveNeurons()
+    {
+        return !_neuronsByEntity.IsEmpty ? Resource<Data.Brain.Neurons.Neuron>.ReplaceManyAsync(_neuronsByEntity.Values) : Task.CompletedTask;
+    }
+
+    private Task SaveSynapses()
+    {
+        return !_synapsesByEntity.IsEmpty ? Resource<Data.Brain.Synapses.Synapse>.ReplaceManyAsync(_synapsesByEntity.Values) : Task.CompletedTask;
     }
 }
 

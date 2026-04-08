@@ -13,6 +13,13 @@ public class Point3D
     public static Point3D Zero => new Point3D();
 
     /// <summary>
+    /// Create a new <see cref="Point3D"/>.
+    /// </summary>
+    public Point3D() : this(0.0F)
+    {
+    }
+
+    /// <summary>
     /// Create a new <see cref="Point2D"/>,
     /// </summary>
     /// <param name="scalar"></param>

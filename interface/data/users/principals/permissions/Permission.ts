@@ -1,8 +1,8 @@
 // Copyright © Spatial Corporation. All rights reserved.
 
-import { Resource } from "../../..";
+import { Schema } from "../../..";
 
-export type Permission = Resource<{
+export type Permission = Schema<{
   /**
    * The role granted the permission.
    */

@@ -1,8 +1,8 @@
 // Copyright © Spatial Corporation. All rights reserved.
 
-import { Resource } from "../..";
+import { Schema } from "../..";
 
-export type Account = Resource<{
+export type Account = Schema<{
   /**
    * The user's name.
    */

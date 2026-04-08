@@ -73,7 +73,7 @@ const pages: Page[] = [
   },
   {
     name: "navigation.platform.pages.intelligence",
-    path: `${BASE_URL}/models`,
+    path: `${BASE_URL}/intelligence`,
     icon: "neurology"
   },
   {
@@ -232,7 +232,7 @@ export default function Layout(props: { children: ReactNode }) {
         shouldRetryOnError: false
       }}
     >
-      <Main className={clsx("grid w-full h-screen", "grid-cols-1 xl:grid-cols-[auto_1fr]", "grid-rows-[auto_minmax(0,1fr)]")}>
+      <Main className={clsx("grid w-full h-screen", "grid-cols-1 xl:grid-cols-[144px_1fr]", "grid-rows-[auto_minmax(0,1fr)]")}>
         <Dialog.Root open={requirements.name}>
           <Dialog.Content title="Information required" description="We need to know the following." closeButton={false}>
             <Form className="flex flex-col items-center gap-10" onSubmit={submit}>
@@ -257,15 +257,13 @@ export default function Layout(props: { children: ReactNode }) {
             paddingBottom: "var(--layout-pad)"
           }}
           className={clsx(
-            "px-10",
-            "xl:border-r border-[#000]",
+            "px-10 shrink-0",
             "flex items-center xl:items-start",
             "row-start-1 col-start-1",
-            "xl:row-span-2 xl:col-start-1 xl:row-start-1 xl:max-w-sm",
-            "xl:overflow-y-auto"
+            "xl:row-span-2 xl:col-start-1 xl:row-start-1"
           )}
         >
-          <Container className="flex flex-col h-full gap-10">
+          <Container className="flex flex-col shrink-0 h-full gap-10">
             <Link href="/" className="relative flex items-center justify-center size-10 xl:w-16!">
               <Logo mode="symbol" className="w-10 fill-foreground-primary" />
             </Link>
@@ -307,7 +305,7 @@ export default function Layout(props: { children: ReactNode }) {
           className="flex items-center xl:justify-center row-start-1 col-start-1 xl:col-start-2 col-span-2 px-10 pl-24 xl:p-0 xl:mr-10"
         />
         <Container
-          className={clsx("flex px-10 gap-2.5 sm:gap-5 items-center shrink-0 border-b border-[#000]", "row-start-1 col-start-1 xl:col-start-2")}
+          className={clsx("flex px-10 gap-2.5 sm:gap-5 items-center shrink-0", "row-start-1 col-start-1 xl:col-start-2")}
           style={{
             paddingTop: "var(--layout-pad)",
             paddingBottom: "var(--layout-pad)"
@@ -335,21 +333,22 @@ export default function Layout(props: { children: ReactNode }) {
                   {loading ? <Spinner className="size-3.5 text-hint" /> : <Icon symbol="arrow_right_alt" size={20} />}
                 </Span>
               </Button>
+              <Mark />
             </Sheet.Content>
           </Sheet.Root>
         </Container>
-        <Container>
-          <ScrollArea.Root className="h-full bg-background-surface">
-            <ScrollArea.Viewport ref={scroller} className={clsx("row-start-1 row-span-2 col-start-1", "xl:col-start-2", "xl:pl-0")}>
-              <Container
-                className={clsx(
-                  "flex flex-col justify-between relative min-h-[calc(100vh-(var(--layout-pad)*2)-40px)]",
-                  "xl:px-20 py-10 xl:py-20 gap-10 xl:gap-20"
-                )}
-              >
-                <Container className="grow flex flex-col relative">{props.children}</Container>
-                <Mark />
-              </Container>
+        <Container className="min-w-0 overflow-hidden">
+          <ScrollArea.Root className="h-full">
+            <ScrollArea.Viewport
+              ref={scroller}
+              className={clsx(
+                "bg-background-surface xl:bg-transparent rounded-t-4xl xl:rounded-none",
+                "row-start-1 row-span-2 col-start-1",
+                "xl:col-start-2",
+                "xl:pl-0"
+              )}
+            >
+              <Container className="flex flex-col relative min-h-[calc(100vh-(var(--layout-pad)*2)-40px)]">{props.children}</Container>
             </ScrollArea.Viewport>
             <ScrollArea.Scrollbar />
           </ScrollArea.Root>

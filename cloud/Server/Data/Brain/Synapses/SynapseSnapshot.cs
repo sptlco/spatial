@@ -10,20 +10,20 @@ public readonly struct SynapseSnapshot(string id, string from, string to, double
     /// <summary>
     /// The synapse's identifier.
     /// </summary>
-    public readonly string Id = id;
+    public string Id { get; init; } = id;
 
     /// <summary>
     /// The <see cref="Neurons.Neuron"/> the <see cref="Synapse"/> extends from.
     /// </summary>
-    public readonly string From = from;
+    public string From { get; init; } = from;
 
     /// <summary>
     /// The <see cref="Neurons.Neuron"/> the <see cref="Synapse"/> extends to.
     /// </summary>
-    public readonly string To = to;
+    public string To { get; init; } = to;
 
     /// <summary>
     /// The synapse's current strength.
     /// </summary>
-    public readonly double Strength = strength;
+    public double Strength { get; init; } = strength;
 }

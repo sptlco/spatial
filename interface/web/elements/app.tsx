@@ -19,6 +19,6 @@ export const Application = {
   )),
 
   Content: createElement<typeof Card.Content>((props, ref) => (
-    <Card.Content {...props} ref={ref} className={clsx("flex flex-1 flex-col w-full gap-10 xl:gap-20", props.className)} />
+    <Card.Content {...props} ref={ref} className={clsx("flex flex-1 min-h-0 flex-col w-full gap-10 xl:gap-20", props.className)} />
   ))
 };

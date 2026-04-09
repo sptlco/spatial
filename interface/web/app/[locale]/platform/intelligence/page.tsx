@@ -5,11 +5,11 @@
 import { Application } from "@/elements";
 import { useBrain } from "@/hooks";
 import { NeuralController } from "@sptlco/client";
-import { clsx } from "clsx";
+import { useState } from "react";
 
-import { Container } from "@sptlco/design";
+import { Container, Paragraph } from "@sptlco/design";
 
-import { Explorer } from "./explorer/Explorer";
+import { Explorer } from "./Explorer";
 import { Intelligence } from "./Intelligence";
 
 /**
@@ -24,12 +24,16 @@ import { Intelligence } from "./Intelligence";
 export default function Page() {
   const { connecting, snapshot, neurons, synapses, error } = useBrain();
 
+  const [properties, setProperties] = useState(false);
+
   return (
     <Application.Root title="Intelligence" className="bg-background-subtle" spacing={false}>
       <Application.Content className="flex min-h-0">
-        <Container className="flex flex-1 min-h-0 overflow-hidden">
-          <Explorer entities={[]} />
-          <Intelligence className={clsx("flex-1 min-h-0 xl:pt-10! xl:pb-0!", Application.Spacing)} />
+        <Container className="flex flex-col xl:flex-row flex-1 min-h-0 overflow-hidden">
+          <Explorer.Root>
+            <Explorer.Panel key="entities" title="Entities"></Explorer.Panel>
+          </Explorer.Root>
+          <Intelligence snapshot={snapshot} />
         </Container>
       </Application.Content>
     </Application.Root>

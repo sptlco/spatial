@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.37.0](https://github.com/sptlco/spatial/compare/spatial-cloud-1.36.0...spatial-cloud-1.37.0) (2026-04-14)
+
+
+### Features
+
+* Added a neural interface ([#172](https://github.com/sptlco/spatial/issues/172)) ([e7198b2](https://github.com/sptlco/spatial/commit/e7198b22e5c4aa6460635e8f55268347c1d1ceed))
+
 ## [1.36.0](https://github.com/sptlco/spatial/compare/spatial-cloud-1.35.0...spatial-cloud-1.36.0) (2026-04-08)
 
 

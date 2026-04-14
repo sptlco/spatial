@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.34.0](https://github.com/sptlco/spatial/compare/spatial-interface-web-1.33.0...spatial-interface-web-1.34.0) (2026-04-14)
+
+
+### Features
+
+* Added a neural interface ([#172](https://github.com/sptlco/spatial/issues/172)) ([e7198b2](https://github.com/sptlco/spatial/commit/e7198b22e5c4aa6460635e8f55268347c1d1ceed))
+* Added an entity explorer ([#172](https://github.com/sptlco/spatial/issues/172)) ([047ded3](https://github.com/sptlco/spatial/commit/047ded332f9e0b05db948b62cf83cc15e7cd1460))
+
 ## [1.33.0](https://github.com/sptlco/spatial/compare/spatial-interface-web-1.32.0...spatial-interface-web-1.33.0) (2026-04-08)
 
 

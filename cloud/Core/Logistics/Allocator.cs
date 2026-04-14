@@ -233,9 +233,9 @@ public class Allocator : BackgroundService
         }
 
         var amountIn = (BigInteger) (balance * (decimal) Math.Pow(10, 6));
-        string[] path = [PYUSD, WETH, USDC];
+        string[] path = [PYUSD, USDC];
 
-        INFO("Converting ${Amount:F2} PYUSD to USDC via PYUSD/WETH/USDC.", balance);
+        INFO("Converting ${Amount:F2} PYUSD to USDC via PYUSD/USDC.", balance);
 
         try
         {

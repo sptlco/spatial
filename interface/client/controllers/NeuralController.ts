@@ -74,6 +74,10 @@ export class NeuralController extends Controller {
         }
       },
       onerror: (error) => {
+        if (controller.signal.aborted) {
+          return;
+        }
+
         options?.error?.(error);
 
         throw error;

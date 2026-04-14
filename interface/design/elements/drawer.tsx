@@ -17,6 +17,8 @@ export const Drawer = {
     <Primitive.Trigger {...props} ref={ref} />
   )),
 
+  Header: createElement<typeof Container>((props, ref) => <Container {...props} ref={ref} className={clsx("flex flex-col", props.className)} />),
+
   Content: createElement<
     typeof Primitive.Content,
     ComponentProps<typeof Primitive.Content> & { title?: ReactNode; description?: ReactNode; closeButton?: boolean; nested?: boolean }
@@ -42,8 +44,11 @@ export const Drawer = {
           ref={ref}
           data-slot="drawer-content"
           className={clsx(
-            "group/drawer-content bg-background-surface fixed p-10 gap-10 flex h-auto flex-col",
-            "border-t border-line-faint",
+            "group/drawer-content bg-background-surface border-line-faint fixed p-10 gap-10 flex h-auto flex-col",
+            "data-[vaul-drawer-direction=top]:border-b",
+            "data-[vaul-drawer-direction=bottom]:border-t",
+            "data-[vaul-drawer-direction=left]:border-r",
+            "data-[vaul-drawer-direction=right]:border-l",
             nested ? "z-(--z-nested)" : "z-(--z-sheet)",
             "data-[vaul-drawer-direction=top]:inset-x-0 data-[vaul-drawer-direction=top]:top-0 data-[vaul-drawer-direction=top]:mb-24 data-[vaul-drawer-direction=top]:max-h-[80vh] data-[vaul-drawer-direction=top]:rounded-b-4xl",
             "data-[vaul-drawer-direction=bottom]:inset-x-0 data-[vaul-drawer-direction=bottom]:bottom-0 data-[vaul-drawer-direction=bottom]:mt-24 data-[vaul-drawer-direction=bottom]:max-h-[80vh] data-[vaul-drawer-direction=bottom]:rounded-t-4xl",

@@ -15,11 +15,15 @@ export const Accordion = {
     <Primitive.Trigger {...props} className={clsx("cursor-pointer", props.className)} ref={ref} />
   )),
 
-  Content: createElement<typeof Primitive.Content>((props, ref) => (
+  Content: createElement<typeof Primitive.Content, { animate?: boolean }>(({ animate, ...props }, ref) => (
     <Primitive.Content
       {...props}
       ref={ref}
-      className={clsx("overflow-hidden", "data-[state=open]:animate-accordion-down data-[state=closed]:animate-accordion-up", props.className)}
+      className={clsx(
+        "overflow-hidden",
+        animate && "data-[state=open]:animate-accordion-down data-[state=closed]:animate-accordion-up",
+        props.className
+      )}
     />
   ))
 };

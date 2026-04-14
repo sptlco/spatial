@@ -3,7 +3,9 @@
 import { clsx } from "clsx";
 import { motion, AnimatePresence } from "motion/react";
 
-import { Container, createElement, ScrollArea, Span } from "@sptlco/design";
+import { Accordion, Button, Container, createElement, Icon, ScrollArea, Span } from "@sptlco/design";
+
+const TREE_INDENT = 20;
 
 /**
  * A tree explorer element that allows the user to navigate nodes of the brain.
@@ -18,7 +20,7 @@ export const Explorer = {
    */
   Root: createElement<typeof Container>((props, ref) => {
     return (
-      <Container {...props} ref={ref} className={clsx("flex h-[calc(100vh-(var(--layout-pad)*2)-80px)] flex-col", props.className)}>
+      <Container {...props} ref={ref} className={clsx("flex flex-col pb-10", props.className)}>
         <AnimatePresence mode="sync">{props.children}</AnimatePresence>
       </Container>
     );
@@ -48,7 +50,7 @@ export const Explorer = {
         }}
         className={clsx(
           "relative",
-          "rounded-4xl bg-background-surface",
+          "rounded-4xl bg-background-surface border border-line-faint",
           "max-h-sm w-sm min-h-0 overflow-hidden",
           "flex flex-1 flex-col items-center",
           props.className
@@ -57,13 +59,106 @@ export const Explorer = {
         <motion.div layout className="shrink-0 w-full flex self-start items-center justify-center p-10 absolute inset-0">
           <Span className="flex bg-button px-4 py-2 rounded-full font-bold uppercase text-center text-xs">{title || "Panel"}</Span>
         </motion.div>
-        <motion.div layout="position" className="flex flex-1 w-full flex-col min-h-0 px-1 py-10">
+        <motion.div layout="position" className="flex flex-1 w-full flex-col min-h-0 py-10">
           <ScrollArea.Root className="size-full" fade>
-            <ScrollArea.Viewport className="px-5 pt-16">{props.children}</ScrollArea.Viewport>
+            <ScrollArea.Viewport className="max-h-[calc(100vh-(var(--layout-pad)*2)-160px)] pt-16">{props.children}</ScrollArea.Viewport>
             <ScrollArea.Scrollbar />
           </ScrollArea.Root>
         </motion.div>
       </motion.div>
+    );
+  }),
+
+  /**
+   * The accordion root for a group's neuron/synapse tree.
+   * Renders as a vertical flex column; pass `Explorer.Group` elements as children.
+   */
+  Tree: createElement<typeof Accordion.Root, { onAdd?: () => void }>(({ onAdd, ...props }, ref) => {
+    return (
+      <Accordion.Root type="single" key="root" collapsible defaultValue="network" className={clsx("flex flex-col group/tree", props.className)}>
+        <Accordion.Item value="network" className="flex flex-col">
+          <Container className="flex items-center">
+            <Explorer.Node depth={0} className="hover:bg-transparent! text-foreground-primary! uppercase text-xs font-bold">
+              Hypersolver
+            </Explorer.Node>
+            <Container className="hidden group-hover/tree:flex gap-1.5 pr-4">
+              <Button
+                onClick={onAdd}
+                className="size-7! p-2.5! rounded-lg text-foreground-quaternary hover:text-foreground-primary"
+                size="fit"
+                intent="ghost"
+              >
+                <Icon symbol="add" size={20} className="font-light" />
+              </Button>
+            </Container>
+          </Container>
+          <Accordion.Content>
+            <Accordion.Root {...props} ref={ref}>
+              {props.children}
+            </Accordion.Root>
+          </Accordion.Content>
+        </Accordion.Item>
+      </Accordion.Root>
+    );
+  }),
+
+  /**
+   * A collapsible accordion item representing a single neural group.
+   *
+   * Displays a color-coded dot strip derived from the distinct neuron types
+   * present in the group, a total count badge (neurons + synapses), and a
+   * chevron that rotates on open.
+   *
+   * @param uid The numeric group ID used as the visible label.
+   * @param neurons Neurons belonging to this group; drives the type dot strip and count.
+   * @param synapses Synapses belonging to this group; added to the count badge.
+   */
+  Group: createElement<typeof Accordion.Item, { name: string; depth?: number }>(({ name, depth = 1, children, ...props }, ref) => {
+    return (
+      <Accordion.Item {...props} ref={ref} className={clsx("flex flex-col", props.className)}>
+        <Explorer.Node depth={depth}>{name}</Explorer.Node>
+        <Accordion.Content>{children}</Accordion.Content>
+      </Accordion.Item>
+    );
+  }),
+
+  Node: createElement<typeof Accordion.Trigger, { depth?: number }>(({ depth = 2, children, ...props }, ref) => {
+    return (
+      <Accordion.Trigger
+        {...props}
+        ref={ref}
+        style={{ paddingLeft: `${TREE_INDENT * depth + 16}px` }}
+        className={clsx(
+          "flex items-center group",
+          "gap-1.5 pr-4 py-2 w-full",
+          "text-foreground-tertiary hover:text-foreground-primary",
+          "hover:bg-white/5 text-sm leading-6",
+          props.className
+        )}
+      >
+        <Icon symbol="chevron_right" size={20} className="group-data-[state=open]:rotate-90" />
+        {children}
+      </Accordion.Trigger>
+    );
+  }),
+
+  Leaf: createElement<typeof Button, { depth?: number; onSelect?: () => void }>(({ depth = 3, onSelect, ...props }, ref) => {
+    return (
+      <Button
+        {...props}
+        ref={ref}
+        intent="ghost"
+        size="fill"
+        shape="square"
+        style={{ paddingLeft: `${TREE_INDENT * depth + 16}px` }}
+        onClick={onSelect}
+        className={clsx(
+          "text-sm py-2! pr-4! leading-6!",
+          "text-foreground-tertiary hover:text-foreground-primary",
+          "hover:bg-white/5! items-start! justify-start!",
+          props.className
+        )}
+      />
     );
   })
 };

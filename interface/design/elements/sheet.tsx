@@ -12,20 +12,27 @@ import { createPortal } from "react-dom";
 const classes = cva({
   base: [
     "fixed z-(--z-sheet)",
-    "bg-background-surface shadow-base transition ease-in-out",
+    "bg-background-surface border-line-faint shadow-base transition ease-in-out",
     "data-[state=open]:animate-in data-[state=open]:duration-500",
     "data-[state=closed]:animate-out data-[state=closed]:duration-300"
   ],
   variants: {
     side: {
-      top: ["inset-x-0 top-0 h-auto sm:rounded-b-4xl", "data-[state=open]:slide-in-from-top", "data-[state=closed]:slide-out-to-top"],
-      bottom: ["inset-x-0 bottom-0 h-auto sm:rounded-t-4xl", "data-[state=open]:slide-in-from-bottom", "data-[state=closed]:slide-out-to-bottom"],
+      top: ["border-b", "inset-x-0 top-0 h-auto sm:rounded-b-4xl", "data-[state=open]:slide-in-from-top", "data-[state=closed]:slide-out-to-top"],
+      bottom: [
+        "border-t",
+        "inset-x-0 bottom-0 h-auto sm:rounded-t-4xl",
+        "data-[state=open]:slide-in-from-bottom",
+        "data-[state=closed]:slide-out-to-bottom"
+      ],
       right: [
+        "border-l",
         "inset-y-0 right-0 w-full sm:w-fit max-w-full h-full sm:rounded-l-4xl",
         "data-[state=open]:slide-in-from-right",
         "data-[state=closed]:slide-out-to-right"
       ],
       left: [
+        "border-r",
         "inset-y-0 left-0 w-full sm:w-fit max-w-full h-full sm:rounded-r-4xl",
         "data-[state=open]:slide-in-from-left",
         "data-[state=closed]:slide-out-to-left"

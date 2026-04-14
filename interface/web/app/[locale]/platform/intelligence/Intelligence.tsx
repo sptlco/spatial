@@ -5,7 +5,7 @@
 import { Canvas } from "@react-three/fiber";
 import { NeuralController } from "@sptlco/client";
 import { Snapshot } from "@sptlco/data";
-import { Card, createElement, Span } from "@sptlco/design";
+import { Card, createElement } from "@sptlco/design";
 
 import { Hypersolver } from "./Hypersolver";
 
@@ -21,11 +21,6 @@ import { Hypersolver } from "./Hypersolver";
 export const Intelligence = createElement<typeof Card.Root, { snapshot: Snapshot }>(({ snapshot, ...props }, ref) => {
   return (
     <Card.Root {...props} ref={ref} className="flex-1 relative">
-      <Card.Header>
-        <Card.Title className="absolute text-2xl font-bold flex gap-3 items-center top-10 xl:top-6 px-10">
-          <Span>Intelligence</Span>
-        </Card.Title>
-      </Card.Header>
       <Card.Content className="w-full flex flex-1 flex-col relative">
         <Canvas>
           <Hypersolver snapshot={snapshot} />

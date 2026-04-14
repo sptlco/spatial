@@ -3,6 +3,6 @@
 /**
  * Specifies the function of a neuron.
  */
-export type NeuronType = "Sensory" | "Temporal" | "Command" | "Motor";
+export type NeuronType = "sensory" | "temporal" | "command" | "motor";
 
-export const NEURON_TYPES: NeuronType[] = ["Sensory", "Temporal", "Command", "Motor"];
+export const NEURON_TYPES: NeuronType[] = ["sensory", "temporal", "command", "motor"];

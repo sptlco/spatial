@@ -227,6 +227,11 @@ internal class Constants
         public const string SwapExactTokensForETH = "swapExactTokensForETH";
 
         /// <summary>
+        /// A function that lets you swap ERC20 tokens for ERC20 tokens.
+        /// </summary>
+        public const string SwapExactTokensForTokens = "swapExactTokensForTokens";
+
+        /// <summary>
         /// A function that lets you get expected output token amounts from a swap.
         /// </summary>
         public const string GetAmountsOut = "getAmountsOut";

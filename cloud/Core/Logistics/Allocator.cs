@@ -16,7 +16,6 @@ public class Allocator : BackgroundService
 {
     private const string USDC = "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48";
     private const string WETH = "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2";
-    private const string PYUSD = "0x6c3ea9036406852006290770BEdFcAbA0e23A0e8";
 
     private readonly Ethereum _ethereum;
     private readonly Cache _cache;
@@ -71,8 +70,6 @@ public class Allocator : BackgroundService
 
             try
             {
-                await SweepAsync();
-
                 if (_costBasis == 0)
                 {
                     _costBasis = await ComputeCostBasisAsync(_tookProfit);
@@ -212,81 +209,6 @@ public class Allocator : BackgroundService
         }
 
         INFO("Allocator stopped.");
-    }
-
-    private async Task SweepAsync()
-    {
-        var details = await _ethereum.GetERC20DetailsAsync(PYUSD);
-        var balance = (decimal) details[PYUSD].Balance / (decimal) Math.Pow(10, 6);
-
-        if (balance <= 0)
-        {
-            return;
-        }
-
-        INFO("PYUSD balance detected: ${Balance:F2}.", balance);
-
-        if (balance < _config.Minimum)
-        {
-            INFO("PYUSD balance ${Balance:F2} is below minimum trade size ${Minimum}. Skipping conversion.", balance, _config.Minimum);
-            return;
-        }
-
-        var amountIn = (BigInteger) (balance * (decimal) Math.Pow(10, 6));
-        string[] path = [PYUSD, USDC];
-
-        INFO("Converting ${Amount:F2} PYUSD to USDC via PYUSD/USDC.", balance);
-
-        try
-        {
-            INFO("Approving {AmountIn} (${Amount:F2}) PYUSD for Uniswap V2 Router.", amountIn, balance);
-
-            await _ethereum.ApproveAsync(PYUSD, Constants.Contracts.UniswapV2Router02, amountIn);
-
-            var amountsOut = await Uniswap.GetAmountsOutAsync(amountIn, path);
-            var slippage = (BigInteger) ((1.0M - _config.Tolerance) * 10_000.0M);
-            var amountOutMin = amountsOut.Last() * slippage / 10_000;
-            var deadline = (uint) DateTimeOffset.UtcNow.ToUnixTimeSeconds() + _config.Deadline * 60;
-            var expectedUsdc = (decimal) amountsOut.Last() / (decimal) Math.Pow(10, 6);
-            
-            INFO("Swap params — AmountIn: {AmountIn} (${Amount:F2}), AmountOutMin: {AmountOutMin} ({AmountOutMinUsd:F2} USDC), Slippage: {Tolerance:P2}, Deadline: +{Deadline}m.",
-                amountIn, balance, amountOutMin, (decimal) amountOutMin / (decimal) Math.Pow(10, 6), _config.Tolerance, _config.Deadline);
-
-            var timestamp = Time.Now;
-
-            var receipt = await Uniswap.SwapExactTokensForTokensAsync(
-                amountIn,
-                amountOutMin,
-                path,
-                _ethereum.Account.Address,
-                deadline);
-
-            var price = await _ethereum.GetPriceAsync(Constants.Contracts.CHAINLINK_ETH_USD, 8);
-            var gas = Web3.Convert.FromWei(receipt.GasUsed.Value * receipt.EffectiveGasPrice.Value);
-
-            await Metric.WriteOneAsync(
-                name: "deposit",
-                value: new {
-                    Duration = (decimal) (Time.Now - timestamp),
-                    Volume = balance,
-                    Gas = gas * price
-                },
-                metadata: new {
-                    Hash = receipt.TransactionHash,
-                    Pair = "PYUSD/USDC"
-                });
-
-            INFO("Converted ${Amount:F2} PYUSD to ~${Expected:F2} USDC: {Transaction} (Gas: {GasEth:F6} ETH / ${GasUsed:F2}, Duration: {Duration}ms).", 
-                balance, expectedUsdc, receipt.TransactionHash, gas, gas * price, (decimal) (Time.Now - timestamp));
-        }
-        catch (OperationCanceledException)
-        {
-            WARN("PYUSD conversion receipt polling timed out. The transaction may still confirm on-chain.");
-        }
-        catch (Exception e)
-        {
-            ERROR(e, "Failed to convert PYUSD to USDC due to an unexpected error.");
-        }
     }
 
     private async Task BuyAsync(decimal amount, decimal price)

@@ -50,8 +50,8 @@ export const Explorer = {
         }}
         className={clsx(
           "relative",
-          "rounded-4xl bg-background-surface border border-line-faint",
-          "max-h-sm w-sm min-h-0 overflow-hidden",
+          "rounded-4xl bg-background-surface",
+          "max-h-sm w-screen xl:max-w-sm min-h-0 overflow-hidden",
           "flex flex-1 flex-col items-center",
           props.className
         )}

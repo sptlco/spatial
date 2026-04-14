@@ -8,7 +8,7 @@ import { NeuralController, Spatial } from "@sptlco/client";
 import { Neuron, Synapse } from "@sptlco/data";
 import { useMemo, useRef, useState } from "react";
 
-import { Container, Drawer, Icon, Span } from "@sptlco/design";
+import { Button, Container, Drawer, Form, Icon, Span } from "@sptlco/design";
 
 import { Explorer } from "./Explorer";
 import { Intelligence } from "./Intelligence";
@@ -92,7 +92,13 @@ export default function Page() {
         </Container>
       </Application.Content>
       <Drawer.Root open={!!selection} onOpenChange={() => select(undefined)}>
-        <Drawer.Content title="Neuron" description={committed.current?.id}></Drawer.Content>
+        <Drawer.Content title="Neuron" description={committed.current?.id} overlay={false}>
+          <Form>
+            <Button type="submit" intent="highlight">
+              Commit
+            </Button>
+          </Form>
+        </Drawer.Content>
       </Drawer.Root>
     </Application.Root>
   );

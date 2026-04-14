@@ -6,33 +6,25 @@ import { Container, createElement, Hidden, Icon, Paragraph, ScrollArea } from ".
 import * as Primitive from "@radix-ui/react-dialog";
 import { clsx } from "clsx";
 import { cva } from "cva";
-import { FC, PropsWithChildren, ReactNode, useEffect, useState } from "react";
-import { createPortal } from "react-dom";
+import { FC, PropsWithChildren, ReactNode } from "react";
 
 const classes = cva({
   base: [
     "fixed z-(--z-sheet)",
-    "bg-background-surface border-line-faint shadow-base transition ease-in-out",
+    "bg-background-surface shadow-base transition ease-in-out",
     "data-[state=open]:animate-in data-[state=open]:duration-500",
     "data-[state=closed]:animate-out data-[state=closed]:duration-300"
   ],
   variants: {
     side: {
-      top: ["border-b", "inset-x-0 top-0 h-auto sm:rounded-b-4xl", "data-[state=open]:slide-in-from-top", "data-[state=closed]:slide-out-to-top"],
-      bottom: [
-        "border-t",
-        "inset-x-0 bottom-0 h-auto sm:rounded-t-4xl",
-        "data-[state=open]:slide-in-from-bottom",
-        "data-[state=closed]:slide-out-to-bottom"
-      ],
+      top: ["inset-x-0 top-0 h-auto sm:rounded-b-4xl", "data-[state=open]:slide-in-from-top", "data-[state=closed]:slide-out-to-top"],
+      bottom: ["inset-x-0 bottom-0 h-auto sm:rounded-t-4xl", "data-[state=open]:slide-in-from-bottom", "data-[state=closed]:slide-out-to-bottom"],
       right: [
-        "border-l",
         "inset-y-0 right-0 w-full sm:w-fit max-w-full h-full sm:rounded-l-4xl",
         "data-[state=open]:slide-in-from-right",
         "data-[state=closed]:slide-out-to-right"
       ],
       left: [
-        "border-r",
         "inset-y-0 left-0 w-full sm:w-fit max-w-full h-full sm:rounded-r-4xl",
         "data-[state=open]:slide-in-from-left",
         "data-[state=closed]:slide-out-to-left"
@@ -60,8 +52,14 @@ export const Sheet = {
 
   Content: createElement<
     typeof Primitive.Content,
-    Primitive.DialogContentProps & { title?: ReactNode; description?: ReactNode; side?: "top" | "right" | "bottom" | "left"; closeButton?: boolean }
-  >(({ side = "right", closeButton = false, title, description, ...props }, ref) => {
+    Primitive.DialogContentProps & {
+      overlay?: boolean;
+      title?: ReactNode;
+      description?: ReactNode;
+      side?: "top" | "right" | "bottom" | "left";
+      closeButton?: boolean;
+    }
+  >(({ side = "right", overlay = true, closeButton = false, title, description, ...props }, ref) => {
     const Optional: FC<PropsWithChildren<{ value?: ReactNode }>> = ({ value, ...props }) => {
       return !value ? <Hidden {...props} /> : props.children;
     };
@@ -71,14 +69,19 @@ export const Sheet = {
     return (
       <Sheet.Portal>
         <Sheet.Overlay
-          className={clsx(
-            "fixed inset-0 z-(--z-overlay) size-full bg-black/30 backdrop-blur",
-            "data-[state=open]:animate-in data-[state=open]:fade-in",
-            "data-[state=closed]:animate-out data-[state=closed]:fade-out",
-            "duration-500"
-          )}
+          className={clsx("fixed inset-0 z-(--z-overlay) size-full", {
+            "bg-black/30 backdrop-blur": overlay,
+            "data-[state=open]:animate-in data-[state=open]:fade-in": overlay,
+            "data-[state=closed]:animate-out data-[state=closed]:fade-out": overlay,
+            "duration-500": overlay
+          })}
         />
-        <Primitive.Content {...props} data-slot="sheet-content" className={clsx(classes({ side }), props.className)} ref={ref}>
+        <Primitive.Content
+          {...props}
+          data-slot="sheet-content"
+          className={clsx(classes({ side }), "will-change-transform", props.className)}
+          ref={ref}
+        >
           <ScrollArea.Root className="h-full rounded-[inherit]" fade>
             <ScrollArea.Viewport className="max-h-screen">
               <Container className={clsx("w-full flex flex-col p-10 gap-10", horizontal && "min-h-screen")}>

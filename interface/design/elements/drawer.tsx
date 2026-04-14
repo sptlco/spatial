@@ -21,8 +21,14 @@ export const Drawer = {
 
   Content: createElement<
     typeof Primitive.Content,
-    ComponentProps<typeof Primitive.Content> & { title?: ReactNode; description?: ReactNode; closeButton?: boolean; nested?: boolean }
-  >(({ nested, ...props }, ref) => {
+    ComponentProps<typeof Primitive.Content> & {
+      title?: ReactNode;
+      description?: ReactNode;
+      overlay?: boolean;
+      closeButton?: boolean;
+      nested?: boolean;
+    }
+  >(({ nested, overlay = true, ...props }, ref) => {
     const Optional: FC<PropsWithChildren<{ value?: ReactNode }>> = ({ value, ...props }) => {
       return !value ? <Hidden {...props} /> : props.children;
     };
@@ -31,13 +37,12 @@ export const Drawer = {
       <Primitive.Portal>
         <Primitive.Overlay
           data-slot="drawer-overlay"
-          className={clsx(
-            "fixed inset-0 size-full bg-black/30 backdrop-blur",
-            nested ? "z-(--z-nested-overlay)" : "z-(--z-overlay)",
-            "data-[state=open]:animate-in data-[state=open]:fade-in",
-            "data-[state=closed]:animate-out data-[state=closed]:fade-out",
-            "duration-500"
-          )}
+          className={clsx("fixed inset-0 size-full", nested ? "z-(--z-nested-overlay)" : "z-(--z-overlay)", {
+            "bg-black/30 backdrop-blur": overlay,
+            "data-[state=open]:animate-in data-[state=open]:fade-in": overlay,
+            "data-[state=closed]:animate-out data-[state=closed]:fade-out": overlay,
+            "duration-500": overlay
+          })}
         />
         <Primitive.Content
           {...props}

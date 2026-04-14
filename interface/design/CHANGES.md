@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.24.0](https://github.com/sptlco/spatial/compare/spatial-interface-design-1.23.0...spatial-interface-design-1.24.0) (2026-04-14)
+
+
+### Features
+
+* Added a neural interface ([#172](https://github.com/sptlco/spatial/issues/172)) ([e7198b2](https://github.com/sptlco/spatial/commit/e7198b22e5c4aa6460635e8f55268347c1d1ceed))
+
 ## [1.23.0](https://github.com/sptlco/spatial/compare/spatial-interface-design-1.22.0...spatial-interface-design-1.23.0) (2026-04-08)
 
 

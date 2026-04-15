@@ -8,10 +8,11 @@ import { NeuralController, Spatial } from "@sptlco/client";
 import { Neuron, Synapse } from "@sptlco/data";
 import { useMemo, useRef, useState } from "react";
 
-import { Button, Container, Drawer, Empty, Form, Icon, Span } from "@sptlco/design";
+import { Button, Container, Drawer, Empty, Icon, Sheet, Span } from "@sptlco/design";
 
 import { Explorer } from "./Explorer";
 import { Intelligence } from "./Intelligence";
+import { Editor } from "./Editor";
 
 /**
  * A neural interface for the Hypersolver network.
@@ -31,7 +32,7 @@ export default function Page() {
   const [selection, setSelection] = useState<Neuron>();
   const committed = useRef<Neuron | undefined>(undefined);
 
-  const select = (neuron: Neuron | undefined) => {
+  const select = (neuron?: Neuron) => {
     if (neuron) {
       committed.current = neuron;
     }
@@ -98,6 +99,9 @@ export default function Page() {
     );
   };
 
+  const activeNeuron = selection ?? committed.current;
+  const activation = activeNeuron?.value ?? 0;
+
   return (
     <Application.Root title="Intelligence" className="bg-background-subtle" spacing={false}>
       <Application.Content className="flex min-h-0">
@@ -107,18 +111,23 @@ export default function Page() {
               {renderGroups()}
             </Explorer.Panel>
           </Explorer.Root>
-          <Intelligence snapshot={snapshot} />
+          <Intelligence snapshot={snapshot} neurons={neurons} synapses={synapses} selectedId={selection?.id} onNeuronSelect={select} />
         </Container>
       </Application.Content>
-      <Drawer.Root open={!!selection} onOpenChange={() => select(undefined)}>
-        <Drawer.Content title="Neuron" description={committed.current?.id} overlay={false}>
-          <Form>
-            <Button type="submit" intent="highlight">
-              Commit
-            </Button>
-          </Form>
-        </Drawer.Content>
-      </Drawer.Root>
+      <Sheet.Root open={!!selection} onOpenChange={() => select(undefined)}>
+        <Sheet.Content title="Neuron" description={committed.current?.id} overlay={false}>
+          {activeNeuron && (
+            <Editor
+              neuron={activeNeuron}
+              activation={activation}
+              onCommit={(updated) => {
+                committed.current = updated;
+                setSelection(updated);
+              }}
+            />
+          )}
+        </Sheet.Content>
+      </Sheet.Root>
     </Application.Root>
   );
 }

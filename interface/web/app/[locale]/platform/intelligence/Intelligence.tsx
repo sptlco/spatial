@@ -3,27 +3,26 @@
 "use client";
 
 import { Canvas } from "@react-three/fiber";
-import { NeuralController } from "@sptlco/client";
-import { Snapshot } from "@sptlco/data";
+import { Neuron, Snapshot, Synapse } from "@sptlco/data";
 import { Card, createElement } from "@sptlco/design";
 
 import { Hypersolver } from "./Hypersolver";
 
-/**
- * The neural interface for the Hypersolver network.
- *
- * Streams live topology and activation state from the server,
- * rendering neurons and synapses in a real-time 3D scene.
- *
- * Supports structural mutations — adding, updating, and removing
- * neurons and synapses via the {@link NeuralController}.
- */
-export const Intelligence = createElement<typeof Card.Root, { snapshot: Snapshot }>(({ snapshot, ...props }, ref) => {
+export const Intelligence = createElement<
+  typeof Card.Root,
+  {
+    snapshot: Snapshot;
+    neurons: Record<string, Neuron>;
+    synapses: Record<string, Synapse>;
+    onNeuronSelect?: (neuron: Neuron) => void;
+    selectedId?: string;
+  }
+>(({ snapshot, neurons, synapses, onNeuronSelect, selectedId, ...props }, ref) => {
   return (
     <Card.Root {...props} ref={ref} className="flex-1 relative">
       <Card.Content className="w-full flex flex-1 flex-col relative">
-        <Canvas>
-          <Hypersolver snapshot={snapshot} />
+        <Canvas className="h-[calc(100vh-(var(--layout-pad)*2)-80px)]!" camera={{ position: [0, 0, 6], fov: 50 }}>
+          <Hypersolver snapshot={snapshot} neurons={neurons} synapses={synapses} selectedId={selectedId} onSelect={onNeuronSelect} />
         </Canvas>
       </Card.Content>
     </Card.Root>

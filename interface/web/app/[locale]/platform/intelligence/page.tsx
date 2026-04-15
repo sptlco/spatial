@@ -8,7 +8,7 @@ import { NeuralController, Spatial } from "@sptlco/client";
 import { Neuron, Synapse } from "@sptlco/data";
 import { useMemo, useRef, useState } from "react";
 
-import { Button, Container, Drawer, Form, Icon, Span } from "@sptlco/design";
+import { Button, Container, Drawer, Empty, Form, Icon, Span } from "@sptlco/design";
 
 import { Explorer } from "./Explorer";
 import { Intelligence } from "./Intelligence";
@@ -43,10 +43,6 @@ export default function Page() {
     return [...new Set([...neuronsByGroup.keys(), ...synapsesByGroup.keys()])].sort((a, b) => a - b);
   }, [neuronsByGroup, synapsesByGroup]);
 
-  if (groups.length === 0) {
-    return <p className="text-[10px] text-white/15 tracking-wide px-3 py-2">No neurons in the network.</p>;
-  }
-
   const add = async () => {
     setSelection(
       await Spatial.brain.neurons.add({
@@ -63,29 +59,52 @@ export default function Page() {
     );
   };
 
+  const renderGroups = () => {
+    if (groups.length === 0) {
+      return (
+        <Empty.Root className="h-full">
+          <Empty.Header>
+            <Empty.Media variant="icon">
+              <Icon symbol="network_intelligence" />
+            </Empty.Media>
+            <Empty.Title>The network is empty</Empty.Title>
+            <Empty.Description>There are currently no nodes in the network. To get started, add a neuron.</Empty.Description>
+          </Empty.Header>
+          <Empty.Content>
+            <Button onClick={add}>Add Neuron</Button>
+          </Empty.Content>
+        </Empty.Root>
+      );
+    }
+
+    return (
+      <Explorer.Tree type="multiple" onAdd={add}>
+        {groups.map((group) => (
+          <Explorer.Group key={group} value={`group-${group}`} name={`Group ${group}`}>
+            {neuronsByGroup.get(group)?.map((n) => (
+              <Explorer.Leaf key={n.id} onSelect={() => select(n)}>
+                <Icon symbol="network_intel_node" size={20} />
+                <Span>Neuron</Span>
+              </Explorer.Leaf>
+            ))}
+            {synapsesByGroup.get(group)?.map((s) => (
+              <Explorer.Leaf key={s.id}>
+                <Span>Synapse</Span>
+              </Explorer.Leaf>
+            ))}
+          </Explorer.Group>
+        ))}
+      </Explorer.Tree>
+    );
+  };
+
   return (
     <Application.Root title="Intelligence" className="bg-background-subtle" spacing={false}>
       <Application.Content className="flex min-h-0">
         <Container className="flex flex-col xl:flex-row flex-1 min-h-0 overflow-hidden">
           <Explorer.Root>
             <Explorer.Panel key="entities" title="Explorer">
-              <Explorer.Tree type="multiple" onAdd={add}>
-                {groups.map((group) => (
-                  <Explorer.Group key={group} value={`group-${group}`} name={`Group ${group}`}>
-                    {neuronsByGroup.get(group)?.map((n) => (
-                      <Explorer.Leaf key={n.id} onSelect={() => select(n)}>
-                        <Icon symbol="network_intel_node" size={20} />
-                        <Span>Neuron</Span>
-                      </Explorer.Leaf>
-                    ))}
-                    {synapsesByGroup.get(group)?.map((s) => (
-                      <Explorer.Leaf key={s.id}>
-                        <Span>Synapse</Span>
-                      </Explorer.Leaf>
-                    ))}
-                  </Explorer.Group>
-                ))}
-              </Explorer.Tree>
+              {renderGroups()}
             </Explorer.Panel>
           </Explorer.Root>
           <Intelligence snapshot={snapshot} />

@@ -2,7 +2,7 @@
 
 import { Metadata } from "./post";
 
-import { Container, createElement, H1, Link, Logo, Span } from "@sptlco/design";
+import { Container, createElement, H1, Image, Link, Logo, Span } from "@sptlco/design";
 
 /**
  * Displays information about a blog post.
@@ -23,10 +23,10 @@ export const Header = createElement<typeof Container, { metadata: Metadata }>(({
             Blog
           </Link>
           <Span className="inline-flex mx-2.5">/</Span>
-          <Span className="inline-flex">{metadata.topic}</Span>
+          <Span className="inline-flex text-foreground-primary font-bold">{metadata.topic}</Span>
         </Span>
         <H1 className="text-5xl xl:text-6xl text-center font-semibold">{metadata.name}</H1>
-        {metadata.media && <Container className="flex aspect-2/1 w-full bg-background-subtle rounded-2xl xl:rounded-4xl" />}
+        {metadata.media && <Image className="flex aspect-2/1 object-cover w-full rounded-2xl xl:rounded-4xl" src={metadata.media} />}
         <Span className="text-foreground-tertiary font-medium text-xs xl:text-sm">
           <Span>{metadata.author}</Span>
           <Span className="mx-2.5">·</Span>

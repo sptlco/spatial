@@ -28,7 +28,7 @@ export const Drawer = {
       closeButton?: boolean;
       nested?: boolean;
     }
-  >(({ nested, overlay = true, ...props }, ref) => {
+  >(({ nested, overlay = true, title, description, closeButton, ...props }, ref) => {
     const Optional: FC<PropsWithChildren<{ value?: ReactNode }>> = ({ value, ...props }) => {
       return !value ? <Hidden {...props} /> : props.children;
     };
@@ -63,15 +63,15 @@ export const Drawer = {
         >
           <Container className="grid grid-cols-3">
             <Container className="flex grow flex-col col-start-1">
-              <Optional value={props.title}>
-                <Primitive.Title className="font-bold text-lg">{props.title}</Primitive.Title>
+              <Optional value={title}>
+                <Primitive.Title className="font-bold text-lg">{title}</Primitive.Title>
               </Optional>
-              <Optional value={props.description}>
-                <Primitive.Description className="text-foreground-secondary">{props.description}</Primitive.Description>
+              <Optional value={description}>
+                <Primitive.Description className="text-foreground-secondary">{description}</Primitive.Description>
               </Optional>
             </Container>
             <Span className="col-start-2 place-self-center bg-translucent hidden h-1.5 w-[100px] shrink-0 rounded-full group-data-[vaul-drawer-direction=bottom]/drawer-content:block" />
-            {props.closeButton && (
+            {closeButton && (
               <Primitive.Close data-slot="drawer-close" className={clsx("col-start-3 cursor-pointer inline-flex h-fit justify-self-end")}>
                 <Icon symbol="close" />
               </Primitive.Close>

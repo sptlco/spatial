@@ -22,7 +22,7 @@ export const View = createElement<typeof ToggleGroup.Root>((props, ref) => {
   return (
     <ToggleGroup.Root {...props} ref={ref} className="flex items-center gap-4">
       {views.map((view, i) => (
-        <ToggleGroup.Item key={i} value={view.name} className="flex items-center justify-center text-input data-[state=on]:text-foreground-primary">
+        <ToggleGroup.Item key={i} value={view.name} className="flex items-center justify-center text-hint data-[state=on]:text-foreground-primary">
           {view.icon}
         </ToggleGroup.Item>
       ))}

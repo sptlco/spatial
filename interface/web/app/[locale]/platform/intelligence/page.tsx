@@ -8,7 +8,7 @@ import { NeuralController, Spatial } from "@sptlco/client";
 import { Neuron, Synapse } from "@sptlco/data";
 import { useMemo, useRef, useState } from "react";
 
-import { Button, Container, Drawer, Empty, Icon, Sheet, Span } from "@sptlco/design";
+import { Button, Container, Drawer, Empty, Icon, Span } from "@sptlco/design";
 
 import { Explorer } from "./Explorer";
 import { Intelligence } from "./Intelligence";
@@ -114,8 +114,8 @@ export default function Page() {
           <Intelligence snapshot={snapshot} neurons={neurons} synapses={synapses} selectedId={selection?.id} onNeuronSelect={select} />
         </Container>
       </Application.Content>
-      <Sheet.Root open={!!selection} onOpenChange={() => select(undefined)}>
-        <Sheet.Content title="Neuron" description={committed.current?.id} overlay={false}>
+      <Drawer.Root open={!!selection} onOpenChange={() => select(undefined)} direction="right">
+        <Drawer.Content title="Neuron" description={committed.current?.id} overlay={false} closeButton>
           {activeNeuron && (
             <Editor
               neuron={activeNeuron}
@@ -126,8 +126,8 @@ export default function Page() {
               }}
             />
           )}
-        </Sheet.Content>
-      </Sheet.Root>
+        </Drawer.Content>
+      </Drawer.Root>
     </Application.Root>
   );
 }

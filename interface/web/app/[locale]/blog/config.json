@@ -4,20 +4,19 @@
       "date": "2026-02-28",
       "topic": "Engineering",
       "slug": "hello",
-      "public": false,
       "name": "Hello, world!",
-      "description": "A greeting to the world.",
+      "description": "Cras laoreet est eu mi gravida, vitae dictum felis pulvinar. Aliquam eget maximus erat. Vivamus volutpat nec dolor non porttitor. Sed placerat orci vitae augue fringilla, non facilisis lorem malesuada. Quisque feugiat, tellus sit amet imperdiet vulputate, nisl magna ullamcorper nulla, id mollis urna urna ut ipsum. Fusce ut libero iaculis, feugiat tortor id, vulputate ipsum. Nulla facilisi. Ut molestie arcu sit amet velit vehicula iaculis.",
       "author": "Dakarai T. Cundiff",
-      "media": "abc"
+      "media": "https://images.ctfassets.net/kftzwdyauwt9/3ZlINT9EhkfY55coSIdBWq/64c9eaca9767f231ff2902685b4092ea/oai_model_spec_1x1.png?w=1920&q=90&fm=webp"
     },
     {
       "date": "2026-03-01",
       "topic": "Updates",
       "slug": "goodbye",
-      "public": false,
       "name": "Goodbye, world!",
-      "description": "A farewell to the world.",
-      "author": "Dakarai T. Cundiff"
+      "description": "Cras laoreet est eu mi gravida, vitae dictum felis pulvinar. Aliquam eget maximus erat. Vivamus volutpat nec dolor non porttitor. Sed placerat orci vitae augue fringilla, non facilisis lorem malesuada. Quisque feugiat, tellus sit amet imperdiet vulputate, nisl magna ullamcorper nulla, id mollis urna urna ut ipsum. Fusce ut libero iaculis, feugiat tortor id, vulputate ipsum. Nulla facilisi. Ut molestie arcu sit amet velit vehicula iaculis.",
+      "author": "Dakarai T. Cundiff",
+      "media": "https://images.ctfassets.net/kftzwdyauwt9/3ZlINT9EhkfY55coSIdBWq/64c9eaca9767f231ff2902685b4092ea/oai_model_spec_1x1.png?w=1920&q=90&fm=webp"
     }
   ]
 }

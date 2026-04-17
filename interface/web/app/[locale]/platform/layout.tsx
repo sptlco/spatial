@@ -327,11 +327,15 @@ export default function Layout(props: { children: ReactNode }) {
               )}
             </Sheet.Trigger>
             <Sheet.Content title={t("modals.account.title")} description={t("modals.account.description")} closeButton side="right">
-              <Avatar src={user.account.avatar} alt={user.account.name} className="size-24 mx-auto" />
-              <Container className="flex flex-col items-center">
-                <Span className="text-2xl font-bold">{user.account.name}</Span>
-                <Span className="text-sm text-foreground-quaternary">{user.account.email}</Span>
-              </Container>
+              {!loading && (
+                <Container className="flex flex-col mt-auto">
+                  <Avatar src={user.account.avatar} alt={user.account.name} className="size-24 mx-auto" />
+                  <Container className="flex flex-col items-center">
+                    <Span className="text-2xl font-bold">{user.account.name}</Span>
+                    <Span className="text-sm text-foreground-quaternary">{user.account.email}</Span>
+                  </Container>
+                </Container>
+              )}
               <Container className="flex flex-col mt-auto gap-10">
                 <Button size="fill" disabled={loading} onClick={logout}>
                   <Span>Logout</Span>

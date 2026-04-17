@@ -5,7 +5,7 @@
 import { Canvas, useFrame } from "@react-three/fiber";
 import { Spatial } from "@sptlco/client";
 import { Neuron, NEURON_TYPES } from "@sptlco/data";
-import { Button, Container, Field, Form, Span } from "@sptlco/design";
+import { Button, Container, Drawer, Field, Form, Span } from "@sptlco/design";
 import { useMemo, useRef, useState } from "react";
 import * as THREE from "three";
 
@@ -45,7 +45,7 @@ export const Editor = ({ neuron, activation = 0, onCommit }: NeuronEditorProps) 
         </Canvas>
       </div>
 
-      <Form className="flex flex-col gap-6" onSubmit={commit}>
+      <Form className="flex flex-col gap-10" onSubmit={commit}>
         <Field
           type="option"
           id="type"
@@ -77,7 +77,7 @@ export const Editor = ({ neuron, activation = 0, onCommit }: NeuronEditorProps) 
 
         <Container className="flex flex-col gap-4">
           <Container className="flex items-center">
-            <Span className="font-medium px-0 grow">Position</Span>
+            <Span className="font-extrabold text-xs uppercase text-hint px-0 grow">Position</Span>
           </Container>
           <Container className="grid grid-cols-3 gap-2">
             {(["x", "y", "z"] as const).map((axis) => (
@@ -95,9 +95,14 @@ export const Editor = ({ neuron, activation = 0, onCommit }: NeuronEditorProps) 
           </Container>
         </Container>
 
-        <Button type="submit" intent="highlight" disabled={saving}>
-          Commit
-        </Button>
+        <Container className="flex items-center gap-4">
+          <Button type="submit" intent="highlight" disabled={saving}>
+            Commit
+          </Button>
+          <Drawer.Close asChild>
+            <Button>Cancel</Button>
+          </Drawer.Close>
+        </Container>
       </Form>
     </div>
   );

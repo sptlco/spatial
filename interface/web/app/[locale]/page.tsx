@@ -10,9 +10,9 @@ import { Container, Link, Logo, Main } from "@sptlco/design";
  */
 export default function Page() {
   const links = [
-    { href: "/blog", label: "Research" },
     //{ href: "/store", label: "Storefront" },
-    { href: "/platform", label: "Platform" }
+    { href: "/platform", label: "Platform" },
+    { href: "/blog", label: "Transmissions" }
   ];
   return (
     <Main className="grid grid-cols-[1fr_auto_1fr] grid-rows-[auto_1fr_auto] w-full h-screen gap-10">

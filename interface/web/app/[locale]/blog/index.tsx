@@ -8,14 +8,17 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 
 import { Filters } from "./filters";
+import { Post } from "./post";
 import { Search } from "./search";
 import { Sort, SortOrder } from "./sort";
 import { View, ViewType } from "./view";
 
 import { Footer } from "@/elements";
-import { Container, createElement, H1, Image, Link, Logo, Main, Pagination, Paragraph, Span } from "@sptlco/design";
+import { Container, createElement, Empty, H1, Icon, Image, Link, Logo, Main, Pagination, Paragraph, Span } from "@sptlco/design";
 
-import { posts } from "./config.json";
+import config from "./config.json";
+
+const posts = config.posts as Post[];
 
 const containerVariants: Variants = {
   hidden: {},
@@ -139,9 +142,9 @@ export const Index = createElement<typeof Main>((props, ref) => {
   }, [filters, keywords, sort]);
 
   return (
-    <Main {...props} ref={ref}>
-      <Container className="flex flex-col items-center justify-center py-10">
-        <Container className="flex flex-col w-full xl:max-w-7xl gap-10 px-10">
+    <Main {...props} ref={ref} className="flex flex-col min-h-screen">
+      <Container className="flex flex-col flex-1 items-center py-10">
+        <Container className="flex flex-col flex-1 w-full xl:max-w-7xl gap-10 px-10">
           <Container className="flex w-full items-center justify-between">
             <Container className="flex items-center gap-2">
               <Link href="/">
@@ -167,69 +170,87 @@ export const Index = createElement<typeof Main>((props, ref) => {
               {filtered.length} post{filtered.length !== 1 && "s"}
             </Span>
           </Container>
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={`${view}-${page}`}
-              className={clsx("grid gap-10", { "grid-cols-1 sm:grid-cols-2 xl:grid-cols-3": view === "grid" })}
-              variants={containerVariants}
-              initial="hidden"
-              animate="visible"
-              exit="exit"
-            >
-              {pagination.map((post, i) => {
-                switch (view) {
-                  case "grid":
-                    return (
-                      <motion.div key={`grid-${i}`} variants={gridItemVariants}>
-                        <Link href={`/blog/${post.slug}`} className="group flex flex-col gap-4 justify-start items-start">
-                          <Image src={post.media} />
-                          <Span className="font-medium text-lg">{highlight(post.name, keywords)}</Span>
-                          <Container className="flex items-center text-sm gap-2">
-                            <Span className="font-medium">{highlight(post.topic, keywords)}</Span>
-                            <Span
-                              className={clsx(
-                                "transition-all text-hint whitespace-nowrap",
-                                "group-hover:text-foreground-secondary group-active:text-foreground-secondary"
-                              )}
-                            >
-                              {new Date(post.date).toLocaleString(undefined, { month: "long", day: "2-digit", year: "numeric" })}
-                            </Span>
-                          </Container>
-                        </Link>
-                      </motion.div>
-                    );
-                  case "list":
-                    return (
-                      <motion.div key={`list-${i}`} variants={listItemVariants}>
-                        <Link href={`/blog/${post.slug}`} className="group grid! items-start grid-cols-[8rem_1fr] gap-x-10">
-                          <Span className="col-start-1 row-start-1 text-sm font-medium leading-6">{highlight(post.topic, keywords)}</Span>
-                          <Span
-                            className={clsx(
-                              "col-start-1 row-start-2",
-                              "transition-all text-sm text-hint leading-6 whitespace-nowrap",
-                              "group-hover:text-foreground-secondary group-active:text-foreground-secondary"
-                            )}
-                          >
-                            {new Date(post.date).toLocaleString(undefined, { month: "long", day: "2-digit", year: "numeric" })}
-                          </Span>
-                          <Span className="col-start-2 row-start-1 font-medium">{highlight(post.name, keywords)}</Span>
-                          <Paragraph
-                            className={clsx(
-                              "col-start-2 row-start-2",
-                              "transition-all text-hint line-clamp-3",
-                              "group-hover:text-foreground-secondary group-active:text-foreground-secondary"
-                            )}
-                          >
-                            {highlight(post.description, keywords)}
-                          </Paragraph>
-                        </Link>
-                      </motion.div>
-                    );
-                }
-              })}
-            </motion.div>
-          </AnimatePresence>
-          <Pagination page={page} pages={pages} className="self-center" onPageChange={navigate} />
+          {pagination.length === 0 ? (
+            <Empty.Root className="my-auto">
+              <Empty.Header>
+                <Empty.Media variant="icon">
+                  <Icon symbol="news" />
+                </Empty.Media>
+                <Empty.Title>No posts found</Empty.Title>
+                <Empty.Description>
+                  {posts.length === 0
+                    ? "Nothing has been published yet. Check back soon."
+                    : "No posts match your search or filters. Try adjusting them, or check back later."}
+                </Empty.Description>
+              </Empty.Header>
+            </Empty.Root>
+          ) : (
+            <>
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={`${view}-${page}`}
+                  className={clsx("grid gap-10", { "grid-cols-1 sm:grid-cols-2 xl:grid-cols-3": view === "grid" })}
+                  variants={containerVariants}
+                  initial="hidden"
+                  animate="visible"
+                  exit="exit"
+                >
+                  {pagination.map((post, i) => {
+                    switch (view) {
+                      case "grid":
+                        return (
+                          <motion.div key={`grid-${i}`} variants={gridItemVariants}>
+                            <Link href={`/blog/${post.slug}`} className="group flex flex-col gap-4 justify-start items-start">
+                              <Image src={post.media} />
+                              <Span className="font-medium text-lg">{highlight(post.name, keywords)}</Span>
+                              <Container className="flex items-center text-sm gap-2">
+                                <Span className="font-medium">{highlight(post.topic, keywords)}</Span>
+                                <Span
+                                  className={clsx(
+                                    "transition-all text-hint whitespace-nowrap",
+                                    "group-hover:text-foreground-secondary group-active:text-foreground-secondary"
+                                  )}
+                                >
+                                  {new Date(post.date).toLocaleString(undefined, { month: "long", day: "2-digit", year: "numeric" })}
+                                </Span>
+                              </Container>
+                            </Link>
+                          </motion.div>
+                        );
+                      case "list":
+                        return (
+                          <motion.div key={`list-${i}`} variants={listItemVariants}>
+                            <Link href={`/blog/${post.slug}`} className="group grid! items-start grid-cols-[8rem_1fr] gap-x-10">
+                              <Span className="col-start-1 row-start-1 text-sm font-medium leading-6">{highlight(post.topic, keywords)}</Span>
+                              <Span
+                                className={clsx(
+                                  "col-start-1 row-start-2",
+                                  "transition-all text-sm text-hint leading-6 whitespace-nowrap",
+                                  "group-hover:text-foreground-secondary group-active:text-foreground-secondary"
+                                )}
+                              >
+                                {new Date(post.date).toLocaleString(undefined, { month: "long", day: "2-digit", year: "numeric" })}
+                              </Span>
+                              <Span className="col-start-2 row-start-1 font-medium">{highlight(post.name, keywords)}</Span>
+                              <Paragraph
+                                className={clsx(
+                                  "col-start-2 row-start-2",
+                                  "transition-all text-hint line-clamp-3",
+                                  "group-hover:text-foreground-secondary group-active:text-foreground-secondary"
+                                )}
+                              >
+                                {highlight(post.description, keywords)}
+                              </Paragraph>
+                            </Link>
+                          </motion.div>
+                        );
+                    }
+                  })}
+                </motion.div>
+              </AnimatePresence>
+              <Pagination page={page} pages={pages} className="self-center" onPageChange={navigate} />
+            </>
+          )}
         </Container>
       </Container>
       <Footer />

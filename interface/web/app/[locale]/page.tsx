@@ -10,7 +10,7 @@ import { Container, Link, Logo, Main } from "@sptlco/design";
  */
 export default function Page() {
   const links = [
-    //{ href: "/blog", label: "Research" },
+    { href: "/blog", label: "Research" },
     //{ href: "/store", label: "Storefront" },
     { href: "/platform", label: "Platform" }
   ];

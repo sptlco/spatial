@@ -15,9 +15,9 @@ export const Header = createElement<typeof Container, { metadata: Metadata }>(({
         ref={ref}
         className="row-start-2 col-start-1 col-span-3 place-self-center flex flex-col w-full xl:max-w-5xl items-center gap-10"
       >
-        <Container>
+        <Link href="/">
           <Logo mode="symbol" className="h-6 xl:h-8" />
-        </Container>
+        </Link>
         <Span className="text-foreground-tertiary font-medium text-xs xl:text-sm">
           <Link href="/blog" className="inline-flex text-inherit hover:text-foreground-primary active:text-foreground-primary">
             Blog

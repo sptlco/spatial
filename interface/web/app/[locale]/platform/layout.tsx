@@ -326,9 +326,15 @@ export default function Layout(props: { children: ReactNode }) {
                 />
               )}
             </Sheet.Trigger>
-            <Sheet.Content title={t("modals.account.title")} description={t("modals.account.description")} closeButton side="right">
+            <Sheet.Content
+              title={t("modals.account.title")}
+              description={t("modals.account.description")}
+              className="xl:min-w-sm"
+              closeButton
+              side="right"
+            >
               {!loading && (
-                <Container className="flex flex-col mt-auto">
+                <Container className="flex flex-col gap-10 mt-auto">
                   <Avatar src={user.account.avatar} alt={user.account.name} className="size-24 mx-auto" />
                   <Container className="flex flex-col items-center">
                     <Span className="text-2xl font-bold">{user.account.name}</Span>

@@ -4,11 +4,12 @@
 
 import { clsx } from "clsx";
 import { AnimatePresence, motion, Variants } from "motion/react";
-import { useMemo, useState } from "react";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { useEffect, useMemo, useState } from "react";
 
 import { Filters } from "./filters";
 import { Search } from "./search";
-import { Sort } from "./sort";
+import { Sort, SortOrder } from "./sort";
 import { View, ViewType } from "./view";
 
 import { Footer } from "@/elements";
@@ -43,18 +44,99 @@ const listItemVariants: Variants = {
   exit: { opacity: 0, x: 14, transition: { duration: 0.15, ease: "easeIn" } }
 };
 
+const highlight = (text: string, keywords: string[]) => {
+  if (keywords.length === 0) {
+    return text;
+  }
+
+  const escaped = keywords.map((k) => k.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"));
+  const regex = new RegExp(`(${escaped.join("|")})`, "gi");
+  const parts = text.split(regex);
+
+  return parts.map((part, i) =>
+    regex.test(part) ? (
+      <mark key={i} className="rounded px-1 bg-yellow text-foreground-inverse">
+        {part}
+      </mark>
+    ) : (
+      <span key={i}>{part}</span>
+    )
+  );
+};
+
 /**
  * A public display of blog posts.
  */
 export const Index = createElement<typeof Main>((props, ref) => {
   const [view, setView] = useState<ViewType>("grid");
   const [filters, setFilters] = useState<string[]>([]);
+  const [sort, setSort] = useState<SortOrder>("");
 
-  // ...
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
 
-  const data = useMemo(() => {
-    return posts.filter((post) => filters.length === 0 || filters.includes(post.topic));
-  }, [posts, filters]);
+  const PAGE_SIZE = 12;
+
+  const navigate = (page: number) => {
+    const params = new URLSearchParams(searchParams.toString());
+
+    if (page > 1) {
+      params.set("page", page.toString());
+    } else {
+      params.delete("page");
+    }
+
+    router.replace(`${pathname}?${params.toString()}`, { scroll: false });
+  };
+
+  const keywords = useMemo(() => {
+    return searchParams.get("keywords")?.trim().split(/\s+/).filter(Boolean) ?? [];
+  }, [searchParams]);
+
+  const filtered = useMemo(() => {
+    return posts.filter((post) => {
+      const matchesTopic = filters.length === 0 || filters.includes(post.topic);
+      const matchesKeywords =
+        keywords.length === 0 ||
+        keywords.some((k) => [post.name, post.topic, post.description].some((field) => field.toLowerCase().includes(k.toLowerCase())));
+
+      return matchesTopic && matchesKeywords;
+    });
+  }, [posts, filters, keywords]);
+
+  const sorted = useMemo(() => {
+    if (!sort) {
+      return filtered;
+    }
+
+    const [field, dir] = sort.split("-") as ["date" | "name" | "topic", "asc" | "desc"];
+    const mul = dir === "asc" ? 1 : -1;
+
+    return [...filtered].sort((a, b) => {
+      switch (field) {
+        case "date":
+          return (new Date(a.date).getTime() - new Date(b.date).getTime()) * mul;
+        case "name":
+          return a.name.localeCompare(b.name) * mul;
+        case "topic":
+          return a.topic.localeCompare(b.topic) * mul;
+      }
+    });
+  }, [filtered, sort]);
+
+  const pages = Math.ceil(sorted.length / PAGE_SIZE);
+  const page = useMemo(() => Math.max(1, Number(searchParams.get("blog") ?? 1)), [searchParams]);
+
+  const pagination = useMemo(() => {
+    const start = (page - 1) * PAGE_SIZE;
+
+    return sorted.slice(start, start + PAGE_SIZE);
+  }, [sorted, page]);
+
+  useEffect(() => {
+    navigate(1);
+  }, [filters, keywords, sort]);
 
   return (
     <Main {...props} ref={ref}>
@@ -68,7 +150,7 @@ export const Index = createElement<typeof Main>((props, ref) => {
               <Container className="flex items-center">
                 <Search />
                 <Filters selection={filters} onSelectionChange={setFilters} />
-                <Sort />
+                <Sort selection={sort} onSelectionChange={setSort} />
               </Container>
             </Container>
             <View
@@ -79,33 +161,31 @@ export const Index = createElement<typeof Main>((props, ref) => {
               }}
             />
           </Container>
-
           <Container className="flex flex-col gap-2 xl:gap-4 text-center">
             <H1 className="text-3xl xl:text-6xl font-bold">Blog</H1>
             <Span className="xl:text-xl text-foreground-tertiary">
-              {data.length} post{data.length !== 1 && "s"}
+              {filtered.length} post{filtered.length !== 1 && "s"}
             </Span>
           </Container>
-
           <AnimatePresence mode="wait">
             <motion.div
-              key={view}
+              key={`${view}-${page}`}
               className={clsx("grid gap-10", { "grid-cols-1 sm:grid-cols-2 xl:grid-cols-3": view === "grid" })}
               variants={containerVariants}
               initial="hidden"
               animate="visible"
               exit="exit"
             >
-              {data.map((post, i) => {
+              {pagination.map((post, i) => {
                 switch (view) {
                   case "grid":
                     return (
                       <motion.div key={`grid-${i}`} variants={gridItemVariants}>
                         <Link href={`/blog/${post.slug}`} className="group flex flex-col gap-4 justify-start items-start">
                           <Image src={post.media} />
-                          <Span className="font-medium text-lg">{post.name}</Span>
+                          <Span className="font-medium text-lg">{highlight(post.name, keywords)}</Span>
                           <Container className="flex items-center text-sm gap-2">
-                            <Span className="font-medium">{post.topic}</Span>
+                            <Span className="font-medium">{highlight(post.topic, keywords)}</Span>
                             <Span
                               className={clsx(
                                 "transition-all text-hint whitespace-nowrap",
@@ -121,32 +201,27 @@ export const Index = createElement<typeof Main>((props, ref) => {
                   case "list":
                     return (
                       <motion.div key={`list-${i}`} variants={listItemVariants}>
-                        <Link
-                          href={`/blog/${post.slug}`}
-                          className="group flex gap-10 justify-start items-start border-b border-line-faint pb-10 last:p-0 last:border-none"
-                        >
-                          <Container className="flex flex-col text-sm gap-4 basis-1/5 shrink-0">
-                            <Span className="font-medium leading-6">{post.topic}</Span>
-                            <Span
-                              className={clsx(
-                                "transition-all text-hint leading-6 whitespace-nowrap",
-                                "group-hover:text-foreground-secondary group-active:text-foreground-secondary"
-                              )}
-                            >
-                              {new Date(post.date).toLocaleString(undefined, { month: "long", day: "2-digit", year: "numeric" })}
-                            </Span>
-                          </Container>
-                          <Container className="flex flex-col gap-4 grow">
-                            <Span className="font-medium">{post.name}</Span>
-                            <Paragraph
-                              className={clsx(
-                                "transition-all text-hint",
-                                "group-hover:text-foreground-secondary group-active:text-foreground-secondary"
-                              )}
-                            >
-                              {post.description}
-                            </Paragraph>
-                          </Container>
+                        <Link href={`/blog/${post.slug}`} className="group grid! items-start grid-cols-[8rem_1fr] gap-x-10">
+                          <Span className="col-start-1 row-start-1 text-sm font-medium leading-6">{highlight(post.topic, keywords)}</Span>
+                          <Span
+                            className={clsx(
+                              "col-start-1 row-start-2",
+                              "transition-all text-sm text-hint leading-6 whitespace-nowrap",
+                              "group-hover:text-foreground-secondary group-active:text-foreground-secondary"
+                            )}
+                          >
+                            {new Date(post.date).toLocaleString(undefined, { month: "long", day: "2-digit", year: "numeric" })}
+                          </Span>
+                          <Span className="col-start-2 row-start-1 font-medium">{highlight(post.name, keywords)}</Span>
+                          <Paragraph
+                            className={clsx(
+                              "col-start-2 row-start-2",
+                              "transition-all text-hint line-clamp-3",
+                              "group-hover:text-foreground-secondary group-active:text-foreground-secondary"
+                            )}
+                          >
+                            {highlight(post.description, keywords)}
+                          </Paragraph>
                         </Link>
                       </motion.div>
                     );
@@ -154,8 +229,7 @@ export const Index = createElement<typeof Main>((props, ref) => {
               })}
             </motion.div>
           </AnimatePresence>
-
-          <Pagination page={1} pages={1} className="self-center" />
+          <Pagination page={page} pages={pages} className="self-center" onPageChange={navigate} />
         </Container>
       </Container>
       <Footer />

@@ -32,7 +32,7 @@ export const Filters = createElement<typeof Fragment, { selection?: string[]; on
         </Button>
       </Combobox.Trigger>
       <Combobox.Content>
-        <Combobox.List label="Topic">
+        <Combobox.List label="Topics">
           {topics.map((topic, i) => (
             <Combobox.Item key={i} value={topic} label={topic} />
           ))}

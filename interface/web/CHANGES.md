@@ -1,5 +1,19 @@
 # Changelog
 
+## [1.35.0](https://github.com/sptlco/spatial/compare/spatial-interface-web-1.34.0...spatial-interface-web-1.35.0) (2026-04-22)
+
+
+### Features
+
+* Added a blog ([b3fb444](https://github.com/sptlco/spatial/commit/b3fb444c9339b35852729913cef649fefbceed48))
+* Added a neural editor ([#172](https://github.com/sptlco/spatial/issues/172)) ([e839cb7](https://github.com/sptlco/spatial/commit/e839cb7ea841955692dd06d436deb77e0aa1ad82))
+* Added a neural editor ([#172](https://github.com/sptlco/spatial/issues/172)) ([159947d](https://github.com/sptlco/spatial/commit/159947d810cd8a3bcb0f47792095151584c1cdd0))
+* Added a neuron editor ([#172](https://github.com/sptlco/spatial/issues/172)) ([7112f73](https://github.com/sptlco/spatial/commit/7112f738dba6f6769ab2a973dbb47578c92d9adc))
+* Added an empty network indicator ([#172](https://github.com/sptlco/spatial/issues/172)) ([9dc93b5](https://github.com/sptlco/spatial/commit/9dc93b5e602ae8fe9630a1d7936faf5599970824))
+* Added an empty post indicator ([a6a2c22](https://github.com/sptlco/spatial/commit/a6a2c22eaaa98e9f85437b15cf966e05111272a6))
+* Added blog filters ([b0af33a](https://github.com/sptlco/spatial/commit/b0af33a3affaf2c9f318ccc3f8f48af58b02a2ad))
+* Recolored the neural interface ([#172](https://github.com/sptlco/spatial/issues/172)) ([e3ee205](https://github.com/sptlco/spatial/commit/e3ee205bf283a067e0b7b8408cb93c300351cea6))
+
 ## [1.34.0](https://github.com/sptlco/spatial/compare/spatial-interface-web-1.33.0...spatial-interface-web-1.34.0) (2026-04-14)
 
 

@@ -1,5 +1,26 @@
 # Changelog
 
+## [1.32.0](https://github.com/sptlco/spatial/compare/spatial-1.31.0...spatial-1.32.0) (2026-04-22)
+
+
+### Features
+
+* Added a blog ([b3fb444](https://github.com/sptlco/spatial/commit/b3fb444c9339b35852729913cef649fefbceed48))
+* Added a neural editor ([#172](https://github.com/sptlco/spatial/issues/172)) ([e839cb7](https://github.com/sptlco/spatial/commit/e839cb7ea841955692dd06d436deb77e0aa1ad82))
+* Added a neural editor ([#172](https://github.com/sptlco/spatial/issues/172)) ([159947d](https://github.com/sptlco/spatial/commit/159947d810cd8a3bcb0f47792095151584c1cdd0))
+* Added a neuron editor ([#172](https://github.com/sptlco/spatial/issues/172)) ([7112f73](https://github.com/sptlco/spatial/commit/7112f738dba6f6769ab2a973dbb47578c92d9adc))
+* Added an empty network indicator ([#172](https://github.com/sptlco/spatial/issues/172)) ([9dc93b5](https://github.com/sptlco/spatial/commit/9dc93b5e602ae8fe9630a1d7936faf5599970824))
+* Added an empty post indicator ([a6a2c22](https://github.com/sptlco/spatial/commit/a6a2c22eaaa98e9f85437b15cf966e05111272a6))
+* Added blog filters ([b0af33a](https://github.com/sptlco/spatial/commit/b0af33a3affaf2c9f318ccc3f8f48af58b02a2ad))
+* Convert PYUSD to USDC ([368f76e](https://github.com/sptlco/spatial/commit/368f76ebfe43d8f8f584fed0d9da304447293189))
+* Recolored the neural interface ([#172](https://github.com/sptlco/spatial/issues/172)) ([e3ee205](https://github.com/sptlco/spatial/commit/e3ee205bf283a067e0b7b8408cb93c300351cea6))
+
+
+### Bug Fixes
+
+* Removed sweep logic ([6477945](https://github.com/sptlco/spatial/commit/6477945015e76ae0166d31be6ae6186680ee2551))
+* Route stablecoins directly. ([1c0fe48](https://github.com/sptlco/spatial/commit/1c0fe486ffba7e974ef543b696166e9ec9f4f5c6))
+
 ## [1.31.0](https://github.com/sptlco/spatial/compare/spatial-1.30.0...spatial-1.31.0) (2026-04-14)
 
 

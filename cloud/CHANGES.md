@@ -1,5 +1,18 @@
 # Changelog
 
+## [1.38.0](https://github.com/sptlco/spatial/compare/spatial-cloud-1.37.0...spatial-cloud-1.38.0) (2026-04-22)
+
+
+### Features
+
+* Convert PYUSD to USDC ([368f76e](https://github.com/sptlco/spatial/commit/368f76ebfe43d8f8f584fed0d9da304447293189))
+
+
+### Bug Fixes
+
+* Removed sweep logic ([6477945](https://github.com/sptlco/spatial/commit/6477945015e76ae0166d31be6ae6186680ee2551))
+* Route stablecoins directly. ([1c0fe48](https://github.com/sptlco/spatial/commit/1c0fe486ffba7e974ef543b696166e9ec9f4f5c6))
+
 ## [1.37.0](https://github.com/sptlco/spatial/compare/spatial-cloud-1.36.0...spatial-cloud-1.37.0) (2026-04-14)
 
 

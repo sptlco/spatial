@@ -1,5 +1,14 @@
 # Changelog
 
+## [1.25.0](https://github.com/sptlco/spatial/compare/spatial-interface-design-1.24.0...spatial-interface-design-1.25.0) (2026-04-22)
+
+
+### Features
+
+* Added a neural editor ([#172](https://github.com/sptlco/spatial/issues/172)) ([159947d](https://github.com/sptlco/spatial/commit/159947d810cd8a3bcb0f47792095151584c1cdd0))
+* Added a neuron editor ([#172](https://github.com/sptlco/spatial/issues/172)) ([7112f73](https://github.com/sptlco/spatial/commit/7112f738dba6f6769ab2a973dbb47578c92d9adc))
+* Added blog filters ([b0af33a](https://github.com/sptlco/spatial/commit/b0af33a3affaf2c9f318ccc3f8f48af58b02a2ad))
+
 ## [1.24.0](https://github.com/sptlco/spatial/compare/spatial-interface-design-1.23.0...spatial-interface-design-1.24.0) (2026-04-14)
 
 

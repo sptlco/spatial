@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.13.0](https://github.com/sptlco/spatial/compare/spatial-interface-client-1.12.0...spatial-interface-client-1.13.0) (2026-04-22)
+
+
+### Features
+
+* Added a neuron editor ([#172](https://github.com/sptlco/spatial/issues/172)) ([7112f73](https://github.com/sptlco/spatial/commit/7112f738dba6f6769ab2a973dbb47578c92d9adc))
+
 ## [1.12.0](https://github.com/sptlco/spatial/compare/spatial-interface-client-1.11.0...spatial-interface-client-1.12.0) (2026-04-08)
 
 

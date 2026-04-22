@@ -4,7 +4,11 @@ import { Fragment, useState } from "react";
 
 import { Button, Combobox, createElement, Icon } from "@sptlco/design";
 
-import { posts } from "./config.json";
+import { Post } from "./post"
+
+import config from "./config.json";
+
+const posts = config.posts as Post[];
 
 export const Filters = createElement<typeof Fragment, { selection?: string[]; onSelectionChange?: (selection: string[]) => void }>((props, _) => {
   const [internalSelection, setInternalSelection] = useState<string[]>(props.selection ?? []);

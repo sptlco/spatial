@@ -9,6 +9,8 @@ import { Button, Container, Drawer, Field, Form, Span } from "@sptlco/design";
 import { useMemo, useRef, useState } from "react";
 import * as THREE from "three";
 
+import { Stimulate } from "./Stimulate";
+
 type NeuronEditorProps = {
   neuron: Neuron;
   activation?: number;
@@ -44,6 +46,10 @@ export const Editor = ({ neuron, activation = 0, onCommit }: NeuronEditorProps) 
           <NeuronPreview activation={activation} />
         </Canvas>
       </div>
+
+      <Stimulate neuron={neuron} />
+
+      <hr className="border-white/8" />
 
       <Form className="flex flex-col gap-10" onSubmit={commit}>
         <Field
@@ -107,10 +113,6 @@ export const Editor = ({ neuron, activation = 0, onCommit }: NeuronEditorProps) 
     </div>
   );
 };
-
-// ---------------------------------------------------------------------------
-// NeuronPreview
-// ---------------------------------------------------------------------------
 
 const NeuronPreview = ({ activation }: { activation: number }) => {
   const meshRef = useRef<THREE.Mesh>(null);

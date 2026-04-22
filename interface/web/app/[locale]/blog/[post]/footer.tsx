@@ -1,6 +1,6 @@
 // Copyright © Spatial Corporation. All rights reserved.
 
-import { Metadata } from "./post";
+import { Post as Metadata } from "../post";
 
 import { Button, Container, createElement, Span } from "@sptlco/design";
 

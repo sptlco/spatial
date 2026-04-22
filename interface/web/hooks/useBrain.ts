@@ -22,7 +22,6 @@ export const useBrain = () => {
     abort.current = Spatial.brain.stream({
       ready: () => setConnecting(false),
       updated: (ss) => {
-        console.log(ss);
         setSnapshot(ss);
       },
       error: (error) => {

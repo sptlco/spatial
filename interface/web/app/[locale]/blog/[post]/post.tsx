@@ -5,15 +5,13 @@ import { Article, Container, createElement, Separator } from "@sptlco/design";
 import { Header } from "./header";
 import { Footer } from "./footer";
 import { Outline } from "./outline";
+import { Post as Metadata } from "../post";
 import { ScrollIndicator } from "./scroll";
 import { Share } from "./share";
 
-import { posts } from "../config.json";
+import config from "../config.json"
 
-/**
- * Post metadata.
- */
-export type Metadata = (typeof posts)[0];
+const posts = config.posts as Metadata[];
 
 /**
  * A blog post renderer.

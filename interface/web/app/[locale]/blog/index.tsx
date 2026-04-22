@@ -164,7 +164,7 @@ export const Index = createElement<typeof Main>((props, ref) => {
               }}
             />
           </Container>
-          <Container className="flex flex-col gap-2 xl:gap-4 text-center">
+          <Container className="flex flex-col gap-2 xl:py-10 xl:gap-4 text-center">
             <H1 className="text-3xl xl:text-7xl font-bold">Blog</H1>
             <Span className="xl:text-xl text-foreground-tertiary">
               {filtered.length} post{filtered.length !== 1 && "s"}

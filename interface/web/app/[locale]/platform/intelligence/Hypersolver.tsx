@@ -22,9 +22,11 @@ export const Hypersolver = createElement<typeof Fragment, HypersolverProps>(({ s
 
   return (
     <Fragment {...props}>
-      <ambientLight intensity={0.4} />
-      <pointLight position={[10, 10, 10]} intensity={1.2} />
-      <pointLight position={[-10, -10, -10]} intensity={0.4} color="#6080ff" />
+      <ambientLight intensity={0.08} />
+      <pointLight position={[8, 12, 8]} intensity={2.5} color="#00d4ff" />
+      <pointLight position={[-12, -8, -6]} intensity={1.2} color="#7700cc" />
+      <pointLight position={[0, -10, 14]} intensity={0.8} color="#ffcc44" />
+
       <Grid
         renderOrder={-1}
         position={[0, -2, 0]}
@@ -41,9 +43,15 @@ export const Hypersolver = createElement<typeof Fragment, HypersolverProps>(({ s
       />
       <OrbitControls makeDefault enableDamping dampingFactor={0.08} />
 
-      {Object.values(neurons).map((neuron) => (
-        <NeuronMesh key={neuron.id} neuron={neuron} activation={neuron.value} selected={neuron.id === selectedId} onSelect={onSelect} />
-      ))}
+      {snapshot.neurons.map((sn) => {
+        const neuron = neurons[sn.id];
+
+        if (!neuron) {
+          return null;
+        }
+
+        return <NeuronMesh key={sn.id} neuron={neuron} activation={sn.value} selected={sn.id === selectedId} onSelect={onSelect} />;
+      })}
 
       {snapshot.synapses.map((synapse) => {
         const from = neurons[synapse.from];
@@ -59,60 +67,62 @@ export const Hypersolver = createElement<typeof Fragment, HypersolverProps>(({ s
   );
 });
 
-// ---------------------------------------------------------------------------
-// NeuronMesh
-// ---------------------------------------------------------------------------
-
 type NeuronMeshProps = {
   neuron: Neuron;
   activation: number;
-  selected?: boolean; // 👈 new
+  selected?: boolean;
   onSelect?: (neuron: Neuron) => void;
 };
 
 const NeuronMesh = ({ neuron, activation, onSelect, selected }: NeuronMeshProps) => {
-  const meshRef = useRef<THREE.Mesh>(null);
+  const coreRef = useRef<THREE.Mesh>(null);
+  const shellRef = useRef<THREE.Mesh>(null);
+
   const color = activationColor(activation);
 
   useFrame((_, delta) => {
-    if (!meshRef.current) {
-      return;
+    const t = performance.now() / 1000;
+
+    if (coreRef.current) {
+      const pulse = 1.2 + Math.abs(Math.sin(t * 1.8 + neuron.group)) * Math.abs(activation) * 1.6;
+      (coreRef.current.material as THREE.MeshStandardMaterial).emissiveIntensity = pulse;
     }
 
-    const t = performance.now() / 1000;
-    const pulse = 0.3 + Math.abs(Math.sin(t * 1.4 + neuron.group)) * Math.abs(activation) * 0.6;
-
-    (meshRef.current.material as THREE.MeshStandardMaterial).emissiveIntensity = pulse;
-
-    if (selected && meshRef.current) {
-      const outline = meshRef.current.parent?.children[0] as THREE.Mesh;
-
-      if (outline) {
-        const t = performance.now() / 1000;
-        outline.scale.setScalar(1 + Math.sin(t * 4) * 0.05);
-      }
+    if (shellRef.current) {
+      const breathe = 1 + Math.sin(t * 1.1 + neuron.group * 0.7) * 0.03;
+      shellRef.current.scale.setScalar(breathe);
+      (shellRef.current.material as THREE.MeshBasicMaterial).opacity = 0.06 + Math.abs(activation) * 0.09;
     }
   });
 
   return (
     <group position={[neuron.position.x, neuron.position.y, neuron.position.z]} onClick={() => onSelect?.(neuron)}>
+      <mesh>
+        <sphereGeometry args={[0.3, 8, 8]} />
+        <meshBasicMaterial color={color} transparent opacity={0.12} wireframe depthWrite={false} />
+      </mesh>
+
+      <mesh ref={shellRef}>
+        <sphereGeometry args={[0.3, 16, 16]} />
+        <meshBasicMaterial color={color} transparent opacity={0.06} depthWrite={false} />
+      </mesh>
+
+      {/* Selection sphere — sits just outside the core, behind the shell */}
       {selected && (
         <mesh>
-          <sphereGeometry args={[0.24, 32, 32]} />
+          <sphereGeometry args={[0.1, 32, 32]} />
           <meshBasicMaterial color="#ffe94d" transparent opacity={0.9} depthWrite={false} />
         </mesh>
       )}
-      <mesh ref={meshRef}>
-        <sphereGeometry args={[0.18, 32, 32]} />
-        <meshStandardMaterial color={color} emissive={color} emissiveIntensity={0.8} roughness={0.15} metalness={0.6} />
+
+      {/* Arc-reactor core */}
+      <mesh ref={coreRef}>
+        <sphereGeometry args={[0.1, 32, 32]} />
+        <meshStandardMaterial color={color} emissive={color} emissiveIntensity={2} roughness={0.05} metalness={0.95} />
       </mesh>
     </group>
   );
 };
-
-// ---------------------------------------------------------------------------
-// SynapseLine
-// ---------------------------------------------------------------------------
 
 type SynapseLineProps = {
   from: { x: number; y: number; z: number };
@@ -123,37 +133,27 @@ type SynapseLineProps = {
 const SynapseLine = ({ from, to, weight }: SynapseLineProps) => {
   const points = useMemo(() => [new THREE.Vector3(from.x, from.y, from.z), new THREE.Vector3(to.x, to.y, to.z)], [from, to]);
 
-  const opacity = 0.15 + Math.abs(weight) * 0.6;
-  const color = weight >= 0 ? "#6090ff" : "#ff6060";
+  // Positive → arc-reactor cyan, negative → vibranium violet
+  const opacity = 0.2 + Math.abs(weight) * 0.7;
+  const color = weight >= 0 ? "#00ccff" : "#aa44ff";
 
-  return <Line points={points} color={color} lineWidth={1} transparent opacity={Math.min(opacity, 0.8)} />;
+  return <Line points={points} color={color} lineWidth={1.2} transparent opacity={Math.min(opacity, 0.85)} />;
 };
 
-// ---------------------------------------------------------------------------
-// Helpers
-// ---------------------------------------------------------------------------
-
-/** Maps an activation value in [-1, 1] to a Three.js color. */
 const activationColor = (value: number): THREE.Color => {
   const clamped = Math.max(-1, Math.min(1, value));
 
   if (clamped >= 0) {
-    // Neutral → hot orange-red
-    return new THREE.Color().lerpColors(new THREE.Color("#8899ff"), new THREE.Color("#ff6030"), clamped);
+    return new THREE.Color().lerpColors(new THREE.Color("#1155bb"), new THREE.Color("#c8ffff"), clamped);
   } else {
-    // Cool blue → neutral
-    return new THREE.Color().lerpColors(new THREE.Color("#2040c0"), new THREE.Color("#8899ff"), clamped + 1);
+    return new THREE.Color().lerpColors(new THREE.Color("#6600cc"), new THREE.Color("#1155bb"), clamped + 1);
   }
 };
-
-// ---------------------------------------------------------------------------
-// Types
-// ---------------------------------------------------------------------------
 
 export type HypersolverProps = {
   snapshot: Snapshot;
   neurons: Record<string, Neuron>;
   synapses: Record<string, Synapse>;
-  selectedId?: string; // 👈 add
+  selectedId?: string;
   onSelect?: (neuron: Neuron) => void;
 };

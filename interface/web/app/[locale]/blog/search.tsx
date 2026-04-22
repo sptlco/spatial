@@ -49,7 +49,7 @@ export const Search = createElement<typeof Fragment>(() => {
           <Icon symbol="search" className={active ? "fill" : undefined} />
         </Button>
       </Dialog.Trigger>
-      <Dialog.Content className="p-0! bg-transparent!" closeButton={false}>
+      <Dialog.Content className="p-2.5! bg-transparent!" closeButton={false}>
         <Form
           className="group flex relative w-full max-w-md gap-4 items-end"
           onSubmit={(e) => {
@@ -86,7 +86,7 @@ export const Search = createElement<typeof Fragment>(() => {
               <Icon symbol="close" size={20} />
             </Button>
           ) : (
-            <Button type="submit" className={clsx("shrink-0! size-7! p-0! absolute right-1.5 bottom-1.5")}>
+            <Button type="submit" className={clsx("shrink-0! size-7! p-0! absolute right-1.5 bottom-1.5", "group-focus-within:bg-button-highlight!")}>
               <Icon symbol="arrow_right_alt" size={20} />
             </Button>
           )}

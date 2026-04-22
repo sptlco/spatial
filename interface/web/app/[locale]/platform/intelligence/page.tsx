@@ -10,18 +10,12 @@ import { useMemo, useRef, useState } from "react";
 
 import { Button, Container, Drawer, Empty, Icon, Span } from "@sptlco/design";
 
+import { Editor } from "./Editor";
 import { Explorer } from "./Explorer";
 import { Intelligence } from "./Intelligence";
-import { Editor } from "./Editor";
 
 /**
  * A neural interface for the Hypersolver network.
- *
- * Streams live topology and activation state from the server,
- * rendering neurons and synapses in a real-time 3D scene.
- *
- * Supports structural mutations — adding, updating, and removing
- * neurons and synapses via the {@link NeuralController}.
  */
 export default function Page() {
   const { connecting, snapshot, neurons, synapses, error } = useBrain();
@@ -30,32 +24,32 @@ export default function Page() {
   const synapsesByGroup = useMemo(() => groupSynapses(synapses, neurons), [synapses, neurons]);
 
   const [selection, setSelection] = useState<Neuron>();
+  const [connectMode, setConnectMode] = useState(false);
   const committed = useRef<Neuron | undefined>(undefined);
 
   const select = (neuron?: Neuron) => {
-    if (neuron) {
-      committed.current = neuron;
-    }
-
+    if (neuron) committed.current = neuron;
     setSelection(neuron);
   };
 
-  const groups = useMemo(() => {
-    return [...new Set([...neuronsByGroup.keys(), ...synapsesByGroup.keys()])].sort((a, b) => a - b);
-  }, [neuronsByGroup, synapsesByGroup]);
+  const enterConnectMode = () => {
+    setSelection(undefined); // close drawer so it doesn't obscure the canvas
+    setConnectMode(true);
+  };
+
+  const groups = useMemo(
+    () => [...new Set([...neuronsByGroup.keys(), ...synapsesByGroup.keys()])].sort((a, b) => a - b),
+    [neuronsByGroup, synapsesByGroup]
+  );
 
   const add = async () => {
-    setSelection(
+    select(
       await Spatial.brain.neurons.add({
         type: "temporal",
         group: 0,
         channel: 0,
         value: 0,
-        position: {
-          x: 0,
-          y: 0,
-          z: 0
-        }
+        position: { x: 0, y: 0, z: 0 }
       })
     );
   };
@@ -111,9 +105,33 @@ export default function Page() {
               {renderGroups()}
             </Explorer.Panel>
           </Explorer.Root>
-          <Intelligence snapshot={snapshot} neurons={neurons} synapses={synapses} selectedId={selection?.id} onNeuronSelect={select} />
+
+          <Container className="relative flex flex-1 min-h-0">
+            <Intelligence
+              snapshot={snapshot}
+              neurons={neurons}
+              synapses={synapses}
+              selectedId={selection?.id}
+              onNeuronSelect={select}
+              connectMode={connectMode}
+              onConnectModeChange={setConnectMode}
+            />
+
+            <Container className="absolute top-4 right-4 flex gap-2">
+              <Button
+                intent={connectMode ? "highlight" : "ghost"}
+                size="fit"
+                className="px-3 py-2 rounded-xl gap-2"
+                onClick={connectMode ? () => setConnectMode(false) : enterConnectMode}
+              >
+                <Icon symbol="cable" size={18} />
+                <Span className="text-xs">{connectMode ? "Cancel" : "Connect"}</Span>
+              </Button>
+            </Container>
+          </Container>
         </Container>
       </Application.Content>
+
       <Drawer.Root open={!!selection} onOpenChange={() => select(undefined)} direction="right">
         <Drawer.Content title="Neuron" description={committed.current?.id} overlay={false} closeButton>
           {activeNeuron && (
@@ -134,30 +152,19 @@ export default function Page() {
 
 const groupNeurons = (neurons: Record<string, Neuron>) => {
   const groups = new Map<number, Neuron[]>();
-
   Object.values(neurons).forEach((n) => {
-    if (!groups.has(n.group)) {
-      groups.set(n.group, []);
-    }
-
+    if (!groups.has(n.group)) groups.set(n.group, []);
     groups.get(n.group)!.push(n);
   });
-
   return new Map([...groups.entries()].sort(([a], [b]) => a - b));
 };
 
 const groupSynapses = (synapses: Record<string, Synapse>, neurons: Record<string, Neuron>) => {
   const groups = new Map<number, Synapse[]>();
-
   Object.values(synapses).forEach((s) => {
     const group = neurons[s.from]?.group ?? 0;
-
-    if (!groups.has(group)) {
-      groups.set(group, []);
-    }
-
+    if (!groups.has(group)) groups.set(group, []);
     groups.get(group)!.push(s);
   });
-
   return groups;
 };

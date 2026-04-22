@@ -3,7 +3,11 @@
 import { Metadata } from "next";
 import { ReactNode } from "react";
 
-import { posts } from "../config.json";
+import { Post } from "../post";
+
+import config from "../config.json";
+
+const posts = config.posts as Post[];
 
 /**
  * Generate metadata for the page.

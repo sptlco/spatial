@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.36.0](https://github.com/sptlco/spatial/compare/spatial-interface-web-1.35.0...spatial-interface-web-1.36.0) (2026-04-27)
+
+
+### Features
+
+* Added inventory support ([#172](https://github.com/sptlco/spatial/issues/172)) ([c30cdd6](https://github.com/sptlco/spatial/commit/c30cdd6e64232ec0d4627da4c8e46f9b1f07b625))
+
 ## [1.35.0](https://github.com/sptlco/spatial/compare/spatial-interface-web-1.34.0...spatial-interface-web-1.35.0) (2026-04-22)
 
 

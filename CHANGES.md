@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.33.0](https://github.com/sptlco/spatial/compare/spatial-1.32.0...spatial-1.33.0) (2026-04-27)
+
+
+### Features
+
+* Added inventory support ([#172](https://github.com/sptlco/spatial/issues/172)) ([c30cdd6](https://github.com/sptlco/spatial/commit/c30cdd6e64232ec0d4627da4c8e46f9b1f07b625))
+
 ## [1.32.0](https://github.com/sptlco/spatial/compare/spatial-1.31.0...spatial-1.32.0) (2026-04-22)
 
 

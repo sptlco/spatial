@@ -2,7 +2,7 @@
 
 using Spatial.Mathematics;
 
-namespace Spatial.Cloud.Data.Brain.Neurons;
+namespace Spatial.Cloud.Data.Intelligence.Neurons;
 
 /// <summary>
 /// An immutable point-in-time view of a <see cref="Neuron"/>.

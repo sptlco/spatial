@@ -1,6 +1,6 @@
 // Copyright © Spatial Corporation. All rights reserved.
 
-using Spatial.Cloud.Data.Brain.Neurons;
+using Spatial.Cloud.Data.Intelligence.Neurons;
 using Spatial.Simulation;
 
 namespace Spatial.Cloud.ECS.Components;

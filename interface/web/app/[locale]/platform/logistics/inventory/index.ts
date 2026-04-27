@@ -1,3 +1,3 @@
 // Copyright © Spatial Corporation. All rights reserved.
 
-export * from "./assets";
+export * from "./inventory";

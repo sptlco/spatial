@@ -1,6 +1,6 @@
 // Copyright © Spatial Corporation. All rights reserved.
 
-namespace Spatial.Cloud.Data.Brain.Synapses;
+namespace Spatial.Cloud.Data.Intelligence.Synapses;
 
 /// <summary>
 /// An immutable point-in-time view of a <see cref="Synapse"/>.

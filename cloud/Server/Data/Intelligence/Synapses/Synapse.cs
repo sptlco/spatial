@@ -2,7 +2,7 @@
 
 using Spatial.Persistence;
 
-namespace Spatial.Cloud.Data.Brain.Synapses;
+namespace Spatial.Cloud.Data.Intelligence.Synapses;
 
 /// <summary>
 /// A weighted connection between two neurons.

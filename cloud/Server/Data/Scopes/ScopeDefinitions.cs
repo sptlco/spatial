@@ -35,6 +35,18 @@ public partial class Scope
     }
 
     /// <summary>
+    /// Scopes related to assets.
+    /// </summary>
+    public class Assets
+    {
+        /// <summary>
+        /// Get a list of assets.
+        /// </summary>
+        [Metadata("Get a list of assets.")]
+        public const string List = "assets.list";
+    }
+
+    /// <summary>
     /// Scopes related to assignments.
     /// </summary>
     public class Assignments

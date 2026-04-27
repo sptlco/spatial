@@ -2,7 +2,7 @@
 
 using Spatial.Mathematics;
 
-namespace Spatial.Cloud.Data.Brain.Neurons;
+namespace Spatial.Cloud.Data.Intelligence.Neurons;
 
 /// <summary>
 /// Configurable options for a <see cref="Neuron"/> update.

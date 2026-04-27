@@ -1,6 +1,6 @@
 // Copyright © Spatial Corporation. All rights reserved.
 
-namespace Spatial.Cloud.Data.Brain.Neurons;
+namespace Spatial.Cloud.Data.Intelligence.Neurons;
 
 /// <summary>
 /// Configurable options for neuron stimulation.

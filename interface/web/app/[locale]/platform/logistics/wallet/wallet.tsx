@@ -14,7 +14,7 @@ import { Card, Container, createElement } from "@sptlco/design";
 /**
  * An automated asset management dashboard.
  */
-export const Assets = createElement<typeof Card.Root>((props, ref) => {
+export const Wallet = createElement<typeof Card.Root>((props, ref) => {
   const [period, setPeriod] = useState<keyof typeof PERIODS>("24h");
 
   return (

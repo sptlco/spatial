@@ -115,3 +115,19 @@ public class Forbidden : UserError
     /// </summary>
     public Forbidden() : base("Access to the requested resource is forbidden.", 403) { }
 }
+
+/// <summary>
+/// A <see cref="UserError"/> indicating that the request was malformed or otherwise invalid.
+/// </summary>
+/// <remarks>
+/// Use this for general bad-request conditions. For invalid method parameters, 
+/// prefer <see cref="InvalidParameters"/>; for missing resources, prefer <see cref="NotFound"/>.
+/// </remarks>
+public class BadRequest : UserError
+{
+    /// <summary>
+    /// Create a new <see cref="BadRequest"/>.
+    /// </summary>
+    /// <param name="message">A message describing why the request is invalid.</param>
+    public BadRequest(string message) : base(message) { }
+}

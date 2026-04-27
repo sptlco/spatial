@@ -1,15 +1,13 @@
 // Copyright © Spatial Corporation. All rights reserved.
 
 using Spatial.Mathematics;
-using Spatial.Persistence;
 
-namespace Spatial.Cloud.Data.Brain.Neurons;
+namespace Spatial.Cloud.Data.Intelligence.Neurons;
 
 /// <summary>
-/// An autonomous node in a neural network.
+/// Configurable options for a new <see cref="Neuron"/>.
 /// </summary>
-[Collection("neurons")]
-public class Neuron : Resource
+public class CreateNeuronOptions : CreateResourceOptions
 {
     /// <summary>
     /// The neuron's <see cref="NeuronType"/>.
@@ -17,22 +15,22 @@ public class Neuron : Resource
     public NeuronType Type { get; set; }
 
     /// <summary>
-    /// The group the <see cref="Neuron"/> belongs to.
+    /// The neuron's group identification number.
     /// </summary>
     public int Group { get; set; }
 
     /// <summary>
-    /// For <see cref="NeuronType.Sensory"/> and <see cref="NeuronType.Motor"/> neurons, the channel the neuron maps to.
+    /// The channel the <see cref="Neuron"/> maps to.
     /// </summary>
     public int Channel { get; set; }
 
     /// <summary>
-    /// The precise location of the <see cref="Neuron"/>.
+    /// The neuron's current position.
     /// </summary>
     public Point3D Position { get; set; } = Point3D.Zero;
 
     /// <summary>
-    /// The neuron's activation level.
+    /// The neuron's current activation level.
     /// </summary>
-    public double Value { get; set; } = 0.0D;
+    public double Value { get; set; }
 }

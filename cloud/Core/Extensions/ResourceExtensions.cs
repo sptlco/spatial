@@ -96,6 +96,19 @@ public static class ResourceExtensions
     }
 
     /// <summary>
+    /// Update a <see cref="Resource"/>.
+    /// </summary>
+    /// <typeparam name="T">The type of <see cref="Resource"/> to save.</typeparam>
+    /// <param name="record">The <see cref="Resource"/> to update.</param>
+    /// <param name="update">An update.</param>
+    public static Task<T> UpdateAsync<T>(this T record, Action<T> update) where T : Resource
+    {
+        update(record);
+
+        return record.SaveAsync();
+    }
+
+    /// <summary>
     /// Replace a <see cref="Resource"/> of type <typeparamref name="T"/>.
     /// </summary>
     /// <typeparam name="T">The type of <see cref="Resource"/> to replace.</typeparam>

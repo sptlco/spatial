@@ -13,7 +13,7 @@ internal class ServerConfiguration : Configuration
     /// <summary>
     /// Get the current <see cref="ServerConfiguration"/>.
     /// </summary>
-    public new static ServerConfiguration Current => Application.Current.Services.GetRequiredService<ServerConfiguration>();
+    public new static ServerConfiguration Current => Server.Current.Configuration;
 
     /// <summary>
     /// Configurable options for Baymax.

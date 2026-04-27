@@ -3,29 +3,42 @@
 "use client";
 
 import { Suspense } from "react";
+import { usePathname, useRouter } from "next/navigation";
 
 import { Application, Tabs } from "@/elements";
 
-import { Assets } from "./assets";
+import { Inventory } from "./inventory";
 import { Shipments } from "./shipments";
+import { Wallet } from "./wallet";
 
 export default function Page() {
+  const router = useRouter();
+  const pathname = usePathname();
+
+  const onTabChange = () => {
+    router.replace(pathname, { scroll: false });
+  };
+
   return (
     <Application.Root title="Logistics">
       <Application.Content>
-        <Tabs.Root defaultValue="assets">
+        <Tabs.Root defaultValue="inventory" onValueChange={onTabChange}>
           <Tabs.List className="px-10">
-            <Tabs.Trigger value="assets">Assets</Tabs.Trigger>
+            <Tabs.Trigger value="wallet">Wallet</Tabs.Trigger>
             <Tabs.Trigger value="inventory">Inventory</Tabs.Trigger>
             <Tabs.Trigger value="orders">Orders</Tabs.Trigger>
             <Tabs.Trigger value="shipments">Shipments</Tabs.Trigger>
           </Tabs.List>
-          <Tabs.Content value="assets">
+          <Tabs.Content value="wallet">
             <Suspense>
-              <Assets />
+              <Wallet />
             </Suspense>
           </Tabs.Content>
-          <Tabs.Content value="inventory" />
+          <Tabs.Content value="inventory">
+            <Suspense>
+              <Inventory />
+            </Suspense>
+          </Tabs.Content>
           <Tabs.Content value="orders" />
           <Tabs.Content value="shipments">
             <Suspense>

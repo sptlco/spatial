@@ -1,6 +1,7 @@
 // Copyright © Spatial Corporation. All rights reserved.
 
 import { AccountController } from "./AccountController";
+import { AssetController } from "./AssetController";
 import { AssignmentController } from "./AssignmentController";
 import { IndexController } from "./IndexController";
 import { KeyController } from "./KeyController";
@@ -15,6 +16,7 @@ import { ShipmentController } from "./ShipmentController";
 import { UserController } from "./UserController";
 
 export * from "./AccountController";
+export * from "./AssetController";
 export * from "./AssignmentController";
 export * from "./IndexController";
 export * from "./KeyController";
@@ -31,6 +33,7 @@ export * from "./UserController";
 export const Spatial = {
   ...new IndexController(),
   accounts: new AccountController(),
+  assets: new AssetController(),
   assignments: new AssignmentController(),
   brain: new NeuralController(),
   keys: new KeyController(),

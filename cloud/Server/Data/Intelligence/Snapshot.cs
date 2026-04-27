@@ -1,9 +1,9 @@
 // Copyright © Spatial Corporation. All rights reserved.
 
-using Spatial.Cloud.Data.Brain.Neurons;
-using Spatial.Cloud.Data.Brain.Synapses;
+using Spatial.Cloud.Data.Intelligence.Neurons;
+using Spatial.Cloud.Data.Intelligence.Synapses;
 
-namespace Spatial.Cloud.Data.Brain;
+namespace Spatial.Cloud.Data.Intelligence;
 
 /// <summary>
 /// The current state of the <see cref="ECS.Systems.Hypersolver"/>.

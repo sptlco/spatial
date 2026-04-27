@@ -39,6 +39,11 @@ internal class Server : Application
     public static new Server Current => (Server) Application.Current;
 
     /// <summary>
+    /// The server's current <see cref="ServerConfiguration"/>.
+    /// </summary>
+    public new ServerConfiguration Configuration => Application.Current.Services.GetRequiredService<ServerConfiguration>();
+
+    /// <summary>
     /// The server's feature <see cref="ECS.Systems.Extractor"/>.
     /// </summary>
     public Extractor Extractor { get; internal set; }

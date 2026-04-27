@@ -1,6 +1,6 @@
 // Copyright © Spatial Corporation. All rights reserved.
 
-import { Assets } from "./assets";
+import { Assets } from "./wallet";
 
 /**
  * An automated trading dashboard.

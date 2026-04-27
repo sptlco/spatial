@@ -1,8 +1,8 @@
 // Copyright © Spatial Corporation. All rights reserved.
 
-using Spatial.Cloud.Data.Brain;
-using Spatial.Cloud.Data.Brain.Neurons;
-using Spatial.Cloud.Data.Brain.Synapses;
+using Spatial.Cloud.Data.Intelligence;
+using Spatial.Cloud.Data.Intelligence.Neurons;
+using Spatial.Cloud.Data.Intelligence.Synapses;
 using Spatial.Cloud.Data.Scopes;
 using Spatial.Cloud.ECS.Systems;
 using Spatial.Identity.Authorization;

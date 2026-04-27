@@ -1,6 +1,6 @@
 // Copyright © Spatial Corporation. All rights reserved.
 
-namespace Spatial.Cloud.Data.Brain.Synapses;
+namespace Spatial.Cloud.Data.Intelligence.Synapses;
 
 /// <summary>
 /// Configurable options for a new <see cref="Synapse"/>.

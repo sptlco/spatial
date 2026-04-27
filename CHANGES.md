@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.34.1](https://github.com/sptlco/spatial/compare/spatial-1.34.0...spatial-1.34.1) (2026-04-27)
+
+
+### Bug Fixes
+
+* Updated wallet import ([#172](https://github.com/sptlco/spatial/issues/172)) ([0347dca](https://github.com/sptlco/spatial/commit/0347dcaca4c15a1b278839f93a13536f3e5f97f7))
+
 ## [1.34.0](https://github.com/sptlco/spatial/compare/spatial-1.33.0...spatial-1.34.0) (2026-04-27)
 
 

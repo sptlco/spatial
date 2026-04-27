@@ -13,6 +13,10 @@ namespace Spatial.Cloud.API;
 [Path("assets")]
 public class AssetController : Controller
 {
+    /// <summary>
+    /// Get a list of assets.
+    /// </summary>
+    /// <returns>A list of assets.</returns>
     [GET]
     [Authorize(Scope.Assets.List)]
     public Task<List<Asset>> ListAssetsAsync()

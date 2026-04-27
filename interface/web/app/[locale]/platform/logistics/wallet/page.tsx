@@ -1,10 +1,10 @@
 // Copyright © Spatial Corporation. All rights reserved.
 
-import { Assets } from "./wallet";
+import { Wallet } from "./wallet";
 
 /**
  * An automated trading dashboard.
  */
 export default function Page() {
-  return <Assets />;
+  return <Wallet />;
 }

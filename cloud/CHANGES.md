@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.40.0](https://github.com/sptlco/spatial/compare/spatial-cloud-1.39.0...spatial-cloud-1.40.0) (2026-04-27)
+
+
+### Features
+
+* Updated documentation ([#172](https://github.com/sptlco/spatial/issues/172)) ([6461561](https://github.com/sptlco/spatial/commit/6461561dd03d29fd00dd669e77e96c833e951ae8))
+
 ## [1.39.0](https://github.com/sptlco/spatial/compare/spatial-cloud-1.38.0...spatial-cloud-1.39.0) (2026-04-27)
 
 

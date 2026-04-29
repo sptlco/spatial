@@ -341,7 +341,50 @@ export const Field = createElement<"input", FieldProps>(({ containerClassName, i
           input()
         );
       case "number":
-        return <Input {...props} ref={ref} className={clsx(styles, "w-full", props.className)} />;
+        const step = Number((props as any).step ?? 1);
+        const min = (props as any).min !== undefined ? Number((props as any).min) : -Infinity;
+        const max = (props as any).max !== undefined ? Number((props as any).max) : Infinity;
+
+        const adjust = (delta: number) => {
+          const current = Number((props as any).value ?? 0);
+          const next = Math.min(max, Math.max(min, current + delta));
+
+          props.onChange?.({
+            target: { value: String(next) }
+          } as React.ChangeEvent<HTMLInputElement>);
+        };
+
+        return (
+          <Container className={clsx(styles, "flex items-center w-full gap-2", props.className)}>
+            <Input
+              {...props}
+              ref={ref}
+              className="flex-1 min-w-0 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+            />
+            <Container className="flex flex-col shrink-0 -mr-1">
+              <Button
+                type="button"
+                intent="none"
+                size="fit"
+                className="h-4! w-6! p-0!"
+                disabled={(props as any).disabled}
+                onClick={() => adjust(step)}
+              >
+                <Icon symbol="keyboard_arrow_up" size={14} />
+              </Button>
+              <Button
+                type="button"
+                intent="none"
+                size="fit"
+                className="h-4! w-6! p-0!"
+                disabled={(props as any).disabled}
+                onClick={() => adjust(-step)}
+              >
+                <Icon symbol="keyboard_arrow_down" size={14} />
+              </Button>
+            </Container>
+          </Container>
+        );
       case "option": {
         const trigger = () => {
           if (!props.selection || (props.selection as string[])?.length <= 0) {
@@ -502,7 +545,7 @@ export const Field = createElement<"input", FieldProps>(({ containerClassName, i
             ))}
 
             <Button type="button" intent="none" size="fit" className={clsx("px-4 py-2")} disabled={props.disabled} onClick={add}>
-              <Icon symbol="prompt_suggestion" className="font-light text-hint" />
+              <Icon symbol="add" className="font-light text-hint" />
               <Span>Add property</Span>
             </Button>
           </Container>

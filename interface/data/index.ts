@@ -1,5 +1,6 @@
 // Copyright © Spatial Corporation. All rights reserved.
 
+export * from "./assets";
 export * from "./brain";
 export * from "./scopes";
 export * from "./shipments";

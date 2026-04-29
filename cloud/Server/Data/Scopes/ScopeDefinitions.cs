@@ -40,6 +40,12 @@ public partial class Scope
     public class Assets
     {
         /// <summary>
+        /// Create a new asset.
+        /// </summary>
+        [Metadata("Create a new asset")]
+        public const string Create = "asset.create";
+
+        /// <summary>
         /// Get a list of assets.
         /// </summary>
         [Metadata("Get a list of assets.")]

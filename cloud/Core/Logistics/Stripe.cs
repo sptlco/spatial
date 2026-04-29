@@ -7,7 +7,7 @@ namespace Spatial.Logistics;
 /// <summary>
 /// A means of interaction with Stripe.
 /// </summary>
-public partial class Stripe
+public class Stripe
 {
     /// <summary>
     /// Create a new <see cref="Stripe"/> client.

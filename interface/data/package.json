@@ -12,6 +12,7 @@
     "@sptlco:registry": "https://npm.pkg.github.com/"
   },
   "devDependencies": {
+    "stripe": "^22.1.0",
     "typescript": "^5"
   }
 }

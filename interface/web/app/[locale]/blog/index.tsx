@@ -129,7 +129,7 @@ export const Index = createElement<typeof Main>((props, ref) => {
   }, [filtered, sort]);
 
   const pages = Math.ceil(sorted.length / PAGE_SIZE);
-  const page = useMemo(() => Math.max(1, Number(searchParams.get("blog") ?? 1)), [searchParams]);
+  const page = useMemo(() => Math.max(1, Number(searchParams.get("page") ?? 1)), [searchParams]);
 
   const pagination = useMemo(() => {
     const start = (page - 1) * PAGE_SIZE;

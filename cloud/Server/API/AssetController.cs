@@ -2,6 +2,7 @@
 
 using Spatial.Cloud.Data.Assets;
 using Spatial.Cloud.Data.Scopes;
+using Spatial.Extensions;
 using Spatial.Identity.Authorization;
 using Spatial.Persistence;
 
@@ -19,8 +20,33 @@ public class AssetController : Controller
     /// <returns>A list of assets.</returns>
     [GET]
     [Authorize(Scope.Assets.List)]
-    public Task<List<Asset>> ListAssetsAsync()
+    public async Task<List<AssetView>> ListAssetsAsync()
     {
-        return Resource<Asset>.ListAsync();
+        return (await Resource<Asset>.ListAsync()).Map(asset => new AssetView {
+            Asset = asset,
+            Product = Logistics.Stripe.CreateClient().Products.Get(asset.Product)
+        });
+    }
+
+    [POST]
+    [Authorize(Scope.Assets.Create)]
+    public async Task<AssetView> CreateAssetAsync([Body] CreateAssetOptions options)
+    {
+        var asset = new Asset {
+            Metadata = options.Metadata,
+            Type = options.Type,
+            Model = options.Model,
+            Product = options.Product,
+            Lot = options.Lot,
+            Quantity = options.Quantity,
+            Location = options.Location
+        };
+
+        await asset.StoreAsync();
+
+        return new AssetView {
+            Asset = asset,
+            Product = Logistics.Stripe.CreateClient().Products.Get(asset.Product)
+        };
     }
 }

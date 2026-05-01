@@ -100,7 +100,7 @@ export const Balance = createElement<typeof Container, { period: keyof typeof PE
               <H2 className="text-2xl font-extrabold">Ethereum</H2>
             </Container>
             <Span className="flex flex-col gap-2">
-              <Span className="text-5xl xl:text-9xl xl:-ml-1.5 font-extrabold truncate">
+              <Span className="text-5xl xl:text-9xl font-extrabold truncate">
                 {!now ? (
                   <Container className="flex items-center h-32">
                     <Span className="bg-background-highlight rounded-full h-10 w-full sm:w-sm animate-pulse flex" />
@@ -109,7 +109,7 @@ export const Balance = createElement<typeof Container, { period: keyof typeof PE
                   formatCurrency(value ?? getValue(now))
                 )}
               </Span>
-              <Span className="flex items-center -ml-2.5 xl:text-2xl">
+              <Span className="flex items-center xl:text-2xl">
                 {delta != 0 && (
                   <Span className={clsx("truncate inline-flex items-center", delta > 0 ? "text-green" : "text-red")}>
                     {delta > 0 ? <Icon symbol="arrow_drop_up" size={40} /> : <Icon symbol="arrow_drop_down" size={40} />}

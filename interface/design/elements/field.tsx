@@ -362,25 +362,11 @@ export const Field = createElement<"input", FieldProps>(({ containerClassName, i
               className="flex-1 min-w-0 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
             />
             <Container className="flex flex-col shrink-0 -mr-1">
-              <Button
-                type="button"
-                intent="none"
-                size="fit"
-                className="h-4! w-6! p-0!"
-                disabled={(props as any).disabled}
-                onClick={() => adjust(step)}
-              >
-                <Icon symbol="keyboard_arrow_up" size={14} />
+              <Button type="button" intent="none" size="fit" className="p-0!" disabled={(props as any).disabled} onClick={() => adjust(step)}>
+                <Icon symbol="keyboard_arrow_up" size={12} />
               </Button>
-              <Button
-                type="button"
-                intent="none"
-                size="fit"
-                className="h-4! w-6! p-0!"
-                disabled={(props as any).disabled}
-                onClick={() => adjust(-step)}
-              >
-                <Icon symbol="keyboard_arrow_down" size={14} />
+              <Button type="button" intent="none" size="fit" className="p-0!" disabled={(props as any).disabled} onClick={() => adjust(-step)}>
+                <Icon symbol="keyboard_arrow_down" size={12} />
               </Button>
             </Container>
           </Container>

@@ -3,7 +3,7 @@
 "use client";
 
 import { Spatial } from "@sptlco/client";
-import { AssetType, AssetView, CreateAssetOptions } from "@sptlco/data";
+import { AssetType, AssetView, CreateAssetOptions, Version } from "@sptlco/data";
 import { FormEvent, useState } from "react";
 import { KeyedMutator } from "swr";
 
@@ -158,6 +158,7 @@ export const Creator = createElement<typeof Sheet.Content, { mutate: KeyedMutato
               id="city"
               name="city"
               label="City"
+              placeholder="Seattle"
               value={location.city}
               onChange={(e) => setLoc("city", e.target.value)}
               disabled={creating}

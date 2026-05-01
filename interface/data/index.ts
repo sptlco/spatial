@@ -12,3 +12,4 @@ export * from "./Difference";
 export * from "./Metric";
 export * from "./Point3D";
 export * from "./Resource";
+export * from "./Version";

@@ -15,7 +15,22 @@ import { Search } from "./search";
 import { Sort, SortOrder } from "./sort";
 import { View, ViewType } from "./view";
 
-import { Button, Container, createElement, Dropdown, Empty, H2, Icon, Image, Link, Pagination, Paragraph, Sheet, Span } from "@sptlco/design";
+import {
+  Button,
+  Container,
+  createElement,
+  Dropdown,
+  Empty,
+  H2,
+  Icon,
+  Image,
+  Link,
+  Pagination,
+  Paragraph,
+  Sheet,
+  Span,
+  Spinner
+} from "@sptlco/design";
 
 const containerVariants: Variants = {
   hidden: {},
@@ -87,7 +102,9 @@ export const Inventory = createElement<typeof Container>((props, ref) => {
       const matchesType = filters.length === 0 || filters.includes(view.asset.type);
       const matchesKeywords =
         keywords.length === 0 ||
-        keywords.some((k) => [view.product.name, view.asset.model, view.asset.type].some((field) => field?.toLowerCase().includes(k.toLowerCase())));
+        keywords.some((k) =>
+          [view.product.name, view.asset.model, view.asset.lot, view.asset.type].some((field) => field?.toLowerCase().includes(k.toLowerCase()))
+        );
 
       return matchesType && matchesKeywords;
     });
@@ -122,12 +139,17 @@ export const Inventory = createElement<typeof Container>((props, ref) => {
   }, [filters, searchParams.get("keywords"), sort]);
 
   return (
-    <Container {...props} ref={ref} className={clsx("flex flex-col w-screen xl:w-auto", props.className)}>
+    <Container {...props} ref={ref} className={clsx("flex flex-col w-screen px-10 xl:p-0 xl:w-auto", props.className)}>
       <Container className="flex flex-col w-full xl:gap-10">
-        <Container className="flex flex-col gap-4 px-10 w-full">
+        <Container className="flex flex-col gap-4 w-full">
           <Container className="flex items-center justify-between">
             <Container className="flex items-center gap-4">
-              <H2 className="text-2xl font-bold">Assets</H2>
+              <Container className="flex items-center gap-3">
+                <H2 className="text-2xl font-bold">Assets</H2>
+                <Span className="bg-translucent shrink-0 size-10 font-normal rounded-full text-sm inline-flex items-center justify-center">
+                  {assets.isValidating || !assets.data ? <Spinner className="size-3 text-foreground-secondary" /> : sorted.length}
+                </Span>
+              </Container>
               <Container className="flex items-center">
                 <Search />
                 <Filters assets={data} selection={filters} onSelectionChange={setFilters} />
@@ -160,7 +182,7 @@ export const Inventory = createElement<typeof Container>((props, ref) => {
           </Container>
         </Container>
 
-        <Container className="flex flex-col px-10 py-5 xl:py-0 gap-10">
+        <Container className="flex flex-col py-5 xl:py-0 gap-10">
           <View
             type="single"
             value={view}
@@ -168,7 +190,7 @@ export const Inventory = createElement<typeof Container>((props, ref) => {
               if (value) setView(value as ViewType);
             }}
           />
-          {assets.isLoading || !assets.data ? null : pagination.length === 0 ? (
+          {pagination.length === 0 ? (
             <Empty.Root className="my-auto">
               <Empty.Header>
                 <Empty.Media variant="icon">
@@ -188,24 +210,70 @@ export const Inventory = createElement<typeof Container>((props, ref) => {
               <AnimatePresence mode="wait">
                 <motion.div
                   key={`${view}-${page}`}
-                  className={clsx("grid gap-10", { "grid-cols-1 sm:grid-cols-2 xl:grid-cols-3": view === "grid" })}
+                  className={clsx("grid gap-10", { "grid-cols-2 xl:grid-cols-3": view === "grid" })}
                   variants={containerVariants}
                   initial="hidden"
                   animate="visible"
                   exit="exit"
                 >
-                  {pagination.map((asset, i) => {
+                  {pagination.map((item, i) => {
                     switch (view) {
                       case "grid":
                         return (
                           <motion.div key={`grid-${i}`} variants={gridItemVariants}>
-                            {/* grid card */}
+                            <button className="group flex flex-col gap-4 justify-start items-start text-left w-full">
+                              <Container className="relative w-full overflow-hidden rounded-lg xl:rounded-3xl">
+                                <Image src={item.product.images.at(0)} className="w-full" />
+                                <Container
+                                  className={clsx(
+                                    "absolute inset-0 size-full flex flex-col gap-1 p-8",
+                                    "transition-all duration-300",
+                                    "opacity-0 group-hover:opacity-100 group-hover:bg-background-base/40 group-hover:backdrop-blur-lg"
+                                  )}
+                                >
+                                  <Container className="grow flex items-center justify-center">
+                                    <Span className="text-2xl font-extrabold">{item.product.name}</Span>
+                                  </Container>
+                                  <Container className="flex items-center justify-between">
+                                    <Span className="text-xs font-medium text-foreground-secondary">{highlight(item.asset.model, keywords)}</Span>
+                                    <Container className="flex items-center gap-1">
+                                      <Icon symbol="package_2" className="text-sm text-foreground-tertiary" />
+                                      <Span className="text-xs font-semibold tabular-nums">{item.asset.quantity.toLocaleString()}</Span>
+                                    </Container>
+                                  </Container>
+                                </Container>
+                              </Container>
+                            </button>
                           </motion.div>
                         );
                       case "list":
                         return (
                           <motion.div key={`list-${i}`} variants={listItemVariants}>
-                            {/* list row */}
+                            <button
+                              className={clsx(
+                                "group grid! items-center grid-cols-[3.5rem_1fr_auto] gap-x-5 xl:gap-x-6 text-left w-full",
+                                item.asset.quantity === 0 && "opacity-40"
+                              )}
+                            >
+                              <Container className="col-start-1 row-span-2 self-start overflow-hidden rounded">
+                                <Image
+                                  src={item.product.images.at(0)}
+                                  className={clsx("size-14 object-cover", "transition-opacity group-hover:opacity-80")}
+                                />
+                              </Container>
+                              <Container className="col-start-2 flex flex-col">
+                                <Span className="font-medium leading-6">{highlight(item.product.name, keywords)}</Span>
+                                <Span className="text-sm text-hint group-hover:text-foreground-secondary transition-all">
+                                  {highlight(item.asset.model, keywords)}
+                                </Span>
+                              </Container>
+                              <Container className="col-start-3 flex flex-col items-center gap-0.5">
+                                <Container className="flex items-center gap-1 text-sm">
+                                  <Icon symbol="package_2" className="text-sm text-foreground-tertiary" />
+                                  <Span className="tabular-nums font-medium">{item.asset.quantity.toLocaleString()}</Span>
+                                </Container>
+                              </Container>
+                            </button>
                           </motion.div>
                         );
                     }

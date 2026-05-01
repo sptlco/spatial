@@ -1,7 +1,6 @@
 // Copyright © Spatial Corporation. All rights reserved.
 
-import { Address, CreateResourceOptions } from "..";
-import { AssetType } from "./AssetType";
+import { Address, AssetType, CreateResourceOptions } from "..";
 
 export type CreateAssetOptions = CreateResourceOptions & {
   type: AssetType;

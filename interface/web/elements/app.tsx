@@ -9,7 +9,7 @@ import { Header } from "./header";
 import { createElement, Card } from "@sptlco/design";
 
 export const Application = {
-  Spacing: "xl:px-20 py-10 xl:py-20 gap-10 xl:gap-20",
+  Spacing: "xl:pr-10 py-10 xl:pt-0 gap-10 xl:gap-20",
 
   Root: createElement<typeof Card.Root, { title?: string; spacing?: boolean }>(({ title, spacing = true, ...props }, ref) => (
     <Card.Root {...props} ref={ref} className={clsx("flex-1", spacing && Application.Spacing, props.className)}>

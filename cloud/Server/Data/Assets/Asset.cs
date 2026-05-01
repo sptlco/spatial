@@ -1,5 +1,7 @@
 // Copyright © Spatial Corporation. All rights reserved.
 
+using MongoDB.Bson;
+using MongoDB.Bson.Serialization.Attributes;
 using Spatial.Persistence;
 
 namespace Spatial.Cloud.Data.Assets;
@@ -13,17 +15,13 @@ public class Asset : Resource
     /// <summary>
     /// The asset's <see cref="AssetType"/>.
     /// </summary>
+    [BsonRepresentation(BsonType.String)]
     public AssetType Type { get; set; }
 
     /// <summary>
     /// A unique code classifying the <see cref="Asset"/>.
     /// </summary>
     public string Model { get; set; }
-
-    /// <summary>
-    /// The asset's <see cref="Data.Version"/>.
-    /// </summary>
-    public Version Version { get; set; } = new Version(1.0);
 
     /// <summary>
     /// A unique code shared by assets produced under the same conditions.

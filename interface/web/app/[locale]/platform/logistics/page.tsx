@@ -23,7 +23,7 @@ export default function Page() {
     <Application.Root title="Logistics">
       <Application.Content>
         <Tabs.Root defaultValue="inventory" onValueChange={onTabChange}>
-          <Tabs.List className="px-10">
+          <Tabs.List className="px-10 xl:px-0">
             <Tabs.Trigger value="wallet">Wallet</Tabs.Trigger>
             <Tabs.Trigger value="inventory">Inventory</Tabs.Trigger>
             <Tabs.Trigger value="orders">Orders</Tabs.Trigger>

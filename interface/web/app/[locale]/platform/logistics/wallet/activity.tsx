@@ -10,7 +10,23 @@ import { useFormatter, useNow } from "next-intl";
 import { Fragment, ReactNode, useEffect, useMemo, useState } from "react";
 import useSWR from "swr";
 
-import { Button, Combobox, Container, createElement, Dialog, Field, Form, H2, Icon, Link, Pagination, ScrollArea, Span, Table } from "@sptlco/design";
+import {
+  Button,
+  Combobox,
+  Container,
+  createElement,
+  Dialog,
+  Field,
+  Form,
+  H2,
+  Icon,
+  Link,
+  Pagination,
+  ScrollArea,
+  Span,
+  Spinner,
+  Table
+} from "@sptlco/design";
 
 type FieldDef = {
   name: string;
@@ -382,8 +398,13 @@ export const Activity = createElement<typeof Container>((props, ref) => {
     <Container {...props} ref={ref} className={clsx("flex flex-col w-screen xl:w-auto", props.className)}>
       <Container className="flex flex-col w-full xl:gap-10">
         <Container className="flex flex-col gap-4 px-10 pt-10 xl:p-0 w-full">
-          <Container className="flex items-center justify-between">
-            <H2 className="text-2xl font-bold">Activity</H2>
+          <Container className="flex flex-col xl:flex-row items-center gap-4">
+            <Container className="flex items-center gap-3">
+              <H2 className="text-2xl font-bold">Transactions</H2>
+              <Span className="bg-translucent shrink-0 size-10 font-normal rounded-full text-sm inline-flex items-center justify-center">
+                {transactions.isValidating || !transactions.data ? <Spinner className="size-3 text-foreground-secondary" /> : sortedData.length}
+              </Span>
+            </Container>
             <Container className="flex items-center">
               <Search />
               <Filters selection={directionFilters} onSelectionChange={setDirectionFilters} />

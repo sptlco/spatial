@@ -11,9 +11,18 @@ export type Asset = Schema<{
    */
   type: AssetType;
 
+  /**
+   * The asset's model identifier.
+   */
   model: string;
 
+  /**
+   * The asset's lot identifier.
+   */
   lot: string;
 
+  /**
+   * The amount of the asset on hand.
+   */
   quantity: number;
 }>;

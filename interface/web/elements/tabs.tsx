@@ -101,13 +101,19 @@ export const Tabs = {
     return (
       <ScrollArea.Root className="w-full" fade fadeOrientation="horizontal">
         <ScrollArea.Viewport className="max-w-screen">
-          <Primitive.List {...props} className={clsx("relative flex items-center sm:justify-center mb-10 w-full", props.className)} ref={ref}>
-            <Container ref={containerRef} className="relative flex items-center sm:justify-center gap-5 sm:bg-input rounded-full w-full sm:w-auto">
+          <Primitive.List {...props} className={clsx("relative flex items-center mb-10 w-full", props.className)} ref={ref}>
+            <Container ref={containerRef} className={clsx("relative flex items-center gap-5 w-full", "sm:border-b sm:border-line-subtle sm:gap-0")}>
               <motion.span
-                className="absolute bottom-0 left-0 h-0.5 sm:h-full bg-background-inverse sm:bg-button-highlight-active sm:rounded-full"
+                className={clsx(
+                  "absolute left-0 bg-foreground-primary",
+                  // mobile: thin underline
+                  "bottom-0 h-0.5",
+                  // desktop: slightly thicker, sits on top of the border
+                  "sm:h-[2px] sm:-bottom-px sm:z-10"
+                )}
                 initial={false}
                 animate={{ x: indicator.left, width: indicator.width }}
-                transition={{ type: "spring", damping: 20, stiffness: 300 }}
+                transition={{ type: "spring", damping: 22, stiffness: 300 }}
               />
               {children}
             </Container>
@@ -133,12 +139,14 @@ export const Tabs = {
         className={clsx(
           "relative py-2 h-10 inline-flex items-center",
           "cursor-pointer",
-          "transition-all duration-500",
-          "font-semibold data-[state=active]:font-extrabold sm:data-[state=active]:font-semibold",
-          "sm:nth-2:data-[state=inactive]:pl-6",
-          "sm:last:data-[state=inactive]:pr-6",
+          "transition-colors duration-200",
+          // mobile
+          "font-semibold data-[state=active]:font-extrabold",
           "data-[state=inactive]:text-foreground-quaternary",
-          "sm:data-[state=active]:px-6"
+          // desktop: even padding, weight stays consistent, color does the work
+          "sm:font-medium sm:data-[state=active]:font-semibold",
+          "sm:px-5 sm:data-[state=active]:text-foreground sm:data-[state=inactive]:text-foreground-tertiary",
+          "sm:hover:text-foreground-secondary sm:data-[state=inactive]:hover:text-foreground-secondary"
         )}
       />
     );

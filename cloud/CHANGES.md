@@ -1,5 +1,14 @@
 # Changelog
 
+## [1.41.0](https://github.com/sptlco/spatial/compare/spatial-cloud-1.40.0...spatial-cloud-1.41.0) (2026-05-04)
+
+
+### Features
+
+* Added an asset creator ([#172](https://github.com/sptlco/spatial/issues/172)) ([7db5c55](https://github.com/sptlco/spatial/commit/7db5c55baf2e403236de9c811fd134d794f9af79))
+* Added an inventory system ([#172](https://github.com/sptlco/spatial/issues/172)) ([9d77eb3](https://github.com/sptlco/spatial/commit/9d77eb39a91e441016de9a17d78fb8c11aeeb63a))
+* Streamlined the interface ([#172](https://github.com/sptlco/spatial/issues/172)) ([effdd23](https://github.com/sptlco/spatial/commit/effdd23f9464f5174d72c947746219a16bcc7c76))
+
 ## [1.40.0](https://github.com/sptlco/spatial/compare/spatial-cloud-1.39.0...spatial-cloud-1.40.0) (2026-04-27)
 
 

@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.15.0](https://github.com/sptlco/spatial/compare/spatial-interface-client-1.14.0...spatial-interface-client-1.15.0) (2026-05-04)
+
+
+### Features
+
+* Added an asset creator ([#172](https://github.com/sptlco/spatial/issues/172)) ([7db5c55](https://github.com/sptlco/spatial/commit/7db5c55baf2e403236de9c811fd134d794f9af79))
+* Added an inventory system ([#172](https://github.com/sptlco/spatial/issues/172)) ([9d77eb3](https://github.com/sptlco/spatial/commit/9d77eb39a91e441016de9a17d78fb8c11aeeb63a))
+
 ## [1.14.0](https://github.com/sptlco/spatial/compare/spatial-interface-client-1.13.0...spatial-interface-client-1.14.0) (2026-04-27)
 
 

@@ -8,24 +8,14 @@ namespace Spatial.Cloud.Data.Assets;
 public class CreateAssetOptions : CreateResourceOptions
 {
     /// <summary>
-    /// The asset's <see cref="AssetType"/>.
-    /// </summary>
-    public AssetType Type { get; set; }
-
-    /// <summary>
     /// A unique code classifying the asset.
     /// </summary>
     public string Model { get; set; }
 
     /// <summary>
-    /// The Stripe product identifier.
+    /// The asset's <see cref="AssetType"/>.
     /// </summary>
-    public string Product { get; set; }
-
-    /// <summary>
-    /// A unique code shared by assets produced under the same conditions.
-    /// </summary>
-    public string Lot { get; set; }
+    public AssetType Type { get; set; }
 
     /// <summary>
     /// How much of this asset is being registered. Defaults to 1.
@@ -36,4 +26,9 @@ public class CreateAssetOptions : CreateResourceOptions
     /// For <see cref="AssetType.Physical"/> goods, where the asset is currently held.
     /// </summary>
     public Address? Location { get; set; }
+
+    /// <summary>
+    /// Configurable options for the <see cref="Asset"/>.
+    /// </summary>
+    public Dictionary<string, string> Variants { get; set; } = [];
 }

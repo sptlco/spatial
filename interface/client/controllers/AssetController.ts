@@ -1,7 +1,7 @@
 // Copyright © Spatial Corporation. All rights reserved.
 
 import { Controller } from "..";
-import { AssetView, CreateAssetOptions } from "@sptlco/data";
+import { Asset, AssetView, CreateAssetOptions } from "@sptlco/data";
 
 /**
  * A {@link Controller} for asset functions.
@@ -18,4 +18,10 @@ export class AssetController extends Controller {
    * @returns The created asset.
    */
   public create = (options: CreateAssetOptions) => this.post<AssetView>("assets", options);
+
+  /**
+   * Update an {@link Asset}.
+   * @returns The updated {@link Asset}.
+   */
+  public update = (asset: Asset) => this.patch<Asset>("assets", asset);
 }

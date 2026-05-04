@@ -201,7 +201,9 @@ export const Index = createElement<typeof Main>((props, ref) => {
                         return (
                           <motion.div key={`grid-${i}`} variants={gridItemVariants}>
                             <Link href={`/blog/${post.slug}`} className="group flex flex-col gap-4 justify-start items-start">
-                              <Image src={post.media} />
+                              <Container className="overflow-hidden rounded-2xl xl:rounded-4xl">
+                                <Image src={post.media} className="object-cover object-center" />
+                              </Container>
                               <Span className="font-medium text-lg">{highlight(post.name, keywords)}</Span>
                               <Container className="flex items-center text-sm gap-2">
                                 <Span className="font-medium">{highlight(post.topic, keywords)}</Span>

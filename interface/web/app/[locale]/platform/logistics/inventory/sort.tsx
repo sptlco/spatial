@@ -6,12 +6,11 @@ import { Button, Combobox, createElement, Icon, Span } from "@sptlco/design";
 
 const fields: Record<string, { name: string; icon: string }> = {
   name: { name: "Name", icon: "label" },
-  model: { name: "Model", icon: "tag" },
-  type: { name: "Type", icon: "category" },
-  quantity: { name: "Quantity", icon: "inventory_2" }
+  quantity: { name: "Quantity", icon: "inventory_2" },
+  type: { name: "Type", icon: "category" }
 };
 
-export type SortOrder = `${"name" | "model" | "type" | "quantity"}-${"asc" | "desc"}` | "";
+export type SortOrder = `${"name" | "type" | "quantity"}-${"asc" | "desc"}` | "";
 
 export const Sort = createElement<typeof Fragment, { selection?: SortOrder; onSelectionChange?: (selection: SortOrder) => void }>((props, _) => {
   const selection = props.selection ?? "";

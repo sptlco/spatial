@@ -3,10 +3,9 @@
 import { Address, AssetType, CreateResourceOptions } from "..";
 
 export type CreateAssetOptions = CreateResourceOptions & {
-  type: AssetType;
   model: string;
-  product: string;
-  lot?: string;
-  quantity?: number;
+  type: AssetType;
+  quantity: number;
   location?: Address;
+  variants?: Record<string, string>;
 };

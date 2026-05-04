@@ -10,12 +10,11 @@ import { KeyedMutator } from "swr";
 import { Button, Container, createElement, Field, Form, Label, Sheet, Span, Spinner, toast } from "@sptlco/design";
 
 export const Creator = createElement<typeof Sheet.Content, { mutate: KeyedMutator<AssetView[]> }>(({ mutate, ...props }, ref) => {
-  const [type, setType] = useState<AssetType>("physical");
   const [model, setModel] = useState("");
-  const [product, setProduct] = useState("");
-  const [lot, setLot] = useState("");
+  const [type, setType] = useState<AssetType>("physical");
   const [quantity, setQuantity] = useState(1);
   const [location, setLocation] = useState({ line1: "", line2: "", city: "", state: "", zip: "", country: "" });
+  const [variants, setVariants] = useState<Record<string, string>>();
   const [metadata, setMetadata] = useState<Record<string, string>>();
   const [creating, setCreating] = useState(false);
 
@@ -27,15 +26,15 @@ export const Creator = createElement<typeof Sheet.Content, { mutate: KeyedMutato
 
   const create = async (e: FormEvent) => {
     e.preventDefault();
+
     setCreating(true);
 
     const options: CreateAssetOptions = {
-      type,
       model,
-      product,
-      lot: lot || undefined,
+      type,
       quantity,
       location: physical ? location : undefined,
+      variants,
       metadata
     };
 
@@ -50,7 +49,7 @@ export const Creator = createElement<typeof Sheet.Content, { mutate: KeyedMutato
           message: "Asset created",
           description: (
             <>
-              Created <Span className="font-semibold">{asset.product.name}</Span>.
+              Created <Span className="font-semibold">{asset.model.name}</Span>.
             </>
           )
         };
@@ -67,13 +66,13 @@ export const Creator = createElement<typeof Sheet.Content, { mutate: KeyedMutato
       <Form className="flex flex-col w-full sm:w-screen sm:max-w-sm gap-10" onSubmit={create}>
         <Field
           type="text"
-          id="product"
-          name="product"
-          label="Product ID"
+          id="model"
+          name="model"
+          label="Model"
           description="This is the Stripe product this asset is associated with. Controls the name, pricing, and metadata shown to customers."
           placeholder="prod_QkT7mXvR3nJw9L"
-          value={product}
-          onChange={(e) => setProduct(e.target.value)}
+          value={model}
+          onChange={(e) => setModel(e.target.value)}
           disabled={creating}
           inset={false}
         />
@@ -91,29 +90,6 @@ export const Creator = createElement<typeof Sheet.Content, { mutate: KeyedMutato
           onValueChange={(value) => setType(value as AssetType)}
           disabled={creating}
           inset={false}
-        />
-        <Field
-          type="text"
-          id="model"
-          name="model"
-          label="Model"
-          placeholder="SDK-001"
-          value={model}
-          onChange={(e) => setModel(e.target.value)}
-          disabled={creating}
-          inset={false}
-        />
-        <Field
-          type="text"
-          id="lot"
-          name="lot"
-          label="Lot"
-          placeholder="LOT-2025-A"
-          value={lot}
-          onChange={(e) => setLot(e.target.value)}
-          disabled={creating}
-          inset={false}
-          required={false}
         />
         <Field
           type="number"
@@ -201,6 +177,17 @@ export const Creator = createElement<typeof Sheet.Content, { mutate: KeyedMutato
         )}
         <Field
           type="meta"
+          id="variants"
+          name="variants"
+          label="Variants"
+          metadata={variants}
+          onValueChange={setVariants}
+          disabled={creating}
+          inset={false}
+          required={false}
+        />
+        <Field
+          type="meta"
           id="metadata"
           name="metadata"
           label="Metadata"
@@ -211,7 +198,7 @@ export const Creator = createElement<typeof Sheet.Content, { mutate: KeyedMutato
           required={false}
         />
         <Container className="flex items-center gap-4">
-          <Button type="submit" disabled={creating || !model || !product}>
+          <Button type="submit" disabled={creating || !model}>
             Create
           </Button>
           <Sheet.Close asChild>

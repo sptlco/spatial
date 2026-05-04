@@ -17,5 +17,5 @@ public class AssetView
     /// <summary>
     /// The Stripe <see cref="Stripe.Product"/> associated with the <see cref="Asset"/>. 
     /// </summary>
-    public Product Product { get; set; }
+    public Product Model { get; set; }
 }

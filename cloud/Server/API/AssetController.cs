@@ -25,10 +25,16 @@ public class AssetController : Controller
     {
         return (await Resource<Asset>.ListAsync()).Map(asset => new AssetView {
             Asset = asset,
-            Product = Logistics.Stripe.CreateClient().Products.Get(asset.Product)
+            Model = Logistics.Stripe.CreateClient().Products.Get(asset.Model)
         });
     }
 
+    /// <summary>
+    /// Create a new <see cref="Asset"/>.
+    /// </summary>
+    /// <param name="options">Configurable options for the <see cref="Asset"/>.</param>
+    /// <returns>An <see cref="Asset"/>.</returns>
+    /// <exception cref="BadRequest">Thrown if the associated product does not exist.</exception>
     [POST]
     [Authorize(Scope.Assets.Create)]
     public async Task<AssetView> CreateAssetAsync([Body] CreateAssetOptions options)
@@ -36,28 +42,39 @@ public class AssetController : Controller
         try
         {
             var stripe = Logistics.Stripe.CreateClient();
-            var product = await stripe.Products.GetAsync(options.Product);
+            var product = await stripe.Products.GetAsync(options.Model);
 
             var asset = new Asset {
                 Metadata = options.Metadata,
-                Type = options.Type,
                 Model = options.Model,
-                Product = options.Product,
-                Lot = options.Lot,
+                Type = options.Type,
                 Quantity = options.Quantity,
-                Location = options.Location
+                Location = options.Location,
+                Variants = options.Variants
             };
 
             await asset.StoreAsync();
 
             return new AssetView {
                 Asset = asset,
-                Product = product
+                Model = product
             };
         }
         catch (StripeException)
         {
             throw new BadRequest("The product does not exist.");
         }
+    }
+
+    /// <summary>
+    /// Update an <see cref="Asset"/>.
+    /// </summary>
+    /// <param name="asset">The updated <see cref="Asset"/>.</param>
+    /// <returns>The updated <see cref="Asset"/>.</returns>
+    [PATCH]
+    [Authorize(Scope.Assets.Update)]
+    public async Task<Asset> UpdateAssetAsync([Body] Asset asset)
+    {
+        return asset.Save();
     }
 }

@@ -8,5 +8,5 @@ import Stripe from "stripe";
  */
 export type AssetView = {
   asset: Asset;
-  product: Stripe.Product;
+  model: Stripe.Product;
 };

@@ -317,7 +317,7 @@ export const Field = createElement<"input", FieldProps>(({ containerClassName, i
         };
 
         return props.readOnly ? (
-          <Span className={clsx("w-full truncate flex items-center gap-4 px-4 py-2 bg-input rounded-lg", props.className)}>
+          <Span className={clsx("w-full h-10 truncate flex items-center gap-4 px-4 py-2 bg-input rounded-lg", props.className)}>
             <Span className="min-w-0 flex-1 truncate">{props.value}</Span>
             {props.value && (
               <Button

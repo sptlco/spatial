@@ -20,7 +20,7 @@ export type ViewType = (typeof views)[number]["name"];
  */
 export const View = createElement<typeof ToggleGroup.Root>((props, ref) => {
   return (
-    <ToggleGroup.Root {...props} ref={ref} className="flex items-center gap-4 ml-auto">
+    <ToggleGroup.Root {...props} ref={ref} className="flex items-center gap-4 mx-auto">
       {views.map((view, i) => (
         <ToggleGroup.Item key={i} value={view.name} className="flex items-center justify-center text-hint data-[state=on]:text-foreground-primary">
           {view.icon}

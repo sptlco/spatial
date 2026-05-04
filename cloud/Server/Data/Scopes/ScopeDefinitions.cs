@@ -50,6 +50,12 @@ public partial class Scope
         /// </summary>
         [Metadata("Get a list of assets.")]
         public const string List = "assets.list";
+
+        /// <summary>
+        /// Update an asset.
+        /// </summary>
+        [Metadata("Update an asset.")]
+        public const string Update = "assets.update";
     }
 
     /// <summary>

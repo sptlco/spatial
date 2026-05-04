@@ -3,6 +3,7 @@
 "use client";
 
 import { Spatial } from "@sptlco/client";
+import { AssetView } from "@sptlco/data";
 import { clsx } from "clsx";
 import { AnimatePresence, motion, Variants } from "motion/react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
@@ -10,27 +11,13 @@ import { useEffect, useMemo, useState } from "react";
 import useSWR from "swr";
 
 import { Creator } from "./creator";
+import { Editor } from "./editor";
 import { Filters } from "./filters";
 import { Search } from "./search";
 import { Sort, SortOrder } from "./sort";
 import { View, ViewType } from "./view";
 
-import {
-  Button,
-  Container,
-  createElement,
-  Dropdown,
-  Empty,
-  H2,
-  Icon,
-  Image,
-  Link,
-  Pagination,
-  Paragraph,
-  Sheet,
-  Span,
-  Spinner
-} from "@sptlco/design";
+import { Button, Container, createElement, Dropdown, Empty, H2, Icon, Image, Pagination, Sheet, Span, Spinner } from "@sptlco/design";
 
 const containerVariants: Variants = {
   hidden: {},
@@ -45,9 +32,9 @@ const gridItemVariants: Variants = {
 };
 
 const listItemVariants: Variants = {
-  hidden: { opacity: 0, x: -14 },
-  visible: { opacity: 1, x: 0, transition: { duration: 0.28, ease: [0.25, 0.1, 0.25, 1] } },
-  exit: { opacity: 0, x: 14, transition: { duration: 0.15, ease: "easeIn" } }
+  hidden: { opacity: 0, y: 10 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.28, ease: [0.25, 0.1, 0.25, 1] } },
+  exit: { opacity: 0, y: -6, transition: { duration: 0.15, ease: "easeIn" } }
 };
 
 const highlight = (text: string, keywords: string[]) => {
@@ -76,6 +63,7 @@ export const Inventory = createElement<typeof Container>((props, ref) => {
   const searchParams = useSearchParams();
 
   const [creating, setCreating] = useState(false);
+  const [selected, setSelected] = useState<AssetView | null>(null);
 
   const [view, setView] = useState<ViewType>("grid");
   const [filters, setFilters] = useState<string[]>([]);
@@ -83,8 +71,13 @@ export const Inventory = createElement<typeof Container>((props, ref) => {
 
   const navigate = (page: number) => {
     const params = new URLSearchParams(searchParams.toString());
-    if (page > 1) params.set("page", page.toString());
-    else params.delete("page");
+
+    if (page > 1) {
+      params.set("page", page.toString());
+    } else {
+      params.delete("page");
+    }
+
     router.replace(`${pathname}?${params.toString()}`, { scroll: false });
   };
 
@@ -102,26 +95,22 @@ export const Inventory = createElement<typeof Container>((props, ref) => {
       const matchesType = filters.length === 0 || filters.includes(view.asset.type);
       const matchesKeywords =
         keywords.length === 0 ||
-        keywords.some((k) =>
-          [view.product.name, view.asset.model, view.asset.lot, view.asset.type].some((field) => field?.toLowerCase().includes(k.toLowerCase()))
-        );
+        keywords.some((k) => [view.model.name, view.asset.type].some((field) => field?.toLowerCase().includes(k.toLowerCase())));
 
       return matchesType && matchesKeywords;
     });
   }, [data, filters, keywords]);
 
   const sorted = useMemo(() => {
-    if (!sort) return filtered;
+    if (!sort) return [...filtered].sort((a, b) => new Date(b.asset.created).getTime() - new Date(a.asset.created).getTime());
 
-    const [field, dir] = sort.split("-") as ["name" | "model" | "type" | "quantity", "asc" | "desc"];
+    const [field, dir] = sort.split("-") as ["name" | "type" | "quantity", "asc" | "desc"];
     const mul = dir === "asc" ? 1 : -1;
 
     return [...filtered].sort((a, b) => {
       switch (field) {
         case "name":
-          return a.product.name.localeCompare(b.product.name) * mul;
-        case "model":
-          return a.asset.model.localeCompare(b.asset.model) * mul;
+          return a.model.name.localeCompare(b.model.name) * mul;
         case "type":
           return a.asset.type.localeCompare(b.asset.type) * mul;
         case "quantity":
@@ -210,7 +199,7 @@ export const Inventory = createElement<typeof Container>((props, ref) => {
               <AnimatePresence mode="wait">
                 <motion.div
                   key={`${view}-${page}`}
-                  className={clsx("grid gap-10", { "grid-cols-2 xl:grid-cols-3": view === "grid" })}
+                  className={clsx("grid gap-10", { "grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5": view === "grid" })}
                   variants={containerVariants}
                   initial="hidden"
                   animate="visible"
@@ -221,9 +210,18 @@ export const Inventory = createElement<typeof Container>((props, ref) => {
                       case "grid":
                         return (
                           <motion.div key={`grid-${i}`} variants={gridItemVariants}>
-                            <button className="group flex flex-col gap-4 justify-start items-start text-left w-full">
-                              <Container className="relative w-full overflow-hidden rounded-lg xl:rounded-3xl">
-                                <Image src={item.product.images.at(0)} className="w-full" />
+                            <button
+                              className={clsx(
+                                "group cursor-pointer flex flex-col gap-4 justify-start items-start text-left w-full",
+                                item.asset.quantity === 0 && "opacity-20 grayscale"
+                              )}
+                              onClick={() => setSelected(item)}
+                            >
+                              <Container className="relative w-full overflow-hidden rounded-2xl xl:rounded-4xl">
+                                <Image
+                                  src={item.model.images.at(0)}
+                                  className="w-full transition-transform duration-300 ease-out group-hover:scale-105"
+                                />
                                 <Container
                                   className={clsx(
                                     "absolute inset-0 size-full flex flex-col gap-1 p-8",
@@ -232,10 +230,9 @@ export const Inventory = createElement<typeof Container>((props, ref) => {
                                   )}
                                 >
                                   <Container className="grow flex items-center justify-center">
-                                    <Span className="text-2xl font-extrabold">{item.product.name}</Span>
+                                    <Span className="text-2xl font-extrabold">{item.model.name}</Span>
                                   </Container>
-                                  <Container className="flex items-center justify-between">
-                                    <Span className="text-xs font-medium text-foreground-secondary">{highlight(item.asset.model, keywords)}</Span>
+                                  <Container className="flex items-center justify-end">
                                     <Container className="flex items-center gap-1">
                                       <Icon symbol="package_2" className="text-sm text-foreground-tertiary" />
                                       <Span className="text-xs font-semibold tabular-nums">{item.asset.quantity.toLocaleString()}</Span>
@@ -248,30 +245,28 @@ export const Inventory = createElement<typeof Container>((props, ref) => {
                         );
                       case "list":
                         return (
-                          <motion.div key={`list-${i}`} variants={listItemVariants}>
+                          <motion.div
+                            key={`list-${i}`}
+                            variants={listItemVariants}
+                            whileHover={{ x: 4, transition: { duration: 0.18, ease: [0.25, 0.1, 0.25, 1] } }}
+                          >
                             <button
                               className={clsx(
-                                "group grid! items-center grid-cols-[3.5rem_1fr_auto] gap-x-5 xl:gap-x-6 text-left w-full",
-                                item.asset.quantity === 0 && "opacity-40"
+                                "group cursor-pointer flex items-center gap-5 xl:gap-6 text-left w-full",
+                                item.asset.quantity === 0 && "opacity-20 grayscale"
                               )}
+                              onClick={() => setSelected(item)}
                             >
-                              <Container className="col-start-1 row-span-2 self-start overflow-hidden rounded">
+                              <Container className="overflow-hidden rounded-lg">
                                 <Image
-                                  src={item.product.images.at(0)}
+                                  src={item.model.images.at(0)}
                                   className={clsx("size-14 object-cover", "transition-opacity group-hover:opacity-80")}
                                 />
                               </Container>
-                              <Container className="col-start-2 flex flex-col">
-                                <Span className="font-medium leading-6">{highlight(item.product.name, keywords)}</Span>
-                                <Span className="text-sm text-hint group-hover:text-foreground-secondary transition-all">
-                                  {highlight(item.asset.model, keywords)}
-                                </Span>
-                              </Container>
-                              <Container className="col-start-3 flex flex-col items-center gap-0.5">
-                                <Container className="flex items-center gap-1 text-sm">
-                                  <Icon symbol="package_2" className="text-sm text-foreground-tertiary" />
-                                  <Span className="tabular-nums font-medium">{item.asset.quantity.toLocaleString()}</Span>
-                                </Container>
+                              <Span className="flex grow font-medium leading-6">{highlight(item.model.name, keywords)}</Span>
+                              <Container className="flex items-center gap-1 text-sm">
+                                <Icon symbol="package_2" className="text-sm text-foreground-tertiary" />
+                                <Span className="tabular-nums font-medium">{item.asset.quantity.toLocaleString()}</Span>
                               </Container>
                             </button>
                           </motion.div>
@@ -285,8 +280,18 @@ export const Inventory = createElement<typeof Container>((props, ref) => {
           )}
         </Container>
       </Container>
+
       <Sheet.Root open={creating} onOpenChange={setCreating}>
         <Creator mutate={assets.mutate} />
+      </Sheet.Root>
+
+      <Sheet.Root
+        open={!!selected}
+        onOpenChange={(open) => {
+          if (!open) setSelected(null);
+        }}
+      >
+        <Editor asset={selected} mutate={assets.mutate} />
       </Sheet.Root>
     </Container>
   );

@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.36.0](https://github.com/sptlco/spatial/compare/spatial-1.35.0...spatial-1.36.0) (2026-05-05)
+
+
+### Features
+
+* Added asynchronous operation support ([#172](https://github.com/sptlco/spatial/issues/172)) ([aa06c56](https://github.com/sptlco/spatial/commit/aa06c56ee74bf9869a774b97cf5b1c49c27c6ffd))
+
 ## [1.35.0](https://github.com/sptlco/spatial/compare/spatial-1.34.1...spatial-1.35.0) (2026-05-04)
 
 

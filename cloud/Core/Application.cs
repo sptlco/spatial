@@ -49,6 +49,7 @@ public class Application
     private readonly WebApplication _wapp;
     private Time _time;
     private double _ticks;
+    private double? _budget;
 
     private readonly Computer _computer;
     private readonly Network _network;
@@ -156,7 +157,11 @@ public class Application
                 {
                     INFO("Application running at {TickRate} tps.", application.Configuration.TickRate);
 
-                    Ticker.Run(application.TryTick, 1000.0D / application.Configuration.TickRate, token);
+                    var budget = 1000.0D / application.Configuration.TickRate;
+
+                    application._budget = budget;
+
+                    Ticker.Run(application.TryTick, budget, token);
                 }
                 else
                 {
@@ -516,6 +521,8 @@ public class Application
 
     private void TryTick(Time delta)
     {
+        var start = Time.Now;
+
         _network.Receive();
         _space.Update(delta);
 
@@ -529,6 +536,14 @@ public class Application
         }
 
         _network.Send();
+
+        var end = Time.Now;
+        var elapsed = end - start;
+
+        if (_budget is double budget && elapsed > budget)
+        {
+            WARN("Tick exceeded {Budget} ms budget by {Difference} ms (took {Elapsed} ms).", budget, elapsed - budget, elapsed);
+        }
 
         _time += delta;
         _ticks++;

@@ -7,10 +7,8 @@ using Spatial.Networking.Contracts.Miscellaneous;
 using Spatial.Structures;
 using System.Buffers;
 using System.Collections.Concurrent;
-using System.Linq.Expressions;
 using System.Net;
 using System.Net.Sockets;
-using System.Net.WebSockets;
 using System.Reflection;
 
 namespace Spatial.Networking;
@@ -24,7 +22,7 @@ public partial class Network
 
     private readonly IServiceProvider _services;
     private readonly Dictionary<Type, Controller> _controllers;
-    private readonly Dictionary<ushort, (Controller Controller, Command Command, Type Prototype)> _operations;
+    private readonly Dictionary<ushort, (Controller Controller, Delegate Command, Type Prototype)> _operations;
     private readonly List<Socket> _endpoints;
     private readonly ConcurrentDictionary<long, Connection> _connections;
     private readonly InterlockedQueue<NetworkEvent> _events;
@@ -47,10 +45,12 @@ public partial class Network
                     var controller = GetOrCreateController(method.DeclaringType!);
                     var prototype = method.GetParameters()[0].ParameterType;
 
-                    var type = typeof(Action<>).MakeGenericType(prototype);
-                    var delg = Delegate.CreateDelegate(type, controller, method);
+                    if (method.ReturnType == typeof(Task))
+                    {
+                        return (controller, Delegate.CreateDelegate(typeof(AsyncCommand), controller, method), prototype);
+                    }
 
-                    return (controller, (Command) ((data) => delg.DynamicInvoke(data)), prototype);
+                    return (controller, Delegate.CreateDelegate(typeof(Command), controller, method), prototype);
                 });
 
         _endpoints = [];
@@ -121,6 +121,7 @@ public partial class Network
     internal Connection Connect(Socket socket)
     {
         socket.NoDelay = true;
+        socket.SendTimeout = Constants.SendTimeout;
 
         return Connection.Allocate(this, socket).Connect();
     }
@@ -189,7 +190,7 @@ public partial class Network
                     {
                         connection.Socket.Send(packet);
                     }
-                    catch (SocketException exception) when (exception.SocketErrorCode == SocketError.ConnectionReset)
+                    catch (SocketException exception) when (exception.SocketErrorCode is SocketError.ConnectionReset or SocketError.TimedOut)
                     {
                         connection.Disconnect();
                     }
@@ -253,32 +254,52 @@ public partial class Network
                 }
             case NetworkEventCode.EVENT_MESSAGE:
                 {
-                    var message = e.Message!;
+                    using var message = e.Message!;
 
-                    if (_operations.TryGetValue(message.Command, out var command))
+                    if (_operations.TryGetValue(message.Command, out var operation))
                     {
                         TRACE("Invoking operation 0x{command:X4} on behalf of {connection}.", message.Command, connection.Id);
 
-                        try
-                        {
-                            using var data = ProtocolBuffer.FromSpan(command.Prototype, message.Data.AsSpan(2, message.Size - 2));
+                        var data = ProtocolBuffer.FromSpan(operation.Prototype, message.Data.AsSpan(2, message.Size - 2));
+                        var bytes = message.Data;
 
-                            command.Controller.Connection = connection;
-                            command.Controller.Message = message;
+                        switch (operation.Command)
+                        {
+                            case AsyncCommand task:
+                                Task.Run(async () => {
+                                    try
+                                    {
+                                        await task(connection, data);
+                                    }
+                                    catch (Exception exception)
+                                    {
+                                        Report(exception, message, connection);
+                                    }
+                                    finally
+                                    {
+                                        Cleanup(data, bytes);
+                                    }
+                                });
 
-                            command.Command(data);
-                        }
-                        catch (Exception exception)
-                        {
-                            ERROR(exception, "Failed to invoke operation 0x{command:X4} on behalf of {connection}.", message.Command, connection.Id);
-                        }
-                        finally
-                        {
-                            ArrayPool<byte>.Shared.Return(message.Data);
+                                break;
+                            case Command command:
+                                try
+                                {
+                                    command(connection, data);
+                                }
+                                catch (Exception exception)
+                                {
+                                    Report(exception, message, connection);
+                                }
+                                finally
+                                {
+                                    Cleanup(data, bytes);
+                                }
+
+                                break;
                         }
                     }
 
-                    message.Dispose();
                     break;
                 }
         }
@@ -292,6 +313,17 @@ public partial class Network
         }
 
         return controller;
+    }
+
+    private void Report(Exception exception, Message message, Connection connection)
+    {
+        ERROR(exception, "Failed to invoke operation 0x{command:X4} on behalf of {connection}.", message.Command, connection.Id);
+    }
+
+    private void Cleanup(ProtocolBuffer data, byte[] bytes)
+    {
+        data.Dispose();
+        ArrayPool<byte>.Shared.Return(bytes);
     }
 }
 

@@ -53,6 +53,11 @@ internal class Constants
     public const int ConnectionSize = 1024 * 16;
 
     /// <summary>
+    /// The time before a send operation to a <see cref="Connection"/> is considered to have failed.
+    /// </summary>
+    public const int SendTimeout = 2000;
+
+    /// <summary>
     /// The default name of the database.
     /// </summary>
     public const string DefaultDatabaseUrl = "mongodb://mongo:27017";

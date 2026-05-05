@@ -18,16 +18,6 @@ public abstract class Controller : Microsoft.AspNetCore.Mvc.Controller
     protected Session _session => HttpContext.Items[Variables.Session] as Session ?? throw new NullReference();
 
     /// <summary>
-    /// The active <see cref="Networking.Connection"/>.
-    /// </summary>
-    public Connection Connection { get; internal set; }
-
-    /// <summary>
-    /// A <see cref="Networking.Message"/> sent to the <see cref="Network"/>.
-    /// </summary>
-    public Message Message { get; internal set; }
-
-    /// <summary>
     /// Identifies a route that supports HTTP POST.
     /// </summary>
     public class POSTAttribute : HttpPostAttribute { }

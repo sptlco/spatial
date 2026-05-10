@@ -19,14 +19,14 @@ export class Controller {
    * @param body The request's body.
    * @returns A response from the server.
    */
-  protected post = async <R>(path: string, body?: any) => this.fetch<R>(path, "POST", body);
+  protected post = async <R>(path: string, body?: any, config?: AxiosRequestConfig) => this.fetch<R>(path, "POST", body, config);
 
   /**
    * Send a GET request to the server.
    * @param path The path to send the request to.
    * @returns A response from the server.
    */
-  protected get = async <R>(path: string) => this.fetch<R>(path, "GET");
+  protected get = async <R>(path: string, config?: AxiosRequestConfig) => this.fetch<R>(path, "GET", config);
 
   /**
    * Send a PATCH request to the server.
@@ -34,7 +34,7 @@ export class Controller {
    * @param body The request's body.
    * @returns A response from the server.
    */
-  protected patch = async <R>(path: string, body?: any) => this.fetch<R>(path, "PATCH", body);
+  protected patch = async <R>(path: string, body?: any, config?: AxiosRequestConfig) => this.fetch<R>(path, "PATCH", body, config);
 
   /**
    * Send a DELETE request to the server.
@@ -42,28 +42,30 @@ export class Controller {
    * @param body The request's body.
    * @returns A response from the server.
    */
-  protected delete = async <R>(path: string, body?: any) => this.fetch<R>(path, "DELETE", body);
+  protected delete = async <R>(path: string, body?: any, config?: AxiosRequestConfig) => this.fetch<R>(path, "DELETE", body, config);
 
-  private fetch = async <T>(path: string, method: string, body?: any): Promise<T> => {
+  private fetch = async <T>(path: string, method: string, body?: any, config?: AxiosRequestConfig): Promise<T> => {
     try {
-      let config: AxiosRequestConfig = {
+      let request: AxiosRequestConfig = {
         url: path,
         method: method,
-        data: body
+        data: body,
+        ...config
       };
 
       const session = cookies.get(SESSION_COOKIE_NAME);
 
       if (session) {
-        config = {
-          ...config,
+        request = {
+          ...request,
           headers: {
+            ...request.headers,
             Authorization: `Bearer ${session}`
           }
         };
       }
 
-      return (await client(config)).data;
+      return (await client(request)).data;
     } catch (error: any) {
       if (axios.isAxiosError(error) && error.response) {
         throw new NativeError(error.response.data);

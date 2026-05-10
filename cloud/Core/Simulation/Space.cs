@@ -2,6 +2,7 @@
 
 using Spatial.Compute;
 using System.Collections.Concurrent;
+using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
@@ -66,6 +67,11 @@ public sealed partial class Space : IDisposable
     /// The archetypes in the <see cref="Space"/>.
     /// </summary>
     internal Archetype?[] Archetypes => _archetypes;
+
+    /// <summary>
+    /// The systems in the <see cref="Space"/>.
+    /// </summary>
+    internal List<System> Systems => _systems;
 
     /// <summary>
     /// Create an empty <see cref="Space"/>.
@@ -764,11 +770,25 @@ public sealed partial class Space
     /// <summary>
     /// Update the <see cref="Space"/>.
     /// </summary>
-    public void Update(Time delta)
+    public void Update(Time delta, Span<(string Name, double Elapsed)> timings = default)
     {
-        _systems.ForEach(sys => sys.BeforeUpdate(this));
-        _systems.ForEach(sys => sys.Update(this, delta));
-        _systems.ForEach(sys => sys.AfterUpdate(this));
+        for (var i = 0; i < _systems.Count; i++)
+        {
+            var system = _systems[i];
+
+            if (!timings.IsEmpty)
+            {
+                var start = Stopwatch.GetTimestamp();
+
+                Update(system, delta);
+
+                timings[i] = (system.GetType().Name, (Stopwatch.GetTimestamp() - start) * 1000.0D / Stopwatch.Frequency);
+
+                continue;
+            }
+
+            Update(system, delta);
+        }
 
         _time += delta;
     }
@@ -806,6 +826,13 @@ public sealed partial class Space
     {
         _systems.Add(builder(this));
         return this;
+    }
+
+    private void Update(System system, Time delta)
+    {
+        system.BeforeUpdate(this);
+        system.Update(this, delta);
+        system.AfterUpdate(this);
     }
 }
 

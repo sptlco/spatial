@@ -1,5 +1,7 @@
 // Copyright © Spatial Corporation. All rights reserved.
 
+using System.Diagnostics;
+
 namespace Spatial;
 
 /// <summary>
@@ -7,6 +9,9 @@ namespace Spatial;
 /// </summary>
 public class Ticker
 {
+    private static readonly double _factor = 1000.0 / Stopwatch.Frequency;
+    private static double Now() => Stopwatch.GetTimestamp() * _factor;
+
     /// <summary>
     /// Run a <see cref="Ticker"/>.
     /// </summary>
@@ -16,11 +21,11 @@ public class Ticker
         Action<Time> function,
         CancellationToken cancellationToken = default)
     {
-        var t0 = Time.Now;
+        var t0 = Now();
 
         while (!cancellationToken.IsCancellationRequested)
         {
-            var time = Time.Now;
+            var time = Now();
             var delta = time - t0;
 
             t0 = time;
@@ -42,11 +47,19 @@ public class Ticker
         Time delta, 
         CancellationToken cancellationToken = default)
     {
-        var next = Time.Now;
+        var next = Now();
 
         while (!cancellationToken.IsCancellationRequested)
         {
-            var now = Time.Now;
+            var now = Now();
+
+            // If we've fallen more than 3 ticks behind, accept the desync.
+            // Rather than bursting to catch up.
+
+            if (now - next > delta * 3)
+            {
+                next = now;
+            }
 
             if (now >= next)
             {
@@ -54,7 +67,7 @@ public class Ticker
                 next += delta;
             }
 
-            Thread.Sleep((int) Math.Max(next - Time.Now, 1));
+            Thread.Sleep((int) Math.Max(next - Now(), 1));
         }
     }
 }

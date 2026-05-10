@@ -50,6 +50,7 @@ public class Application
     private Time _time;
     private double _ticks;
     private double? _budget;
+    private (string Name, double Elapsed)[] _timings;
 
     private readonly Computer _computer;
     private readonly Network _network;
@@ -66,6 +67,7 @@ public class Application
         _computer = new Computer();
         _network = new Network(_wapp.Services);
         _ticks = (_time = Time.Now).Ticks;
+        _timings = [];
 
         Initialize();
     }
@@ -251,12 +253,6 @@ public class Application
     public virtual void Start() { }
 
     /// <summary>
-    /// Update the <see cref="Application"/>.
-    /// </summary>
-    /// <param name="delta"></param>
-    public virtual void Tick(Time delta) { }
-
-    /// <summary>
     /// Shutdown the <see cref="Application"/>.
     /// </summary>
     public virtual void Shutdown() { }
@@ -271,6 +267,7 @@ public class Application
             .ForEach(Use);
 
         _space.Initialize();
+        _timings = new (string, double)[_space.Systems.Count];
     }
 
     private void Listen()
@@ -521,28 +518,39 @@ public class Application
 
     private void TryTick(Time delta)
     {
-        var start = Time.Now;
-
-        _network.Receive();
-        _space.Update(delta);
-
         try
         {
-            Tick(delta);
+            var receive = Profiler.Measure("Receive", () => _network.Receive());
+            var update = Profiler.Measure("Update", () => _space.Update(delta, _timings));
+            var send = Profiler.Measure("Send", () => _network.Send());
+
+            var elapsed = receive.Elapsed + update.Elapsed + send.Elapsed;
+
+            if (_budget is double budget && elapsed > budget)
+            {
+                const string reset = "\x1b[0m";
+                const string dim = "\x1b[2m";
+                const string yellow = "\x1b[33m";
+                const string cyan = "\x1b[36m";
+
+                var breakdown = new StringBuilder();
+
+                breakdown.AppendLine($"  - {cyan}Receive{reset} {receive.Elapsed:F2}ms");
+                breakdown.AppendLine($"  - {cyan}Update{reset} {update.Elapsed:F2}ms");
+
+                foreach (var (name, ms) in _timings)
+                {
+                    breakdown.AppendLine($"    - {dim}{name}{reset} {ms:F2}ms");
+                }
+
+                breakdown.Append($"  - {cyan}Send{reset} {send.Elapsed:F2}ms");
+
+                WARN($"{yellow}Tick exceeded {{Budget}}ms budget by {{Difference}}ms (took {{Elapsed}}ms){reset}\n{{Breakdown}}", budget, elapsed - budget, elapsed, breakdown.ToString());
+            }
         }
         catch (Exception exception)
         {
             ERROR(exception, "Failed to tick.");
-        }
-
-        _network.Send();
-
-        var end = Time.Now;
-        var elapsed = end - start;
-
-        if (_budget is double budget && elapsed > budget)
-        {
-            WARN("Tick exceeded {Budget} ms budget by {Difference} ms (took {Elapsed} ms).", budget, elapsed - budget, elapsed);
         }
 
         _time += delta;

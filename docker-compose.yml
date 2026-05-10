@@ -52,6 +52,7 @@ services:
       - ~/.ssh:/root/.ssh
       - ./config/code:/root/.config/code-server
       - ./tools/code/data:/root/.local/share/code-server
+      - ~/.gitconfig:/root/.gitconfig
     environment:
       - DOCKER_USER=root
     extra_hosts:

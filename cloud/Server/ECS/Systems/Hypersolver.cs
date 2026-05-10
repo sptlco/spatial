@@ -29,8 +29,8 @@ public class Hypersolver : System
     // Maps: Internal -> External
     // Physical entities mapped to database records.
 
-    private readonly ConcurrentDictionary<Entity, Data.Intelligence.Neurons.Neuron> _neuronsByEntity;
-    private readonly ConcurrentDictionary<Entity, Data.Intelligence.Synapses.Synapse> _synapsesByEntity;
+    private readonly Dictionary<Entity, Data.Intelligence.Neurons.Neuron> _neuronsByEntity;
+    private readonly Dictionary<Entity, Data.Intelligence.Synapses.Synapse> _synapsesByEntity;
 
     // Reverse index.
     // Maps neuron IDs to the synapse IDs that reference them.
@@ -55,6 +55,12 @@ public class Hypersolver : System
 
     // State propagation.
     // Publish a snapshot of the current state of the network.
+
+    private NeuronSnapshot[] _neuronSnapshots = [];
+    private SynapseSnapshot[] _synapseSnapshots = [];
+
+    private bool _dirty = true;
+    private Time _saved = Time.Now;
 
     private Snapshot _front;
     private Snapshot _back;
@@ -163,7 +169,11 @@ public class Hypersolver : System
             var post = space.Get<Components.Neuron>(synapse.To);
             var contribution = pre.Value * synapse.Strength;
 
-            _inputs.AddOrUpdate(synapse.To, contribution, (entity, value) => value + contribution);
+            _inputs.AddOrUpdate<double>(
+                synapse.To,
+                static (_, c) => c,
+                static (_, existing, c) => existing + c,
+                contribution);
             
             // Hebbian plasticity with spatial modulation.
             // Neurons that fire together, wire together.
@@ -181,8 +191,6 @@ public class Hypersolver : System
                 (1.0 - Math.Exp(-Math.Abs(activity) / _config.Kappa)) * // Plastic sensitivity
                 Math.Exp(-distance * distance / (2.0 * _config.Sigma * _config.Sigma)) * // Spatial modulation
                 delta.Seconds;
-
-            _synapsesByEntity[entity].Strength = synapse.Strength = Math.Clamp(synapse.Strength, -_config.Omax, _config.Omax);
         });
 
         space.Mutate(_neurons, (Future future, in Entity entity, ref Components.Neuron neuron) => {
@@ -224,8 +232,6 @@ public class Hypersolver : System
 
                     break;
             }
-
-            _neuronsByEntity[entity].Value = neuron.Value; 
         });
     }
 
@@ -237,11 +243,42 @@ public class Hypersolver : System
     {
         _inputs.Clear();
 
-        _back.Neurons  = [.. _neuronsByEntity.Values.Select(n => new NeuronSnapshot(n.Id, n.Type, n.Group, n.Channel, n.Position, n.Value))];
-        _back.Synapses = [.. _synapsesByEntity.Values.Select(s => new SynapseSnapshot(s.Id, s.From, s.To, s.Strength))];
+        if (_dirty)
+        {
+            _neuronSnapshots  = new NeuronSnapshot[_neuronsByEntity.Count];
+            _synapseSnapshots = new SynapseSnapshot[_synapsesByEntity.Count];
+            _dirty = false;
+        }
+
+        var i = 0;
+
+        foreach (var (entity, neuron) in _neuronsByEntity)
+        {
+            var component = space.Get<Components.Neuron>(entity);
+            _neuronSnapshots[i++] = new NeuronSnapshot(neuron.Id, neuron.Type, neuron.Group, neuron.Channel, neuron.Position, component.Value);
+        }
+
+        i = 0;
+
+        foreach (var (entity, synapse) in _synapsesByEntity)
+        {
+            var component = space.Get<Components.Synapse>(entity);
+            _synapseSnapshots[i++] = new SynapseSnapshot(synapse.Id, synapse.From, synapse.To, component.Strength);
+        }
+
+        _back.Neurons  = _neuronSnapshots;
+        _back.Synapses = _synapseSnapshots;
+
         _back = Interlocked.Exchange(ref _front, _back);
 
-        Interval.ScheduleAsync(SaveAsync, Time.FromMinutes(5));
+        var now = Time.Now;
+
+        if ((now - _saved) >= Time.FromMinutes(5))
+        {
+            _saved = now;
+
+            Task.Run(SaveAsync);
+        }
 
         Updated?.Invoke(_front);
     }
@@ -259,7 +296,11 @@ public class Hypersolver : System
             throw new UserError("The neuron does not exist.");
         }
 
-        _inputs.AddOrUpdate(entity, charge, (_, existing) => existing + charge);
+        _inputs.AddOrUpdate(
+            entity,
+            static (_, c) => c,
+            static (_, existing, c) => existing + c,
+            charge);
     }
 
     /// <summary>
@@ -372,7 +413,9 @@ public class Hypersolver : System
             space.Destroy(entity);
 
             _neuronsById.TryRemove(neuron, out _);
-            _neuronsByEntity.TryRemove(entity, out _);
+            _neuronsByEntity.Remove(entity);
+
+            _dirty = true;
             
             Neurons.InvokeRemoved(record);
         });
@@ -501,7 +544,9 @@ public class Hypersolver : System
             space.Destroy(entity);
 
             _synapsesById.TryRemove(synapse, out _);
-            _synapsesByEntity.TryRemove(entity, out _);
+            _synapsesByEntity.Remove(entity);
+
+            _dirty = true;
             
             Synapses.InvokeRemoved(record);
         });
@@ -526,6 +571,7 @@ public class Hypersolver : System
             new Position(record.Position.X, record.Position.Y, record.Position.Z));
 
         _neuronsById[(_neuronsByEntity[entity] = record).Id] = entity;
+        _dirty = true;
 
         if (notify)
         {
@@ -545,6 +591,8 @@ public class Hypersolver : System
         _synapsesByNeuron.GetOrAdd(record.From, _ => []).Add(record.Id);
         _synapsesByNeuron.GetOrAdd(record.To, _ => []).Add(record.Id);
 
+        _dirty = true;
+
         if (notify)
         {
             Synapses.InvokeAdded(record);
@@ -558,12 +606,12 @@ public class Hypersolver : System
 
     private Task SaveNeurons()
     {
-        return !_neuronsByEntity.IsEmpty ? Resource<Data.Intelligence.Neurons.Neuron>.ReplaceManyAsync(_neuronsByEntity.Values) : Task.CompletedTask;
+        return _neuronsByEntity.Count > 0 ? Resource<Data.Intelligence.Neurons.Neuron>.ReplaceManyAsync(_neuronsByEntity.Values) : Task.CompletedTask;
     }
 
     private Task SaveSynapses()
     {
-        return !_synapsesByEntity.IsEmpty ? Resource<Data.Intelligence.Synapses.Synapse>.ReplaceManyAsync(_synapsesByEntity.Values) : Task.CompletedTask;
+        return _synapsesByEntity.Count > 0 ? Resource<Data.Intelligence.Synapses.Synapse>.ReplaceManyAsync(_synapsesByEntity.Values) : Task.CompletedTask;
     }
 }
 

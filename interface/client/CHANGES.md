@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.16.0](https://github.com/sptlco/spatial/compare/spatial-interface-client-1.15.0...spatial-interface-client-1.16.0) (2026-05-11)
+
+
+### Features
+
+* Added profiling and transmissions ([#172](https://github.com/sptlco/spatial/issues/172)) ([67fcf3d](https://github.com/sptlco/spatial/commit/67fcf3da1954f72a1e8a7f582d3b3e008bda21e7))
+
 ## [1.15.0](https://github.com/sptlco/spatial/compare/spatial-interface-client-1.14.0...spatial-interface-client-1.15.0) (2026-05-04)
 
 

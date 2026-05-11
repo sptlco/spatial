@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.38.0](https://github.com/sptlco/spatial/compare/spatial-interface-web-1.37.0...spatial-interface-web-1.38.0) (2026-05-11)
+
+
+### Features
+
+* Added profiling and transmissions ([#172](https://github.com/sptlco/spatial/issues/172)) ([67fcf3d](https://github.com/sptlco/spatial/commit/67fcf3da1954f72a1e8a7f582d3b3e008bda21e7))
+
 ## [1.37.0](https://github.com/sptlco/spatial/compare/spatial-interface-web-1.36.1...spatial-interface-web-1.37.0) (2026-05-04)
 
 

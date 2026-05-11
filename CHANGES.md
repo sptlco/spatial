@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.37.0](https://github.com/sptlco/spatial/compare/spatial-1.36.0...spatial-1.37.0) (2026-05-11)
+
+
+### Features
+
+* Added profiling and transmissions ([#172](https://github.com/sptlco/spatial/issues/172)) ([67fcf3d](https://github.com/sptlco/spatial/commit/67fcf3da1954f72a1e8a7f582d3b3e008bda21e7))
+
+
+### Bug Fixes
+
+* Used profiler for system updates ([#172](https://github.com/sptlco/spatial/issues/172)) ([5b3ba2e](https://github.com/sptlco/spatial/commit/5b3ba2e534c0f991a394e853531dcd5391bc911e))
+
 ## [1.36.0](https://github.com/sptlco/spatial/compare/spatial-1.35.0...spatial-1.36.0) (2026-05-05)
 
 

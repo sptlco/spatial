@@ -2,7 +2,6 @@
 
 using Spatial.Compute;
 using System.Collections.Concurrent;
-using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
@@ -778,12 +777,7 @@ public sealed partial class Space
 
             if (!timings.IsEmpty)
             {
-                var start = Stopwatch.GetTimestamp();
-
-                Update(system, delta);
-
-                timings[i] = (system.GetType().Name, (Stopwatch.GetTimestamp() - start) * 1000.0D / Stopwatch.Frequency);
-
+                timings[i] = Profiler.Measure(system.GetType().Name, () => Update(system, delta));
                 continue;
             }
 

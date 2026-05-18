@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.16.1](https://github.com/sptlco/spatial/compare/spatial-interface-client-1.16.0...spatial-interface-client-1.16.1) (2026-05-18)
+
+
+### Bug Fixes
+
+* Listen after initializing ([#172](https://github.com/sptlco/spatial/issues/172)) ([0c087c2](https://github.com/sptlco/spatial/commit/0c087c2949d3a7c8d7ca0bf9d6614baff55c3f26))
+
 ## [1.16.0](https://github.com/sptlco/spatial/compare/spatial-interface-client-1.15.0...spatial-interface-client-1.16.0) (2026-05-11)
 
 

@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.38.1](https://github.com/sptlco/spatial/compare/spatial-interface-web-1.38.0...spatial-interface-web-1.38.1) (2026-05-18)
+
+
+### Bug Fixes
+
+* Listen after initializing ([#172](https://github.com/sptlco/spatial/issues/172)) ([0c087c2](https://github.com/sptlco/spatial/commit/0c087c2949d3a7c8d7ca0bf9d6614baff55c3f26))
+
 ## [1.38.0](https://github.com/sptlco/spatial/compare/spatial-interface-web-1.37.0...spatial-interface-web-1.38.0) (2026-05-11)
 
 

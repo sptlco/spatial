@@ -7,7 +7,7 @@ import { Address, Asset, AssetType, AssetView } from "@sptlco/data";
 import { FormEvent, useEffect, useState } from "react";
 import { KeyedMutator } from "swr";
 
-import { Button, Container, createElement, Field, Form, Label, Sheet, Span, Spinner, toast } from "@sptlco/design";
+import { Button, Container, createElement, Field, Form, Image, Label, Sheet, Span, Spinner, toast } from "@sptlco/design";
 
 const emptyLocation = (): Address => ({ line1: "", line2: "", city: "", state: "", zip: "", country: "" });
 
@@ -77,6 +77,9 @@ export const Editor = createElement<typeof Sheet.Content, { asset: AssetView | n
     return (
       <Sheet.Content {...props} ref={ref} title={asset?.model.name ?? "Edit asset"} description="Update the details of this asset." closeButton>
         <Form className="flex flex-col w-full sm:w-screen sm:max-w-sm gap-10" onSubmit={save}>
+          <Container className="flex w-full items-center justify-center">
+            <Image src={asset?.model.images.at(0)} className="w-3/4 rounded-full" />
+          </Container>
           <Field
             type="text"
             id="model"

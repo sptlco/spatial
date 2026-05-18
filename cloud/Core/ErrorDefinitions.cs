@@ -131,3 +131,15 @@ public class BadRequest : UserError
     /// <param name="message">A message describing why the request is invalid.</param>
     public BadRequest(string message) : base(message) { }
 }
+
+/// <summary>
+/// A <see cref="UserError"/> indicating that an action is unsupported.
+/// </summary>
+public class Unsupported : UserError
+{
+    /// <summary>
+    /// Create a new <see cref="Unsupported"/>.
+    /// </summary>
+    /// <param name="message">A message describing why the action is unsupported.</param>
+    public Unsupported(string message) : base(message) { }
+}

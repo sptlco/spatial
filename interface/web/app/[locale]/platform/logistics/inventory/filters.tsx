@@ -1,6 +1,6 @@
 // Copyright © Spatial Corporation. All rights reserved.
 
-import { AssetView } from "@sptlco/data";
+import { AssetType, AssetView } from "@sptlco/data";
 import { Fragment, useState } from "react";
 
 import { Button, Combobox, createElement, Icon } from "@sptlco/design";
@@ -25,6 +25,10 @@ export const Filters = createElement<
   };
 
   const types = [...new Set(props.assets.map((v) => v.asset.type).sort())];
+  const labels: Record<AssetType, string> = {
+    digital: "Digital",
+    physical: "Physical"
+  };
 
   return (
     <Combobox.Root multiple selection={selection} onSelect={filter}>
@@ -36,7 +40,7 @@ export const Filters = createElement<
       <Combobox.Content>
         <Combobox.List label="Type">
           {types.map((type, i) => (
-            <Combobox.Item key={i} value={type} label={type} />
+            <Combobox.Item key={i} value={type} label={labels[type]} />
           ))}
         </Combobox.List>
       </Combobox.Content>

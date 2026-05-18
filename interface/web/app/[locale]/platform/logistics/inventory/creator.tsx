@@ -3,11 +3,11 @@
 "use client";
 
 import { Spatial } from "@sptlco/client";
-import { AssetType, AssetView, CreateAssetOptions, Version } from "@sptlco/data";
+import { AssetType, AssetView, CreateAssetOptions } from "@sptlco/data";
 import { FormEvent, useState } from "react";
-import { KeyedMutator } from "swr";
+import useSWR, { KeyedMutator } from "swr";
 
-import { Button, Container, createElement, Field, Form, Label, Sheet, Span, Spinner, toast } from "@sptlco/design";
+import { Button, Container, createElement, Field, Form, Image, Label, Sheet, Span, Spinner, toast } from "@sptlco/design";
 
 export const Creator = createElement<typeof Sheet.Content, { mutate: KeyedMutator<AssetView[]> }>(({ mutate, ...props }, ref) => {
   const [model, setModel] = useState("");
@@ -61,19 +61,29 @@ export const Creator = createElement<typeof Sheet.Content, { mutate: KeyedMutato
     });
   };
 
+  const { data: products, isLoading: loadingProducts } = useSWR("products", () => Spatial.products.list());
+
+  const productOptions = (products ?? []).map((p) => ({
+    value: p.id,
+    label: p.name,
+    icon: p.images[0] ? <Image src={p.images[0]} alt={p.name} className="size-6 rounded object-cover" /> : undefined
+  }));
+
   return (
     <Sheet.Content {...props} ref={ref} title="New asset" description="Register a physical or digital asset." closeButton>
       <Form className="flex flex-col w-full sm:w-screen sm:max-w-sm gap-10" onSubmit={create}>
         <Field
-          type="text"
+          type="option"
+          multiple={false}
           id="model"
           name="model"
           label="Model"
+          placeholder="Choose a model"
           description="This is the Stripe product this asset is associated with. Controls the name, pricing, and metadata shown to customers."
-          placeholder="prod_QkT7mXvR3nJw9L"
-          value={model}
-          onChange={(e) => setModel(e.target.value)}
-          disabled={creating}
+          options={productOptions}
+          selection={model}
+          onValueChange={(value) => setModel(value === model ? "" : value)}
+          disabled={creating || loadingProducts}
           inset={false}
         />
         <Field

@@ -217,7 +217,7 @@ export const Inventory = createElement<typeof Container>((props, ref) => {
                               )}
                               onClick={() => setSelected(item)}
                             >
-                              <Container className="relative w-full overflow-hidden rounded-2xl xl:rounded-4xl">
+                              <Container className="relative w-full overflow-hidden">
                                 <Image
                                   src={item.model.images.at(0)}
                                   className="w-full transition-transform duration-300 ease-out group-hover:scale-105"

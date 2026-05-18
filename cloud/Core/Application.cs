@@ -146,10 +146,11 @@ public class Application
                 INFO("Starting {Application} {Version}.", application.Name, application.Version);
 
                 application._computer.Run();
-                application.Listen();
 
                 application.Start();
                 application._wapp.Start();
+
+                application.Listen();
 
                 var token_base = cancellationToken.CanBeCanceled ? cancellationToken : CreateCancellationToken();
                 using var linked = CancellationTokenSource.CreateLinkedTokenSource(token_base, application._shutdown.Token);

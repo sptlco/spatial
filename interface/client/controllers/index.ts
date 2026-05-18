@@ -9,6 +9,7 @@ import { MetricController } from "./MetricController";
 import { NeuralController } from "./NeuralController";
 import { ParcelController } from "./ParcelController";
 import { PermissionController } from "./PermissionController";
+import { ProductController } from "./ProductController";
 import { RoleController } from "./RoleController";
 import { ScopeController } from "./ScopeController";
 import { SessionController } from "./SessionController";
@@ -25,6 +26,7 @@ export * from "./MetricController";
 export * from "./NeuralController";
 export * from "./ParcelController";
 export * from "./PermissionController";
+export * from "./ProductController";
 export * from "./RoleController";
 export * from "./ScopeController";
 export * from "./SessionController";
@@ -42,6 +44,7 @@ export const Spatial = {
   metrics: new MetricController(),
   parcels: new ParcelController(),
   permissions: new PermissionController(),
+  products: new ProductController(),
   roles: new RoleController(),
   scopes: new ScopeController(),
   sessions: new SessionController(),

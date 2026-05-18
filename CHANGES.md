@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.37.1](https://github.com/sptlco/spatial/compare/spatial-1.37.0...spatial-1.37.1) (2026-05-18)
+
+
+### Bug Fixes
+
+* Listen after initializing ([#172](https://github.com/sptlco/spatial/issues/172)) ([0c087c2](https://github.com/sptlco/spatial/commit/0c087c2949d3a7c8d7ca0bf9d6614baff55c3f26))
+
 ## [1.37.0](https://github.com/sptlco/spatial/compare/spatial-1.36.0...spatial-1.37.0) (2026-05-11)
 
 

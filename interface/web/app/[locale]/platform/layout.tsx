@@ -62,19 +62,9 @@ const pages: Page[] = [
     icon: "database"
   },
   {
-    name: "navigation.platform.pages.environment",
-    path: `${BASE_URL}/space`,
-    icon: "precision_manufacturing"
-  },
-  {
     name: "navigation.platform.pages.identity",
     path: `${BASE_URL}/identity`,
     icon: "person"
-  },
-  {
-    name: "navigation.platform.pages.intelligence",
-    path: `${BASE_URL}/intelligence`,
-    icon: "neurology"
   },
   {
     name: "navigation.platform.pages.logistics",

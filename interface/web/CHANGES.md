@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.38.2](https://github.com/sptlco/spatial/compare/spatial-interface-web-1.38.1...spatial-interface-web-1.38.2) (2026-05-25)
+
+
+### Bug Fixes
+
+* Removed navigation links ([#172](https://github.com/sptlco/spatial/issues/172)) ([2cc0f9f](https://github.com/sptlco/spatial/commit/2cc0f9fcc2c3ada2ff470ed070b3bae20540c70a))
+
 ## [1.38.1](https://github.com/sptlco/spatial/compare/spatial-interface-web-1.38.0...spatial-interface-web-1.38.1) (2026-05-18)
 
 

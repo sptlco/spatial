@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.44.0](https://github.com/sptlco/spatial/compare/spatial-cloud-1.43.1...spatial-cloud-1.44.0) (2026-05-29)
+
+
+### Features
+
+* Added a reference overload ([#172](https://github.com/sptlco/spatial/issues/172)) ([05cd9c2](https://github.com/sptlco/spatial/commit/05cd9c2d3d7b4e0545cbd949ca5831f689faa1b2))
+
 ## [1.43.1](https://github.com/sptlco/spatial/compare/spatial-cloud-1.43.0...spatial-cloud-1.43.1) (2026-05-18)
 
 

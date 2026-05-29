@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.38.0](https://github.com/sptlco/spatial/compare/spatial-1.37.2...spatial-1.38.0) (2026-05-29)
+
+
+### Features
+
+* Added a reference overload ([#172](https://github.com/sptlco/spatial/issues/172)) ([05cd9c2](https://github.com/sptlco/spatial/commit/05cd9c2d3d7b4e0545cbd949ca5831f689faa1b2))
+
 ## [1.37.2](https://github.com/sptlco/spatial/compare/spatial-1.37.1...spatial-1.37.2) (2026-05-25)
 
 

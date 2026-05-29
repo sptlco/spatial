@@ -360,6 +360,27 @@ public sealed partial class Space : IDisposable
     }
 
     /// <summary>
+    /// Get a <see cref="IComponent"/>.
+    /// </summary>
+    /// <typeparam name="T">The type of <see cref="IComponent"/> to get.</typeparam>
+    /// <param name="entity">An <see cref="Entity"/> identification number.</param>
+    /// <returns>A <see cref="IComponent"/>.</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public ref T Ref<T>(uint entity) where T : unmanaged, IComponent
+    {
+        ref var handle = ref _entities[entity];
+
+        var archetype = _archetypes[handle.Archetype]!;
+
+        if (!archetype.Signature.Includes<T>())
+        {
+            throw new InvalidOperationException("The component does not exist.");
+        }
+
+        return ref archetype.Chunks[handle.Chunk].Ref<T>(handle.Index);
+    }
+
+    /// <summary>
     /// Set a <see cref="IComponent"/>.
     /// </summary>
     /// <typeparam name="T">The type of <see cref="IComponent"/> to set.</typeparam>

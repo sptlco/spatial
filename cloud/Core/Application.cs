@@ -258,6 +258,12 @@ public class Application
     /// </summary>
     public virtual void Shutdown() { }
 
+    /// <summary>
+    /// Tick the <see cref="Application"/>.
+    /// </summary>
+    /// <param name="delta">Elapsed time since the last tick.</param>
+    public virtual void Tick(Time delta) { }
+
     private void Initialize()
     {
         AppDomain.CurrentDomain
@@ -548,6 +554,8 @@ public class Application
 
                 WARN($"{yellow}Tick exceeded {{Budget}}ms budget by {{Difference}}ms (took {{Elapsed}}ms){reset}\n{{Breakdown}}", budget, elapsed - budget, elapsed, breakdown.ToString());
             }
+
+            Tick(delta);
         }
         catch (Exception exception)
         {

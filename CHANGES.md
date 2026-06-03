@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.39.0](https://github.com/sptlco/spatial/compare/spatial-1.38.0...spatial-1.39.0) (2026-06-03)
+
+
+### Features
+
+* Added tick hook ([#172](https://github.com/sptlco/spatial/issues/172)) ([8ac28de](https://github.com/sptlco/spatial/commit/8ac28deafd2fd25eabb638a30dab6568d2879d16))
+
 ## [1.38.0](https://github.com/sptlco/spatial/compare/spatial-1.37.2...spatial-1.38.0) (2026-05-29)
 
 

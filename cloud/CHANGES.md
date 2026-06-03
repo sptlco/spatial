@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.45.0](https://github.com/sptlco/spatial/compare/spatial-cloud-1.44.0...spatial-cloud-1.45.0) (2026-06-03)
+
+
+### Features
+
+* Added tick hook ([#172](https://github.com/sptlco/spatial/issues/172)) ([8ac28de](https://github.com/sptlco/spatial/commit/8ac28deafd2fd25eabb638a30dab6568d2879d16))
+
 ## [1.44.0](https://github.com/sptlco/spatial/compare/spatial-cloud-1.43.1...spatial-cloud-1.44.0) (2026-05-29)
 
 

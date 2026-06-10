@@ -29,10 +29,7 @@ public class EventController : Controller
 
             metadata = EventUtility.ConstructEvent(json, signature, Server.Current.Configuration.Stripe.Webhooks.Secret);
 
-            switch (metadata.Type)
-            {
-                // ...
-            }
+            // ...
         }
         catch (StripeException exception)
         {

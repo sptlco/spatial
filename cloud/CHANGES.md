@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.45.1](https://github.com/sptlco/spatial/compare/spatial-cloud-1.45.0...spatial-cloud-1.45.1) (2026-06-10)
+
+
+### Bug Fixes
+
+* Upgraded MongoDB ([#172](https://github.com/sptlco/spatial/issues/172)) ([2e15d14](https://github.com/sptlco/spatial/commit/2e15d141f503270a4b2923b71b80895ac272e253))
+
 ## [1.45.0](https://github.com/sptlco/spatial/compare/spatial-cloud-1.44.0...spatial-cloud-1.45.0) (2026-06-03)
 
 

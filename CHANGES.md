@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.39.1](https://github.com/sptlco/spatial/compare/spatial-1.39.0...spatial-1.39.1) (2026-06-10)
+
+
+### Bug Fixes
+
+* Upgraded MongoDB ([#172](https://github.com/sptlco/spatial/issues/172)) ([2e15d14](https://github.com/sptlco/spatial/commit/2e15d141f503270a4b2923b71b80895ac272e253))
+
 ## [1.39.0](https://github.com/sptlco/spatial/compare/spatial-1.38.0...spatial-1.39.0) (2026-06-03)
 
 

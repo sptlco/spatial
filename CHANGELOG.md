@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.46.1](https://github.com/sptlco/spatial/compare/1.46.0...1.46.1) (2026-06-17)
+
+
+### Bug Fixes
+
+* Updated  publishing ([e98ea88](https://github.com/sptlco/spatial/commit/e98ea8868fef5ec5898d66ce1612f864c81a19f1))
+
 ## [1.46.0](https://github.com/sptlco/spatial/compare/1.45.1...1.46.0) (2026-06-17)
 
 

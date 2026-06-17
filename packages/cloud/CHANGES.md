@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.0.0 (2026-06-17)
+
+
+### Features
+
+* Reorganized the project ([f822da4](https://github.com/sptlco/spatial/commit/f822da4951413c3c31f0db7d829c8121fc91c9f8))
+
 ## [1.45.1](https://github.com/sptlco/spatial/compare/spatial-cloud-1.45.0...spatial-cloud-1.45.1) (2026-06-10)
 
 ### Bug Fixes

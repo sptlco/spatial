@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.40.0](https://github.com/sptlco/spatial/compare/spatial-1.39.1...spatial-1.40.0) (2026-06-17)
+
+
+### Features
+
+* Reorganized the project ([f822da4](https://github.com/sptlco/spatial/commit/f822da4951413c3c31f0db7d829c8121fc91c9f8))
+
 ## [1.39.1](https://github.com/sptlco/spatial/compare/spatial-1.39.0...spatial-1.39.1) (2026-06-10)
 
 ### Bug Fixes

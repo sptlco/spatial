@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.46.2](https://github.com/sptlco/spatial/compare/1.46.1...1.46.2) (2026-06-17)
+
+
+### Bug Fixes
+
+* Removed workspace spec ([4b55a65](https://github.com/sptlco/spatial/commit/4b55a65118a06310a18df6de282aa3eb43f3ab29))
+
 ## [1.46.1](https://github.com/sptlco/spatial/compare/1.46.0...1.46.1) (2026-06-17)
 
 

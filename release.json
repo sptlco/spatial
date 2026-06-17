@@ -10,11 +10,11 @@
       "changelog-path": "CHANGES.md",
       "release-type": "simple",
       "extra-files": [
-        "Core/Spatial.csproj",
-        "../web/package.json",
+        "packages/cloud/Core/Spatial.csproj",
+        "packages/web/package.json",
         {
           "type": "json",
-          "path": "Server/appsettings.json",
+          "path": "packages/cloud/Server/appsettings.json",
           "jsonpath": "$.Version"
         }
       ]

@@ -10,7 +10,7 @@ import "@/interface/index.css";
  * Top-level application metadata for improved SEO and web shareability.
  */
 export const metadata: Metadata = {
-  title: "Spatial Corporation",
+  title: "Spatial",
   description: "Leading industrial research and development."
 };
 

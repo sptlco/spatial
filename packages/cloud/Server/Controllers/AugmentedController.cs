@@ -1,6 +1,6 @@
 // Copyright © Spatial Corporation. All rights reserved.
 
-namespace Spatial.Cloud.API;
+namespace Spatial.Cloud.Controllers;
 
 /// <summary>
 /// An augmented <see cref="Networking.Controller"/>.

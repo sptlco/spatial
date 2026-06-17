@@ -6,9 +6,22 @@ services:
       - mongo
       - redis
 
-  web:
-    build: ./packages/web
+  editor:
+    user: root
+    build:
+      context: .
+      dockerfile: editor/Dockerfile
     restart: always
+    volumes:
+      - ./:/home/coder/project
+      - ~/.ssh:/root/.ssh
+      - ./config/code:/root/.config/code-server
+      - ./editor/data:/root/.local/share/code-server
+      - ~/.gitconfig:/root/.gitconfig
+    environment:
+      - DOCKER_USER=root
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
 
   mongo:
     image: mongo:8
@@ -17,12 +30,6 @@ services:
       - "127.0.0.1:27017:27017"
     volumes:
       - mongo:/data/db
-
-  redis:
-    image: redis:8
-    restart: always
-    volumes:
-      - redis:/data
 
   nginx:
     image: nginx:1
@@ -36,25 +43,18 @@ services:
       - ./config/nginx/ssl/private:/etc/ssl/private
     depends_on:
       - cloud
+      - editor
       - web
-      - code
 
-  code:
-    user: root
-    build:
-      context: .
-      dockerfile: tools/code/Dockerfile
+  redis:
+    image: redis:8
     restart: always
     volumes:
-      - ./:/home/coder/project
-      - ~/.ssh:/root/.ssh
-      - ./config/code:/root/.config/code-server
-      - ./tools/code/data:/root/.local/share/code-server
-      - ~/.gitconfig:/root/.gitconfig
-    environment:
-      - DOCKER_USER=root
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
+      - redis:/data
+
+  web:
+    build: ./packages/web
+    restart: always
 
 volumes:
   mongo:

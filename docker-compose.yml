@@ -1,15 +1,13 @@
 services:
   cloud:
-    build: ./cloud
+    build: ./packages/cloud
     restart: always
     depends_on:
       - mongo
       - redis
 
   web:
-    build:
-      context: ./interface
-      dockerfile: web/Dockerfile
+    build: ./packages/web
     restart: always
 
   mongo:

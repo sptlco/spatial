@@ -150,8 +150,8 @@ JWT_SECRET=<same-secret-as-server>
 | `NEXT_PUBLIC_SERVER_ENDPOINT` | URL of the cloud server API                  |
 | `JWT_SECRET`                  | Must match `JWT.Secret` in the server config |
 
-
 To start the web development server, run the following:
+
 ```bash
 cd interface
 npm run dev:web
@@ -335,12 +335,12 @@ Merging to `main` triggers an automatic deployment to **West US** ([sptlco.com](
 
 The following packages are published to GitHub Packages on release:
 
-| Package                | Description                                       |
-| ---------------------- | ------------------------------------------------- |
-| `Spatial` (NuGet)      | Core library — ECS, compute, networking, identity |
-| `@sptlco/client` (npm) | API client for the web and mobile interfaces      |
-| `@sptlco/data` (npm)   | Shared data types and schemas                     |
-| `@sptlco/design` (npm) | Design system and component library               |
+| Package             | Description                                       |
+| ------------------- | ------------------------------------------------- |
+| `Spatial` (NuGet)   | Core library — ECS, compute, networking, identity |
+| `@/client` (npm)    | API client for the web and mobile interfaces      |
+| `@/client` (npm)    | Shared data types and schemas                     |
+| `@/interface` (npm) | Design system and component library               |
 
 ## References
 

@@ -19,8 +19,8 @@ permissions:
   packages: write
 
 jobs:
-  core:
-    name: Spatial
+  publish:
+    name: Publish
     runs-on: ubuntu-latest
     if: startsWith(github.ref_name, 'spatial-cloud')
     steps:
@@ -33,10 +33,10 @@ jobs:
           dotnet-version: "10.x"
 
       - name: Restore
-        run: dotnet restore cloud/Core/Spatial.csproj
+        run: dotnet restore packages/cloud/Core/Spatial.csproj
 
       - name: Package
-        run: dotnet pack cloud/Core/Spatial.csproj -c Release -o ./nupkg
+        run: dotnet pack packages/cloud/Core/Spatial.csproj -c Release -o ./nupkg
 
       - name: Publish
         run: |
@@ -44,87 +44,3 @@ jobs:
             --source "https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json" \
             --api-key ${{ secrets.GITHUB_TOKEN }} \
             --skip-duplicate
-
-  client:
-    name: "@sptlco/client"
-    runs-on: ubuntu-latest
-    if: startsWith(github.ref_name, 'spatial-interface-client')
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: "22.x"
-          registry-url: "https://npm.pkg.github.com/"
-
-      - name: Install dependencies
-        run: npm ci
-        working-directory: interface/client
-
-      - name: Build
-        run: npm run build --if-present
-        working-directory: interface/client
-
-      - name: Publish
-        run: npm publish
-        working-directory: interface/client
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-  data:
-    name: "@sptlco/data"
-    runs-on: ubuntu-latest
-    if: startsWith(github.ref_name, 'spatial-interface-data')
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: "22.x"
-          registry-url: "https://npm.pkg.github.com/"
-
-      - name: Install dependencies
-        run: npm ci
-        working-directory: interface/data
-
-      - name: Build
-        run: npm run build --if-present
-        working-directory: interface/data
-
-      - name: Publish
-        run: npm publish
-        working-directory: interface/data
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-  design:
-    name: "@sptlco/design"
-    runs-on: ubuntu-latest
-    if: startsWith(github.ref_name, 'spatial-interface-design')
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: "22.x"
-          registry-url: "https://npm.pkg.github.com/"
-
-      - name: Install dependencies
-        run: npm ci
-        working-directory: interface/design
-
-      - name: Build
-        run: npm run build --if-present
-        working-directory: interface/design
-
-      - name: Publish
-        run: npm publish
-        working-directory: interface/design
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

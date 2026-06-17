@@ -27,6 +27,7 @@
 .vscode
 .wine
 .wget-hsts
+apps
 
 /Desktop/
 /Documents/

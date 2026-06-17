@@ -49,6 +49,8 @@ jobs:
           script: |
             set -e
 
+            cd src
+
             git pull
 
             docker compose -p spatial pull

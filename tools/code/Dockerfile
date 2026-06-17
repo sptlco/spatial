@@ -12,8 +12,6 @@ RUN wget https://packages.microsoft.com/config/debian/13/packages-microsoft-prod
 	apt-get update && \
 	apt-get install -y dotnet-sdk-10.0
 
-RUN npm install -g @anthropic-ai/claude-code
-
 USER coder
 
 WORKDIR /home/coder/project

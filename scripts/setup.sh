@@ -135,7 +135,7 @@ dev_mode() {
 
   trap cleanup SIGINT SIGTERM
 
-  (cd "\$PROJECT_ROOT/cloud/Server" && ASPNETCORE_ENVIRONMENT=Development dotnet watch) &
+  (cd "\$PROJECT_ROOT/packages/cloud/Server" && ASPNETCORE_ENVIRONMENT=Development dotnet watch) &
   PID=\$!
 
   success "Development server running..."

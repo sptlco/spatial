@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.46.3](https://github.com/sptlco/spatial/compare/1.46.2...1.46.3) (2026-06-17)
+
+
+### Bug Fixes
+
+* Updated root title ([c6cfc5c](https://github.com/sptlco/spatial/commit/c6cfc5c528d79f1a801c32cea125fc64329d250b))
+
 ## [1.46.2](https://github.com/sptlco/spatial/compare/1.46.1...1.46.2) (2026-06-17)
 
 

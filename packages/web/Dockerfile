@@ -4,8 +4,8 @@ WORKDIR /app
 
 COPY . .
 
-RUN npm install --workspace=web
-RUN npm run build:web
+RUN npm install
+RUN npm run build
 
 WORKDIR /app/web
 

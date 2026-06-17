@@ -3,13 +3,10 @@ name: Publish
 on:
   push:
     tags:
-      - "spatial-cloud*"
-      - "spatial-interface-data*"
-      - "spatial-interface-design*"
-      - "spatial-interface-client*"
+      - "*"
 
 concurrency:
-  group: ${{ github.job }}-${{ github.ref }}
+  group: publish
   cancel-in-progress: false
 
 permissions:
@@ -22,7 +19,6 @@ jobs:
   publish:
     name: Publish
     runs-on: ubuntu-latest
-    if: startsWith(github.ref_name, 'spatial-cloud')
     steps:
       - name: Checkout
         uses: actions/checkout@v6

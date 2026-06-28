@@ -1,0 +1,27 @@
+/* Copyright © Spatial Corporation. All rights reserved. */
+
+@layer components {
+  .material-symbols-rounded {
+    font-family: "Material Symbols Rounded Variable";
+    font-style: normal;
+    display: inline-block;
+    line-height: 1;
+    text-transform: none;
+    letter-spacing: normal;
+    word-wrap: normal;
+    white-space: nowrap;
+    direction: ltr;
+  }
+
+  .material-symbols-sharp {
+    font-family: "Material Symbols Sharp Variable";
+    font-style: normal;
+    display: inline-block;
+    line-height: 1;
+    text-transform: none;
+    letter-spacing: normal;
+    word-wrap: normal;
+    white-space: nowrap;
+    direction: ltr;
+  }
+}

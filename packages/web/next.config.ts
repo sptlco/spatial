@@ -9,7 +9,7 @@ const withMDX = createMDX({});
 
 const nextConfig: NextConfig = {
   reactCompiler: true,
-  allowedDevOrigins: ["s1.sptlco.com"],
+  allowedDevOrigins: ["dev.sptlco.com"],
   pageExtensions: ["js", "jsx", "md", "mdx", "ts", "tsx"],
   devIndicators: false,
   experimental: {

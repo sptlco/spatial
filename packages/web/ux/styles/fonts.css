@@ -1,0 +1,21 @@
+/* Copyright © Spatial Corporation. All rights reserved. */
+
+@import "@fontsource-variable/manrope";
+@import "@fontsource-variable/material-symbols-rounded/fill.css";
+@import "@fontsource-variable/material-symbols-sharp/fill.css";
+
+@font-face {
+  font-family: "Material Symbols Rounded Variable";
+  font-style: normal;
+  font-display: block;
+  font-weight: 100 700;
+  src: url(@fontsource-variable/material-symbols-rounded/files/material-symbols-rounded-latin-fill-normal.woff2) format("woff2-variations");
+}
+
+@font-face {
+  font-family: "Material Symbols Sharp Variable";
+  font-style: normal;
+  font-display: block;
+  font-weight: 100 700;
+  src: url(@fontsource-variable/material-symbols-sharp/files/material-symbols-sharp-latin-fill-normal.woff2) format("woff2-variations");
+}

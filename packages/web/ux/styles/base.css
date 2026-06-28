@@ -1,0 +1,13 @@
+/* Copyright © Spatial Corporation. All rights reserved. */
+
+@layer base {
+  * {
+    outline: none;
+    box-shadow: none;
+  }
+
+  body {
+    overscroll-behavior: none;
+    touch-action: pan-y;
+  }
+}

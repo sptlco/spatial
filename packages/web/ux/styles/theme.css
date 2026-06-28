@@ -1,0 +1,23 @@
+/* Copyright © Spatial Corporation. All rights reserved. */
+
+@import "tw-animate-css";
+
+:root {
+  --foreground: var(--color-black);
+  --background: var(--color-white);
+}
+
+.dark {
+  --foreground: var(--color-white);
+  --background: var(--color-black);
+}
+
+@theme inline {
+  --color-*: initial;
+
+  --color-black: #0a0a0a;
+  --color-white: #ffffff;
+
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+}

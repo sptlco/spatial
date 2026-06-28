@@ -1,10 +1,12 @@
 // Copyright © Spatial Corporation. All rights reserved.
 
-import { SESSION_COOKIE_NAME } from "@/client";
-import { routing } from "./locales/routing";
 import { jwtVerify } from "jose";
 import createMiddleware from "next-intl/middleware";
 import { NextRequest, NextResponse } from "next/server";
+
+import { SESSION_COOKIE_NAME } from "@client";
+
+import { routing } from "./locales/routing";
 
 const intl = createMiddleware(routing);
 

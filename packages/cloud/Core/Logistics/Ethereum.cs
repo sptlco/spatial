@@ -27,10 +27,15 @@ public class Ethereum
     private readonly Account _account;
     private readonly Web3 _web3;
 
-    private Ethereum()
+    /// <summary>
+    /// Create a new <see cref="Ethereum"/> client.
+    /// </summary>
+    /// <param name="key">The wallet's private key.</param>
+    /// <param name="url">An RPC URL.</param>
+    public Ethereum(string key, string url)
     {
-        _account = new Account(Configuration.Current.Ethereum.Key);
-        _web3 = new Web3(_account, Configuration.Current.Ethereum.Endpoint);
+        _account = new Account(key);
+        _web3 = new Web3(_account, url);
     }
 
     /// <summary>
@@ -49,7 +54,7 @@ public class Ethereum
     /// <returns>An <see cref="Ethereum"/> client.</returns>
     public static Ethereum CreateClient()
     {
-        return new Ethereum();
+        return new Ethereum(Application.Current.Configuration.Ethereum.Key, Application.Current.Configuration.Ethereum.Endpoint);
     }
 
     /// <summary>

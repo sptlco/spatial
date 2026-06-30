@@ -1,6 +1,6 @@
 // Copyright © Spatial Corporation. All rights reserved.
 
-namespace Spatial.Logistics;
+namespace Spatial.Logistics.Configuration;
 
 /// <summary>
 /// Configurable options for <see cref="Stripe"/>.

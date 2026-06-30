@@ -16,9 +16,10 @@ public class Cache
     /// <summary>
     /// Create a new <see cref="Cache"/>.
     /// </summary>
-    public Cache()
+    /// <param name="configuration">The string configuration to use for the <see cref="Cache"/>.</param>
+    public Cache(string configuration)
     {
-        _cache = ConnectionMultiplexer.Connect(Configuration.Current.Cache.Url);
+        _cache = ConnectionMultiplexer.Connect(configuration);
     }
 
     /// <summary>
@@ -27,18 +28,20 @@ public class Cache
     /// <typeparam name="T">The object's <see cref="Type"/>.</typeparam>
     /// <param name="group">The object's logical grouping.</param>
     /// <param name="key">The object's key in the <see cref="Cache"/>.</param>
+    /// <param name="db">A database inside Redis.</param>
     /// <returns>An <see cref="object"/> of type <typeparamref name="T"/>.</returns>
-    public T Get<T>(string group, string key) => Get<T>(CreateKey(group, key));
+    public T Get<T>(string group, string key, int db = -1) => Get<T>(CreateKey(group, key), db);
 
     /// <summary>
     /// Get an <see cref="object"/> of type <typeparamref name="T"/> from the <see cref="Cache"/>.
     /// </summary>
     /// <typeparam name="T">The object's <see cref="Type"/>.</typeparam>
     /// <param name="key">The object's key in the <see cref="Cache"/>.</param>
+    /// <param name="db">A database inside Redis.</param>
     /// <returns>An <see cref="object"/> of type <typeparamref name="T"/>.</returns>
-    public T Get<T>(string key)
+    public T Get<T>(string key, int db = -1)
     {
-        return JsonSerializer.Deserialize<T>((string) GetValue(key)!)!;
+        return JsonSerializer.Deserialize<T>((string) GetValue(key, db)!)!;
     }
 
     /// <summary>
@@ -48,8 +51,9 @@ public class Cache
     /// <param name="group">The value's logical group.</param>
     /// <param name="key">The value's key.</param>
     /// <param name="value">The value.</param>
+    /// <param name="db">A database inside Redis.</param>
     /// <returns>Whether or not the value was fetched.</returns>
-    public bool TryGet<T>(string group, string key, [MaybeNullWhen(false)] out T? value) => TryGet(CreateKey(group, key), out value);
+    public bool TryGet<T>(string group, string key, [MaybeNullWhen(false)] out T? value, int db = -1) => TryGet(CreateKey(group, key), out value, db);
 
     /// <summary>
     /// Attempt to get a value from the <see cref="Cache"/>.
@@ -57,12 +61,13 @@ public class Cache
     /// <typeparam name="T">The <see cref="Type"/> of value to get.</typeparam>
     /// <param name="key">The value's key.</param>
     /// <param name="value">The value.</param>
+    /// <param name="db">A database inside Redis.</param>
     /// <returns>Whether or not the value was fetched.</returns>
-    public bool TryGet<T>(string key, [MaybeNullWhen(false)] out T value)
+    public bool TryGet<T>(string key, [MaybeNullWhen(false)] out T value, int db = -1)
     {
         value = default;
 
-        var json = GetValue(key);
+        var json = GetValue(key, db);
 
         if (!json.HasValue)
         {
@@ -82,8 +87,9 @@ public class Cache
     /// <param name="key">The object's unique key.</param>
     /// <param name="value">The object's value.</param>
     /// <param name="ttl">The object's time-to-live, after which its data is invalidated.</param>
+    /// <param name="db"></param>
     /// <returns>The <see cref="object"/> added to the <see cref="Cache"/>.</returns>
-    public T Set<T>(string group, string key, T value, Time? ttl = null) => Set(CreateKey(group, key), value, ttl);
+    public T Set<T>(string group, string key, T value, Time? ttl = null, int db = -1) => Set(CreateKey(group, key), value, ttl, db);
 
     /// <summary>
     /// Set a <paramref name="key"/> in the <see cref="Cache"/> to a specified <paramref name="value"/>.
@@ -92,10 +98,11 @@ public class Cache
     /// <param name="key">The object's unique key.</param>
     /// <param name="value">The object's value.</param>
     /// <param name="ttl">The object's time-to-live, after which its data is invalidated.</param>
+    /// <param name="db">A database inside Redis.</param>
     /// <returns>The <see cref="object"/> added to the <see cref="Cache"/>.</returns>
-    public T Set<T>(string key, T value, Time? ttl = null)
+    public T Set<T>(string key, T value, Time? ttl = null, int db = -1)
     {
-        GetDatabase().StringSet(key, JsonSerializer.Serialize(value), ttl?.AsTimeSpan());
+        _cache.GetDatabase(db).StringSet(key, JsonSerializer.Serialize(value), ttl?.AsTimeSpan());
 
         return value;
     }
@@ -109,8 +116,9 @@ public class Cache
     /// <param name="key">The object's key in the <see cref="Cache"/>.</param>
     /// <param name="factory">A factory method for creating the object's value.</param>
     /// <param name="ttl">The object's time-to-live, after which its data is invalidated.</param>
+    /// <param name="db">A database inside Redis.</param>
     /// <returns>An <see cref="object"/> of type <typeparamref name="T"/>.</returns>
-    public T GetOrSet<T>(string group, string key, Func<string, T> factory, Time? ttl = null) => GetOrSet(CreateKey(group, key), factory, ttl);
+    public T GetOrSet<T>(string group, string key, Func<string, T> factory, Time? ttl = null, int db = -1) => GetOrSet(CreateKey(group, key), factory, ttl, db);
 
     /// <summary>
     /// Get an <see cref="object"/> of type <typeparamref name="T"/> from the <see cref="Cache"/>, or set it 
@@ -120,15 +128,11 @@ public class Cache
     /// <param name="key">The object's key in the <see cref="Cache"/>.</param>
     /// <param name="factory">A factory method for creating the object's value.</param>
     /// <param name="ttl">The object's time-to-live, after which its data is invalidated.</param>
+    /// <param name="db">A database inside Redis.</param>
     /// <returns>An <see cref="object"/> of type <typeparamref name="T"/>.</returns>
-    public T GetOrSet<T>(string key, Func<string, T> factory, Time? ttl = null)
+    public T GetOrSet<T>(string key, Func<string, T> factory, Time? ttl = null, int db = -1)
     {
-        return TryGet<T>(key, out var value) ? value : Set(key, factory(key), ttl);
-    }
-
-    private IDatabase GetDatabase()
-    {
-        return _cache.GetDatabase(Configuration.Current.Cache.Database);
+        return TryGet<T>(key, out var value) ? value : Set(key, factory(key), ttl, db);
     }
 
     private string CreateKey(string group, string key)
@@ -136,8 +140,8 @@ public class Cache
         return string.Join(".", group, key);
     }
 
-    private RedisValue GetValue(string key)
+    private RedisValue GetValue(string key, int db = -1)
     {
-        return GetDatabase().StringGet(key);
+        return _cache.GetDatabase(db).StringGet(key);
     }
 }

@@ -26,7 +26,7 @@ public class ConcurrentHashSet<T> : IEnumerable<T> where T : notnull
     /// <param name="collection">A collection of items.</param>
     public ConcurrentHashSet(IEnumerable<T> collection)
     {
-        _values = new ConcurrentDictionary<T, byte>(collection.Select(t => new KeyValuePair<T, byte>(t, 0)));
+        _values = new ConcurrentDictionary<T, byte>(collection.Select(t => new KeyValuePair<T, byte>(t, 0)).Distinct());
     }
 
     /// <summary>

@@ -1,5 +1,7 @@
 // Copyright © Spatial Corporation. All rights reserved.
 
+using Spatial.Cloud.Services;
+
 namespace Spatial.Cloud;
 
 /// <summary>
@@ -8,7 +10,7 @@ namespace Spatial.Cloud;
 public class ServerConfiguration : Configuration
 {
     /// <summary>
-    /// Get the current <see cref="ServerConfiguration"/>.
+    /// Configurable options for the <see cref="Services.Allocator"/>.
     /// </summary>
-    public new static ServerConfiguration Current => Server.Current.Configuration;
+    public AllocatorConfiguration Allocator { get; set; } = new AllocatorConfiguration();
 }

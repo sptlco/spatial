@@ -1,6 +1,7 @@
 // Copyright © Spatial Corporation. All rights reserved.
 
 using Microsoft.Extensions.Options;
+using Spatial.Cloud.Services;
 
 namespace Spatial.Cloud;
 
@@ -25,6 +26,13 @@ public class Server : Application
     /// <param name="builder">The <see cref="IHostApplicationBuilder"/> to configure.</param>
     public override void ConfigureBuilder(IHostApplicationBuilder builder)
     {
+        var configuration = builder.Configuration.Get<ServerConfiguration>();
+
         AddOptions<ServerConfiguration>(builder);
+
+        if (configuration?.Allocator is { Enabled: true })
+        {
+            builder.Services.AddHostedService<Allocator>();
+        }
     }
 }

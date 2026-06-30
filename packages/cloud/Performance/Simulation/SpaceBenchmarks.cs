@@ -36,13 +36,13 @@ public class SpaceBenchmarks
     /// Set up the benchmark.
     /// </summary>
     [GlobalSetup]
-    public void Setup() => (_computer = new()).Run();
+    public void Setup() => _computer = new Computer();
 
     /// <summary>
     /// Clean up after all benchmarks.
     /// </summary>
     [GlobalCleanup]
-    public void CleanupAll() => _computer.Shutdown();
+    public void CleanupAll() => _computer.Dispose();
 
     /// <summary>
     /// Set up <see cref="Create"/>.

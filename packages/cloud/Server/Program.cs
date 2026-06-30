@@ -3,4 +3,4 @@
 using Spatial;
 using Spatial.Cloud;
 
-await Application.Run<Server>();
+await Application.RunAsync<Server>();

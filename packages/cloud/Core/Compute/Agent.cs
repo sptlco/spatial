@@ -63,7 +63,12 @@ internal class Agent : IDisposable
     {
         _cts.Cancel();
         _signal.Set();
-        _thread.Join();
+
+        if (_thread.ThreadState == ThreadState.Running)
+        {
+            _thread.Join();
+        }
+
         _cts.Dispose();
         _queue.Clear();
         _signal.Dispose();
@@ -104,7 +109,14 @@ internal class Agent : IDisposable
                 break;
             }
 
-            _signal.Reset();
+            try
+            {
+                _signal.Reset();
+            }
+            catch (ObjectDisposedException)
+            {
+                break;
+            }
 
             next:;
         }

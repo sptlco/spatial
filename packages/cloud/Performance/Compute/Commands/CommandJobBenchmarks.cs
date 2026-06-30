@@ -22,7 +22,7 @@ public class CommandJobBenchmarks
     [GlobalSetup]
     public void Setup()
     {
-        (_computer = new()).Run();
+        _computer = new Computer();
     }
 
     /// <summary>
@@ -31,7 +31,7 @@ public class CommandJobBenchmarks
     [GlobalCleanup]
     public void Cleanup()
     {
-        _computer.Shutdown();
+        _computer.Dispose();
     }
 
     /// <summary>

@@ -15,6 +15,6 @@ public class Stripe
     /// <returns></returns>
     public static V1Services CreateClient()
     {
-        return new StripeClient(Configuration.Current.Stripe.Key).V1;
+        return new StripeClient(Application.Current.Configuration.Stripe.Key).V1;
     }
 }

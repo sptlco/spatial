@@ -37,7 +37,7 @@ public class ParallelFor2DJobBenchmarks
         _bt = Transpose(_b, MatrixSize);
         _c  = CreateZeroMatrix(MatrixSize);
 
-        (_computer = new()).Run();
+        _computer = new Computer();
     }
 
     /// <summary>
@@ -46,7 +46,7 @@ public class ParallelFor2DJobBenchmarks
     [GlobalCleanup]
     public void Cleanup()
     {
-        _computer.Shutdown();
+        _computer.Dispose();
     }
 
     /// <summary>

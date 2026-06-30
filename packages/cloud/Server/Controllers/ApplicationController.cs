@@ -15,7 +15,7 @@ public class ApplicationController : Controller
     [Path("name")]
     public Task<string> GetNameAsync()
     {
-        return Task.FromResult(Server.Current.Name);
+        return Task.FromResult(Server.Current.Configuration.Name);
     }
 
     /// <summary>
@@ -25,6 +25,6 @@ public class ApplicationController : Controller
     [Path("version")]
     public Task<string> GetVersionAsync()
     {
-        return Task.FromResult(Server.Current.Version);
+        return Task.FromResult(Server.Current.Configuration.Version);
     }
 }

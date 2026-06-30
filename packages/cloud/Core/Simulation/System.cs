@@ -1,8 +1,6 @@
 // Copyright © Spatial Corporation. All rights reserved.
 
-using Spatial.Simulation;
-
-namespace Spatial;
+namespace Spatial.Simulation;
 
 /// <summary>
 /// An object that runs routine code.

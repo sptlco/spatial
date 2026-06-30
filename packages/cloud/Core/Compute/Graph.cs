@@ -107,6 +107,7 @@ public class Graph : IDisposable
     public void Dispose()
     {
         Handle = null!;
+
         Jobs.Clear();
         Dependencies.Clear();
         Dependants.Clear();

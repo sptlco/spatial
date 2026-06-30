@@ -42,8 +42,7 @@ public class KernelJobBenchmarks
         _b = CreateRandomMatrix(MatrixSize);
         _c = new float[MatrixSize, MatrixSize];
 
-        (_computer = new()).Run();
-
+        _computer = new Computer();
         _accelerator = Job.Accelerator();
 
         var m  = _a.GetLength(0);
@@ -68,7 +67,7 @@ public class KernelJobBenchmarks
         _kb.Dispose();
         _kc.Dispose();
         _accelerator.Dispose();
-        _computer.Shutdown();
+        _computer.Dispose();
     }
 
     /// <summary>

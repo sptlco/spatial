@@ -7,7 +7,7 @@ namespace Spatial;
 /// <summary>
 /// A contiguous block of unmanaged memory.
 /// </summary>
-public unsafe class Managed : Managed<byte>
+public class Managed : Managed<byte>
 {
 }
 

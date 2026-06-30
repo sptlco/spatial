@@ -189,7 +189,7 @@ public abstract partial class Job : IDisposable
     /// <returns>A <see cref="Handle"/>.</returns>
     public static Handle Schedule(CommandJob job)
     {
-        return Computer.Current.Dispatch(new Graph().Add(job));
+        return Application.Current.Computer.Dispatch(new Graph().Add(job));
     }
 
     /// <summary>

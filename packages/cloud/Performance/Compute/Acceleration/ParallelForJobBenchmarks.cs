@@ -28,7 +28,7 @@ public class ParallelForJobBenchmarks
     public void Setup()
     {
         _data = new int[Iterations];
-        (_computer = new()).Run();
+        _computer = new Computer();
     }
 
     /// <summary>
@@ -37,7 +37,7 @@ public class ParallelForJobBenchmarks
     [GlobalCleanup]
     public void Cleanup()
     {
-        _computer.Shutdown();
+        _computer.Dispose();
     }
 
     /// <summary>

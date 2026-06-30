@@ -17,7 +17,7 @@ public class Ticker
     /// </summary>
     /// <param name="function">A function to perform each tick.</param>
     /// <param name="cancellationToken">An optional <see cref="CancellationToken"/>.</param>
-    public static void Run(
+    public void Run(
         Action<Time> function,
         CancellationToken cancellationToken = default)
     {
@@ -42,7 +42,7 @@ public class Ticker
     /// <param name="function">A function to perform each tick.</param>
     /// <param name="delta">The rate at which to perform <paramref name="function"/>.</param>
     /// <param name="cancellationToken">An optional <see cref="CancellationToken"/>.</param>
-    public static void Run(
+    public void Run(
         Action<Time> function, 
         Time delta, 
         CancellationToken cancellationToken = default)

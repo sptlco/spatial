@@ -1,13 +1,13 @@
 // Copyright © Spatial Corporation. All rights reserved.
 
-using Microsoft.Extensions.Hosting;
 using Nethereum.JsonRpc.Client;
 using Nethereum.Web3;
+using Spatial.Logistics;
 using Spatial.Logistics.Helpers;
 using Spatial.Persistence;
 using System.Numerics;
 
-namespace Spatial.Logistics;
+namespace Spatial.Cloud.Services;
 
 /// <summary>
 /// An Ethereum stable coin allocator.
@@ -47,8 +47,8 @@ public class Allocator : BackgroundService
     public Allocator()
     {
         _ethereum = Ethereum.CreateClient();
-        _cache = new Cache();
-        _config = Configuration.Current.Ethereum.Allocator;
+        _cache = new Cache(Application.Current.Configuration.Cache.Url);
+        _config = Server.Current.Configuration.Allocator;
     }
 
     /// <summary>

@@ -23,7 +23,6 @@ using Spatial.Compute;
 using Spatial.Extensions;
 using Spatial.Identity;
 using Spatial.Identity.Authorization;
-using Spatial.Logistics;
 using Spatial.Networking;
 using Spatial.Persistence;
 using Spatial.Simulation;
@@ -45,15 +44,16 @@ public class Application
     private static Application _instance;
 
     private readonly CancellationTokenSource _shutdown;
-    private readonly Space _space;
     private readonly WebApplication _wapp;
     private Time _time;
     private double _ticks;
     private double? _budget;
     private (string Name, double Elapsed)[] _timings;
 
+    private readonly Ticker _ticker;
     private readonly Computer _computer;
     private readonly Network _network;
+    private readonly Space _space;
 
     /// <summary>
     /// Create a new <see cref="Application"/>.
@@ -64,8 +64,9 @@ public class Application
         _shutdown = new();
         _space = Space.Empty();
         _wapp = CreateWebApplication();
+        _ticker = new Ticker();
         _computer = new Computer();
-        _network = new Network(_wapp.Services);
+        _network = new Network();
         _ticks = (_time = Time.Now).Ticks;
         _timings = [];
 
@@ -78,29 +79,14 @@ public class Application
     public static Application Current => _instance;
 
     /// <summary>
-    /// The application's <see cref="Spatial.Configuration"/>.
-    /// </summary>
-    public Configuration Configuration => _wapp.Services.GetRequiredService<Configuration>();
-
-    /// <summary>
     /// The application's registered services.
     /// </summary>
     public IServiceProvider Services => _wapp.Services;
 
     /// <summary>
-    /// The name of the <see cref="Application"/>.
+    /// The application's <see cref="Spatial.Configuration"/>.
     /// </summary>
-    public string Name => Configuration.Name;
-
-    /// <summary>
-    /// The application's version.
-    /// </summary>
-    public string Version => Configuration.Version;
-
-    /// <summary>
-    /// The application's <see cref="Simulation.Space"/>.
-    /// </summary>
-    public Space Space => _space;
+    public Configuration Configuration => Services.GetRequiredService<Configuration>();
 
     /// <summary>
     /// The application's <see cref="Compute.Computer"/>.
@@ -113,6 +99,11 @@ public class Application
     public Network Network => _network;
 
     /// <summary>
+    /// The application's <see cref="Simulation.Space"/>.
+    /// </summary>
+    public Space Space => _space;
+
+    /// <summary>
     /// The application's local time.
     /// </summary>
     public Time Time => _time;
@@ -123,16 +114,11 @@ public class Application
     public double Ticks => _ticks;
 
     /// <summary>
-    /// The application's shutdown token.
-    /// </summary>
-    public CancellationToken ShutdownToken => _shutdown.Token;
-
-    /// <summary>
     /// Run an <see cref="Application"/>.
     /// </summary>
     /// <typeparam name="T">The type of <see cref="Application"/> to run.</typeparam>
     /// <param name="cancellationToken">An optional <see cref="CancellationToken"/>.</param>
-    public static async Task Run<T>(CancellationToken cancellationToken = default) where T : Application, new()
+    public static async Task RunAsync<T>(CancellationToken cancellationToken = default) where T : Application, new()
     {
         try
         {
@@ -143,44 +129,43 @@ public class Application
             {
                 INFO("Time: {Time} ms.", Time.Now.Milliseconds);
                 INFO("Environment: {Environment}.", application._wapp.Environment.EnvironmentName);
-                INFO("Starting {Application} {Version}.", application.Name, application.Version);
-
-                application._computer.Run();
+                INFO("Starting {Application} {Version}.", application.Configuration.Name, application.Configuration.Version);
 
                 application.Start();
                 application._wapp.Start();
-
                 application.Listen();
 
-                var token_base = cancellationToken.CanBeCanceled ? cancellationToken : CreateCancellationToken();
-                using var linked = CancellationTokenSource.CreateLinkedTokenSource(token_base, application._shutdown.Token);
-                var token = linked.Token;
+                using var source = CancellationTokenSource.CreateLinkedTokenSource(
+                    token1: cancellationToken.CanBeCanceled ? cancellationToken : CreateCancellationToken(), 
+                    token2: application._shutdown.Token);
+
+                var token = source.Token;
 
                 if (application.Configuration.TickRate > 0)
                 {
                     INFO("Application running at {TickRate} tps.", application.Configuration.TickRate);
 
-                    var budget = 1000.0D / application.Configuration.TickRate;
-
-                    application._budget = budget;
-
-                    Ticker.Run(application.TryTick, budget, token);
+                    application._ticker.Run(
+                        function: application.TryTick, 
+                        delta: (double) (application._budget = 1000.0D / application.Configuration.TickRate), 
+                        cancellationToken: token);
                 }
                 else
                 {
                     INFO("Application running as fast as possible.");
 
-                    Ticker.Run(application.TryTick, token);
+                    application._ticker.Run(application.TryTick, token);
                 }
 
                 INFO("Shutting down the application.");
 
                 application._shutdown.Cancel();
-                application.Shutdown();
                 await application._wapp.StopAsync(token);
+                application.Shutdown();
+
+                application._computer.Dispose();
+                application._network.Dispose();
                 application._space.Dispose();
-                application._computer.Shutdown();
-                application._network.Close();
 
                 INFO("Application shut down.");
             }
@@ -198,28 +183,6 @@ public class Application
         {
             Console.WriteLine($"Failed to run the application.\n{exception}");
         }
-    }
-
-    /// <summary>
-    /// Connect to an <see cref="Application"/> via STCP.
-    /// </summary>
-    /// <param name="endpoint">The application's endpoint.</param>
-    public static Client Connect(string endpoint) => Connect(IPEndPoint.Parse(endpoint));
-
-    /// <summary>
-    /// Connect to an <see cref="Application"/> via STCP.
-    /// </summary>
-    /// <param name="port">The application's port.</param>
-    public static Client Connect(int port) => Connect(new IPEndPoint(IPAddress.Loopback, port));
-
-    /// <summary>
-    /// Connect to an <see cref="Application"/> via STCP.
-    /// </summary>
-    /// <param name="endpoint">The application's endpoint.</param>
-    /// <returns>A <see cref="Client"/> connected to the <see cref="Application"/>.</returns>
-    public static Client Connect(IPEndPoint endpoint)
-    {
-        return new Client().Connect(endpoint);
     }
 
     /// <summary>
@@ -271,7 +234,7 @@ public class Application
             .SelectMany(asm => asm.GetTypes())
             .Where(type => type.GetCustomAttribute<RunAttribute>() is not null)
             .OrderBy(type => type.GetCustomAttribute<RunAttribute>()!.Layer)
-            .ForEach(Use);
+            .ForEach(system => _space.Use(_ => (Simulation.System) ActivatorUtilities.CreateInstance(_wapp.Services, system)));
 
         _space.Initialize();
         _timings = new (string, double)[_space.Systems.Count];
@@ -279,7 +242,7 @@ public class Application
 
     private void Listen()
     {
-        foreach (var endpoint in Regex.Replace(Configuration.Endpoints, @"\s+", "").Split(","))
+        foreach (var endpoint in ParseEndpoints(Configuration))
         {
             var uri = new Uri(endpoint
                 .Replace("*", IPAddress.Any.ToString())
@@ -314,7 +277,7 @@ public class Application
             .BuildServiceProvider()
             .GetRequiredService<IOptionsMonitor<Configuration>>().CurrentValue;
         
-        var logger = new LoggerConfiguration()
+        var telemetry = new LoggerConfiguration()
             .Enrich.FromLogContext()
             .MinimumLevel.Override("Microsoft", LogEventLevel.Fatal)
             .WriteTo.Console()
@@ -325,21 +288,21 @@ public class Application
 
         try
         {
-            logger.WriteTo.MongoDBCapped(configuration.Database.ConnectionString, collectionName: Constants.LogCollectionName);
+            telemetry.WriteTo.MongoDBCapped(configuration.Database.ConnectionString, collectionName: Constants.LogCollectionName);
         }
         catch (OptionsValidationException) { }
 
 #if DEBUG
-        logger.MinimumLevel.Is(LogEventLevel.Debug);
+        telemetry.MinimumLevel.Is(LogEventLevel.Debug);
 #endif
 
-        Log.Logger = logger.CreateLogger();
+        Log.Logger = telemetry.CreateLogger();
 
-        BsonSerializer.RegisterSerializer(typeof(decimal), new DecimalSerializer(BsonType.Decimal128));
+        BsonSerializer.TryRegisterSerializer(new DecimalSerializer(BsonType.Decimal128));
 
         builder.WebHost.ConfigureKestrel(options => {
 
-            foreach (var endpoint in Regex.Replace(configuration.Endpoints, @"\s+", "").Split(","))
+            foreach (var endpoint in ParseEndpoints(configuration))
             {
                 var uri = new Uri(endpoint
                     .Replace("*", IPAddress.Any.ToString())
@@ -386,8 +349,7 @@ public class Application
         });
 
         builder.Services
-            .AddAuthentication(options => 
-            {
+            .AddAuthentication(options => {
                 options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
                 options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
                 options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -442,11 +404,6 @@ public class Application
 
         builder.Services.AddSingleton<IAuthorizationHandler, PermissionHandler>();
 
-        if (configuration.Ethereum.Allocator.Enabled)
-        {
-            builder.Services.AddHostedService<Allocator>();
-        }
-
         var application = builder.Build();
 
         application
@@ -458,7 +415,6 @@ public class Application
             .UsePathBase(configuration.BasePath)
             .UseExceptionHandler()
             .UseStatusCodePages(ReportStatusCode)
-            .UseHttpsRedirection()
             .UseFileServer(new FileServerOptions {
                 FileProvider = new PhysicalFileProvider(path),
                 RequestPath = PathString.Empty,
@@ -469,6 +425,11 @@ public class Application
             .UseMiddleware<Enricher>()
             .UseAuthorization()
             .UseHsts();
+
+        if (ParseEndpoints(configuration).Any(e => e.StartsWith("https://", StringComparison.OrdinalIgnoreCase)))
+        {
+            application.UseHttpsRedirection();
+        }
 
         ConfigureApplication(application);
 
@@ -485,11 +446,6 @@ public class Application
         });
 
         return application;
-    }
-
-    private void Use(Type system)
-    {
-        _space.Use(_ => (System) ActivatorUtilities.CreateInstance(_wapp.Services, system));
     }
 
     private static CancellationToken CreateCancellationToken()
@@ -535,24 +491,19 @@ public class Application
 
             if (_budget is double budget && elapsed > budget)
             {
-                const string reset = "\x1b[0m";
-                const string dim = "\x1b[2m";
-                const string yellow = "\x1b[33m";
-                const string cyan = "\x1b[36m";
-
                 var breakdown = new StringBuilder();
 
-                breakdown.AppendLine($"  - {cyan}Receive{reset} {receive.Elapsed:F2}ms");
-                breakdown.AppendLine($"  - {cyan}Update{reset} {update.Elapsed:F2}ms");
+                breakdown.AppendLine($"  - Receive ({receive.Elapsed:F2}ms)");
+                breakdown.AppendLine($"  - Update ({update.Elapsed:F2}ms)");
 
                 foreach (var (name, ms) in _timings)
                 {
-                    breakdown.AppendLine($"    - {dim}{name}{reset} {ms:F2}ms");
+                    breakdown.AppendLine($"    - {name} ({ms:F2}ms)");
                 }
 
-                breakdown.Append($"  - {cyan}Send{reset} {send.Elapsed:F2}ms");
+                breakdown.Append($"  - Send ({send.Elapsed:F2}ms)");
 
-                WARN($"{yellow}Tick exceeded {{Budget}}ms budget by {{Difference}}ms (took {{Elapsed}}ms){reset}\n{{Breakdown}}", budget, elapsed - budget, elapsed, breakdown.ToString());
+                WARN($"Tick exceeded {{Budget}}ms budget by {{Difference}}ms (took {{Elapsed}}ms)\n{{Breakdown}}", budget, elapsed - budget, elapsed, breakdown.ToString());
             }
 
             Tick(delta);
@@ -564,5 +515,10 @@ public class Application
 
         _time += delta;
         _ticks++;
+    }
+
+    private string[] ParseEndpoints(Configuration configuration)
+    {
+        return [.. Regex.Replace(configuration.Endpoints, @"\s+", "").Split(",").Where(e => !string.IsNullOrEmpty(e))];
     }
 }

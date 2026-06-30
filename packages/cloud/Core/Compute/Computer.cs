@@ -12,16 +12,13 @@ namespace Spatial.Compute;
 /// A low-level abstraction that provides access to the system's 
 /// central processing unit (CPU) and graphics processing unit (GPU).
 /// </summary>
-public class Computer
+public class Computer : IDisposable
 {
-    private static Computer _instance;
-
-    private Agent[] _agents;
-    private ConcurrentDictionary<string, Job> _jobs;
-    private ConcurrentDictionary<Job, StrongBox<int>> _dependencies;
+    private readonly Agent[] _agents;
+    private readonly ConcurrentDictionary<string, Job> _jobs;
+    private readonly ConcurrentDictionary<Job, StrongBox<int>> _dependencies;
     private readonly ConcurrentBag<BatchJob> _batch1DPool = [];
     private readonly ConcurrentBag<Batch2DJob> _batch2DPool = [];
-    private int _running;
     private uint _next;
 
     /// <summary>
@@ -29,34 +26,9 @@ public class Computer
     /// </summary>
     public Computer()
     {
-        _instance = this;
         _agents = new Agent[Environment.ProcessorCount];
         _jobs = [];
         _dependencies = [];
-    }
-
-    /// <summary>
-    /// The current <see cref="Computer"/>.
-    /// </summary>
-    public static Computer Current => _instance;
-
-    /// <summary>
-    /// The agents of the <see cref="Computer"/>.
-    /// </summary>
-    internal Agent[] Agents => _agents;
-
-    /// <summary>
-    /// Run the <see cref="Computer"/>.
-    /// </summary>
-    public void Run()
-    {
-        if (Interlocked.Exchange(ref _running, 1) != 0)
-        {
-            return;
-        }
-
-        _jobs.Clear();
-        _dependencies.Clear();
 
         for (var i = 0; i < _agents.Length; i++)
         {
@@ -70,29 +42,16 @@ public class Computer
     }
 
     /// <summary>
-    /// Shutdown the <see cref="Computer"/>.
+    /// The agents of the <see cref="Computer"/>.
     /// </summary>
-    public void Shutdown()
-    {
-        if (Interlocked.Exchange(ref _running, 0) != 1)
-        {
-            return;
-        }
-
-        for (var i = 0; i < _agents.Length; i++)
-        {
-            _agents[i].Dispose();
-        }
-
-        _agents = default!;
-    }
+    internal Agent[] Agents => _agents;
 
     /// <summary>
     /// Dispatch a <see cref="Graph"/> to the <see cref="Computer"/>.
     /// </summary>
     /// <param name="graph">A <see cref="Job"/> execution <see cref="Graph"/>.</param>
     /// <returns>A <see cref="Handle"/>.</returns>
-    internal Handle Dispatch(Graph graph)
+    public Handle Dispatch(Graph graph)
     {
         // First, topologically sort the graph using Khan's algorithm
         // under the hood, ensuring there are no circular dependencies.
@@ -149,6 +108,19 @@ public class Computer
             default:
                 FinalizeImpl(job);
                 break;
+        }
+    }
+
+    /// <summary>
+    /// Dispose of the <see cref="Computer"/>.
+    /// </summary>
+    public void Dispose()
+    {
+        GC.SuppressFinalize(this);
+
+        for (var i = 0; i < _agents.Length; i++)
+        {
+            _agents[i].Dispose();
         }
     }
 

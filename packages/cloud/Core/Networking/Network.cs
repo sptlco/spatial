@@ -16,11 +16,10 @@ namespace Spatial.Networking;
 /// <summary>
 /// A high-performance asynchronous private network.
 /// </summary>
-public partial class Network
+public partial class Network : IDisposable
 {
     private static Transformer _transformer = new NativeTransformer();
 
-    private readonly IServiceProvider _services;
     private readonly Dictionary<Type, Controller> _controllers;
     private readonly Dictionary<ushort, (Controller Controller, Delegate Command, Type Prototype)> _operations;
     private readonly List<Socket> _endpoints;
@@ -31,9 +30,8 @@ public partial class Network
     /// <summary>
     /// Create a new <see cref="Network"/>.
     /// </summary>
-    public Network(IServiceProvider services)
+    public Network()
     {
-        _services = services;
         _controllers = [];
         _operations = AppDomain.CurrentDomain
             .GetAssemblies()
@@ -96,22 +94,6 @@ public partial class Network
         BeginAccept(socket);
 
         _endpoints.Add(socket);
-    }
-
-    /// <summary>
-    /// Close the <see cref="Network"/>.
-    /// </summary>
-    public void Close()
-    {
-        foreach (var endpoint in _endpoints)
-        {
-            endpoint.Close();
-        }
-
-        _connections.Clear();
-        _events.Clear();
-        _updates.Clear();
-        _operations.Clear();
     }
 
     /// <summary>
@@ -199,6 +181,24 @@ public partial class Network
                 ArrayPool<byte>.Shared.Return(packet.Array!);
             }
         }
+    }
+
+    /// <summary>
+    /// Dispose of the <see cref="Network"/>.
+    /// </summary>
+    public void Dispose()
+    {
+        GC.SuppressFinalize(this);
+
+        foreach (var endpoint in _endpoints)
+        {
+            endpoint.Dispose();
+        }
+
+        _connections.Clear();
+        _events.Clear();
+        _updates.Clear();
+        _operations.Clear();
     }
 
     private void BeginAccept(Socket endpoint)
@@ -309,7 +309,7 @@ public partial class Network
     {
         if (!_controllers.TryGetValue(type, out var controller))
         {
-            controller = _controllers[type] = (Controller) ActivatorUtilities.CreateInstance(_services, type)!;
+            controller = _controllers[type] = (Controller) ActivatorUtilities.CreateInstance(Application.Current.Services, type)!;
         }
 
         return controller;

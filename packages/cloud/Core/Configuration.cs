@@ -2,11 +2,9 @@
 
 using Microsoft.Extensions.Options;
 using Spatial.Identity;
-using Spatial.Intelligence.ThirdParty;
-using Spatial.Logistics;
+using Spatial.Logistics.Configuration;
 using Spatial.Networking;
 using Spatial.Persistence;
-using System.ComponentModel.DataAnnotations;
 
 namespace Spatial;
 
@@ -16,20 +14,13 @@ namespace Spatial;
 public class Configuration
 {
     /// <summary>
-    /// Get the current <see cref="Configuration"/>.
-    /// </summary>
-    public static Configuration Current => Application.Current.Configuration;
-
-    /// <summary>
     /// The name of the <see cref="Application"/>.
     /// </summary>
-    [Required]
     public string Name { get; set; }
 
     /// <summary>
     /// The application's version.
     /// </summary>
-    [Required]
     public string Version { get; set; }
 
     /// <summary>
@@ -70,12 +61,6 @@ public class Configuration
     /// </summary>
     [ValidateObjectMembers]
     public EthereumConfiguration Ethereum { get; set; } = new EthereumConfiguration();
-
-    /// <summary>
-    /// Configurable options for OpenAI.
-    /// </summary>
-    [ValidateObjectMembers]
-    public OpenAIConfiguration OpenAI { get; set; } = new OpenAIConfiguration();
 
     /// <summary>
     /// Configurable options for SMTP.

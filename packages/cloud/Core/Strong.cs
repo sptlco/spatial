@@ -23,7 +23,7 @@ public static class Strong
     /// </summary>
     /// <param name="chance">The chance of the <see cref="bool"/> being true.</param>
     /// <returns>A <see cref="bool"/>.</returns>
-    public static bool Boolean(float chance)
+    public static bool Boolean(double chance)
     {
         return Float(100) < 100 * chance;
     }

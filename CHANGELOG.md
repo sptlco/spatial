@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.1.0](https://github.com/sptlco/spatial/compare/2.0.0...2.1.0) (2026-08-15)
+
+
+### Features
+
+* Contextual listeners ([79f6d81](https://github.com/sptlco/spatial/commit/79f6d81d0a77d99ead3e3bb9d5debd611134adb1))
+
 ## [2.0.0](https://github.com/sptlco/spatial/compare/1.46.3...2.0.0) (2026-06-30)
 
 

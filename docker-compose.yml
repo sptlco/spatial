@@ -6,23 +6,6 @@ services:
       - mongo
       - redis
 
-  editor:
-    user: root
-    build:
-      context: .
-      dockerfile: editor/Dockerfile
-    restart: always
-    volumes:
-      - ./:/home/coder/project
-      - ~/.ssh:/root/.ssh
-      - ./config/code:/root/.config/code-server
-      - ./editor/data:/root/.local/share/code-server
-      - ~/.gitconfig:/root/.gitconfig
-    environment:
-      - DOCKER_USER=root
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
-
   mongo:
     image: mongo:8
     restart: always
@@ -43,7 +26,6 @@ services:
       - ./config/nginx/ssl/private:/etc/ssl/private
     depends_on:
       - cloud
-      - editor
       - web
 
   redis:

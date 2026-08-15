@@ -1,5 +1,17 @@
 # Changelog
 
+## [2.0.0](https://github.com/sptlco/spatial/compare/1.46.3...2.0.0) (2026-06-30)
+
+
+### ⚠ BREAKING CHANGES
+
+* This marks the start of Mark 2; no functional changes, version bumped intentionally to signal the new major line.
+
+### Features
+
+* Cleaned UX ([37975b7](https://github.com/sptlco/spatial/commit/37975b73e5a07c3391b0de4dcacd912baa0d2ab5))
+* Groundwork for Mark 2 ([#172](https://github.com/sptlco/spatial/issues/172)) ([bad9d04](https://github.com/sptlco/spatial/commit/bad9d049ae1b9cf8de5f8344bc65ab68197f4421))
+
 ## [1.46.3](https://github.com/sptlco/spatial/compare/1.46.2...1.46.3) (2026-06-17)
 
 

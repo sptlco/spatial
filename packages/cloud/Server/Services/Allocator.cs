@@ -1,5 +1,6 @@
 // Copyright © Spatial Corporation. All rights reserved.
 
+using Microsoft.Extensions.Options;
 using Nethereum.JsonRpc.Client;
 using Nethereum.Web3;
 using Spatial.Logistics;
@@ -430,6 +431,7 @@ public class AllocatorConfiguration
     /// <summary>
     /// Configurable options for the allocator's take-profit mechanism.
     /// </summary>
+    [ValidateObjectMembers]
     public ProfitConfiguration Profit { get; set; } = new ProfitConfiguration();
 
     /// <summary>

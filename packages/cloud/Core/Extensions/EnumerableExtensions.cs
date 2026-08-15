@@ -19,4 +19,40 @@ public static class EnumerableExtensions
     {
         return [.. enumerable.Select(mapper)];
     }
+
+    /// <summary>
+    /// Filter the <see cref="IEnumerable{T}"/>.
+    /// </summary>
+    /// <param name="enumerable">The <see cref="IEnumerable{T}"/> to filter.</param>
+    /// <param name="predicate">A search predicate.</param>
+    /// <returns>The filtered collection.</returns>
+    public static IEnumerable<T> Filter<T>(this IEnumerable<T> enumerable, Func<T, bool> predicate)
+    {
+        foreach (var value in enumerable)
+        {
+            if (predicate(value))
+            {
+                yield return value;
+            }
+        }
+    }
+
+    /// <summary>
+    /// Get the first <typeparamref name="T"/> matching <paramref name="predicate"/>.
+    /// </summary>
+    /// <param name="enumerable">The <see cref="IEnumerable{T}"/> to search.</param>
+    /// <param name="predicate">A search predicate.</param>
+    /// <returns>The first <typeparamref name="T"/> matching <paramref name="predicate"/>.</returns>
+    public static T? Find<T>(this IEnumerable<T> enumerable, Func<T, bool> predicate)
+    {
+        foreach (var value in enumerable)
+        {
+            if (predicate(value))
+            {
+                return value;
+            }
+        }
+
+        return default;
+    }
 }

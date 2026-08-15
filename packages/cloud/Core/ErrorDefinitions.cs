@@ -83,6 +83,17 @@ public class NotFound : UserError
 }
 
 /// <summary>
+/// A <see cref="UserError"/> indicating a missing implementation.
+/// </summary>
+public class NotImplemented : UserError
+{
+    /// <summary>
+    /// Create a new <see cref="NotImplemented"/>.
+    /// </summary>
+    public NotImplemented() : base("The operation has not been implemented.") {  }
+}
+
+/// <summary>
 /// A <see cref="UserError"/> indicating that a configurable option is misconfigured.
 /// </summary>
 public class Misconfiguration : UserError
@@ -142,4 +153,25 @@ public class Unsupported : UserError
     /// </summary>
     /// <param name="message">A message describing why the action is unsupported.</param>
     public Unsupported(string message) : base(message) { }
+}
+
+/// <summary>
+/// A <see cref="UserError"/> indicating that the request conflicts with the resource's current state.
+/// </summary>
+public class Conflict : UserError
+{
+    /// <summary>
+    /// Create a new <see cref="Conflict"/>.
+    /// </summary>
+    /// <param name="message">A message describing the conflict.</param>
+    /// <param name="index">The name of the violated index, if known.</param>
+    public Conflict(string message, string? index = null) : base(message, (int) HttpStatusCode.Conflict)
+    {
+        Index = index;
+    }
+
+    /// <summary>
+    /// The name of the violated index, if known.
+    /// </summary>
+    public string? Index { get; }
 }

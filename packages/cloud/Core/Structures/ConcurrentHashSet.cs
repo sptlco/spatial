@@ -1,5 +1,6 @@
 // Copyright © Spatial Corporation. All rights reserved.
 
+using Spatial.Networking;
 using System.Collections;
 using System.Collections.Concurrent;
 
@@ -69,7 +70,7 @@ public class ConcurrentHashSet<T> : IEnumerable<T> where T : notnull
     {
         _values.Clear();
     }
-
+    
     /// <summary>
     /// Enumerate the <see cref="ConcurrentHashSet{T}"/>.
     /// </summary>

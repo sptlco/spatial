@@ -3,7 +3,7 @@
 namespace Spatial;
 
 /// <summary>
-/// The occurrence of unexpected behavior at runtime.
+/// The occurrence of an unexpected behavior at runtime.
 /// </summary>
 public abstract class Error
 {

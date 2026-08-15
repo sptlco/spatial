@@ -5,7 +5,7 @@ namespace Spatial.Networking.Contracts;
 /// <summary>
 /// A command issued over the network.
 /// </summary>
-public enum NETCOMMAND
+internal enum NETCOMMAND
 {
     /// <summary>
     /// Issue a seed to a <see cref="Connection"/>.

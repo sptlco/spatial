@@ -37,20 +37,6 @@ public class CollectionExtensionTests
     }
 
     /// <summary>
-    /// Filter a collection.
-    /// </summary>
-    [Fact]
-    [Trait("Category", "Unit")]
-    public void TestFilter()
-    {
-        var collection = new List<int> { 1, 2, 3, 4, 5 };
-
-        var result = collection.Filter(x => x % 2 == 0);
-
-        Assert.Equal([2, 4], result);
-    }
-
-    /// <summary>
     /// Map the elements of a collection to a list.
     /// </summary>
     [Fact]

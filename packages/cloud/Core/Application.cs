@@ -133,7 +133,6 @@ public class Application
 
                 application.Start();
                 application._wapp.Start();
-                application.Listen();
 
                 using var source = CancellationTokenSource.CreateLinkedTokenSource(
                     token1: cancellationToken.CanBeCanceled ? cancellationToken : CreateCancellationToken(), 
@@ -143,7 +142,7 @@ public class Application
 
                 if (application.Configuration.TickRate > 0)
                 {
-                    INFO("Application running at {TickRate} tps.", application.Configuration.TickRate);
+                    INFO("{Application} running at {TickRate} tps.", application.Configuration.Name, application.Configuration.TickRate);
 
                     application._ticker.Run(
                         function: application.TryTick, 
@@ -152,7 +151,7 @@ public class Application
                 }
                 else
                 {
-                    INFO("Application running as fast as possible.");
+                    INFO("{Application} running as fast as possible.", application.Configuration.Name);
 
                     application._ticker.Run(application.TryTick, token);
                 }
@@ -240,23 +239,6 @@ public class Application
         _timings = new (string, double)[_space.Systems.Count];
     }
 
-    private void Listen()
-    {
-        foreach (var endpoint in ParseEndpoints(Configuration))
-        {
-            var uri = new Uri(endpoint
-                .Replace("*", IPAddress.Any.ToString())
-                .Replace("localhost", IPAddress.Loopback.ToString()));
-
-            if (uri.Scheme.ToLowerInvariant().Equals(Constants.UriSchemes.Socket))
-            {
-                _network.Listen(new IPEndPoint(IPAddress.Parse(uri.Host), uri.Port).ToString());
-
-                INFO("TCP supported, endpoint: {Endpoint}.", endpoint);
-            }
-        }
-    }
-
     private WebApplication CreateWebApplication()
     {
         var path = Path.Combine(AppContext.BaseDirectory, Constants.StaticFilePath);
@@ -311,14 +293,9 @@ public class Application
                 switch (uri.Scheme.ToLowerInvariant())
                 {
                     case Constants.UriSchemes.Http:
-
                         options.Listen(IPAddress.Parse(uri.Host), uri.Port);
-                    
-                        INFO("HTTP supported, endpoint: {Endpoint}.", endpoint);
-                    
                         break;
                     case Constants.UriSchemes.Https:
-                        
                         try
                         {
                             using var store = new X509Store(StoreLocation.LocalMachine);
@@ -334,8 +311,6 @@ public class Application
                             if (certificate is not null)
                             {
                                 options.Listen(IPAddress.Parse(uri.Host), uri.Port, listener => listener.UseHttps(certificate));
-
-                                INFO("HTTPS supported, endpoint: {Endpoint}.", endpoint);
                             }
                         }
                         catch (Exception exception)
@@ -519,6 +494,6 @@ public class Application
 
     private string[] ParseEndpoints(Configuration configuration)
     {
-        return [.. Regex.Replace(configuration.Endpoints, @"\s+", "").Split(",").Where(e => !string.IsNullOrEmpty(e))];
+        return [.. Regex.Replace(configuration.Urls, @"\s+", "").Split(",").Where(e => !string.IsNullOrEmpty(e))];
     }
 }

@@ -139,4 +139,14 @@ public static class ResourceExtensions
     {
         Resource<T>.RemoveOne(r => r.Id == record.Id);
     }
+
+    /// <summary>
+    /// Remove a stored <see cref="Resource"/> of type <typeparamref name="T"/>.
+    /// </summary>
+    /// <typeparam name="T">The type of <see cref="Resource"/> to delete.</typeparam>
+    /// <param name="record">The <see cref="Resource"/> to remove.</param>
+    public static Task RemoveAsync<T>(this T record) where T : Resource
+    {
+        return Resource<T>.RemoveOneAsync(r => r.Id == record.Id);
+    }
 }

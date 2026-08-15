@@ -1,12 +1,12 @@
 // Copyright © Spatial Corporation. All rights reserved.
 
 using Microsoft.Extensions.DependencyInjection;
-using Spatial.Compute;
 using Spatial.Networking.Contracts;
 using Spatial.Networking.Contracts.Miscellaneous;
 using Spatial.Structures;
 using System.Buffers;
 using System.Collections.Concurrent;
+using System.Linq.Expressions;
 using System.Net;
 using System.Net.Sockets;
 using System.Reflection;
@@ -20,6 +20,7 @@ public partial class Network : IDisposable
 {
     private static Transformer _transformer = new NativeTransformer();
 
+    private readonly Dictionary<Socket, object?> _contexts;
     private readonly Dictionary<Type, Controller> _controllers;
     private readonly Dictionary<ushort, (Controller Controller, Delegate Command, Type Prototype)> _operations;
     private readonly List<Socket> _endpoints;
@@ -32,6 +33,7 @@ public partial class Network : IDisposable
     /// </summary>
     public Network()
     {
+        _contexts = [];
         _controllers = [];
         _operations = AppDomain.CurrentDomain
             .GetAssemblies()
@@ -41,14 +43,14 @@ public partial class Network : IDisposable
                 keySelector: method => method.GetCustomAttribute<Controller.OperationAttribute>(true)!.Code,
                 elementSelector: method => {
                     var controller = GetOrCreateController(method.DeclaringType!);
-                    var prototype = method.GetParameters()[0].ParameterType;
+                    var prototype = method.GetParameters()[1].ParameterType;
 
                     if (method.ReturnType == typeof(Task))
                     {
-                        return (controller, Delegate.CreateDelegate(typeof(AsyncCommand), controller, method), prototype);
+                        return (controller, (Delegate) CreateAsyncCommand(controller, method, prototype), prototype);
                     }
 
-                    return (controller, Delegate.CreateDelegate(typeof(Command), controller, method), prototype);
+                    return (controller, CreateCommand(controller, method, prototype), prototype);
                 });
 
         _endpoints = [];
@@ -60,10 +62,17 @@ public partial class Network : IDisposable
     /// <summary>
     /// The network's <see cref="Transformer"/>.
     /// </summary>
-    public static Transformer Transformer { 
-        get => _transformer; 
-        set => _transformer = value; 
+    public static Transformer Transformer
+    {
+        get => _transformer;
+        set => _transformer = value;
     }
+
+    /// <summary>
+    /// Optional resolver that returns a human-readable name for an operation code.
+    /// Set this before using the network. If the resolver returns null, the code is formatted as hex.
+    /// </summary>
+    public static Func<ushort, string?>? OperationNameResolver { get; set; }
 
     /// <summary>
     /// The network's public endpoints.
@@ -84,28 +93,47 @@ public partial class Network : IDisposable
     /// Listen for connections at an <paramref name="endpoint"/>.
     /// </summary>
     /// <param name="endpoint">The endpoint to listen at.</param>
-    public void Listen(string endpoint)
+    /// <param name="context">Optional context.</param>
+    /// <param name="description">A message describing what the endpoint is used for.</param>
+    public void Listen(string endpoint, object? context = default, string? description = default)
     {
         var socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+        var ip = IPEndPoint.Parse(endpoint);
 
-        socket.Bind(IPEndPoint.Parse(endpoint));
+        socket.Bind(ip);
         socket.Listen();
+
+        _contexts[socket] = context;
 
         BeginAccept(socket);
 
         _endpoints.Add(socket);
+
+        if (string.IsNullOrEmpty(description))
+        {
+            INFO("IPv4 supported, port {Port}", ip.Port);
+        }
+        else
+        {
+            INFO("IPv4 supported, port {Port}: Used for {Description}", ip.Port, description);
+        }
     }
 
     /// <summary>
     /// Connect a <see cref="Socket"/> to the <see cref="Network"/>.
     /// </summary>
     /// <param name="socket">A <see cref="Socket"/>.</param>
-    internal Connection Connect(Socket socket)
+    /// <param name="endpoint">The listener this <see cref="Socket"/> was accepted on.</param>
+    internal Connection Connect(Socket socket, Socket endpoint)
     {
         socket.NoDelay = true;
         socket.SendTimeout = Constants.SendTimeout;
 
-        return Connection.Allocate(this, socket).Connect();
+        var connection = Connection.Allocate(this, socket).Connect();
+
+        connection.Context = _contexts.GetValueOrDefault(endpoint);
+
+        return connection;
     }
 
     /// <summary>
@@ -152,6 +180,8 @@ public partial class Network : IDisposable
                 offset: 0,
                 count: packet.Count + update.Size);
 
+            INFO("Server ({Connection}): {Command}", update.Connection.Id, Resolve(update.Command));
+
             update.Dispose();
         }
 
@@ -167,7 +197,7 @@ public partial class Network : IDisposable
                 if (connection.Connected)
                 {
                     TRACE("Delivering {size} KB packet to {connection}.", Math.Round(packet.Count / 1024D, 2), connection.Id);
-                    
+
                     try
                     {
                         connection.Socket.Send(packet);
@@ -214,7 +244,7 @@ public partial class Network : IDisposable
         {
             if (endpoint.EndAccept(e) is Socket socket)
             {
-                Connect(socket);
+                Connect(socket, endpoint);
             }
 
             BeginAccept((Socket) e.AsyncState!);
@@ -225,12 +255,12 @@ public partial class Network : IDisposable
     private void Process(in NetworkEvent e)
     {
         var connection = e.Connection;
-        
+
         switch (e.Code)
         {
             case NetworkEventCode.EVENT_CONNECT:
                 {
-                    TRACE("Client {connection} connected to the server.", connection);
+                    INFO("Client ({Connection}): Connected to the server.", connection.Id);
 
                     _connections[connection.Id] = connection;
 
@@ -244,10 +274,11 @@ public partial class Network : IDisposable
                 }
             case NetworkEventCode.EVENT_DISCONNECT:
                 {
-                    TRACE("Client {connection} disconnected from the server.", connection);
+                    INFO("Client ({Connection}): Disconnected from the server.", connection.Id);
 
                     _connections.TryRemove(connection.Id, out _);
 
+                    connection.DisconnectImpl(this);
                     connection.Dispose();
 
                     break;
@@ -258,7 +289,7 @@ public partial class Network : IDisposable
 
                     if (_operations.TryGetValue(message.Command, out var operation))
                     {
-                        TRACE("Invoking operation 0x{command:X4} on behalf of {connection}.", message.Command, connection.Id);
+                        INFO("Client ({Connection}): {Operation}", connection.Id, Resolve(message.Command));
 
                         var data = ProtocolBuffer.FromSpan(operation.Prototype, message.Data.AsSpan(2, message.Size - 2));
                         var bytes = message.Data;
@@ -299,6 +330,11 @@ public partial class Network : IDisposable
                                 break;
                         }
                     }
+                    else
+                    {
+                        ERROR("Client ({Connection}): {Command} is not implemented.", connection.Id, Resolve(message.Command));
+                        return;
+                    }
 
                     break;
                 }
@@ -317,13 +353,53 @@ public partial class Network : IDisposable
 
     private void Report(Exception exception, Message message, Connection connection)
     {
-        ERROR(exception, "Failed to invoke operation 0x{command:X4} on behalf of {connection}.", message.Command, connection.Id);
+        ERROR(exception, "Client ({Connection}): {Operation}", connection.Id, Resolve(message.Command));
     }
 
     private void Cleanup(ProtocolBuffer data, byte[] bytes)
     {
         data.Dispose();
         ArrayPool<byte>.Shared.Return(bytes);
+    }
+
+    private static string Resolve(ushort command)
+    {
+        var name = OperationNameResolver?.Invoke(command);
+        
+        if (!string.IsNullOrEmpty(name))
+        {
+            return name!;
+        }
+
+        return $"0x{command:X4}";
+    }
+
+    private static Command CreateCommand(Controller controller, MethodInfo method, Type prototype)
+    {
+        var connectionParam = Expression.Parameter(typeof(Connection), "connection");
+        var dataParam = Expression.Parameter(typeof(ProtocolBuffer), "data");
+
+        var call = Expression.Call(
+            instance: Expression.Constant(controller),
+            method: method,
+            arg0: connectionParam,
+            arg1: Expression.Convert(dataParam, prototype));
+
+        return Expression.Lambda<Command>(call, connectionParam, dataParam).Compile();
+    }
+
+    private static AsyncCommand CreateAsyncCommand(Controller controller, MethodInfo method, Type prototype)
+    {
+        var connectionParam = Expression.Parameter(typeof(Connection), "connection");
+        var dataParam = Expression.Parameter(typeof(ProtocolBuffer), "data");
+
+        var call = Expression.Call(
+            instance: Expression.Constant(controller),
+            method: method,
+            arg0: connectionParam,
+            arg1: Expression.Convert(dataParam, prototype));
+
+        return Expression.Lambda<AsyncCommand>(call, connectionParam, dataParam).Compile();
     }
 }
 
@@ -364,7 +440,7 @@ public partial class Network
         {
             buffer = ArrayPool<byte>.Shared.Rent(size + 1);
             buffer[0] = (byte) size;
-            
+
             Buffer.BlockCopy(BitConverter.GetBytes(command), 0, buffer, 1, sizeof(ushort));
             Buffer.BlockCopy(array, 0, buffer, 3, array.Length);
 
@@ -374,15 +450,13 @@ public partial class Network
         {
             buffer = ArrayPool<byte>.Shared.Rent(size + 3);
             buffer[0] = 0;
-            
+
             Buffer.BlockCopy(BitConverter.GetBytes((ushort) size), 0, buffer, 1, sizeof(ushort));
             Buffer.BlockCopy(BitConverter.GetBytes(command), 0, buffer, 3, sizeof(ushort));
             Buffer.BlockCopy(array, 0, buffer, 5, array.Length);
 
             size += 3;
         }
-
-        TRACE("Issuing 0x{command:X4} to {connection}.", command, connection.Id);
 
         _updates.Enqueue(Message.Create(connection, command, buffer, size));
     }
@@ -399,17 +473,13 @@ public partial class Network
     {
         data.Serialize(true);
 
-        void send(Connection connection)
+        foreach (var (_, connection) in _connections)
         {
             if (filter == default || filter(connection))
             {
                 Send(connection, command, data, false, false, encrypt);
             }
         }
-
-        Job.ParallelFor(
-            collection: _connections, 
-            function: (_, connection) => send(connection)).Wait();
 
         if (dispose)
         {

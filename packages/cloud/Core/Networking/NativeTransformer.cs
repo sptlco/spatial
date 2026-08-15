@@ -12,7 +12,7 @@ public class NativeTransformer : Transformer
     /// <summary>
     /// Create a new <see cref="NativeTransformer"/>.
     /// </summary>
-    public NativeTransformer() : base(Cipher.GenerateKeystream(512)) { }
+    public NativeTransformer(byte[]? keystream = null) : base(keystream ?? Cipher.GenerateKeystream(512)) { }
 
     /// <summary>
     /// Encode a cipher.

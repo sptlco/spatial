@@ -1,7 +1,9 @@
 // Copyright © Spatial Corporation. All rights reserved.
 
+using Spatial.Structures;
 using System.Buffers;
 using System.Collections.Concurrent;
+using System.Net;
 using System.Net.Sockets;
 
 namespace Spatial.Networking;
@@ -21,6 +23,8 @@ public sealed class Connection : IDisposable
     private ushort _seed;
     private int _encoder;
     private int _decoder;
+    private Connection _parent;
+    private readonly ConcurrentHashSet<Connection> _children;
     private readonly Dictionary<string, object?> _metadata;
 
     /// <summary>
@@ -29,6 +33,7 @@ public sealed class Connection : IDisposable
     public Connection(Network network)
     {
         _network = network;
+        _children = [];
         _metadata = [];
     }
 
@@ -49,6 +54,17 @@ public sealed class Connection : IDisposable
     internal Socket Socket => _socket;
 
     /// <summary>
+    /// Arbitrary context describing the server this <see cref="Connection"/> belongs to,
+    /// set from whichever listener (<see cref="Network.Listen"/>) accepted it.
+    /// </summary>
+    public object? Context { get; set; }
+
+    /// <summary>
+    /// The connection's remote IP address.
+    /// </summary>
+    public string IP => _socket.RemoteEndPoint is IPEndPoint endpoint ? endpoint.Address.ToString() : string.Empty;
+
+    /// <summary>
     /// The connection's received data buffer.
     /// </summary>
     internal byte[] Buffer => _buffer;
@@ -64,9 +80,24 @@ public sealed class Connection : IDisposable
     public KeyPair Keys => new(ref _encoder, ref _decoder);
 
     /// <summary>
+    /// This connection's parent <see cref="Connection"/>.
+    /// </summary>
+    public Connection Parent => _parent;
+
+    /// <summary>
+    /// This connection's child connections.f
+    /// </summary>
+    public ConcurrentHashSet<Connection> Children => _children;
+
+    /// <summary>
     /// Properties attached to the <see cref="Connection"/>.
     /// </summary>
     public Dictionary<string, object?> Metadata => _metadata;
+
+    /// <summary>
+    /// Called when the <see cref="Connection"/> is closed.
+    /// </summary>
+    public event EventHandler<ConnectionEventArgs> Disconnected;
 
     /// <summary>
     /// Allocate a <see cref="Connection"/>.
@@ -111,6 +142,35 @@ public sealed class Connection : IDisposable
         if (Interlocked.CompareExchange(ref _connected, 0, 1) == 1)
         {
             _network.Queue.Enqueue(NetworkEvent.Create(this, NetworkEventCode.EVENT_DISCONNECT));
+        }
+    }
+
+    internal void DisconnectImpl(object? sender)
+    {
+        Disconnected?.Invoke(sender, new ConnectionEventArgs(this));
+
+        foreach (var child in _children)
+        {
+            child.Disconnect();
+        }
+    }
+
+    /// <summary>
+    /// Link this <see cref="Connection"/> to another <see cref="Connection"/>.
+    /// </summary>
+    /// <param name="connection">The <see cref="Connection"/> to link to.</param>
+    /// <param name="relationship">The target connection's relationship to this <see cref="Connection"/>.</param>
+    public void Link(Connection connection, Relationship relationship)
+    {
+        switch (relationship)
+        {
+            case Relationship.Parent:
+                (_parent = connection)._children.Add(this);
+                break;
+            case Relationship.Child:
+                _children.Add(connection);
+                connection._parent = this;
+                break;
         }
     }
 
@@ -186,6 +246,11 @@ public sealed class Connection : IDisposable
         _socket.Dispose();
         _pool.Add(this);
         _metadata.Clear();
+        _parent = null!;
+        _children.Clear();
+
+        Disconnected = null!;
+        Context = null;
     }
 
     private void BeginReceive()
@@ -417,4 +482,26 @@ public class Message : IDisposable
     {
         _pool.Add(this);
     }
+}
+
+/// <summary>
+/// Arguments for a connection event.
+/// </summary>
+public class ConnectionEventArgs : EventArgs
+{
+    private readonly Connection _connection;
+
+    /// <summary>
+    /// Create a new <see cref="ConnectionEventArgs"/>.
+    /// </summary>
+    /// <param name="connection">The relevant <see cref="Networking.Connection"/>.</param>
+    public ConnectionEventArgs(Connection connection)
+    {
+        _connection = connection;
+    }
+
+    /// <summary>
+    /// The relevant <see cref="Networking.Connection"/>.
+    /// </summary>
+    public Connection Connection => _connection;
 }

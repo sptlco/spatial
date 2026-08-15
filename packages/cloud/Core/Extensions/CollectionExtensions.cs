@@ -49,18 +49,6 @@ public static class CollectionExtensions
     }
 
     /// <summary>
-    /// Filter a collection.
-    /// </summary>
-    /// <typeparam name="T">The type of elements to filter.</typeparam>
-    /// <param name="collection">A collection of elements.</param>
-    /// <param name="predicate">A filtration predicate.</param>
-    /// <returns>A filtered list.</returns>
-    public static List<T> Filter<T>(this IEnumerable<T> collection, Func<T, bool> predicate)
-    {
-        return [.. collection.Where(predicate)];
-    }
-
-    /// <summary>
     /// Map the elements of a collection to a list.
     /// </summary>
     /// <typeparam name="T">The type of elements in the collection.</typeparam>
@@ -78,5 +66,25 @@ public static class CollectionExtensions
         }
 
         return list;
+    }
+
+    /// <summary>
+    /// Map the elements of a collection to a list.
+    /// </summary>
+    /// <typeparam name="T">The type of elements in the collection.</typeparam>
+    /// <typeparam name="R">The type of elements in the list.</typeparam>
+    /// <param name="collection">The collection to map.</param>
+    /// <param name="mapper">A mapping function.</param>
+    /// <returns>The mapped list.</returns>
+    public static R[] ToArray<T, R>(this ICollection<T> collection, Func<T, R> mapper)
+    {
+        var array = new R[collection.Count];
+
+        for (var i = 0; i < collection.Count; i++)
+        {
+            array[i] = mapper(collection.ElementAt(i));
+        }
+        
+        return array;
     }
 }

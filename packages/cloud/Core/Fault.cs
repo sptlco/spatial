@@ -17,6 +17,16 @@ public class Fault : Exception
     }
 
     /// <summary>
+    /// Create a new <see cref="Fault"/>.
+    /// </summary>
+    /// <param name="error">An <see cref="Spatial.Error"/> that occurred.</param>
+    /// <param name="innerException">A nested <see cref="Exception"/>.</param>
+    public Fault(Error error, Exception? innerException) : base(error.Message, innerException)
+    {
+        Error = error;
+    }
+
+    /// <summary>
     /// An <see cref="Spatial.Error"/> that occurred.
     /// </summary>
     public Error Error { get; }

@@ -1,5 +1,14 @@
 # Changelog
 
+## [2.1.1](https://github.com/sptlco/spatial/compare/2.1.0...2.1.1) (2026-08-15)
+
+
+### Bug Fixes
+
+* Deleted Dockerfile ([f6836da](https://github.com/sptlco/spatial/commit/f6836da0ec99f78d5599485bc1f7b35993088872))
+* Removed editor ([1105397](https://github.com/sptlco/spatial/commit/1105397a3d386319545602ac3dcdbfdc236117fd))
+* Updated server configuration ([7c38a14](https://github.com/sptlco/spatial/commit/7c38a147960090ed7c222cf6b6697766cc79290e))
+
 ## [2.1.0](https://github.com/sptlco/spatial/compare/2.0.0...2.1.0) (2026-08-15)
 
 

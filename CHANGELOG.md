@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.2.0](https://github.com/sptlco/spatial/compare/2.1.1...2.2.0) (2026-08-19)
+
+
+### Features
+
+* Added notifications ([910182d](https://github.com/sptlco/spatial/commit/910182d8e70b9ec5c0f33d8571aa16aa46c285a5))
+
 ## [2.1.1](https://github.com/sptlco/spatial/compare/2.1.0...2.1.1) (2026-08-15)
 
 

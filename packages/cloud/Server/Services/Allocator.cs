@@ -3,6 +3,7 @@
 using Microsoft.Extensions.Options;
 using Nethereum.JsonRpc.Client;
 using Nethereum.Web3;
+using Spatial.Helpers;
 using Spatial.Logistics;
 using Spatial.Logistics.Helpers;
 using Spatial.Persistence;
@@ -250,6 +251,7 @@ public class Allocator : BackgroundService
                 deadline);
 
             var gas = Web3.Convert.FromWei(receipt.GasUsed.Value * receipt.EffectiveGasPrice.Value);
+            var eth = amount / price;
 
             await Metric.WriteOneAsync(
                 name: "transaction",
@@ -269,6 +271,17 @@ public class Allocator : BackgroundService
 
             INFO("Purchased {Eth:F6} ETH (${Amount:F2}) at ${Price:F2}: {Transaction} (Gas: {GasEth:F6} ETH / ${GasUsd:F2}, Duration: {Duration}ms).", amount / price, amount, price, receipt.TransactionHash, gas, gas * price, (decimal)(Time.Now - timestamp));
             INFO("Updated cost basis after buy: ${CostBasis:F2}.", _costBasis);
+
+            await Smtp.SendAsync(
+                subject: $"You bought {eth:F6} ETH",
+                recipients: Server.Current.Configuration.Administrators,
+                preview: "An automated transaction has been confirmed.",
+                template: "notification",
+                parameters: new Dictionary<string, object> {
+                    ["timestamp"] = DateTime.UtcNow.ToString("MMM dd, yyyy @ HH:mm:ss"),
+                    ["title"] = $"Ethereum Purchased",
+                    ["description"] = $"You bought {eth:F6} ETH.<br/><a href=\"https://etherscan.io/tx/{receipt.TransactionHash}\" style=\"color: #0364ff; text-decoration: none\">View on Etherscan</a>"
+                });
         }
         catch (OperationCanceledException)
         {
@@ -313,6 +326,7 @@ public class Allocator : BackgroundService
                 deadline);
 
             var gas = Web3.Convert.FromWei(receipt.GasUsed.Value * receipt.EffectiveGasPrice.Value);
+            var eth = amount / price;
 
             await Metric.WriteOneAsync(
                 name: "transaction",
@@ -328,7 +342,18 @@ public class Allocator : BackgroundService
                     Pair = "ETH/USDC"
                 });
 
-            INFO("Sold {Eth:F6} ETH (${Amount:F2}) at ${Price:F2}: {Transaction} (Gas: {GasEth:F6} ETH / ${GasUsd:F2}, Duration: {Duration}ms).", amount / price, amount, price, receipt.TransactionHash, gas, gas * price, (decimal)(Time.Now - timestamp));
+            INFO("Sold {Eth:F6} ETH (${Amount:F2}) at ${Price:F2}: {Transaction} (Gas: {GasEth:F6} ETH / ${GasUsd:F2}, Duration: {Duration}ms).", eth, amount, price, receipt.TransactionHash, gas, gas * price, (decimal)(Time.Now - timestamp));
+
+            await Smtp.SendAsync(
+                subject: $"You sold {eth:F6} ETH",
+                recipients: Server.Current.Configuration.Administrators,
+                preview: "An automated transaction has been confirmed.",
+                template: "notification",
+                parameters: new Dictionary<string, object> {
+                    ["timestamp"] = DateTime.UtcNow.ToString("MMM dd, yyyy @ HH:mm:ss"),
+                    ["title"] = $"Ethereum Sold",
+                    ["description"] = $"You sold {eth:F6} ETH.<br/><a href=\"https://etherscan.io/tx/{receipt.TransactionHash}\" style=\"color: #0364ff; text-decoration: none\">View on Etherscan</a>"
+                });
         }
         catch (OperationCanceledException)
         {

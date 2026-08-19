@@ -2,6 +2,7 @@
 
 using Microsoft.Extensions.Options;
 using Spatial.Cloud.Services;
+using Spatial.Helpers;
 
 namespace Spatial.Cloud;
 

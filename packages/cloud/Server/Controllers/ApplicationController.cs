@@ -12,6 +12,7 @@ public class ApplicationController : Controller
     /// Get the application's name.
     /// </summary>
     /// <returns>The application's name.</returns>
+    [GET]
     [Path("name")]
     public Task<string> GetNameAsync()
     {
@@ -22,6 +23,7 @@ public class ApplicationController : Controller
     /// Get the application's version.
     /// </summary>
     /// <returns>The application's semantic version.</returns>
+    [GET]
     [Path("version")]
     public Task<string> GetVersionAsync()
     {

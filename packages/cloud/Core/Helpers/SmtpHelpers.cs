@@ -19,14 +19,13 @@ public static class Smtp
     /// <param name="subject">The email's subject.</param>
     /// <param name="body">The email's body.</param>
     /// <param name="recipients">The email's recipients.</param>
-    public static void Send(string subject, string body, params string[] recipients)
+    public static void Send(string subject, string body, IEnumerable<string> recipients)
     {
-        var config = Application.Current.Configuration;
-        var message = CreateMessage(subject, config);
-
-        message.Body = body;
-
-        Send(message, recipients);
+        Send(CreateMessage(
+            subject: subject, 
+            body: body, 
+            recipients: recipients, 
+            config: Application.Current.Configuration));
     }
 
     /// <summary>
@@ -37,21 +36,53 @@ public static class Smtp
     /// <param name="template">The email template to render.</param>
     /// <param name="parameters">The email template's parameters.</param>
     /// <param name="recipients">The email's recipients.</param>
-    public static void Send(string subject, string preview, string template, Dictionary<string, object> parameters, params string[] recipients)
+    public static void Send(string subject, string preview, string template, Dictionary<string, object> parameters, IEnumerable<string> recipients)
     {
-        var config = Application.Current.Configuration;
-        var message = CreateMessage(subject, config);
-
-        parameters["preview"] = preview;
-
-        message.IsBodyHtml = true;
-        message.Body = Render(template, parameters);
-
-        Send(message, recipients);
+        Send(CreateMessage(
+            subject: subject, 
+            body: Render(template, preview, parameters), 
+            isBodyHtml: true,
+            recipients: recipients, 
+            config: Application.Current.Configuration));
     }
 
-    private static string Render(string template, Dictionary<string, object> parameters)
+    /// <summary>
+    /// Send an email.
+    /// </summary>
+    /// <param name="subject">The email's subject.</param>
+    /// <param name="body">The email's body.</param>
+    /// <param name="recipients">The email's recipients.</param>
+    public static Task SendAsync(string subject, string body, IEnumerable<string> recipients)
     {
+        return SendAsync(CreateMessage(
+            subject: subject, 
+            body: body, 
+            recipients: recipients, 
+            config: Application.Current.Configuration));
+    }
+
+    /// <summary>
+    /// Render an email template.
+    /// </summary>
+    /// <param name="subject">The email's subject.</param>
+    /// <param name="preview">The email's preview text.</param>
+    /// <param name="template">The email template to render.</param>
+    /// <param name="parameters">The email template's parameters.</param>
+    /// <param name="recipients">The email's recipients.</param>
+    public static Task SendAsync(string subject, string preview, string template, Dictionary<string, object> parameters, IEnumerable<string> recipients)
+    {
+        return SendAsync(CreateMessage(
+            subject: subject, 
+            body: Render(template, preview, parameters), 
+            isBodyHtml: true,
+            recipients: recipients, 
+            config: Application.Current.Configuration));
+    }
+
+    private static string Render(string template, string preview, Dictionary<string, object> parameters)
+    {
+        parameters["preview"] = preview;
+
         var text = File.ReadAllText(Path.Join(AppDomain.CurrentDomain.BaseDirectory, "emails", $"{template}.mail"));
         var body = Resolve(text);
 
@@ -96,7 +127,7 @@ public static class Smtp
             });
     }
 
-    private static void Send(MailMessage message, params string[] recipients)
+    private static void Send(MailMessage message)
     {
         var config = Application.Current.Configuration;
         var client = new SmtpClient(config.SMTP.Host) {
@@ -105,19 +136,38 @@ public static class Smtp
             EnableSsl = true
         };
 
-        recipients.ForEach(recipient => message.To.Add(new MailAddress(recipient)));
-
         new ResiliencePipelineBuilder()
             .AddRetry(new Polly.Retry.RetryStrategyOptions())
             .Build()
             .Execute(() => client.Send(message));
     }
 
-    private static MailMessage CreateMessage(string subject, Configuration config)
+    private static async Task SendAsync(MailMessage message)
     {
-        return new MailMessage {
-            From = new MailAddress(config.SMTP.Username, config.SMTP.Name),
-            Subject = subject
+        var config = Application.Current.Configuration;
+        var client = new SmtpClient(config.SMTP.Host) {
+            Port = config.SMTP.Port,
+            Credentials = new NetworkCredential(config.SMTP.Username, config.SMTP.Password),
+            EnableSsl = true
         };
+
+        await new ResiliencePipelineBuilder()
+            .AddRetry(new Polly.Retry.RetryStrategyOptions())
+            .Build()
+            .ExecuteAsync(async (ct) => client.SendMailAsync(message, ct));
+    }
+
+    private static MailMessage CreateMessage(string subject, string body, IEnumerable<string> recipients, Configuration config, bool isBodyHtml = false)
+    {
+        var message = new MailMessage {
+            From = new MailAddress(config.SMTP.Username, config.SMTP.Name),
+            Subject = subject,
+            Body = body,
+            IsBodyHtml = isBodyHtml
+        };
+
+        recipients.ForEach(recipient => message.To.Add(new MailAddress(recipient)));
+
+        return message;
     }
 }

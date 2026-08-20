@@ -24,9 +24,10 @@ public class Computer : IDisposable
     /// <summary>
     /// Create a new <see cref="Computer"/>.
     /// </summary>
-    public Computer()
+    /// <param name="agents">The number of agents to create.</param>
+    public Computer(int? agents = default)
     {
-        _agents = new Agent[Environment.ProcessorCount];
+        _agents = new Agent[agents ?? Environment.ProcessorCount];
         _jobs = [];
         _dependencies = [];
 

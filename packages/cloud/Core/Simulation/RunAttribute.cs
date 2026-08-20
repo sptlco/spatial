@@ -1,6 +1,6 @@
 // Copyright © Spatial Corporation. All rights reserved.
 
-namespace Spatial;
+namespace Spatial.Simulation;
 
 /// <summary>
 /// Automatically run a <see cref="System"/>.
@@ -22,5 +22,5 @@ public class RunAttribute : Attribute
     /// <summary>
     /// The order in which to run the <see cref="System"/>.
     /// </summary>
-    public int Layer => _order;
+    public int Order => _order;
 }

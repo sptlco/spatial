@@ -1,8 +1,8 @@
 // Copyright © Spatial Corporation. All rights reserved.
 
 using Microsoft.Extensions.Options;
+using Spatial.Cloud.Contracts;
 using Spatial.Cloud.Services;
-using Spatial.Helpers;
 
 namespace Spatial.Cloud;
 
@@ -30,6 +30,8 @@ public class Server : Application
         var configuration = builder.Configuration.Get<ServerConfiguration>();
 
         AddOptions<ServerConfiguration>(builder);
+
+        builder.Services.AddHostedService<Services.Monitor>();
 
         if (configuration?.Allocator is { Enabled: true })
         {

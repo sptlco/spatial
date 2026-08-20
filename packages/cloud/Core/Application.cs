@@ -232,7 +232,7 @@ public class Application
             .GetAssemblies()
             .SelectMany(asm => asm.GetTypes())
             .Where(type => type.GetCustomAttribute<RunAttribute>() is not null)
-            .OrderBy(type => type.GetCustomAttribute<RunAttribute>()!.Layer)
+            .OrderBy(type => type.GetCustomAttribute<RunAttribute>()!.Order)
             .ForEach(system => _space.Use(_ => (Simulation.System) ActivatorUtilities.CreateInstance(_wapp.Services, system)));
 
         _space.Initialize();

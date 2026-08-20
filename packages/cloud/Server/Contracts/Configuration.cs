@@ -3,7 +3,7 @@
 using Microsoft.Extensions.Options;
 using Spatial.Cloud.Services;
 
-namespace Spatial.Cloud;
+namespace Spatial.Cloud.Contracts;
 
 /// <summary>
 /// Configurable options for the <see cref="Server"/>.
@@ -21,4 +21,10 @@ public class ServerConfiguration : Configuration
     /// </summary>
     [ValidateObjectMembers]
     public AllocatorConfiguration Allocator { get; set; } = new AllocatorConfiguration();
+
+    /// <summary>
+    /// Configurable options for the <see cref="Services.Monitor"/>.
+    /// </summary>
+    [ValidateObjectMembers]
+    public MonitorConfiguration Monitor { get; set; } = new MonitorConfiguration();
 }

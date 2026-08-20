@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.3.0](https://github.com/sptlco/spatial/compare/2.2.0...2.3.0) (2026-08-20)
+
+
+### Features
+
+* Added a performance monitor ([7c7945b](https://github.com/sptlco/spatial/commit/7c7945bd85fddeb717304896186d758a65d2732a))
+
 ## [2.2.0](https://github.com/sptlco/spatial/compare/2.1.1...2.2.0) (2026-08-19)
 
 

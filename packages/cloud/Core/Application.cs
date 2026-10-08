@@ -277,7 +277,7 @@ public class Application
 
         try
         {
-            telemetry.WriteTo.MongoDBCapped(configuration.Database.ConnectionString, collectionName: Constants.LogCollectionName);
+            telemetry.WriteTo.MongoDB(configuration.Database.ConnectionString, collectionName: Constants.LogCollectionName);
         }
         catch (OptionsValidationException) { }
 

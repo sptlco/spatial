@@ -1,5 +1,17 @@
 # Changelog
 
+## [2.5.0](https://github.com/sptlco/spatial/compare/2.4.0...2.5.0) (2026-10-08)
+
+
+### Features
+
+* Uncapped telemetry ([9872a4a](https://github.com/sptlco/spatial/commit/9872a4a8f8b9069e65cec46944faeda50c4426df))
+
+
+### Bug Fixes
+
+* Added event overload ([f6a2db7](https://github.com/sptlco/spatial/commit/f6a2db7ece275ee266db8cb85fb2393f266ec263))
+
 ## [2.4.0](https://github.com/sptlco/spatial/compare/2.3.0...2.4.0) (2026-10-08)
 
 

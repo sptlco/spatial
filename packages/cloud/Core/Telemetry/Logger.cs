@@ -10,6 +10,51 @@ namespace Spatial.Telemetry;
 public static class Logger
 {
     /// <summary>
+    /// Log an event.
+    /// </summary>
+    /// <param name="event">The name of the event that occurred.</param>
+    /// <param name="template">The message's template.</param>
+    public static void EVENT(string @event, string template)
+    {
+        Log.ForContext("Event", @event).Information(template);
+    }
+
+    /// <summary>
+    /// Log an event.
+    /// </summary>
+    /// <param name="event">The name of the event that occurred.</param>
+    /// <param name="template">The message's template.</param>
+    /// <param name="properties">Contextual properties for the log message.</param>
+    public static void EVENT(string @event, string template, params object[] properties)
+    {
+        Log.ForContext("Event", @event).Information(template, properties);
+    }
+
+    /// <summary>
+    /// Log an event.
+    /// </summary>
+    /// <param name="event">The name of the event that occurred.</param>
+    /// <param name="exception">An <see cref="Exception"/> that occurred.</param>
+    /// <param name="template">The message's template.</param>
+    /// <param name="properties">Contextual properties for the log message.</param>
+    public static void EVENT(string @event, Exception? exception, string template, params object[] properties)
+    {
+        Log.ForContext("Event", @event).Information(exception, template, properties);
+    }
+
+    /// <summary>
+    /// Log an event.
+    /// </summary>
+    /// <param name="event">The name of the event that occurred.</param>
+    /// <param name="error">An <see cref="Error"/> that occurred.</param>
+    /// <param name="template">The message's template.</param>
+    /// <param name="properties">Contextual properties for the log message.</param>
+    public static void EVENT(string @event, Error? error, string template, params object[] properties)
+    {
+        Log.ForContext("Event", @event).Information(error?.ToFault(), template, properties);
+    }
+
+    /// <summary>
     /// Log a trace message.
     /// </summary>
     /// <param name="template">The message's template.</param>
@@ -48,51 +93,6 @@ public static class Logger
     public static void TRACE(Error? error, string template, params object[] properties)
     {
         Log.Verbose(error?.ToFault(), template, properties);
-    }
-
-    /// <summary>
-    /// Log a trace message associated with an event.
-    /// </summary>
-    /// <param name="event">The name of the event that occurred.</param>
-    /// <param name="template">The message's template.</param>
-    public static void TRACE(string @event, string template)
-    {
-        Log.ForContext("Event", @event).Verbose(template);
-    }
-
-    /// <summary>
-    /// Log a trace message associated with an event.
-    /// </summary>
-    /// <param name="event">The name of the event that occurred.</param>
-    /// <param name="template">The message's template.</param>
-    /// <param name="properties">Contextual properties for the log message.</param>
-    public static void TRACE(string @event, string template, params object[] properties)
-    {
-        Log.ForContext("Event", @event).Verbose(template, properties);
-    }
-
-    /// <summary>
-    /// Log a trace message associated with an event.
-    /// </summary>
-    /// <param name="event">The name of the event that occurred.</param>
-    /// <param name="exception">An <see cref="Exception"/> that occurred.</param>
-    /// <param name="template">The message's template.</param>
-    /// <param name="properties">Contextual properties for the log message.</param>
-    public static void TRACE(string @event, Exception? exception, string template, params object[] properties)
-    {
-        Log.ForContext("Event", @event).Verbose(exception, template, properties);
-    }
-
-    /// <summary>
-    /// Log a trace message associated with an event.
-    /// </summary>
-    /// <param name="event">The name of the event that occurred.</param>
-    /// <param name="error">An <see cref="Error"/> that occurred.</param>
-    /// <param name="template">The message's template.</param>
-    /// <param name="properties">Contextual properties for the log message.</param>
-    public static void TRACE(string @event, Error? error, string template, params object[] properties)
-    {
-        Log.ForContext("Event", @event).Verbose(error?.ToFault(), template, properties);
     }
 
     /// <summary>
@@ -137,51 +137,6 @@ public static class Logger
     }
 
     /// <summary>
-    /// Log a debug message associated with an event.
-    /// </summary>
-    /// <param name="event">The name of the event that occurred.</param>
-    /// <param name="template">The message's template.</param>
-    public static void DEBUG(string @event, string template)
-    {
-        Log.ForContext("Event", @event).Debug(template);
-    }
-
-    /// <summary>
-    /// Log a debug message associated with an event.
-    /// </summary>
-    /// <param name="event">The name of the event that occurred.</param>
-    /// <param name="template">The message's template.</param>
-    /// <param name="properties">Contextual properties for the log message.</param>
-    public static void DEBUG(string @event, string template, params object[] properties)
-    {
-        Log.ForContext("Event", @event).Debug(template, properties);
-    }
-
-    /// <summary>
-    /// Log a debug message associated with an event.
-    /// </summary>
-    /// <param name="event">The name of the event that occurred.</param>
-    /// <param name="exception">An <see cref="Exception"/> that occurred.</param>
-    /// <param name="template">The message's template.</param>
-    /// <param name="properties">Contextual properties for the log message.</param>
-    public static void DEBUG(string @event, Exception? exception, string template, params object[] properties)
-    {
-        Log.ForContext("Event", @event).Debug(exception, template, properties);
-    }
-
-    /// <summary>
-    /// Log a debug message associated with an event.
-    /// </summary>
-    /// <param name="event">The name of the event that occurred.</param>
-    /// <param name="error">An <see cref="Error"/> that occurred.</param>
-    /// <param name="template">The message's template.</param>
-    /// <param name="properties">Contextual properties for the log message.</param>
-    public static void DEBUG(string @event, Error? error, string template, params object[] properties)
-    {
-        Log.ForContext("Event", @event).Debug(error?.ToFault(), template, properties);
-    }
-
-    /// <summary>
     /// Log an information message.
     /// </summary>
     /// <param name="template">The message's template.</param>
@@ -220,51 +175,6 @@ public static class Logger
     public static void INFO(Error? error, string template, params object[] properties)
     {
         Log.Information(error?.ToFault(), template, properties);
-    }
-
-    /// <summary>
-    /// Log an information message associated with an event.
-    /// </summary>
-    /// <param name="event">The name of the event that occurred.</param>
-    /// <param name="template">The message's template.</param>
-    public static void INFO(string @event, string template)
-    {
-        Log.ForContext("Event", @event).Information(template);
-    }
-
-    /// <summary>
-    /// Log an information message associated with an event.
-    /// </summary>
-    /// <param name="event">The name of the event that occurred.</param>
-    /// <param name="template">The message's template.</param>
-    /// <param name="properties">Contextual properties for the log message.</param>
-    public static void INFO(string @event, string template, params object[] properties)
-    {
-        Log.ForContext("Event", @event).Information(template, properties);
-    }
-
-    /// <summary>
-    /// Log an information message associated with an event.
-    /// </summary>
-    /// <param name="event">The name of the event that occurred.</param>
-    /// <param name="exception">An <see cref="Exception"/> that occurred.</param>
-    /// <param name="template">The message's template.</param>
-    /// <param name="properties">Contextual properties for the log message.</param>
-    public static void INFO(string @event, Exception? exception, string template, params object[] properties)
-    {
-        Log.ForContext("Event", @event).Information(exception, template, properties);
-    }
-
-    /// <summary>
-    /// Log an information message associated with an event.
-    /// </summary>
-    /// <param name="event">The name of the event that occurred.</param>
-    /// <param name="error">An <see cref="Error"/> that occurred.</param>
-    /// <param name="template">The message's template.</param>
-    /// <param name="properties">Contextual properties for the log message.</param>
-    public static void INFO(string @event, Error? error, string template, params object[] properties)
-    {
-        Log.ForContext("Event", @event).Information(error?.ToFault(), template, properties);
     }
 
     /// <summary>
@@ -309,51 +219,6 @@ public static class Logger
     }
 
     /// <summary>
-    /// Log a warning message associated with an event.
-    /// </summary>
-    /// <param name="event">The name of the event that occurred.</param>
-    /// <param name="template">The message's template.</param>
-    public static void WARN(string @event, string template)
-    {
-        Log.ForContext("Event", @event).Warning(template);
-    }
-
-    /// <summary>
-    /// Log a warning message associated with an event.
-    /// </summary>
-    /// <param name="event">The name of the event that occurred.</param>
-    /// <param name="template">The message's template.</param>
-    /// <param name="properties">Contextual properties for the log message.</param>
-    public static void WARN(string @event, string template, params object[] properties)
-    {
-        Log.ForContext("Event", @event).Warning(template, properties);
-    }
-
-    /// <summary>
-    /// Log a warning message associated with an event.
-    /// </summary>
-    /// <param name="event">The name of the event that occurred.</param>
-    /// <param name="exception">An <see cref="Exception"/> that occurred.</param>
-    /// <param name="template">The message's template.</param>
-    /// <param name="properties">Contextual properties for the log message.</param>
-    public static void WARN(string @event, Exception? exception, string template, params object[] properties)
-    {
-        Log.ForContext("Event", @event).Warning(exception, template, properties);
-    }
-
-    /// <summary>
-    /// Log a warning message associated with an event.
-    /// </summary>
-    /// <param name="event">The name of the event that occurred.</param>
-    /// <param name="error">An <see cref="Error"/> that occurred.</param>
-    /// <param name="template">The message's template.</param>
-    /// <param name="properties">Contextual properties for the log message.</param>
-    public static void WARN(string @event, Error? error, string template, params object[] properties)
-    {
-        Log.ForContext("Event", @event).Warning(error?.ToFault(), template, properties);
-    }
-
-    /// <summary>
     /// Log an error message.
     /// </summary>
     /// <param name="template">The message's template.</param>
@@ -395,51 +260,6 @@ public static class Logger
     }
 
     /// <summary>
-    /// Log an error message associated with an event.
-    /// </summary>
-    /// <param name="event">The name of the event that occurred.</param>
-    /// <param name="template">The message's template.</param>
-    public static void ERROR(string @event, string template)
-    {
-        Log.ForContext("Event", @event).Error(template);
-    }
-
-    /// <summary>
-    /// Log an error message associated with an event.
-    /// </summary>
-    /// <param name="event">The name of the event that occurred.</param>
-    /// <param name="template">The message's template.</param>
-    /// <param name="properties">Contextual properties for the log message.</param>
-    public static void ERROR(string @event, string template, params object[] properties)
-    {
-        Log.ForContext("Event", @event).Error(template, properties);
-    }
-
-    /// <summary>
-    /// Log an error message associated with an event.
-    /// </summary>
-    /// <param name="event">The name of the event that occurred.</param>
-    /// <param name="exception">An <see cref="Exception"/> that occurred.</param>
-    /// <param name="template">The message's template.</param>
-    /// <param name="properties">Contextual properties for the log message.</param>
-    public static void ERROR(string @event, Exception? exception, string template, params object[] properties)
-    {
-        Log.ForContext("Event", @event).Error(exception, template, properties);
-    }
-
-    /// <summary>
-    /// Log an error message associated with an event.
-    /// </summary>
-    /// <param name="event">The name of the event that occurred.</param>
-    /// <param name="error">An <see cref="Error"/> that occurred.</param>
-    /// <param name="template">The message's template.</param>
-    /// <param name="properties">Contextual properties for the log message.</param>
-    public static void ERROR(string @event, Error? error, string template, params object[] properties)
-    {
-        Log.ForContext("Event", @event).Error(error?.ToFault(), template, properties);
-    }
-
-    /// <summary>
     /// Log a fatal message.
     /// </summary>
     /// <param name="template">The message's template.</param>
@@ -478,50 +298,5 @@ public static class Logger
     public static void FATAL(Error? error, string template, params object[] properties)
     {
         Log.Fatal(error?.ToFault(), template, properties);
-    }
-
-    /// <summary>
-    /// Log a fatal message associated with an event.
-    /// </summary>
-    /// <param name="event">The name of the event that occurred.</param>
-    /// <param name="template">The message's template.</param>
-    public static void FATAL(string @event, string template)
-    {
-        Log.ForContext("Event", @event).Fatal(template);
-    }
-
-    /// <summary>
-    /// Log a fatal message associated with an event.
-    /// </summary>
-    /// <param name="event">The name of the event that occurred.</param>
-    /// <param name="template">The message's template.</param>
-    /// <param name="properties">Contextual properties for the log message.</param>
-    public static void FATAL(string @event, string template, params object[] properties)
-    {
-        Log.ForContext("Event", @event).Fatal(template, properties);
-    }
-
-    /// <summary>
-    /// Log a fatal message associated with an event.
-    /// </summary>
-    /// <param name="event">The name of the event that occurred.</param>
-    /// <param name="exception">An <see cref="Exception"/> that occurred.</param>
-    /// <param name="template">The message's template.</param>
-    /// <param name="properties">Contextual properties for the log message.</param>
-    public static void FATAL(string @event, Exception? exception, string template, params object[] properties)
-    {
-        Log.ForContext("Event", @event).Fatal(exception, template, properties);
-    }
-
-    /// <summary>
-    /// Log a fatal message associated with an event.
-    /// </summary>
-    /// <param name="event">The name of the event that occurred.</param>
-    /// <param name="error">An <see cref="Error"/> that occurred.</param>
-    /// <param name="template">The message's template.</param>
-    /// <param name="properties">Contextual properties for the log message.</param>
-    public static void FATAL(string @event, Error? error, string template, params object[] properties)
-    {
-        Log.ForContext("Event", @event).Fatal(error?.ToFault(), template, properties);
     }
 }

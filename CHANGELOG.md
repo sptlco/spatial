@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.6.0](https://github.com/sptlco/spatial/compare/2.5.0...2.6.0) (2026-10-08)
+
+
+### Features
+
+* Events ([13af4be](https://github.com/sptlco/spatial/commit/13af4be60c11ef8b11e4eab9c922e1dcb7ea567d))
+
 ## [2.5.0](https://github.com/sptlco/spatial/compare/2.4.0...2.5.0) (2026-10-08)
 
 

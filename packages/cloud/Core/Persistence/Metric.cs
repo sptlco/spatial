@@ -19,10 +19,15 @@ namespace Spatial.Persistence;
 public class Metric : Resource
 {
     /// <summary>
+    /// The metric's name.
+    /// </summary>
+    public string Name { get; set; }
+
+    /// <summary>
     /// The metric's data point(s).
     /// </summary>
     public Dictionary<string, decimal> Value { get; set; } = [];
- 
+
     /// <summary>
     /// The time the metric's value occurred.
     /// </summary>
@@ -38,7 +43,7 @@ public class Metric : Resource
     /// <param name="resolution">The resolution of the aggregated data.</param>
     /// <returns>Aggregated metric data points.</returns>
     public static List<Metric> Read(
-        string name, 
+        string name,
         DateTime? from = null,
         DateTime? to = null,
         int? limit = null,
@@ -57,7 +62,7 @@ public class Metric : Resource
     /// <param name="resolution">The resolution of the aggregated data.</param>
     /// <returns>Aggregated metric data points.</returns>
     public static Task<List<Metric>> ReadAsync(
-        string name, 
+        string name,
         DateTime? from = null,
         DateTime? to = null,
         int? limit = null,
@@ -113,7 +118,7 @@ public class Metric : Resource
     }
 
     private static IAsyncCursor<Metric> Aggregate(
-        string name, 
+        string name,
         DateTime? from = null,
         DateTime? to = null,
         int? limit = null,
@@ -124,8 +129,8 @@ public class Metric : Resource
 
         var collection = Resource<Metric>.Collection;
         var filter = new BsonDocument {
-            { $"{nameof(Metadata)}.{Constants.MetricKey}", name },
-            { "Timestamp", new BsonDocument { { "$gte", from.Value }, { "$lte", to.Value } } }
+            { nameof(Name), name },
+            { nameof(Timestamp), new BsonDocument { { "$gte", from.Value }, { "$lte", to.Value } } }
         };
 
         if (string.IsNullOrEmpty(resolution))
@@ -135,7 +140,7 @@ public class Metric : Resource
             if (range > TimeSpan.FromDays(180))
             {
                 resolution = "1d";
-            }    
+            }
             else if (range > TimeSpan.FromDays(30))
             {
                 resolution = "1h";
@@ -150,8 +155,7 @@ public class Metric : Resource
             }
         }
 
-        var (unit, binSize) = resolution switch
-        {
+        var (unit, binSize) = resolution switch {
             "5m" => ("minute", 5),
             "15m" => ("minute", 15),
             "1h" => ("hour", 1),
@@ -163,13 +167,13 @@ public class Metric : Resource
         var pipeline = new[]
         {
             new BsonDocument("$match", filter),
-            new BsonDocument("$sort", new BsonDocument("Timestamp", 1)),
+            new BsonDocument("$sort", new BsonDocument(nameof(Timestamp), 1)),
             new BsonDocument("$group", new BsonDocument {
                 {
                     "_id",
                     new BsonDocument("$dateTrunc", new BsonDocument
                     {
-                        { "date", "$Timestamp" },
+                        { "date", $"${nameof(Timestamp)}" },
                         { "unit", unit },
                         { "binSize", binSize }
                     })
@@ -177,12 +181,12 @@ public class Metric : Resource
                 { "last", new BsonDocument("$last", "$$ROOT") }
             }),
             new BsonDocument("$replaceRoot", new BsonDocument("newRoot", "$last")),
-            new BsonDocument("$sort", new BsonDocument("Timestamp", 1))
+            new BsonDocument("$sort", new BsonDocument(nameof(Timestamp), 1))
         };
 
         if (limit is not null)
         {
-            pipeline = [..pipeline, new BsonDocument("$limit", limit)];
+            pipeline = [.. pipeline, new BsonDocument("$limit", limit)];
         }
 
         return collection.Aggregate<Metric>(pipeline);
@@ -190,21 +194,24 @@ public class Metric : Resource
 
     private static Metric Create(string batch, string name, object value, object? metadata = null)
     {
-        var meta = new Dictionary<string, string> { 
-            [Constants.BatchKey] = batch,
-            [Constants.MetricKey] = name
-        };
-        
-        var options = new JsonSerializerOptions {
-          DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,  
+        var meta = new Dictionary<string, string> {
+            [Constants.BatchKey] = batch
         };
 
-        foreach (var pair in JsonSerializer.Deserialize<Dictionary<string, string>>(JsonSerializer.Serialize(metadata, options)) ?? [])
+        var options = new JsonSerializerOptions {
+            DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
+        };
+
+        if (metadata is not null)
         {
-            meta[pair.Key] = pair.Value;
+            foreach (var pair in JsonSerializer.Deserialize<Dictionary<string, string>>(JsonSerializer.Serialize(metadata, options)) ?? [])
+            {
+                meta[pair.Key] = pair.Value;
+            }
         }
 
         return new Metric {
+            Name = name,
             Value = value as Dictionary<string, decimal> ?? JsonSerializer.Deserialize<Dictionary<string, decimal>>(JsonSerializer.Serialize(value, options)) ?? [],
             Metadata = meta,
             Timestamp = DateTime.UtcNow

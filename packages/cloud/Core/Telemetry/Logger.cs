@@ -10,51 +10,6 @@ namespace Spatial.Telemetry;
 public static class Logger
 {
     /// <summary>
-    /// Log an event.
-    /// </summary>
-    /// <param name="event">The name of the event that occurred.</param>
-    /// <param name="template">The message's template.</param>
-    public static void EVENT(string @event, string template)
-    {
-        Log.ForContext("Event", @event).Information(template);
-    }
-
-    /// <summary>
-    /// Log an event.
-    /// </summary>
-    /// <param name="event">The name of the event that occurred.</param>
-    /// <param name="template">The message's template.</param>
-    /// <param name="properties">Contextual properties for the log message.</param>
-    public static void EVENT(string @event, string template, params object[] properties)
-    {
-        Log.ForContext("Event", @event).Information(template, properties);
-    }
-
-    /// <summary>
-    /// Log an event.
-    /// </summary>
-    /// <param name="event">The name of the event that occurred.</param>
-    /// <param name="exception">An <see cref="Exception"/> that occurred.</param>
-    /// <param name="template">The message's template.</param>
-    /// <param name="properties">Contextual properties for the log message.</param>
-    public static void EVENT(string @event, Exception? exception, string template, params object[] properties)
-    {
-        Log.ForContext("Event", @event).Information(exception, template, properties);
-    }
-
-    /// <summary>
-    /// Log an event.
-    /// </summary>
-    /// <param name="event">The name of the event that occurred.</param>
-    /// <param name="error">An <see cref="Error"/> that occurred.</param>
-    /// <param name="template">The message's template.</param>
-    /// <param name="properties">Contextual properties for the log message.</param>
-    public static void EVENT(string @event, Error? error, string template, params object[] properties)
-    {
-        Log.ForContext("Event", @event).Information(error?.ToFault(), template, properties);
-    }
-
-    /// <summary>
     /// Log a trace message.
     /// </summary>
     /// <param name="template">The message's template.</param>

@@ -10,7 +10,7 @@ namespace Spatial.Persistence;
 /// <summary>
 /// A domain fact that occurred within the system.
 /// </summary>
-[Collection("events", TTL = Expiration.Year)]
+[Collection("events")]
 public class Event : Resource
 {
     /// <summary>

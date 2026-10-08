@@ -1,8 +1,8 @@
 // Copyright © Spatial Corporation. All rights reserved.
 
-using Microsoft.IdentityModel.JsonWebTokens;
 using Spatial.Helpers;
 using Spatial.Persistence;
+using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 
 namespace Spatial.Identity;
@@ -24,9 +24,14 @@ public class Session : Resource
     public string? Agent { get; set; }
 
     /// <summary>
-    /// The session's authorization token.
+    /// A short-lived access token (JWT).
     /// </summary>
-    public string Token { get; set; }
+    public string AccessToken { get; set; }
+
+    /// <summary>
+    /// A long-lived opauque refresh token.
+    /// </summary>
+    public string RefreshToken { get; set; }
 
     /// <summary>
     /// The time the <see cref="Session"/> expires.
@@ -40,14 +45,32 @@ public class Session : Resource
     /// <returns>A <see cref="Session"/> token.</returns>
     public static Session Create(string userId)
     {
-        var expires = DateTime.UtcNow.Add(Application.Current.Configuration.JWT.TTL);
         var session = new Session {
             User = userId,
-            Expires = Time.FromDateTime(expires)
         };
 
-        session.Token = JWT.Create(expires, new Claim(JwtRegisteredClaimNames.Sid, session.Id));
+        session.Refresh();
+        session.Regenerate();
 
         return session;
+    }
+
+    /// <summary>
+    /// Refresh the <see cref="Session"/>.
+    /// </summary>
+    public void Refresh()
+    {
+        var expires = DateTime.UtcNow.Add(Application.Current.Configuration.JWT.RefreshTTL);
+
+        Expires = Time.FromDateTime(expires);
+        RefreshToken = JWT.Create(expires, new Claim(JwtRegisteredClaimNames.Sid, Id));
+    }
+
+    /// <summary>
+    /// Mint a new short-lived access token bound to this <see cref="Session"/>.
+    /// </summary>
+    public void Regenerate()
+    {
+        AccessToken = JWT.Create(DateTime.UtcNow.Add(Application.Current.Configuration.JWT.TTL), new Claim(JwtRegisteredClaimNames.Sid, Id));
     }
 }

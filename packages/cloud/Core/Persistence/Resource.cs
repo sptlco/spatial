@@ -137,6 +137,11 @@ public static class Resource<T> where T : Resource
     /// <exception cref="Conflict">A record violates a unique index.</exception>
     public static async Task StoreManyAsync(IEnumerable<T> resources)
     {
+        if (!resources.Any())
+        {
+            return;
+        }
+
         var collection = GetCollection();
 
         foreach (var resource in resources)
@@ -449,7 +454,10 @@ public static class Resource<T> where T : Resource
 
         foreach (var index in indexes)
         {
-            var keys = Builders<T>.IndexKeys.Combine(index.Fields.Select(f => Builders<T>.IndexKeys.Ascending(f)));
+            var keys = index.Text
+                ? Builders<T>.IndexKeys.Combine(index.Fields.Select(f => Builders<T>.IndexKeys.Text(f)))
+                : Builders<T>.IndexKeys.Combine(index.Fields.Select(f => Builders<T>.IndexKeys.Ascending(f)));
+
             var document = keys.Render(new RenderArgs<T>(collection.DocumentSerializer, collection.Settings.SerializerRegistry));
             var conflict = existing.FirstOrDefault(e => e["name"].AsString == index.Name || e["key"] == document);
 
@@ -464,7 +472,7 @@ public static class Resource<T> where T : Resource
                 var options = new CreateIndexOptions {
                     Unique = index.Unique,
                     Name = index.Name,
-                    Collation = index.CaseInsensitive ? new Collation("en", strength: CollationStrength.Secondary) : null
+                    Collation = !index.Text && index.CaseInsensitive ? new Collation("en", strength: CollationStrength.Secondary) : null
                 };
 
                 collection.Indexes.CreateOne(new CreateIndexModel<T>(keys, options));

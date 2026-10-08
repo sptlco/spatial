@@ -28,6 +28,11 @@ public class IndexAttribute : Attribute
     public bool Unique { get; init; }
 
     /// <summary>
+    /// Whether this index is a full-text search index.
+    /// </summary>
+    public bool Text { get; init; }
+
+    /// <summary>
     /// An explicit name for the index. If specified, this name is used to identify which
     /// index a write violated, rather than relying on MongoDB's auto-generated field-based name.
     /// </summary>

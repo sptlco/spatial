@@ -3,12 +3,12 @@
 namespace Spatial.Logistics.Configuration;
 
 /// <summary>
-/// Configurable options for <see cref="Stripe"/>.
+/// Configurable options for <see cref="StripeAPI"/>.
 /// </summary>
 public class StripeConfiguration
 {
     /// <summary>
-    /// A <see cref="Stripe"/> API key.
+    /// A <see cref="StripeAPI"/> API key.
     /// </summary>
     public string Key { get; set; }
 

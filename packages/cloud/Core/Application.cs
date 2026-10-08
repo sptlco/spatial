@@ -25,6 +25,8 @@ using Spatial.Identity;
 using Spatial.Identity.Authorization;
 using Spatial.Networking;
 using Spatial.Persistence;
+using Spatial.Persistence.Serialization;
+using Spatial.Serialization;
 using Spatial.Simulation;
 using System.Net;
 using System.Reflection;
@@ -67,7 +69,7 @@ public class Application
         _ticker = new Ticker();
         _computer = new Computer();
         _network = new Network();
-        _ticks = (_time = Time.Now).Ticks;
+        _ticks = _time = 0;
         _timings = [];
 
         Initialize();
@@ -127,8 +129,8 @@ public class Application
 
             try
             {
-                INFO("Time: {Time} ms.", Time.Now.Milliseconds);
-                INFO("Environment: {Environment}.", application._wapp.Environment.EnvironmentName);
+                INFO("Time: {Time}", Time.Now.Milliseconds);
+                INFO("Environment: {Environment}", application._wapp.Environment.EnvironmentName);
                 INFO("Starting {Application} {Version}.", application.Configuration.Name, application.Configuration.Version);
 
                 application.Start();
@@ -221,6 +223,11 @@ public class Application
     public virtual void Shutdown() { }
 
     /// <summary>
+    /// Prepare the <see cref="Application"/> for operation.
+    /// </summary>
+    public virtual void Prime() {  }
+
+    /// <summary>
     /// Tick the <see cref="Application"/>.
     /// </summary>
     /// <param name="delta">Elapsed time since the last tick.</param>
@@ -281,6 +288,7 @@ public class Application
         Log.Logger = telemetry.CreateLogger();
 
         BsonSerializer.TryRegisterSerializer(new DecimalSerializer(BsonType.Decimal128));
+        BsonSerializer.TryRegisterSerializer(new EmailSerializer());
 
         builder.WebHost.ConfigureKestrel(options => {
 
@@ -374,6 +382,7 @@ public class Application
                 options.JsonSerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
                 options.JsonSerializerOptions.DictionaryKeyPolicy = JsonNamingPolicy.CamelCase;
                 options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter(JsonNamingPolicy.CamelCase));
+                options.JsonSerializerOptions.Converters.Add(new EmailJsonConverter());
 
             });
 
@@ -382,6 +391,15 @@ public class Application
         var application = builder.Build();
 
         application
+            .UseSerilogRequestLogging(options =>
+            {
+                options.GetLevel = (context, _, exception) =>
+                    context.Request.Method == HttpMethods.Options
+                        ? LogEventLevel.Verbose
+                        : exception is not null
+                            ? LogEventLevel.Error
+                            : LogEventLevel.Information;
+            })
             .UseRouting()
             .UseCors(builder => builder
                 .AllowAnyOrigin()
@@ -395,7 +413,6 @@ public class Application
                 RequestPath = PathString.Empty,
                 EnableDefaultFiles = true
             })
-            .UseSerilogRequestLogging()
             .UseAuthentication()
             .UseMiddleware<Enricher>()
             .UseAuthorization()
@@ -458,6 +475,11 @@ public class Application
     {
         try
         {
+            if (_ticks == 0)
+            {
+                Prime();
+            }
+
             var receive = Profiler.Measure("Receive", () => _network.Receive());
             var update = Profiler.Measure("Update", () => _space.Update(delta, _timings));
             var send = Profiler.Measure("Send", () => _network.Send());

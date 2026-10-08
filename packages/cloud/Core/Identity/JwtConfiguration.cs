@@ -23,7 +23,12 @@ public class JwtConfiguration
     public string Secret { get; set; }
 
     /// <summary>
-    /// Determines how long an authentication token lasts for.
+    /// Determines how long an access token lasts for.
     /// </summary>
-    public TimeSpan TTL { get; set; } = TimeSpan.FromDays(7);
+    public TimeSpan TTL { get; set; } = TimeSpan.FromMinutes(30);
+
+    /// <summary>
+    /// Determines how long a refresh token lasts for.
+    /// </summary>
+    public TimeSpan RefreshTTL { get; set; } = TimeSpan.FromDays(30);
 }

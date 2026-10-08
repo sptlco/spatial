@@ -51,7 +51,7 @@ public class Configuration
     public CacheConfiguration Cache { get; set; } = new CacheConfiguration();
 
     /// <summary>
-    /// Configurable options for <see cref="Logistics.Stripe"/>.
+    /// Configurable options for <see cref="Logistics.StripeAPI"/>.
     /// </summary>
     [ValidateObjectMembers]
     public StripeConfiguration Stripe { get; set; } = new StripeConfiguration();

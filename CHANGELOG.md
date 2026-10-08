@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.6.1](https://github.com/sptlco/spatial/compare/2.6.0...2.6.1) (2026-10-08)
+
+
+### Bug Fixes
+
+* Remove expiration ([487b791](https://github.com/sptlco/spatial/commit/487b791fadb3fcaf1ec3668199505ac343f14117))
+
 ## [2.6.0](https://github.com/sptlco/spatial/compare/2.5.0...2.6.0) (2026-10-08)
 
 

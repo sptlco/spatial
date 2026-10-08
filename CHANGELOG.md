@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.4.0](https://github.com/sptlco/spatial/compare/2.3.0...2.4.0) (2026-10-08)
+
+
+### Features
+
+* Application upgrades ([e81e9b5](https://github.com/sptlco/spatial/commit/e81e9b5fab90fef6d6a3a88c4cf00c93dc5dd963))
+
 ## [2.3.0](https://github.com/sptlco/spatial/compare/2.2.0...2.3.0) (2026-08-20)
 
 

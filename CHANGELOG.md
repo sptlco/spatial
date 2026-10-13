@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.6.2](https://github.com/sptlco/spatial/compare/2.6.1...2.6.2) (2026-10-13)
+
+
+### Bug Fixes
+
+* Log assigned port ([b90b473](https://github.com/sptlco/spatial/commit/b90b47323f811511c300dec210bf56dbd026d4d8))
+
 ## [2.6.1](https://github.com/sptlco/spatial/compare/2.6.0...2.6.1) (2026-10-08)
 
 

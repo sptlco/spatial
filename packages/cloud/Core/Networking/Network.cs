@@ -109,13 +109,15 @@ public partial class Network : IDisposable
 
         _endpoints.Add(socket);
 
+        var binding = (IPEndPoint) socket.LocalEndPoint!;
+
         if (string.IsNullOrEmpty(description))
         {
-            INFO("IPv4 supported, port {Port}", ip.Port);
+            INFO("IPv4 supported, port {Port}", binding.Port);
         }
         else
         {
-            INFO("IPv4 supported, port {Port}: Used for {Description}", ip.Port, description);
+            INFO("IPv4 supported, port {Port}: Used for {Description}", binding.Port, description);
         }
     }
 

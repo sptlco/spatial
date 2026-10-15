@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.7.0](https://github.com/sptlco/spatial/compare/2.6.2...2.7.0) (2026-10-15)
+
+
+### Features
+
+* Improved network telemetry ([c1cc582](https://github.com/sptlco/spatial/commit/c1cc582d3398792f1f9f04d5c098463e763ebb82))
+
 ## [2.6.2](https://github.com/sptlco/spatial/compare/2.6.1...2.6.2) (2026-10-13)
 
 

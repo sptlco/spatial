@@ -113,12 +113,30 @@ public partial class Network : IDisposable
 
         if (string.IsNullOrEmpty(description))
         {
-            INFO("IPv4 supported, port {Port}", binding.Port);
+            INFO("Listener bound on port {Port}", binding.Port);
         }
         else
         {
-            INFO("IPv4 supported, port {Port}: Used for {Description}", binding.Port, description);
+            INFO("Listener bound on port {Port} for {Description}", binding.Port, description);
         }
+    }
+
+    /// <summary>
+    /// Open an outgoing <see cref="Connection"/> to a remote endpoint.
+    /// </summary>
+    public Connection Connect(IPEndPoint endpoint, object? context = default)
+    {
+        var socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+
+        socket.Connect(endpoint);
+        socket.NoDelay = true;
+        socket.SendTimeout = Constants.SendTimeout;
+
+        var connection = Connection.Allocate(this, socket).AsOutbound();
+
+        connection.Context = context;
+
+        return connection.Connect();
     }
 
     /// <summary>
@@ -182,7 +200,7 @@ public partial class Network : IDisposable
                 offset: 0,
                 count: packet.Count + update.Size);
 
-            INFO("Server ({Connection}): {Command}", update.Connection.Id, Resolve(update.Command));
+            TRACE("Connection {Connection}: queued {Command}", update.Connection.ShortUID, Resolve(update.Command));
 
             update.Dispose();
         }
@@ -198,7 +216,7 @@ public partial class Network : IDisposable
 
                 if (connection.Connected)
                 {
-                    TRACE("Delivering {size} KB packet to {connection}.", Math.Round(packet.Count / 1024D, 2), connection.Id);
+                    TRACE("Connection {Connection}: delivering {Size} KB.", connection.ShortUID, Math.Round(packet.Count / 1024D, 2));
 
                     try
                     {
@@ -225,6 +243,14 @@ public partial class Network : IDisposable
         foreach (var endpoint in _endpoints)
         {
             endpoint.Dispose();
+        }
+
+        while (_events.TryDequeue(out var e))
+        {
+            if (e.Message?.Data is not null)
+            {
+                ArrayPool<byte>.Shared.Return(e.Message.Data);
+            }
         }
 
         _connections.Clear();
@@ -262,21 +288,29 @@ public partial class Network : IDisposable
         {
             case NetworkEventCode.EVENT_CONNECT:
                 {
-                    INFO("Client ({Connection}): Connected to the server.", connection.Id);
-
                     _connections[connection.Id] = connection;
 
-                    Send(
-                        connection: connection,
-                        command: (ushort) NETCOMMAND.NC_MISC_SEED_CMD,
-                        data: new PROTO_NC_MISC_SEED_CMD(connection.Seed),
-                        encrypt: false);
+                    if (connection.Outbound)
+                    {
+                        INFO("Connection {Connection}: established outbound to {Endpoint}", connection.ShortUID, connection.IP);
+                    }
+                    else
+                    {
+                        INFO("Connection {Connection}: accepted inbound from {Endpoint}", connection.ShortUID, connection.IP);
+                        TRACE("Connection {Connection}: issuing seed 0x{Seed:X4}", connection.ShortUID, connection.Seed);
+
+                        Send(
+                            connection: connection,
+                            command: (ushort) NETCOMMAND.NC_MISC_SEED_CMD,
+                            data: new PROTO_NC_MISC_SEED_CMD(connection.Seed),
+                            encrypt: false);
+                    }
 
                     break;
                 }
             case NetworkEventCode.EVENT_DISCONNECT:
                 {
-                    INFO("Client ({Connection}): Disconnected from the server.", connection.Id);
+                    INFO("Connection {Connection}: closed ({Direction})", connection.ShortUID, connection.Outbound ? "outbound" : "inbound");
 
                     _connections.TryRemove(connection.Id, out _);
 
@@ -288,13 +322,32 @@ public partial class Network : IDisposable
             case NetworkEventCode.EVENT_MESSAGE:
                 {
                     using var message = e.Message!;
+                    var bytes = message.Data;
 
-                    if (_operations.TryGetValue(message.Command, out var operation))
+                    try
                     {
-                        INFO("Client ({Connection}): {Operation}", connection.Id, Resolve(message.Command));
+                        if (message.Command == (ushort) NETCOMMAND.NC_MISC_SEED_CMD)
+                        {
+                            var seed = ProtocolBuffer.FromSpan<PROTO_NC_MISC_SEED_CMD>(bytes.AsSpan(2, message.Size - 2)).Seed;
 
-                        var data = ProtocolBuffer.FromSpan(operation.Prototype, message.Data.AsSpan(2, message.Size - 2));
-                        var bytes = message.Data;
+                            connection.SetSeed(seed);
+
+                            TRACE("Connection {Connection}: seed received 0x{Seed:X4}", connection.ShortUID, seed);
+                        }
+                        else
+                        {
+                            Transformer.Decode(bytes, 2, message.Size - 2, connection.Keys);
+                        }
+
+                        if (!_operations.TryGetValue(message.Command, out var operation))
+                        {
+                            ERROR("Connection {Connection}: {Command} is not implemented.", connection.ShortUID, Resolve(message.Command));
+                            break;
+                        }
+
+                        TRACE("Connection {Connection}: {Operation}", connection.ShortUID, Resolve(message.Command));
+
+                        var data = ProtocolBuffer.FromSpan(operation.Prototype, bytes.AsSpan(2, message.Size - 2));
 
                         switch (operation.Command)
                         {
@@ -310,7 +363,8 @@ public partial class Network : IDisposable
                                     }
                                     finally
                                     {
-                                        Cleanup(data, bytes);
+                                        data.Dispose();
+                                        ArrayPool<byte>.Shared.Return(bytes);
                                     }
                                 });
 
@@ -326,16 +380,17 @@ public partial class Network : IDisposable
                                 }
                                 finally
                                 {
-                                    Cleanup(data, bytes);
+                                    data.Dispose();
+                                    ArrayPool<byte>.Shared.Return(bytes);
                                 }
 
                                 break;
                         }
                     }
-                    else
+                    catch
                     {
-                        ERROR("Client ({Connection}): {Command} is not implemented.", connection.Id, Resolve(message.Command));
-                        return;
+                        ArrayPool<byte>.Shared.Return(bytes);
+                        throw;
                     }
 
                     break;
@@ -355,19 +410,13 @@ public partial class Network : IDisposable
 
     private void Report(Exception exception, Message message, Connection connection)
     {
-        ERROR(exception, "Client ({Connection}): {Operation}", connection.Id, Resolve(message.Command));
-    }
-
-    private void Cleanup(ProtocolBuffer data, byte[] bytes)
-    {
-        data.Dispose();
-        ArrayPool<byte>.Shared.Return(bytes);
+        ERROR(exception, "Connection {Connection}: {Operation} failed.", connection.ShortUID, Resolve(message.Command));
     }
 
     private static string Resolve(ushort command)
     {
         var name = OperationNameResolver?.Invoke(command);
-        
+
         if (!string.IsNullOrEmpty(name))
         {
             return name!;

@@ -41,7 +41,17 @@ public sealed class Connection : IDisposable
     /// The connection's identification number.
     /// </summary>
     public long Id { get; } = Interlocked.Increment(ref _counter);
-    
+
+    /// <summary>
+    /// The connection's globally unique identifier.
+    /// </summary>
+    public string UID { get; private set; } = string.Empty;
+
+    /// <summary>
+    /// The first eight characters of <see cref="UID"/>. Intended for log correlation.
+    /// </summary>
+    public string ShortUID => UID.Length > 8 ? UID[..8] : UID;
+
     /// <summary>
     /// Whether or not the <see cref="Connection"/> is connected 
     /// to the <see cref="Network"/>.
@@ -49,13 +59,20 @@ public sealed class Connection : IDisposable
     public bool Connected => Interlocked.CompareExchange(ref _connected, 1, 1) == 1;
 
     /// <summary>
+    /// True if this connection was initiated by <see cref="Network.Connect(IPEndPoint, object?)"/>.
+    /// False if it was accepted by a <see cref="Network.Listen"/> endpoint.
+    /// </summary>
+    public bool Outbound { get; private set; }
+
+    /// <summary>
     /// The connection's <see cref="Socket"/>.
     /// </summary>
     internal Socket Socket => _socket;
 
     /// <summary>
-    /// Arbitrary context describing the server this <see cref="Connection"/> belongs to,
-    /// set from whichever listener (<see cref="Network.Listen"/>) accepted it.
+    /// Arbitrary context describing the server this <see cref="Connection"/> belongs to.
+    /// For accepted connections this comes from the matching <see cref="Network.Listen"/> call.
+    /// For outbound connections this is whatever the caller passed to <see cref="Network.Connect(IPEndPoint, object?)"/>.
     /// </summary>
     public object? Context { get; set; }
 
@@ -85,7 +102,7 @@ public sealed class Connection : IDisposable
     public Connection Parent => _parent;
 
     /// <summary>
-    /// This connection's child connections.f
+    /// This connection's child connections.
     /// </summary>
     public ConcurrentHashSet<Connection> Children => _children;
 
@@ -116,6 +133,14 @@ public sealed class Connection : IDisposable
         connection._socket = socket;
         connection._buffer = ArrayPool<byte>.Shared.Rent(Constants.ConnectionSize);
 
+        connection._connected = 0;
+        connection._seed = 0;
+        connection._encoder = 0;
+        connection._decoder = 0;
+
+        connection.UID = Guid.NewGuid().ToString("N");
+        connection.Outbound = false;
+
         return connection;
     }
 
@@ -124,7 +149,13 @@ public sealed class Connection : IDisposable
     /// </summary>
     internal Connection Connect()
     {
-        _encoder = _decoder = _seed = Strong.UInt16((ushort) Network.Transformer.Keystream.Length);
+        // Outbound connections receive their seed from the peer's seed command.
+        // Listeners generate one and send it.
+        if (!Outbound)
+        {
+            SetSeed(Strong.UInt16((ushort) Network.Transformer.Keystream.Length));
+        }
+
         _connected = 1;
 
         _network.Queue.Enqueue(NetworkEvent.Create(this, NetworkEventCode.EVENT_CONNECT, null));
@@ -132,6 +163,28 @@ public sealed class Connection : IDisposable
         BeginReceive();
 
         return this;
+    }
+
+    /// <summary>
+    /// Indicate that this connection is an outbound connection to a remote endpoint.
+    /// </summary>
+    /// <returns>The <see cref="Connection"/>.</returns>
+    internal Connection AsOutbound()
+    {
+        Outbound = true;
+
+        return this;
+    }
+
+    /// <summary>
+    /// Set the connection's seed.
+    /// </summary>
+    /// <param name="seed">The value to set the seed to.</param>
+    internal void SetSeed(ushort seed)
+    {
+        Interlocked.Exchange(ref _seed, seed);
+        Interlocked.Exchange(ref _encoder, seed);
+        Interlocked.Exchange(ref _decoder, seed);
     }
 
     /// <summary>
@@ -259,7 +312,7 @@ public sealed class Connection : IDisposable
         {
             return;
         }
-        
+
         _socket.BeginReceive(_buffer, 0, _buffer.Length, SocketFlags.None, EndReceive, null);
     }
 
@@ -289,7 +342,7 @@ public sealed class Connection : IDisposable
             return;
         }
 
-        TRACE("Received {size} KB packet from {connection}.", Math.Round(bytes / 1024D, 2), Id);
+        TRACE("Connection {Connection}: received {Size} KB.", ShortUID, Math.Round(bytes / 1024D, 2));
 
         var offset = 0;
 
@@ -311,7 +364,6 @@ public sealed class Connection : IDisposable
             var buffer = ArrayPool<byte>.Shared.Rent(size);
 
             Array.Copy(_buffer, offset, buffer, 0, size);
-            Network.Transformer.Decode(buffer, 0, size, Keys);
 
             _network.Queue.Enqueue(NetworkEvent.Create(
                 connection: this,
@@ -360,10 +412,6 @@ internal class NetworkEvent : IDisposable
     /// <summary>
     /// Create a new <see cref="NetworkEvent"/>.
     /// </summary>
-    /// <param name="connection"></param>
-    /// <param name="code">A classifying <see cref="NetworkEventCode"/>.</param>
-    /// <param name="message">The <see cref="Networking.Message"/> associated with the <see cref="NetworkEvent"/>.</param>
-    /// <returns>A <see cref="NetworkEvent"/>.</returns>
     public static NetworkEvent Create(Connection connection, NetworkEventCode code, Message? message = null)
     {
         if (!_pool.TryTake(out var @event))
@@ -453,11 +501,6 @@ public class Message : IDisposable
     /// <summary>
     /// Create a new <see cref="Message"/>.
     /// </summary>
-    /// <param name="connection">The <see cref="Networking.Connection"/> associated with the message.</param>
-    /// <param name="command">The message's command.</param>
-    /// <param name="data">The message's data.</param>
-    /// <param name="size">The size of the <see cref="Message"/>.</param>
-    /// <returns>A <see cref="Message"/>.</returns>
     public static Message Create(Connection connection, ushort command, byte[] data, int size)
     {
         if (!_pool.TryTake(out var message))
